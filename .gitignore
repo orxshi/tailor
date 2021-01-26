@@ -1,0 +1,17 @@
+*.dat
+*.msh
+*.out
+*.err
+*.csv
+*.log
+*.tar
+*.tar.gz
+*.cmake
+*.vtk
+*.ser
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+out
+build/
