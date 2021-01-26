@@ -1,0 +1,2 @@
+rm *.msh
+rm slurm*
