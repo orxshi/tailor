@@ -927,6 +927,10 @@ namespace Tailor
         {
             std::cout << tag_() << std::endl;
             std::cout << map.size() << std::endl;
+            for (const auto& ii: map)
+            {
+                std::cout << ii.first() << " " << ii.second << std::endl;
+            }
         }
         assert(it != map.end());
         it->second = this;

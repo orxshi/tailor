@@ -9,6 +9,8 @@
 namespace bmpi = boost::mpi;
 
 Tailor::Solver* solver; // made global since signal handler cannot take arguments.
+Tailor::Assembler* assembler; // made global since signal handler cannot take arguments.
+bmpi::communicator* comm;
 
 void save(const Tailor::Assembler& assembler, const Tailor::Solver& solver, boost::mpi::communicator* comm)
 {
@@ -45,7 +47,9 @@ void load(Tailor::Assembler& assembler, Tailor::Solver& solver, boost::mpi::comm
         ia >> assembler;
 
         assembler.set_comm(comm);
-        assembler.set_profiler(profiler);
+        if (profiler != nullptr) {
+            assembler.set_profiler(profiler);
+        }
         assembler.partition()->spc().global_rm().update_address();
     }
 
@@ -64,7 +68,9 @@ void load(Tailor::Assembler& assembler, Tailor::Solver& solver, boost::mpi::comm
         }
 
         solver.set_comm(comm);
-        solver.set_profiler(profiler);
+        if (profiler != nullptr) {
+            solver.set_profiler(profiler);
+        }
 
         if (!use_shared_partition)
         {
@@ -73,31 +79,35 @@ void load(Tailor::Assembler& assembler, Tailor::Solver& solver, boost::mpi::comm
     }
 }
 
+void signal_handler(int signum)
+{
+    assert(assembler != nullptr);
+    assert(solver != nullptr);
+    std::cout << "Interrupt signal (" << signum << ") received. Saving the latest solution." << std::endl;
+    save(*assembler, *solver, comm);
+    exit(signum);
+}
+
 int main()
 {
-    //std::cout << "inmain" << "\n"; 
-
+    //signal(SIGTERM, signal_handler);
     bmpi::environment env;
-    bmpi::communicator comm;
+    comm = new bmpi::communicator;
 
     {
         std::string mems = "main";
-        Tailor::mem_usage(&comm, mems);
+        Tailor::mem_usage(comm, mems);
     }
 
-    Tailor::Profiler profiler(&comm, false);
+    Tailor::Profiler profiler(comm, false);
 
-    //std::cout << "profctr" << "\n"; 
-
-    //std::cout << "profctr" << "\n"; 
-
-    //std::vector<std::string> fn;
-    //fn.push_back("msh/96/fuspyl");
-    //fn.push_back("msh/96/wing0");
-    //fn.push_back("msh/96/wing1");
-    //fn.push_back("msh/96/wing2");
-    //fn.push_back("msh/96/wing3");
-    //fn.push_back("msh/96/hubshaft");
+    std::vector<std::string> fn;
+    fn.push_back("msh/128/fuspyl");
+    fn.push_back("msh/128/wing0");
+    fn.push_back("msh/128/wing1");
+    fn.push_back("msh/128/wing2");
+    fn.push_back("msh/128/wing3");
+    fn.push_back("msh/128/hubshaft");
 
     Tailor::Freestream fs;
     fs.read();
@@ -107,49 +117,53 @@ int main()
 
     bool use_shared_partition = true;
 
-    //profiler.start("asm-ctr");
-    ////Tailor::Assembler assembler(&comm, &profiler, fn);
-    //Tailor::Assembler assembler(&comm, nullptr, fn);
-    //profiler.stop("asm-ctr");
-    ////std::cout << "asmctr" << "\n"; 
+    //assembler = new Tailor::Assembler();
+    //solver = new Tailor::Solver();
+    //load(*assembler, *solver, comm, nullptr, use_shared_partition);
 
-    //profiler.start("sol-ctr");
-    //if (use_shared_partition)
-    //{
-    //    //solver = new Tailor::Solver(&comm, fn, &profiler, assembler.partition());
-    //    solver = new Tailor::Solver(&comm, fn, nullptr, assembler.partition());
-    //}
-    //else
-    //{
-    //    //solver = new Tailor::Solver(&comm, fn, &profiler);
-    //    solver = new Tailor::Solver(&comm, fn, nullptr);
-    //}
-    ////std::cout << "solctr" << "\n"; 
-    //profiler.stop("sol-ctr");
-
-    Tailor::Assembler assembler;
-    load(assembler, *solver, &comm, &profiler, use_shared_partition);
-
-    for (int i=2; i<3; ++i)
+    for (int i=0; i<75; ++i)
     {
-        //std::cout << "start-" << i << "\n"; 
-        //profiler.start("asm-ctr");
+        std::string a = "iter-";
+        a.append(std::to_string(i));
+        profiler.start(a);
+
+        if (i == 0)
+        {
+            //profiler.start("asm-ctr");
+            //assembler = new Tailor::Assembler(&comm, &profiler, fn);
+            assembler = new Tailor::Assembler(comm, nullptr, fn);
+            //assembler = new Tailor::Assembler();
+            //profiler.stop("asm-ctr");
+
+            //profiler.start("sol-ctr");
+            if (use_shared_partition)
+            {
+                //solver = new Tailor::Solver(&comm, fn, &profiler, assembler->partition());
+                solver = new Tailor::Solver(comm, fn, nullptr, assembler->partition());
+                //solver = new Tailor::Solver();
+            }
+            else
+            {
+                //solver = new Tailor::Solver(&comm, fn, &profiler);
+                solver = new Tailor::Solver(comm, fn, nullptr);
+            }
+            //profiler.stop("sol-ctr");
+        }
 
         {
             std::string mems = "start-iter-";
             mems.append(std::to_string(i));
-            Tailor::mem_usage(&comm, mems);
+            Tailor::mem_usage(comm, mems);
         }
 
-        profiler.start("asm-asm");
-        assembler.assemble();
-        //std::cout << "assembled-" << i << "\n"; 
-        profiler.stop("asm-asm");
+        //profiler.start("asm-asm");
+        assembler->assemble();
+        //profiler.stop("asm-asm");
 
         if (!use_shared_partition)
         {
             //profiler.start("asm-di");
-            Tailor::DIExchanger di_exc(&comm, assembler, *solver);
+            Tailor::DIExchanger di_exc(comm, *assembler, *solver);
             di_exc.exchange(false, "asm-di", &profiler);
             //profiler.stop("asm-di");
 
@@ -161,15 +175,14 @@ int main()
         {
             std::string mems = "di-iter-";
             mems.append(std::to_string(i));
-            Tailor::mem_usage(&comm, mems);
+            Tailor::mem_usage(comm, mems);
         }
 
-        profiler.start("sol-sol");
+        //profiler.start("sol-sol");
         solver->solve();
-        //std::cout << "solved-" << i << "\n"; 
         solver->partition()->spc().get_coef(fs, i, solver->dt());
-        //std::cout << "coef-" << i << "\n"; 
-        profiler.stop("sol-sol");
+        //profiler.stop("sol-sol");
+        //save(*assembler, *solver, comm);
 
         double rpm = compo.rpm_;
         double om = rpm * 2. * Tailor::PI / 60.; // rad/s
@@ -179,112 +192,112 @@ int main()
 
         if (!use_shared_partition)
         {
-            profiler.start("asm-rot");
-            assembler.rotate(Tailor::Tag(1), aoa, axis, pivot);
-            assembler.rotate(Tailor::Tag(2), aoa, axis, pivot);
-            assembler.rotate(Tailor::Tag(3), aoa, axis, pivot);
-            assembler.rotate(Tailor::Tag(4), aoa, axis, pivot);
-            assembler.rotate(Tailor::Tag(5), aoa, axis, pivot);
-            profiler.stop("asm-rot");
+            //profiler.start("asm-rot");
+            assembler->rotate(Tailor::Tag(1), aoa, axis, pivot);
+            assembler->rotate(Tailor::Tag(2), aoa, axis, pivot);
+            assembler->rotate(Tailor::Tag(3), aoa, axis, pivot);
+            assembler->rotate(Tailor::Tag(4), aoa, axis, pivot);
+            assembler->rotate(Tailor::Tag(5), aoa, axis, pivot);
+            //profiler.stop("asm-rot");
         }
 
-        profiler.start("sol-rot");
+        //profiler.start("sol-rot");
         solver->rotate(Tailor::Tag(1), aoa, axis, pivot);
         solver->rotate(Tailor::Tag(2), aoa, axis, pivot);
         solver->rotate(Tailor::Tag(3), aoa, axis, pivot);
         solver->rotate(Tailor::Tag(4), aoa, axis, pivot);
         solver->rotate(Tailor::Tag(5), aoa, axis, pivot);
-        profiler.stop("sol-rot");
-
-        //std::cout << "rotated-" << i << "\n"; 
+        //profiler.stop("sol-rot");
 
         {
             std::string mems = "rotate-iter-";
             mems.append(std::to_string(i));
-            Tailor::mem_usage(&comm, mems);
+            Tailor::mem_usage(comm, mems);
         }
 
-        profiler.start("sol-exc");
+        //profiler.start("sol-exc");
         solver->exchange();
-        //std::cout << "exchanged-" << i << "\n"; 
-        profiler.stop("sol-exc");
+        //profiler.stop("sol-exc");
 
         {
             std::string mems = "exchange-";
             mems.append(std::to_string(i));
-            Tailor::mem_usage(&comm, mems);
+            Tailor::mem_usage(comm, mems);
         }
 
         //profiler.start("sol-reset");
         solver->reset_oga_status();
-        //std::cout << "reseted-" << i << "\n"; 
         //profiler.stop("sol-reset");
 
         {
             std::string mems = "reset-";
             mems.append(std::to_string(i));
-            Tailor::mem_usage(&comm, mems);
+            Tailor::mem_usage(comm, mems);
         }
 
-        profiler.start("sol-recon");
+        //profiler.start("sol-recon");
         solver->reconnectivity();
-        //std::cout << "reconnected-" << i << "\n"; 
-        profiler.stop("sol-recon");
+        //profiler.stop("sol-recon");
 
         {
             std::string mems = "recon-";
             mems.append(std::to_string(i));
-            Tailor::mem_usage(&comm, mems);
+            Tailor::mem_usage(comm, mems);
         }
 
         if (!use_shared_partition)
         {
             //profiler.start("asm-exc");
-            assembler.exchange();
+            assembler->exchange();
             //profiler.stop("asm-exc");
 
             //profiler.start("asm-reset");
-            assembler.reset_oga_status();
+            assembler->reset_oga_status();
             //profiler.stop("asm-reset");
 
             //profiler.start("asm-recon");
-            assembler.reconnectivity();
+            assembler->reconnectivity();
             //profiler.stop("asm-recon");
         }
 
         bool sol_repart = false;
         bool asm_repart = false;
 
-        profiler.start("sol-repart");
+        //profiler.start("sol-repart");
         sol_repart = solver->repartition();
-        //std::cout << "repartitioned-" << i << "\n"; 
-        profiler.stop("sol-repart");
+        //profiler.stop("sol-repart");
 
         {
             std::string mems = "repart-";
             mems.append(std::to_string(i));
-            Tailor::mem_usage(&comm, mems);
+            Tailor::mem_usage(comm, mems);
         }
 
         if (!use_shared_partition)
         {
             //profiler.start("asm-repart");
-            asm_repart = assembler.repartition();
+            asm_repart = assembler->repartition();
             //profiler.stop("asm-repart");
         }
-
-        profiler.print_iter(i);
-        profiler.clear_iter();
-        //std::cout << "profiler-" << i << "\n"; 
 
         {
             std::string mems = "end-iter-";
             mems.append(std::to_string(i));
-            Tailor::mem_usage(&comm, mems);
+            Tailor::mem_usage(comm, mems);
         }
-    }
 
-    //save(assembler, *solver, &comm);
+        profiler.stop(a);
+
+        profiler.print_iter(i);
+        profiler.clear_iter();
+
+        //if (i == 70) {
+            //save(*assembler, *solver, &comm);
+            //load(*assembler, *solver, &comm, &profiler, use_shared_partition);
+        //}
+    }
+    
+    save(*assembler, *solver, comm);
 
     return 0;
 }

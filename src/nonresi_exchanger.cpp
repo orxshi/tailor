@@ -52,6 +52,35 @@ namespace Tailor
                 }
 
                 const Bin& _bin = spc_->global_rm().bin(tag);
+        if (_bin.aabb().min(0) >= _bin.aabb().max(0))
+        {
+            std::cout << "size: " << spc_->global_rm().size() << std::endl;
+            std::cout << "bintag: " << _bin.tag()() << std::endl;
+            std::cout << "gmin(0):  " << spc_->global_rm().aabb().min(0) << std::endl;
+            std::cout << "gmin(1):  " << spc_->global_rm().aabb().min(1) << std::endl;
+            std::cout << "gmin(2):  " << spc_->global_rm().aabb().min(2) << std::endl;
+            std::cout << "gmax(0):  " << spc_->global_rm().aabb().max(0) << std::endl;
+            std::cout << "gmax(1):  " << spc_->global_rm().aabb().max(1) << std::endl;
+            std::cout << "gmax(2):  " << spc_->global_rm().aabb().max(2) << std::endl;
+        }
+        assert(_bin.aabb().min(0) < _bin.aabb().max(0));
+        assert(_bin.aabb().min(1) < _bin.aabb().max(1));
+        assert(_bin.aabb().min(2) < _bin.aabb().max(2));
+                if (!_bin.aabb().do_intersect(AABB(mc.poly())))
+                {
+                    std::cout << "min(0):  " << _bin.aabb().min(0) << std::endl;
+                    std::cout << "min(1):  " << _bin.aabb().min(1) << std::endl;
+                    std::cout << "min(2):  " << _bin.aabb().min(2) << std::endl;
+                    std::cout << "max(0):  " << _bin.aabb().max(0) << std::endl;
+                    std::cout << "max(1):  " << _bin.aabb().max(1) << std::endl;
+                    std::cout << "max(2):  " << _bin.aabb().max(2) << std::endl;
+                    std::cout << "AABB min(0):  " << AABB(mc.poly()).min(0) << std::endl;
+                    std::cout << "AABB min(1):  " << AABB(mc.poly()).min(1) << std::endl;
+                    std::cout << "AABB min(2):  " << AABB(mc.poly()).min(2) << std::endl;
+                    std::cout << "AABB max(0):  " << AABB(mc.poly()).max(0) << std::endl;
+                    std::cout << "AABB max(1):  " << AABB(mc.poly()).max(1) << std::endl;
+                    std::cout << "AABB max(2):  " << AABB(mc.poly()).max(2) << std::endl;
+                }
                 assert(_bin.aabb().do_intersect(AABB(mc.poly())));
                 //if (_bin.aabb().do_intersect(AABB(mc.poly())))
                 {

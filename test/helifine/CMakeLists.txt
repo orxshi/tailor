@@ -18,8 +18,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 
 ADD_DEFINITIONS(-DBOOST_LOG_DYN_LINK)
 
-include_directories(~/Tailor3D/include ${Boost_INCLUDE_DIRS} ${MPI_INCLUDE_PATH} ${METIS_INCLUDE_DIRS})
-link_directories(~/Tailor3D/build)
+include_directories(~/TailorNew/include ${Boost_INCLUDE_DIRS} ${MPI_INCLUDE_PATH} ${METIS_INCLUDE_DIRS})
+link_directories(~/TailorNew/build)
 add_executable(out main.cpp)
 target_link_libraries(out tailor ${MPI_LIBRARIES} ${Boost_LIBRARIES} ${METIS_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES} Threads::Threads)
 #target_link_libraries(out tailor ${MPI_LIBRARIES} ${Boost_LIBRARIES} ${METIS_LIBRARIES} Threads::Threads)

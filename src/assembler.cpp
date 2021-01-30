@@ -15,7 +15,6 @@ namespace Tailor
 
     void Assembler::set_profiler(Profiler* prof)
     {
-        assert(prof != nullptr);
         profiler_ = prof;
 
         if (partition_ != nullptr)

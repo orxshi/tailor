@@ -236,7 +236,7 @@ namespace Tailor
                 {
                     std::vector<RegularMesh> grm;
                     boost::mpi::all_gather(world_, *wallrm_, grm);
-                    wallrm_->update_address();
+                    //wallrm_->update_address();
                     for (int i = 0; i<grm.size(); ++i)
                     {
                         if (i == world_.rank()) {
@@ -249,7 +249,7 @@ namespace Tailor
                 {
                     std::vector<RegularMesh> grm;
                     boost::mpi::all_gather(world_, *outerrm_, grm);
-                    outerrm_->update_address();
+                    //outerrm_->update_address();
                     for (int i = 0; i<grm.size(); ++i)
                     {
                         if (i == world_.rank()) {

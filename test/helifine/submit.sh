@@ -1,11 +1,11 @@
 #!/bin/bash
-#SBATCH -p short
-##SBATCH -x barbun[2-100]
-##SBATCH -x barbun4,barbun5,barbun10,barbun12,barbun13,barbun15,barbun16,barbun17,barbun24,barbun25,barbun34,barbun35,barbun36,barbun37,barbun38,barbun41,barbun53,barbun92
+#SBATCH -p mid1
+##SBATCH -x barbun[2-80]
+##SBATCH -x barbun2,barbun3,barbun4,barbun5,barbun6,barbun9,barbun10,barbun12,barbun13,barbun15,barbun16,barbun17,barbun19,barbun20,barbun21,barbun24,barbun25,barbun28,barbun31,barbun33,barbun34,barbun35,barbun36,barbun37,barbun38,barbun39,barbun41,barbun42,barbun43,barbun48,barbun50,barbun51,barbun52,barbun53,barbun54,barbun58,barbun62,barbun63,barbun64,barbun71,barbun92
 #SBATCH -J helifine
 #SBATCH --ntasks=128
 #SBATCH --hint=nomultithread
-#SBATCH -t 00-01:00:00
+#SBATCH -t 04-00:00:00
 #SBATCH --output=slurm-%j.out
 #SBATCH --error=slurm-%j.err
 ##SBATCH --signal=TERM@300

@@ -48,6 +48,7 @@ namespace Tailor
 
     void DonorSearcher::donor_search(int nassemble, bool pseudo3D)
     {
+        //std::cout << comm_->rank() << " start ds" << std::endl;
         assert(!spc_->sp_.empty());
 
         if (profiler_ != nullptr) {profiler_->start("asm-ds-reset-oga");}
@@ -70,6 +71,8 @@ namespace Tailor
         auto hole_aabb = get_hole_aabb(*comm_, *spc_);
         if (profiler_ != nullptr) {profiler_->bstop("asm-ds-holeaabb");}
 
+        //std::cout << comm_->rank() << " before holemap" << std::endl;
+
         if (profiler_ != nullptr) {profiler_->start("asm-ds-hole-map");}
         std::deque<HoleMap> holemap;
         for (SpatialPartition& _sp: spc_->sp_)
@@ -90,6 +93,7 @@ namespace Tailor
                 holemap.push_back(HoleMap(*comm_, msh, pseudo3D, hole_aabb));
             }
         }
+        //std::cout << comm_->rank() << " after holemap" << std::endl;
         if (profiler_ != nullptr) {profiler_->stop("asm-ds-hole-map");}
 
         if (profiler_ != nullptr) {profiler_->start("asm-ds-mesh-aabb");}

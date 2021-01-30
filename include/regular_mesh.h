@@ -191,27 +191,26 @@ namespace Tailor
         bool operator==(const RegularMesh& r) const;
         template<class Archive> void serialize(Archive & ar, const unsigned int version)
         {
+            assert(!std::isnan(tag_()));
+
             ar & nstripe_;
-            ar & bin_;
             ar & tag_;
             ar & aabb_;
             ar & h_;
+            ar & bin_;
+            for (auto& i: rmtag_address_map_)
             {
-                for (auto& i: rmtag_address_map_)
-                {
-                    i.second = nullptr;
-                }
-                ar & rmtag_address_map_;
+                i.second = nullptr;
             }
+            ar & rmtag_address_map_;
+            for (auto& i: bintag_address_map_)
             {
-                for (auto& i: bintag_address_map_)
-                {
-                    i.second = nullptr;
-                }
-                ar & bintag_address_map_;
+                i.second = nullptr;
             }
-            // don't forget to update address maps when deserialized.
-            assert(!std::isnan(tag_()));
+            ar & bintag_address_map_;
+            if (tag_() == 0) {
+                update_address();
+            }
         }
     };
 

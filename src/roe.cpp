@@ -135,6 +135,8 @@ namespace Tailor
             std::cout << "isbou: " << isbou << std::endl;
         }
         assert(H > k);
+        assert(!std::isnan(H));
+        assert(!std::isnan(k));
         assert(!std::isnan(a));
         assert(!std::isinf(a));
 

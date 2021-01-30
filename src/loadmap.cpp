@@ -695,6 +695,7 @@ namespace Tailor
                 LoadCalculator lc(load_estim_type_, comm_);
                 //lc.gather_load(*rm_->bin(heaviest_bt.bintag()).rm(), loads, loads_r, *mesh_);
                 lc.gather_load(*rm_->bin(heaviest_bt.bintag()).rm(), loads, *mesh_);
+                //rm_->bin(heaviest_bt.bintag()).rm()->update_address();
 
                 std::vector<int> tag;
                 for (const Bin& b: inited_rm->bin())

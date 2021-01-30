@@ -95,6 +95,7 @@ namespace Tailor
         //void update_cell_pnei_addresses();
         //void update_face_parent_addresses();
         //void update_cell_vertex_addresses();
+        void reset_to_mid();
         void convert_receptor_to_hole();
         mcc::iterator query_itp(const Tag& ic);
         int priority() const;

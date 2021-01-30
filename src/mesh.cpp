@@ -2,6 +2,15 @@
 
 namespace Tailor
 {
+    void Mesh::reset_to_mid()
+    {
+        for (auto& mc: cell_)
+        {
+            mc.R_ = mc.R_mid_;
+            mc.D_ = mc.D_mid_;
+        }        
+    }
+
     Mesh::Mesh(): priority_(-1)
     {
     }
