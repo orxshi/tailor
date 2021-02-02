@@ -826,6 +826,7 @@ namespace Tailor
 
     std::deque<std::vector<Point>> SpatialPartition::mesh_pts() const
     {
+        assert(false);
         std::deque<std::vector<Point>> pts(mesh_.size());
 
         int i = 0;
@@ -833,9 +834,9 @@ namespace Tailor
         {
             for (const MeshCell& mc: m.cell())
             {
-                if (!is_resident(mc.poly().centroid())) {
-                    continue;
-                }
+                //if (!is_resident(mc.poly().centroid())) {
+                    //continue;
+                //}
 
                 std::vector<Point>& pt = pts[i];
 

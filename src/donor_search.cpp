@@ -1175,7 +1175,8 @@ namespace Tailor
                 }
                 else
                 {
-                    if (!sp.is_resident(mc.poly().centroid()))
+                    assert(false);
+                    //if (!sp.is_resident(mc.poly().centroid()))
                     {
                         mc.set_oga_cell_type(OGA_cell_type_t::non_resident);
                     }
@@ -1187,6 +1188,7 @@ namespace Tailor
 
     void DonorSearcher::convert_undefined_to_nonresident(SpatialPartition& sp)
     {
+        assert(false);
         if (uniproc_) {
             return;
         }
@@ -1220,7 +1222,7 @@ namespace Tailor
                 }
                 //else
                 {
-                    if (!sp.is_resident(mc.poly().centroid()))
+                    //if (!sp.is_resident(mc.poly().centroid()))
                     {
                         mc.set_oga_cell_type(OGA_cell_type_t::non_resident);
                     }
@@ -1238,6 +1240,7 @@ namespace Tailor
 
     void DonorSearcher::convert_orphan_to_field(const ArrCon<DonorInfo2>& arrival)
     {
+        assert(false);
         // if all donors of receptor are mandat receptor, instead of designating the cell as oprhan, just set to field.
 
         for (auto& sp: spc_->sp_)
@@ -1265,7 +1268,7 @@ namespace Tailor
                             OGA_cell_type_t type = OGA_cell_type_t::undefined;
                             assert(cit != nullptr);
 
-                            if (!sp.is_resident(cit->poly().centroid()))
+                            //if (!sp.is_resident(cit->poly().centroid()))
                             {
                                 //for (const auto& receiver: nonresi)
                                 {
@@ -1278,10 +1281,10 @@ namespace Tailor
                                     }
                                 }
                             }
-                            else
-                            {
-                                type = cit->oga_cell_type();
-                            }
+                            //else
+                            //{
+                            //    type = cit->oga_cell_type();
+                            //}
 
                             assert(type != OGA_cell_type_t::undefined);
 
@@ -1328,13 +1331,34 @@ namespace Tailor
                             OGA_cell_type_t type = OGA_cell_type_t::undefined;
                             assert(cit != nullptr);
 
-                            if (!sp.is_resident(cit->poly().centroid()))
+                            //if (!sp.is_resident(cit->poly().centroid()))
+
+                            int celltag;
+                            Tag brmt;
+
+                            if (!spc_->is_resident(cit->poly().centroid(), celltag, brmt))
                             {
                                 //for (const auto& receiver: nonresi)
                                 {
                                     //if (receiver.tag() == sp.tag()())
                                     {
                                         auto nr = std::find_if(arrival.begin(), arrival.end(), [&](const DonorInfo2& n){return (n.meshtag_ == cdm() && n.celltag_ == cdc());});
+                                        if (nr == arrival.end())
+                                        {
+                                            std::cout << "rank: " << comm_->rank() << std::endl;
+                                            std::cout << "cdm: " << cdm() << std::endl;
+                                            std::cout << "cdc: " << cdc() << std::endl;
+                                            std::cout << "arrival size: " << arrival.size() << std::endl;
+                                            std::cout << "sp aabb min(0)" << sp.aabb().min(0) << std::endl;
+                                            std::cout << "sp aabb min(1)" << sp.aabb().min(1) << std::endl;
+                                            std::cout << "sp aabb min(2)" << sp.aabb().min(2) << std::endl;
+                                            std::cout << "sp aabb max(0)" << sp.aabb().max(0) << std::endl;
+                                            std::cout << "sp aabb max(1)" << sp.aabb().max(1) << std::endl;
+                                            std::cout << "sp aabb max(2)" << sp.aabb().max(2) << std::endl;
+                                            std::cout << "cnt(0)" << cit->poly().centroid()(0) << std::endl;
+                                            std::cout << "cnt(1)" << cit->poly().centroid()(1) << std::endl;
+                                            std::cout << "cnt(2)" << cit->poly().centroid()(2) << std::endl;
+                                        }
                                         assert(nr != arrival.end());
                                         type = nr->oga_cell_type_;
                                         //break;
@@ -1608,7 +1632,10 @@ namespace Tailor
                         double sa = 0.;
                         OGA_cell_type_t donor_type(OGA_cell_type_t::undefined);
 
-                        if (!sp.is_resident(cit->poly().centroid()))
+                        int celltag;
+                        Tag brmt;
+                        //if (!sp.is_resident(cit->poly().centroid()))
+                        if (!spc_->is_resident(cit->poly().centroid(), celltag, brmt))
                         {
                             //for (const auto& receiver: nonresi)
                             {
@@ -1679,3 +1706,4 @@ namespace Tailor
         }
     }
 }
+

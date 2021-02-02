@@ -76,8 +76,8 @@ namespace Tailor
         void reset_all_oga_status();
         void update_connectivity(int rank);
 
-        bool is_resident(const vec3<double>& cnt, const Outline& outline) const;
-        bool is_resident(const vec3<double>& cnt) const;
+        //bool is_resident(const vec3<double>& cnt, const Outline& outline) const;
+        //bool is_resident(const vec3<double>& cnt) const;
         std::deque<std::vector<Point>> mesh_pts(const Outline& outline) const;
         std::deque<std::vector<Point>> mesh_pts() const;
         bool fully_resident(const MeshCell& mc) const;

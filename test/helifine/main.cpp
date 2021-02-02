@@ -5,6 +5,9 @@
 #include "coef.h" 
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
+#include <filesystem>
+
+const int SAVE_THRES = 74;
 
 namespace bmpi = boost::mpi;
 
@@ -12,10 +15,11 @@ Tailor::Solver* solver; // made global since signal handler cannot take argument
 Tailor::Assembler* assembler; // made global since signal handler cannot take arguments.
 bmpi::communicator* comm;
 
-void save(const Tailor::Assembler& assembler, const Tailor::Solver& solver, boost::mpi::communicator* comm)
+void save(const Tailor::Assembler& assembler, const Tailor::Solver& solver, boost::mpi::communicator* comm, std::string savefolder)
 {
     {
-        std::string sername = "assembler-";
+        std::string sername = savefolder;
+        sername.append("/assembler-");
         sername.append(std::to_string(comm->rank()));
         sername.append(".ser");
 
@@ -25,7 +29,8 @@ void save(const Tailor::Assembler& assembler, const Tailor::Solver& solver, boos
     }
 
     {
-        std::string sername = "solver-";
+        std::string sername = savefolder;
+        sername.append("/solver-");
         sername.append(std::to_string(comm->rank()));
         sername.append(".ser");
 
@@ -35,10 +40,11 @@ void save(const Tailor::Assembler& assembler, const Tailor::Solver& solver, boos
     }
 }
 
-void load(Tailor::Assembler& assembler, Tailor::Solver& solver, boost::mpi::communicator* comm, Tailor::Profiler* profiler, bool use_shared_partition)
+void load(Tailor::Assembler& assembler, Tailor::Solver& solver, boost::mpi::communicator* comm, Tailor::Profiler* profiler, bool use_shared_partition, std::string savefolder)
 {
     {
-        std::string sername = "assembler-";
+        std::string sername = savefolder;
+        sername.append("/assembler-");
         sername.append(std::to_string(comm->rank()));
         sername.append(".ser");
 
@@ -54,7 +60,8 @@ void load(Tailor::Assembler& assembler, Tailor::Solver& solver, boost::mpi::comm
     }
 
     {
-        std::string sername = "solver-";
+        std::string sername = savefolder;
+        sername.append("/solver-");
         sername.append(std::to_string(comm->rank()));
         sername.append(".ser");
 
@@ -79,14 +86,22 @@ void load(Tailor::Assembler& assembler, Tailor::Solver& solver, boost::mpi::comm
     }
 }
 
-void signal_handler(int signum)
+std::string make_save_folder(int i)
 {
-    assert(assembler != nullptr);
-    assert(solver != nullptr);
-    std::cout << "Interrupt signal (" << signum << ") received. Saving the latest solution." << std::endl;
-    save(*assembler, *solver, comm);
-    exit(signum);
+    std::string save_folder = "sv-";
+    save_folder.append(std::to_string(i));
+    std::filesystem::create_directory(save_folder);
+    return save_folder;
 }
+
+//void signal_handler(int signum)
+//{
+//    assert(assembler != nullptr);
+//    assert(solver != nullptr);
+//    std::cout << "Interrupt signal (" << signum << ") received. Saving the latest solution." << std::endl;
+//    save(*assembler, *solver, comm);
+//    exit(signum);
+//}
 
 int main()
 {
@@ -119,9 +134,11 @@ int main()
 
     //assembler = new Tailor::Assembler();
     //solver = new Tailor::Solver();
-    //load(*assembler, *solver, comm, nullptr, use_shared_partition);
+    //load(*assembler, *solver, comm, nullptr, use_shared_partition, "save200-289");
 
-    for (int i=0; i<75; ++i)
+    int counter = 0;
+
+    for (int i=0; i<20000000; ++i)
     {
         std::string a = "iter-";
         a.append(std::to_string(i));
@@ -291,13 +308,17 @@ int main()
         profiler.print_iter(i);
         profiler.clear_iter();
 
-        //if (i == 70) {
-            //save(*assembler, *solver, &comm);
-            //load(*assembler, *solver, &comm, &profiler, use_shared_partition);
-        //}
+        if (counter == SAVE_THRES) {
+            auto save_folder = make_save_folder(i);
+            save(*assembler, *solver, comm, save_folder);
+        }
+
+        ++counter;
+
+        if (counter > SAVE_THRES) {
+            counter = 0;
+        }
     }
-    
-    save(*assembler, *solver, comm);
 
     return 0;
 }
