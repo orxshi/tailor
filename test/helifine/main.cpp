@@ -7,7 +7,7 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <filesystem>
 
-const int SAVE_THRES = 74;
+const int SAVE_THRES = 0; // 74
 
 namespace bmpi = boost::mpi;
 
@@ -56,6 +56,7 @@ void load(Tailor::Assembler& assembler, Tailor::Solver& solver, boost::mpi::comm
         if (profiler != nullptr) {
             assembler.set_profiler(profiler);
         }
+        assembler.read_settings();
         assembler.partition()->spc().global_rm().update_address();
     }
 
@@ -78,6 +79,8 @@ void load(Tailor::Assembler& assembler, Tailor::Solver& solver, boost::mpi::comm
         if (profiler != nullptr) {
             solver.set_profiler(profiler);
         }
+
+        solver.read_settings();
 
         if (!use_shared_partition)
         {
@@ -117,12 +120,12 @@ int main()
     Tailor::Profiler profiler(comm, false);
 
     std::vector<std::string> fn;
-    fn.push_back("msh/128/fuspyl");
-    fn.push_back("msh/128/wing0");
-    fn.push_back("msh/128/wing1");
-    fn.push_back("msh/128/wing2");
-    fn.push_back("msh/128/wing3");
-    fn.push_back("msh/128/hubshaft");
+    fn.push_back("msh/64/fuspyl");
+    fn.push_back("msh/64/wing0");
+    fn.push_back("msh/64/wing1");
+    fn.push_back("msh/64/wing2");
+    fn.push_back("msh/64/wing3");
+    fn.push_back("msh/64/hubshaft");
 
     Tailor::Freestream fs;
     fs.read();
@@ -134,11 +137,11 @@ int main()
 
     //assembler = new Tailor::Assembler();
     //solver = new Tailor::Solver();
-    //load(*assembler, *solver, comm, nullptr, use_shared_partition, "save200-289");
+    //load(*assembler, *solver, comm, nullptr, use_shared_partition, "sv-2249");
 
     int counter = 0;
 
-    for (int i=0; i<20000000; ++i)
+    for (int i=0; i<1; ++i)
     {
         std::string a = "iter-";
         a.append(std::to_string(i));
@@ -147,7 +150,7 @@ int main()
         if (i == 0)
         {
             //profiler.start("asm-ctr");
-            //assembler = new Tailor::Assembler(&comm, &profiler, fn);
+            //assembler = new Tailor::Assembler(comm, &profiler, fn);
             assembler = new Tailor::Assembler(comm, nullptr, fn);
             //assembler = new Tailor::Assembler();
             //profiler.stop("asm-ctr");
@@ -155,13 +158,13 @@ int main()
             //profiler.start("sol-ctr");
             if (use_shared_partition)
             {
-                //solver = new Tailor::Solver(&comm, fn, &profiler, assembler->partition());
+                //solver = new Tailor::Solver(comm, fn, &profiler, assembler->partition());
                 solver = new Tailor::Solver(comm, fn, nullptr, assembler->partition());
                 //solver = new Tailor::Solver();
             }
             else
             {
-                //solver = new Tailor::Solver(&comm, fn, &profiler);
+                //solver = new Tailor::Solver(comm, fn, &profiler);
                 solver = new Tailor::Solver(comm, fn, nullptr);
             }
             //profiler.stop("sol-ctr");

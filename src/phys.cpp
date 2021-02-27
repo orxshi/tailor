@@ -86,7 +86,7 @@ namespace Tailor
         double vnet = u - vfn;
 
         flx[0] = rho * vnet;
-        flx[1] = rho * vnet * vnet + p;
+        flx[1] = rho * vnet * u + p;
         flx[2] = rho * vnet * v;
         flx[3] = rho * vnet * w;
         flx[4] = rho * vnet * H;

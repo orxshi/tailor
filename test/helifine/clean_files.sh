@@ -1,1 +1,1 @@
-rm -f *.vtk *.log *.dat *.csv *.err *.out
+rm *.vtk *.log *.dat *.csv *.err *.out

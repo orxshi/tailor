@@ -3,7 +3,7 @@
 
 #include "read_mesh.h"
 #include "limiter.h"
-#include "roe.h"
+#include "riemann.h"
 #include "bc.h"
 #include "partition.h"
 #include "var_exchanger.h"
@@ -21,6 +21,12 @@ namespace Tailor
     class Solver
     {           
         public:     
+
+            enum class RiemannSolverType
+            {
+                roe,
+                hllc, // currently only for explicit formulation.
+            };
     
             Solver(boost::mpi::communicator* comm, const std::vector<std::string>& filename, Profiler* profiler, Partition* partition=nullptr); 
             Solver();
@@ -45,6 +51,7 @@ namespace Tailor
             bool repartition();
             void save_solution();
             const boost::mpi::communicator* comm() const;
+            void read_settings();
 
             template<class Archive> void serialize(Archive & ar, const unsigned int version)
             {
@@ -86,10 +93,14 @@ namespace Tailor
                 ar & bc_;
                 ar & load_estim_type_;
                 ar & make_load_balance_;
+                ar & init_max_res_;
+                ar & last_max_res_;
+                ar & riemann_solver_type_;
             }
 
         private:    
                 
+            RiemannSolverType riemann_solver_type_;
             int repart_ratio_;
             double initratio_;
             bool print_imbalance_;
@@ -135,11 +146,13 @@ namespace Tailor
             bool make_load_balance_;
             VarExchanger* var_exc_;
             VarExchanger* donor_var_exc_;
+
+            double init_max_res_;
+            double last_max_res_;
                 
             void RK4(Mesh& mesh);
             void restore_solution();
             void connect_partition_cells();
-            void read_settings();
             void exchange_ghosts();
             void solve_(int rank);
             void set_from_settings();

@@ -208,7 +208,7 @@ namespace Tailor
         return vf_;
     }
 
-    void MeshFace::face_velocity(double dt, const Freestream& fs, const Component& compo)
+    void MeshFace::face_velocity(const Freestream& fs, const Component& compo)
     {
         // https://www.lehman.edu/faculty/anchordoqui/chapter06.pdf
 

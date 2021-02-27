@@ -1,13 +1,13 @@
-#include "roe.h"
+#include "riemann.h"
 
 namespace Tailor
 {
-    Roe::Roe(const State& left, const State& right, double gamma, bool isbou)
+    RiemannSolver::RiemannSolver(const State& left, const State& right, double gamma, bool isbou)
     {
         calc_roe_ave_vars(left, right, gamma, isbou);
     }
 
-    //vararray Roe::jump_ver_1(const State& left, const State& right)
+    //vararray RiemannSolver::jump_ver_1(const State& left, const State& right)
     //{
     //    double rhoL = left.rho;
     //    double pL = left.p;
@@ -44,7 +44,7 @@ namespace Tailor
     //    return jump;
     //}
     
-    vararray Roe::jump_ver_2(const State& left, const State& right)
+    vararray RiemannSolver::jump_ver_2(const State& left, const State& right)
     {
         double rhoL = left.rho;
         double uL = left.u;
@@ -68,7 +68,7 @@ namespace Tailor
         return jump;
     }
 
-    //vararray Roe::jump_ver_3(const State& left, const State& right)
+    //vararray RiemannSolver::jump_ver_3(const State& left, const State& right)
     //{
     //    double rhoL = left.rho;
     //    double uL = left.u;
@@ -92,7 +92,7 @@ namespace Tailor
     //    return jump;
     //}
 
-    void Roe::calc_roe_ave_vars(const State& left, const State& right, double gamma, bool isbou)
+    void RiemannSolver::calc_roe_ave_vars(const State& left, const State& right, double gamma, bool isbou)
     {
         double rhoL = left.rho;
         double uL = left.u;
@@ -161,7 +161,7 @@ namespace Tailor
         //asq = std::pow(a,2.);
     }
 
-    varmat Roe::right_eigenv(double vfn)
+    varmat RiemannSolver::right_eigenv(double vfn)
     {
         varmat R;
 
@@ -343,7 +343,7 @@ namespace Tailor
         assert(!isnan(n2(2)));
     }
 
-    //void Roe::ws_est_pbased(const State& left, const State& right, double& SLm, double& SRp, double gamma)
+    //void RiemannSolver::ws_est_pbased(const State& left, const State& right, double& SLm, double& SRp, double gamma)
     //{
     //    double aL = left.a;
     //    double pL = left.p;
@@ -382,7 +382,51 @@ namespace Tailor
     //    SRp = qnR + aR * q;
     //}
 
-    void Roe::rhll_ws_est(const State& left, const State& right, double& SLm, double& SRp, double vfn)
+    void RiemannSolver::rhll_ws_est_pres(const State& left, const State& right, double& SLm, double& SRp, double vfn, double gamma)
+    {
+        double rhoL = left.rho;
+        double uL = left.u;
+        double vL = left.v;
+        double wL = left.w;
+        double aL = left.a;
+        double pL = left.p;
+
+        double rhoR = right.rho;
+        double uR = right.u;
+        double vR = right.v;
+        double wR = right.w;
+        double aR = right.a;
+        double pR = right.p;
+
+        double rhodash = 0.5 * (rhoL + rhoR);
+        double adash   = 0.5 * (aL + aR);
+        double ppvrs = 0.5 * (pL + pR) - 0.5 * (uR - uL) * rhodash * adash;
+
+        double qL, qR;
+
+        if (ppvrs <= pL)
+        {
+            qL = 1.;
+        }
+        else
+        {
+            qL = std::sqrt(1. + (gamma + 1.) * (ppvrs / pL - 1.) / (2. * gamma));
+        }
+
+        if (ppvrs <= pR)
+        {
+            qR = 1.;
+        }
+        else
+        {
+            qR = std::sqrt(1. + (gamma + 1.) * (ppvrs / pR - 1.) / (2. * gamma));
+        }
+
+        SLm = uL - aL * qL;
+        SRp = uR + aR * qR;
+    }
+
+    void RiemannSolver::rhll_ws_est(const State& left, const State& right, double& SLm, double& SRp, double vfn)
     {
         double uL = left.u;
         double vL = left.v;
@@ -394,14 +438,20 @@ namespace Tailor
         double wR = right.w;
         double aR = right.a;
 
-        SLm = std::min({0., u - a + vfn, uL - aL + vfn});
-        SRp = std::max({0., u + a + vfn, uR + aR + vfn});
+        //SLm = std::min({0., u - a + vfn, uL - aL + vfn});
+        //SRp = std::max({0., u + a + vfn, uR + aR + vfn});
 
         SLm = std::min({0., u - a, uL - aL});
         SRp = std::max({0., u + a, uR + aR});
+
+        //SLm = std::min({u - a, uL - aL});
+        //SRp = std::max({u + a, uR + aR});
+        
+        //SLm = u - a;
+        //SRp = u + a;
     }
 
-    /*varmat Roe::rhll_abs_eigen(double alpha1, double alpha2, double SLm, double SRp, double vfn)
+    /*varmat RiemannSolver::rhll_abs_eigen(double alpha1, double alpha2, double SLm, double SRp, double vfn)
     {
         auto ws = abs_eigen(vfn);
         auto eig = eigen(vfn);
@@ -419,7 +469,7 @@ namespace Tailor
         return comws;
     }*/
 
-    varmat Roe::eigen(double vfn)
+    varmat RiemannSolver::eigen(double vfn)
     {
         // wave speeds
 
@@ -439,7 +489,7 @@ namespace Tailor
         return ws;
     }
 
-    varmat Roe::abs_eigen(double vfn, const State& left, const State& right)
+    varmat RiemannSolver::abs_eigen(double vfn, const State& left, const State& right)
     {
         // Absolute values of the wave speeds
 
@@ -497,7 +547,7 @@ namespace Tailor
         return ws;
     }
 
-    /*vararray Roe::wave_strength_ver_2(const State& left, const State& right, const vec3<double>& n)
+    /*vararray RiemannSolver::wave_strength_ver_2(const State& left, const State& right, const vec3<double>& n)
     {
         auto jump = jump_ver_2(left, right);
 
@@ -519,7 +569,7 @@ namespace Tailor
         return ldu;
     }*/
 
-    vararray Roe::wave_strength_ver_1(const State& left, const State& right, double gamma, double vfn)
+    vararray RiemannSolver::wave_strength_ver_1(const State& left, const State& right, double gamma, double vfn)
     {
         vararray jump = jump_ver_2(left, right);
         vararray ldu;
@@ -564,7 +614,7 @@ namespace Tailor
         return ldu;
     }
 
-    vararray Roe::dissipation_term(const State& left, const State& right, const varmat& ws, const varmat& R, double gamma, double vfn)
+    vararray RiemannSolver::dissipation_term(const State& left, const State& right, const varmat& ws, const varmat& R, double gamma, double vfn)
     {
         vararray diss;
 
@@ -587,7 +637,7 @@ namespace Tailor
         return diss;
     }
 
-    vararray Roe::rhll_numerical_flux(double SLm, double SRp, const State& left, const State& right, const State& leftn2, const State& rightn2, const varmat& ws, const varmat& R, double facearea, const vec3<double>& n, double gamma, double vfn)
+    vararray RiemannSolver::rhll_numerical_flux(double SLm, double SRp, const State& left, const State& right, const State& leftn2, const State& rightn2, const varmat& ws, const varmat& R, double facearea, const vec3<double>& n, double gamma, double vfn)
     {
         vararray diss = dissipation_term(leftn2, rightn2, ws, R, gamma, vfn);
         auto nf = (SRp*left.flux - SLm*right.flux)/(SRp-SLm) - 0.5 * diss;
@@ -595,14 +645,14 @@ namespace Tailor
         return nf;
     }
 
-    vararray Roe::hlle_numerical_flux(double SLm, double SRp, const State& left, const State& right, double facearea)
+    vararray RiemannSolver::hlle_numerical_flux(double SLm, double SRp, const State& left, const State& right, double facearea)
     {
         auto nf = (SRp*left.flux - SLm*right.flux + SLm*SRp*(right.cons-left.cons))/(SRp-SLm);
         nf = facearea * nf;
         return nf;
     }
 
-    vararray Roe::hllc_numerical_flux(double SLm, double SRp, const State& left, const State& right, double facearea)
+    vararray RiemannSolver::hllc_numerical_flux(double SLm, double SRp, const State& left, const State& right, double facearea)
     {
         auto rhoL = left.rho;
         auto uL = left.u;
@@ -645,17 +695,41 @@ namespace Tailor
         auto fsL = fL + (usL - left.cons) * SLm;
         auto fsR = fR + (usR - right.cons) * SRp;
 
-        if (Ss >= 0.)
+        if (SLm >= 0.)
+        {
+            return facearea * fL;
+        }
+        else if (SLm <= 0. && Ss >= 0.)
         {
             return facearea * fsL;
         }
-        else
+        else if (Ss <= 0. && SRp >= 0.)
         {
             return facearea * fsR;
         }
+        else if (SRp <= 0.)
+        {
+            return facearea * fR;
+        }
+        else
+        {
+            std::cout << "SL: " << SLm << std::endl;
+            std::cout << "SR: " << SRp << std::endl;
+            std::cout << "Ss: " << Ss << std::endl;
+            assert(false);
+        }
+
+        //if (Ss >= 0.)
+        //{
+        //    return facearea * fsL;
+        //}
+        //else
+        //{
+        //    return facearea * fsR;
+        //}
     }
 
-    vararray Roe::numerical_flux(const State& left, const State& right, const varmat& ws, const varmat& R, double facearea, double gamma, double vfn)
+    vararray RiemannSolver::numerical_flux(const State& left, const State& right, const varmat& ws, const varmat& R, double facearea, double gamma, double vfn)
     {
         vararray diss = dissipation_term(left, right, ws, R, gamma, vfn);
         assert(!std::isnan(left.flux[0]));
@@ -676,7 +750,7 @@ namespace Tailor
         return nf;
     }
 
-    auto Roe::left_eigenv(double gamma, double vfn)
+    auto RiemannSolver::left_eigenv(double gamma, double vfn)
     {
         // inverse(R) or inverse(right_eigenv)
 
@@ -800,12 +874,12 @@ namespace Tailor
         return L;
     }
 
-    varmat Roe::Jacobian(const varmat& ws, const varmat& R, double gamma, double vfn)
+    varmat RiemannSolver::Jacobian(const varmat& ws, const varmat& R, double gamma, double vfn)
     {
         return ((R * ws) * left_eigenv(gamma, vfn));
     }
 
-    void Roe::bbb(const State& left, const State& right, const State& leftorig, const State& rightorig, vararray& numflux, varmat& Aroe, double& max_eigen, double signed_area, double gamma, double vfn)
+    void RiemannSolver::roe(const State& left, const State& right, const State& leftorig, const State& rightorig, vararray& numflux, varmat& Aroe, double& max_eigen, double signed_area, double gamma, double vfn)
     {
         varmat R = right_eigenv(vfn);
         varmat ws = abs_eigen(vfn, left, right);
@@ -831,7 +905,7 @@ namespace Tailor
         //assert(abs(numflux(3)) < 1e-0);
     }
 
-    //void Roe::rhll(const State& left, const State& right, vararray& numflux, varmat& Aroe, double& max_eigen, double signed_area, const vec3<double>& normal, double gamma, bool isbou, double& SLm ,double& SRp)
+    //void RiemannSolver::rhll(const State& left, const State& right, vararray& numflux, varmat& Aroe, double& max_eigen, double signed_area, const vec3<double>& normal, double gamma, bool isbou, double& SLm ,double& SRp)
     //{
     //    if (isbou)
     //    {
@@ -863,7 +937,7 @@ namespace Tailor
     //    max_eigen = std::max({std::abs(ws(0,0)), std::abs(ws(1,1)), std::abs(ws(2,2)), std::abs(ws(3,3)), std::abs(ws(4,4))});
     //}
 
-    void Roe::hlle(const State& left, const State& right, vararray& numflux, double& max_eigen, double signed_area, double gamma, bool isbou, double& SLm ,double& SRp, double vfn)
+    void RiemannSolver::hlle(const State& left, const State& right, vararray& numflux, double& max_eigen, double signed_area, double gamma, bool isbou, double& SLm ,double& SRp, double vfn)
     {
         rhll_ws_est(left, right, SLm, SRp, vfn);
         //ws_est_pbased(left, right, SLm, SRp, gamma);
@@ -874,9 +948,10 @@ namespace Tailor
         max_eigen = std::max({std::abs(ws(0,0)), std::abs(ws(1,1)), std::abs(ws(2,2)), std::abs(ws(3,3)), std::abs(ws(4,4))});
     }
 
-    void Roe::hllc(const State& left, const State& right, vararray& numflux, double& max_eigen, double signed_area, double gamma, bool isbou, double& SLm , double& SRp, double vfn)
+    void RiemannSolver::hllc(const State& left, const State& right, vararray& numflux, double& max_eigen, double signed_area, double gamma, bool isbou, double& SLm , double& SRp, double vfn)
     {
-        rhll_ws_est(left, right, SLm, SRp, vfn);
+        //rhll_ws_est(left, right, SLm, SRp, vfn);
+        rhll_ws_est_pres(left, right, SLm, SRp, vfn, gamma);
         //ws_est_pbased(left, right, SLm, SRp, gamma);
 
         varmat ws = abs_eigen(vfn, left, right);

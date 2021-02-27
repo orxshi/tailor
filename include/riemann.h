@@ -8,12 +8,12 @@
 
 namespace Tailor
 {
-    class Roe
+    class RiemannSolver
     {
         public:
 
-            Roe(const State& left, const State& right, double gamma, bool isbou);
-            void bbb(const State& left, const State& right, const State& leftorig, const State& rightorig, vararray& numflux, varmat& Aroe, double& max_eigen, double signed_area, double gamma, double vfn);
+            RiemannSolver(const State& left, const State& right, double gamma, bool isbou);
+            void roe(const State& left, const State& right, const State& leftorig, const State& rightorig, vararray& numflux, varmat& Aroe, double& max_eigen, double signed_area, double gamma, double vfn);
             //void rhll(const State& left, const State& right, vararray& numflux, varmat& Aroe, double& max_eigen, double signed_area, const vec3<double>& normal, double gamma, bool isbou, double& SLm ,double& SRp);
             void hlle(const State& left, const State& right, vararray& numflux, double& max_eigen, double signed_area, double gamma, bool isbou, double& SLm ,double& SRp, double vfn);
             void hllc(const State& left, const State& right, vararray& numflux, double& max_eigen, double signed_area, double gamma, bool isbou, double& SLm ,double& SRp, double vfn);
@@ -30,6 +30,7 @@ namespace Tailor
             vararray hlle_numerical_flux(double SLm, double SRp, const State& left, const State& right, double facearea);
             vararray hllc_numerical_flux(double SLm, double SRp, const State& left, const State& right, double facearea);
             void rhll_ws_est(const State& left, const State& right, double& SLm, double& SRp, double vfn);
+            void rhll_ws_est_pres(const State& left, const State& right, double& SLm, double& SRp, double vfn, double gamma);
             //void ws_est_pbased(const State& left, const State& right, double& SLm, double& SRp, double gamma);
             //varmat rhll_abs_eigen(double alpha1, double alpha2, double SLm, double SRp, double vfn);
             void calc_roe_ave_vars(const State& left, const State& right, double gamma, bool isbou);

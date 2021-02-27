@@ -29,6 +29,7 @@ namespace Tailor
             bool repartition();
             void set_comm(boost::mpi::communicator* comm);
             void set_profiler(Profiler* prof);
+            void read_settings();
 
             template<class Archive> void serialize(Archive & ar, const unsigned int version)
             {
@@ -76,7 +77,6 @@ namespace Tailor
             bool print_map_;
 
             void donor_search();
-            void read_settings();
     };
 }
 

@@ -74,8 +74,13 @@ namespace Tailor
         vff[4] = 0.; 
 
         auto rotvf = T * vff;
+        auto vfnn = rotvf[1];
         auto vfl = rotvf[2];
         auto vfm = rotvf[3];
+
+        prim[1] -= vfnn;
+        prim[2] -= vfl;
+        prim[3] -= vfm;
 
         //if ((rotvf[1] - vfn) > TAILOR_ZERO)
         //{
@@ -117,11 +122,9 @@ namespace Tailor
         //}
 
         rho = prim[0];
-        auto vfnn = rotvf[1];
-        //u = prim[1] - vfn;
-        u = prim[1] - vfnn;
-        v = prim[2] - vfl;
-        w = prim[3] - vfm;
+        u = prim[1];
+        v = prim[2];
+        w = prim[3];
         p = prim[4];
         a = std::sqrt(gamma * p / rho);
         e = spec_inter_energy(rho, p, gamma);

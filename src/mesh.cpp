@@ -731,7 +731,7 @@ namespace Tailor
     }
 
     //void Mesh::calc_face_velocities(double dt, const Freestream& fs, int rank)
-    void Mesh::calc_mesh_velocities(double dt, const Freestream& fs, int rank)
+    void Mesh::calc_mesh_velocities(const Freestream& fs, int rank)
     {
         Component compo;
         compo.read(tag_);
@@ -742,7 +742,7 @@ namespace Tailor
 
             for (auto& mf: mc.face_p())
             {
-                mf.face_velocity(dt, fs, compo);
+                mf.face_velocity(fs, compo);
             }
         }
 
