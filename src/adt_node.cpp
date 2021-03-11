@@ -2,7 +2,7 @@
 
 namespace Tailor
 {
-    void Node::rotate(double ang, int axis, const vec3<double>& rot_point)
+    void Node::rotate(double ang, int axis, const Vector3& rot_point)
     {
         if (p_ != nullptr)
             p_->rotate(ang, axis, rot_point);
@@ -14,7 +14,7 @@ namespace Tailor
             right_->rotate(ang, axis, rot_point);
     }
 
-    void Node::move(const vec3<double>& v)
+    void Node::move(const Vector3& v)
     {
         if (p_ != nullptr)
             p_->move(v);

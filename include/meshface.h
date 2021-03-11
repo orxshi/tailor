@@ -23,11 +23,11 @@ namespace Tailor
         FaceTag tag_;
         //MeshFace* faceaddr_;
 
-        vec3<double> vf_;
+        Vector3 vf_;
         double vgn_;
         //Matrix<NVAR, NVAR> ML_;
         //Matrix<NVAR, NVAR> MR_;
-        Matrix<NVAR, NVAR> M_;
+        Matrix5 M_;
         double max_eigen_;
 
         friend class boost::serialization::access;
@@ -41,12 +41,12 @@ namespace Tailor
 
         bool R_checked() const;
         void set_R_checked(bool b);
-        const vec3<double>& vf() const;
+        const Vector3& vf() const;
         double vgn() const;
         void face_velocity(const Freestream& fs, const Component& compo);
         //const Matrix<NVAR, NVAR>& ML() const;
         //const Matrix<NVAR, NVAR>& MR() const;
-        const Matrix<NVAR, NVAR>& M() const;
+        const Matrix5& M() const;
         const Tag& left_cell() const;
         const Tag& right_cell() const;
 
@@ -62,8 +62,8 @@ namespace Tailor
         //void set_tag(int mc, int nc, BouType btype);
         void set_tag(const FaceTag& ftag);
         const FaceTag& tag() const;
-        void rotate(double angle, int axis, const vec3<double>& rot_point);
-        void move(const vec3<double>& v);
+        void rotate(double angle, int axis, const Vector3& rot_point);
+        void move(const Vector3& v);
         const Polygon& face() const;
         const std::vector<Tag>& parent_cell() const;
         const std::vector<Tag>& mesh_point() const;
@@ -86,7 +86,7 @@ namespace Tailor
     };
 
     FaceTag gen_face_tag(const MeshFace& mf);
-    vec3<double> tangent_vector(const vec3<double>& n);
+    Vector3 tangent_vector(const Vector3& n);
 }
 
 #endif

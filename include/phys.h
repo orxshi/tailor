@@ -2,7 +2,7 @@
 #define POES_PHYS_H
 
 #include "array.h"
-#include "vec3.h"
+//#include "vec3.h"
 
 namespace Tailor
 {
@@ -11,19 +11,19 @@ namespace Tailor
     double total_energy(double rho, double k, double e);
     double total_enthalpy(double rho, double p, double E);
     double speed_of_sound(double rho, double p, double gamma);
-    vararray prim_to_cons(const vararray& prim, double gamma);
-    vararray cons_to_prim(const vararray& cons, double gamma);
-    void test_phys(const vararray& cons, double gamma);
-    //vararray calc_flux(double rho, double p, double u, double v, double w, double H, double qn, double vb, const vec3<double>& n);
-    vararray calc_flux(double rho, double p, double u, double v, double w, double H, double vfn);
+    Vector5 prim_to_cons(const Vector5& prim, double gamma);
+    Vector5 cons_to_prim(const Vector5& cons, double gamma);
+    void test_phys(const Vector5& cons, double gamma);
+    //Vector5 calc_flux(double rho, double p, double u, double v, double w, double H, double qn, double vb, const Vector3& n);
+    Vector5 calc_flux(double rho, double p, double u, double v, double w, double H, double vfn);
     
     struct NormTang
     {
-        NormTang(vec3<double> n);
+        NormTang(Vector3 n);
 
-        vec3<double> n;
-        vec3<double> l;
-        vec3<double> m;
+        Vector3 n;
+        Vector3 l;
+        Vector3 m;
     };
 }
 

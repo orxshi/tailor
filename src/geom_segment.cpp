@@ -2,11 +2,11 @@
 
 namespace Tailor
 {
-    vec3<double> Segment::normal() const
+    Vector3 Segment::normal() const
     {
         double dx = vertex_[1].r(0) - vertex_[0].r(0);
         double dy = vertex_[1].r(1) - vertex_[0].r(1);
-        return vec3<double>(dy, -dx, 0.);
+        return Vector3(dy, -dx, 0.);
     }
 
     void Segment::set_bbox()
@@ -15,28 +15,29 @@ namespace Tailor
             return;
         }
 
-        min_.set_x(TAILOR_BIG_POS_NUM);
-        min_.set_y(TAILOR_BIG_POS_NUM);
-        min_.set_z(TAILOR_BIG_POS_NUM);
-        max_.set_x(TAILOR_BIG_NEG_NUM);
-        max_.set_y(TAILOR_BIG_NEG_NUM);
-        max_.set_z(TAILOR_BIG_NEG_NUM);
+        min_(0) = TAILOR_BIG_POS_NUM;
+        min_(1) = TAILOR_BIG_POS_NUM;
+        min_(2) = TAILOR_BIG_POS_NUM;
+
+        max_(0) = TAILOR_BIG_NEG_NUM;
+        max_(1) = TAILOR_BIG_NEG_NUM;
+        max_(2) = TAILOR_BIG_NEG_NUM;
 
         assert(vertex_.size() == 2);
 
         for (int i=0; i<2; ++i)
         {
-            min_.set_x(std::min(min_(0), vertex_[i].r(0)));
-            min_.set_y(std::min(min_(1), vertex_[i].r(1)));
-            min_.set_z(std::min(min_(2), vertex_[i].r(2)));
+            min_(0) = std::min(min_(0), vertex_[i].r(0));
+            min_(1) = std::min(min_(1), vertex_[i].r(1));
+            min_(2) = std::min(min_(2), vertex_[i].r(2));
 
-            max_.set_x(std::max(max_(0), vertex_[i].r(0)));
-            max_.set_y(std::max(max_(1), vertex_[i].r(1)));
-            max_.set_z(std::max(max_(2), vertex_[i].r(2)));
+            max_(0) = std::max(max_(0), vertex_[i].r(0));
+            max_(1) = std::max(max_(1), vertex_[i].r(1));
+            max_(2) = std::max(max_(2), vertex_[i].r(2));
         }
     }
 
-    void Segment::rotate_points(double angle, double axis, const vec3<double>& rot_point)
+    void Segment::rotate_points(double angle, double axis, const Vector3& rot_point)
     {
         RotationMatrix rm;
 
@@ -48,7 +49,7 @@ namespace Tailor
         }
     }
 
-    void Segment::move_points(const vec3<double>& v)
+    void Segment::move_points(const Vector3& v)
     {
         for (Point& _p: vertex_)
         {
@@ -56,15 +57,15 @@ namespace Tailor
         }
     }
 
-    //vec3<double> Segment::area() const
+    //Vector3 Segment::area() const
     //{
         //assert(vertex_.size() == 2);
 //
         //double dx = vertex_[1].r(0) - vertex_[0].r(0);
         //double dy = vertex_[1].r(1) - vertex_[0].r(1);
 //
-        //return vec3<double> (dy, -dx);
-        ////return vec3<double> (-dy, dx);
+        //return Vector3 (dy, -dx);
+        ////return Vector3 (-dy, dx);
     //}
 
     double Segment::len() const
@@ -72,14 +73,14 @@ namespace Tailor
         assert(vertex_.size() == 2);
 
         //return CGAL::to_double(cgal_segment().squared_length());
-        vec3<double> v = vertex_[0].r() - vertex_[1].r();
+        Vector3 v = vertex_[0].r() - vertex_[1].r();
 
         return v.len();
     }
 
-    /*vec3<double> Segment::centroid() const
+    /*Vector3 Segment::centroid() const
     {
-        vec3<double> _centroid;
+        Vector3 _centroid;
 
         //auto p = CGAL::midpoint(cgal_segment().point(0), cgal_segment().point(1));
         //_centroid.set(CGAL::to_double(p.x()), CGAL::to_double(p.y()));
@@ -104,12 +105,12 @@ namespace Tailor
         set_bbox();
     }
 
-    const vec3<double>& Segment::min() const
+    const Vector3& Segment::min() const
     {
         return min_;
     }
     
-    const vec3<double>& Segment::max() const
+    const Vector3& Segment::max() const
     {
         return max_;
     }
@@ -141,9 +142,9 @@ namespace Tailor
         //return CGAL_Segment(CGAL_Point(vertex(0).r(0), vertex(0).r(1)), CGAL_Point(vertex(1).r(0), vertex(1).r(1))).has_on(CGAL_Point(p.r(0), p.r(1)));
         //return CGAL_Segment(vertex(0).cgal_point(), vertex(1).cgal_point()).has_on(CGAL_Point(p.r(0), p.r(1)));
 
-        const vec3<double>& a = this->vertex_[0].r();
-        const vec3<double>& c = this->vertex_[1].r();
-        const vec3<double>& b = p.r();
+        const Vector3& a = this->vertex_[0].r();
+        const Vector3& c = this->vertex_[1].r();
+        const Vector3& b = p.r();
 
         if (orientation(a, b, c, ignoredim) != 0) return false;
 
@@ -219,10 +220,10 @@ namespace Tailor
         const Point& p2_ = s.vertex_[0];
         const Point& q2_ = s.vertex_[1];
 
-        const vec3<double> p1 = p1_.r();
-        const vec3<double> q1 = q1_.r();
-        const vec3<double> p2 = p2_.r();
-        const vec3<double> q2 = q2_.r();
+        const Vector3 p1 = p1_.r();
+        const Vector3 q1 = q1_.r();
+        const Vector3 p2 = p2_.r();
+        const Vector3 q2 = q2_.r();
 
         //return CGAL::do_intersect(CGAL_Segment(CGAL_Point(p1(0), p1(1)), CGAL_Point(q1(0), q1(1))), CGAL_Segment(CGAL_Point(p2(0), p2(1)), CGAL_Point(q2(0), q2(1))));
 

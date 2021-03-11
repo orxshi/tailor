@@ -2,13 +2,15 @@
 
 namespace Tailor
 {
-    void ADTPoint::rotate(double angle, int axis, const vec3<double>& rot_point)
+    void ADTPoint::rotate(double angle, int axis, const Vector3& rot_point)
     {
         RotationMatrix rm;
 
         {
-            vec3<double> z;
-            z.set(dim_[0]-rot_point(0), dim_[2]-rot_point(1), dim_[4]-rot_point(2));
+            Vector3 z;
+            z(0) = dim_[0]-rot_point(0);
+            z(1) = dim_[2]-rot_point(1);
+            z(2) = dim_[4]-rot_point(2);
             auto newz = rm.rotate(angle, axis, z);
 
             dim_[0] = newz(0)+rot_point(0);
@@ -16,8 +18,10 @@ namespace Tailor
             dim_[4] = newz(2)+rot_point(2);
         }
         {
-            vec3<double> z;
-            z.set(dim_[1]-rot_point(0), dim_[3]-rot_point(1), dim_[5]-rot_point(2));
+            Vector3 z;
+            z(0) = dim_[1]-rot_point(0);
+            z(1) = dim_[3]-rot_point(1);
+            z(2) = dim_[5]-rot_point(2);
             auto newz = rm.rotate(angle, axis, z);
 
             dim_[1] = newz(0)+rot_point(0);
@@ -26,7 +30,7 @@ namespace Tailor
         }
     }
 
-    void ADTPoint::move(const vec3<double>& v)
+    void ADTPoint::move(const Vector3& v)
     {
         assert(dim_.size() == 4);
 
@@ -45,7 +49,7 @@ namespace Tailor
     {
     }
 
-    ADTPoint::ADTPoint(const vec3<double>& p, int idx): idx_(idx)
+    ADTPoint::ADTPoint(const Vector3& p, int idx): idx_(idx)
     {
         dim_.resize(TAILOR_ADT_VAR);
         for (int i=0; i<TAILOR_ADT_DIM; ++i)

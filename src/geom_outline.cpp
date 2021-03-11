@@ -22,7 +22,7 @@ namespace Tailor
         return polygon_;
     }
 
-    bool Outline::do_contain(const Polygon_2& pol, const vec3<double>& v, bool strict) const
+    bool Outline::do_contain(const Polygon_2& pol, const Vector3& v, bool strict) const
     {
         CGAL::Bounded_side bside = pol.bounded_side(CGAL_Point(v(0), v(1), v(2))); 
         if (bside == CGAL::ON_UNBOUNDED_SIDE) { 
@@ -39,7 +39,7 @@ namespace Tailor
         return true;
     }
 
-    bool Outline::do_contain(const Triangle_2& tri, const vec3<double>& v, bool strict) const
+    bool Outline::do_contain(const Triangle_2& tri, const Vector3& v, bool strict) const
     {
         CGAL::Bounded_side bside = tri.bounded_side(CGAL_Point(v(0), v(1))); 
         if (bside == CGAL::ON_UNBOUNDED_SIDE) { 
@@ -67,7 +67,7 @@ namespace Tailor
         }
     }
      
-    bool Outline::do_contain(const vec3<double>& v, bool strict) const
+    bool Outline::do_contain(const Vector3& v, bool strict) const
     {
         assert(polygon_.is_simple());
         if (polygon_.is_simple())
@@ -92,7 +92,7 @@ namespace Tailor
         }
     }
 
-    void Outline::build(const std::vector<std::vector<vec3<double>>>& point, int dummyrank)
+    void Outline::build(const std::vector<std::vector<Vector3>>& point, int dummyrank)
     {
         assert(!point.empty());
         std::vector<Polygon_2> pgn;

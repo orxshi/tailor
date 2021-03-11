@@ -70,7 +70,7 @@ namespace Tailor
         return *this;
     }
 
-    const vec3<double>& Point::r() const
+    const Vector3& Point::r() const
     {
         return r_;
     }
@@ -84,24 +84,26 @@ namespace Tailor
 
     void Point::set_r(double x, double y, double z)
     {
-        r_.set(x, y, z);
+        r_(0) = x;
+        r_(1) = y;
+        r_(2) = z;
     }
 
-    void Point::set_r(const vec3<double>& _r)
+    void Point::set_r(const Vector3& r)
     {
-        r_.set(_r(0), _r(1), _r(2));
+        r_ = r;
     }
 
     void Point::set_r(int i, double v)
     {
-        r_.set(i, v);
+        r_(i) = v;
     }
 
     Point::Point(double x, double y, double z): r_(x, y, z)
     {
     }
 
-    Point::Point(const vec3<double>& r): r_(r)
+    Point::Point(const Vector3& r): r_(r)
     {
     }
 }

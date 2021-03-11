@@ -522,7 +522,7 @@ namespace Tailor
         update_points_from_cell_vertices(-1);
     }
 
-    void Mesh::connect_cells(std::function<bool(const vec3<double>&)> is_resi, int rank, Profiler* profiler, std::string name)
+    void Mesh::connect_cells(std::function<bool(const Vector3&)> is_resi, int rank, Profiler* profiler, std::string name)
     {
         /*for (MeshCell& mc: cell_)
         {
@@ -780,7 +780,7 @@ namespace Tailor
         }
     }
 
-    void Mesh::connect_after_exchange(std::function<bool(const vec3<double>&)> is_resi, int rank, Profiler* profiler, std::string procorig)
+    void Mesh::connect_after_exchange(std::function<bool(const Vector3&)> is_resi, int rank, Profiler* profiler, std::string procorig)
     {
         std::string proc;
         proc = procorig;
@@ -1080,7 +1080,7 @@ namespace Tailor
         }
     }
 
-    /*void Mesh::connect_partition_cells(std::vector<Nei>& arrival_cell, int rank, std::function<bool(const vec3<double>&, int celltag)> is_resi)
+    /*void Mesh::connect_partition_cells(std::vector<Nei>& arrival_cell, int rank, std::function<bool(const Vector3&, int celltag)> is_resi)
     {
         for (const MeshFace& mf: face_)
         {
@@ -1648,7 +1648,7 @@ namespace Tailor
         }
     }*/
 
-    void Mesh::connect_partition_cells(ArrCon<Nei>& arrival_cell, int rank, std::function<bool(const vec3<double>&, int celltag)> is_resi, Profiler* profiler)
+    void Mesh::connect_partition_cells(ArrCon<Nei>& arrival_cell, int rank, std::function<bool(const Vector3&, int celltag)> is_resi, Profiler* profiler)
     {
         //for (const auto& mf: face_)
         //{

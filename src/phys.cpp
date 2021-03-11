@@ -27,12 +27,12 @@ namespace Tailor
         return std::sqrt(gamma * p / rho);
     }
 
-    vararray prim_to_cons(const vararray& prim, double gamma)
+    Vector5 prim_to_cons(const Vector5& prim, double gamma)
     {
         double k = spec_kine_energy(prim[1], prim[2], prim[3]);
         double e = spec_inter_energy(prim[0], prim[4], gamma); 
 
-        vararray cons;
+        Vector5 cons;
 
         cons[0] = prim[0];
         cons[1] = prim[0] * prim[1];
@@ -43,9 +43,9 @@ namespace Tailor
         return cons;
     }
 
-    void test_phys(const vararray& cons, double gamma)
+    void test_phys(const Vector5& cons, double gamma)
     {
-        vararray prim;
+        Vector5 prim;
 
         prim[0] = cons[0];
         prim[1] = cons[1] / prim[0];
@@ -75,9 +75,9 @@ namespace Tailor
         assert(e > 0. && !std::isnan(e));
     }
 
-    vararray cons_to_prim(const vararray& cons, double gamma)
+    Vector5 cons_to_prim(const Vector5& cons, double gamma)
     {
-        vararray prim;
+        Vector5 prim;
 
         prim[0] = cons[0];
         prim[1] = cons[1] / prim[0];
@@ -111,9 +111,9 @@ namespace Tailor
         return prim;
     }
 
-    vararray calc_flux(double rho, double p, double u, double v, double w, double H, double vfn)
+    Vector5 calc_flux(double rho, double p, double u, double v, double w, double H, double vfn)
     {
-        vararray flx;
+        Vector5 flx;
 
         double vnet = u - vfn;
 
@@ -126,7 +126,7 @@ namespace Tailor
         return flx;
     }
 
-    NormTang::NormTang(vec3<double> n): n(n)
+    NormTang::NormTang(Vector3 n): n(n)
     {
         double nx = n(0);
         double ny = n(1);

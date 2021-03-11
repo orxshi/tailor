@@ -12,7 +12,7 @@ namespace Tailor
         return type_;
     }
 
-    void Limiter::limit(const Mesh& mesh, const MeshCell& mc, const std::array<vec3<double>, NVAR>& grad)
+    void Limiter::limit(const Mesh& mesh, const MeshCell& mc, const std::array<Vector3, NVAR>& grad)
     {
         assert(type_ != LimiterType::undefined);
 
@@ -31,7 +31,7 @@ namespace Tailor
         return data_[var];
     }
 
-    std::array<double, NVAR> Limiter::venka(const Mesh& mesh, const MeshCell& mc, const std::array<vec3<double>, NVAR>& grad)
+    std::array<double, NVAR> Limiter::venka(const Mesh& mesh, const MeshCell& mc, const std::array<Vector3, NVAR>& grad)
     {
         auto phi = [&] (double x, double eps)
         {

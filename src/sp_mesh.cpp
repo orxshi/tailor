@@ -2,7 +2,7 @@
 
 namespace Tailor
 {
-    void SpatialPartition::rotate_mesh(const Tag& _parent_mesh, double angle, int axis, const vec3<double>& rot_point)
+    void SpatialPartition::rotate_mesh(const Tag& _parent_mesh, double angle, int axis, const Vector3& rot_point)
     {
         //assert(mesh_.size() == adt_.size());
 
@@ -24,7 +24,7 @@ namespace Tailor
         }
     }
 
-    void SpatialPartition::move_mesh(const Tag& _parent_mesh, const vec3<double>& v)
+    void SpatialPartition::move_mesh(const Tag& _parent_mesh, const Vector3& v)
     {
         //assert(mesh_.size() == adt_.size());
 

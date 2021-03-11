@@ -702,7 +702,7 @@ namespace Tailor
         return true;
     }
 
-    void Mesh::init(const vec3<double>& vinf_air, const Freestream& fs)
+    void Mesh::init(const Vector3& vinf_air, const Freestream& fs)
     {
         Component compo;
         compo.read(tag_);
@@ -737,7 +737,7 @@ namespace Tailor
         assert(is_gcl_satisfied(rank));
     }
 
-    void Mesh::set_prim_cons(BouType btype, const vararray& prim, double gamma)
+    void Mesh::set_prim_cons(BouType btype, const Vector5& prim, double gamma)
     {
         if (btype == BouType::interior)
         {
@@ -997,7 +997,7 @@ namespace Tailor
         //return face_;
     //}
 
-    void Mesh::bbox(vec3<double>& min_, vec3<double>& max_) const
+    void Mesh::bbox(Vector3& min_, Vector3& max_) const
     {
         min_.set_x(TAILOR_BIG_POS_NUM);
         min_.set_y(TAILOR_BIG_POS_NUM);
@@ -1963,7 +1963,7 @@ namespace Tailor
         //assert(container->size() == bimap->left.size());
     }
 
-    void Mesh::init_sod(const vararray& L, const vararray& R, const Freestream& fs)
+    void Mesh::init_sod(const Vector5& L, const Vector5& R, const Freestream& fs)
     {
         for (auto& mc: cell_)
         {
@@ -2934,8 +2934,8 @@ const MeshCell* Mesh::query_bou(const Tag& ic, BouType type) const
                 double gmaxy = TAILOR_BIG_NEG_NUM;
                 double gmaxz = TAILOR_BIG_NEG_NUM;
 
-                vec3<double> _min(TAILOR_BIG_POS_NUM, TAILOR_BIG_POS_NUM, TAILOR_BIG_POS_NUM);
-                vec3<double> _max(TAILOR_BIG_NEG_NUM, TAILOR_BIG_NEG_NUM, TAILOR_BIG_NEG_NUM);
+                Vector3 _min(TAILOR_BIG_POS_NUM, TAILOR_BIG_POS_NUM, TAILOR_BIG_POS_NUM);
+                Vector3 _max(TAILOR_BIG_NEG_NUM, TAILOR_BIG_NEG_NUM, TAILOR_BIG_NEG_NUM);
 
                 bool exist = false;
                 for (const MeshCell& mc: wall_boundaries_)
@@ -3047,7 +3047,7 @@ const MeshCell* Mesh::query_bou(const Tag& ic, BouType type) const
                 return std::distance(point_.begin(), it);
             }
 
-            void Mesh::rotate(double angle, int axis, const vec3<double>& rot_point)
+            void Mesh::rotate(double angle, int axis, const Vector3& rot_point)
             {
                 assert(!std::isnan(rot_point(0)));
                 assert(!std::isnan(rot_point(1)));
@@ -3090,7 +3090,7 @@ const MeshCell* Mesh::query_bou(const Tag& ic, BouType type) const
                 }
             }
 
-            void Mesh::move(const vec3<double>& v)
+            void Mesh::move(const Vector3& v)
             {
                 // this is a temporary function to mimic solver.
                 // aim is to displace certain meshblocks.

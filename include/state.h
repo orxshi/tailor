@@ -8,10 +8,10 @@ namespace Tailor
 {
     struct State
     {
-        //State(const vararray& conss, double gamma, const varmat& T, double vfn);
-        //State(const vararray& conss, double gamma, const varmat& T, const MeshCell& mc);
-        //State(const vararray& conss, double gamma, const varmat& T, const vec3<double>& mv, double vfn);
-        State(const vararray& conss, double gamma, const varmat& T, const vec3<double>& mv, double vfn, const vec3<double>& vf, bool verbose, const vec3<double>& normal, int rank);
+        //State(const Vector5& conss, double gamma, const Matrix5& T, double vfn);
+        //State(const Vector5& conss, double gamma, const Matrix5& T, const MeshCell& mc);
+        //State(const Vector5& conss, double gamma, const Matrix5& T, const Vector3& mv, double vfn);
+        State(const Vector5& conss, double gamma, const Matrix5& T, const Vector3& mv, double vfn, const Vector3& vf, bool verbose, const Vector3& normal, int rank);
 
         void print() const;
 
@@ -20,8 +20,8 @@ namespace Tailor
         //double lx, ly, lz;
         //double mx, my, mz;
         //double qn, ql, qm;
-        vararray flux;
-        vararray cons;
+        Vector5 flux;
+        Vector5 cons;
     };
 }
 

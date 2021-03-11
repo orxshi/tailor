@@ -20,7 +20,7 @@ namespace Tailor
         void set_rx(double yaw);
         void set_ry(double pitch);
         void set_rz(double roll);
-        vec3<double> mul(const trimat& m, const vec3<double>& v);
+        Vector3 mul(const trimat& m, const Vector3& v);
     };
 }
 

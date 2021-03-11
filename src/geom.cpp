@@ -177,7 +177,7 @@ namespace Tailor
         return Polygon(pts);
     }
 
-    int orientation (const vec3<double>& p, const vec3<double>& q, const vec3<double>& r, int ignoredim, bool verbose)
+    int orientation (const Vector3& p, const Vector3& q, const Vector3& r, int ignoredim, bool verbose)
     {
         // Find orientation of ordered triplet (p, q, r).
         // Return following values.
@@ -221,24 +221,26 @@ namespace Tailor
         return (val > 0.) ? 1 : 2; // clock or counterclockwise
     }
 
-    vec3<double> normal_plane(const vec3<double>& v0, const vec3<double>& v1, const vec3<double>& v2)
+    Vector3 normal_plane(const Vector3& v0, const Vector3& v1, const Vector3& v2)
     {
-        vec3<double> cr = cross((v0-v1), (v2-v1));
+        Vector3 cr = cross((v0-v1), (v2-v1));
 
         if (std::abs(cr(0)) <= TAILOR_ZERO)
         {
-            cr.set_x(0.);
+            cr(0) = 0.;
         }
         if (std::abs(cr(1)) <= TAILOR_ZERO)
         {
-            cr.set_y(0.);
+            cr(1) = 0.;
         }
         if (std::abs(cr(2)) <= TAILOR_ZERO)
         {
-            cr.set_z(0.);
+            cr(2) = 0.;
         }
 
-        if (cr.len() == 0.)
+        auto len_cr = len(cr);
+
+        if (len_cr == 0.)
         {
             std::cout << "v0: " << v0(0) << " " << v0(1) << " " << v0(2) << std::endl;
             std::cout << "v1: " << v1(0) << " " << v1(1) << " " << v1(2) << std::endl;
@@ -247,19 +249,19 @@ namespace Tailor
             std::cout << "v2-v1: " << (v2-v1)(0) << " " << (v2-v1)(1) << " " << (v2-v1)(2) << std::endl;
             std::cout << "cr: " << cr(0) << " " << cr(1) << " " << cr(2) << std::endl;
         }
-        assert(cr.len() != 0.);
-        vec3<double> n = cr / cr.len();
+        assert(len_cr != 0.);
+        Vector3 n = cr / len_cr;
 
         return n;
     }
 
-    bool do_intersect_plane_segment(const vec3<double>& a, const vec3<double>& b, const vec3<double>& c, const Segment& s, vec3<double>& interp)
+    bool do_intersect_plane_segment(const Vector3& a, const Vector3& b, const Vector3& c, const Segment& s, Vector3& interp)
     {
         // Plane-segment intersection
         // based on http://geomalgorithms.com/a05-_intersect-1.html
 
-        vec3<double> p0 = s.vertex(0).r();
-        vec3<double> p1 = s.vertex(1).r();
+        Vector3 p0 = s.vertex(0).r();
+        Vector3 p1 = s.vertex(1).r();
 
         //auto w = a - p0;
         auto w = p0 - a;
@@ -267,13 +269,13 @@ namespace Tailor
         const auto& n = normal_plane(a, b, c);
 
         // first check if the polygon and the segment are parallel.
-        if (std::abs(dotp(n, u)) <= TAILOR_ZERO) {
+        if (std::abs(dot(n, u)) <= TAILOR_ZERO) {
 
             //std::cout << "segment and polygron are parallel" << std::endl;
             return false;
         }
 
-        double si = -dotp(n, w) / dotp(n, u);
+        double si = -dot(n, w) / dot(n, u);
 
         /*std::cout << "n: " << n(0) << std::endl;
           std::cout << "n: " << n(1) << std::endl;

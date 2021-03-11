@@ -234,7 +234,7 @@ namespace Tailor
     //    };
 
     //template<size_t max_size> using Vector = Array<double, max_size>;
-    //using vararray = Vector<NVAR>;
+    //using Vector5 = Vector<NVAR>;
 
     //template<size_t max_size> 
     //    Vector<max_size> operator+(const Vector<max_size>& a, const Vector<max_size>& b)

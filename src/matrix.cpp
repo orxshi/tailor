@@ -2,16 +2,16 @@
 
 namespace Tailor
 {
-    template<int nrow>
-        double len(const Vector<nrow> a)
+    template<int nrow, class T>
+        double len(const Vector<nrow, T> a)
         {
             return std::sqrt(std::pow(a(0), 2.) + std::pow(a(1), 2.) + std::pow(a(2), 2.));
         }
 
-    template<int nrow>
-        Vector<nrow> cross(const Vector<nrow>& a, const Vector<nrow>& b)
+    template<int nrow, class T>
+        Vector<nrow, T> cross(const Vector<nrow, T>& a, const Vector<nrow, T>& b)
         {
-            Vector<nrow> c;
+            Vector<nrow, T> c;
 
             c(0) = a(1) * b(2) - a(2) * b(1);
             c(1) = a(2) * b(0) - a(0) * b(2);
@@ -20,33 +20,33 @@ namespace Tailor
             return c;
         }
 
-    template<int nrow>
-        double dot(const Vector<nrow>& a, const Vector<nrow>& b)
+    template<int nrow, class T>
+        double dot(const Vector<nrow, T>& a, const Vector<nrow, T>& b)
         {
             auto c = a(0) * b(0) + a(1) * b(1) + a(2) * b(2);
 
             return c;
         }
     
-    template<int nrow>
-        Vector<nrow> normals(const Vector<nrow>& a, const Vector<nrow>& b, const Vector<nrow>& c)
+    template<int nrow, class T>
+        Vector<nrow, T> normals(const Vector<nrow, T>& a, const Vector<nrow, T>& b, const Vector<nrow, T>& c)
         {
             return cross((a-b), (c-b));
         }
 
-    template<int nrow>
-        double angle(const Vector<nrow>& a, const Vector<nrow>& b)
+    template<int nrow, class T>
+        double angle(const Vector<nrow, T>& a, const Vector<nrow, T>& b)
     {
         return std::acos(dot(a, b) / (len(a) * len(b))); // radian
     }
 
-    template<int nrow>
-        Vector<nrow> normalize(const Vector<nrow>& a)
+    template<int nrow, class T>
+        Vector<nrow, T> normalize(const Vector<nrow, T>& a)
     {
         return a / len(a);
     }
 
-    vararray operator/(const vararray& f, const varmat& A)
+    Vector5 operator/(const Vector5& f, const Matrix5& A)
     {
         // perform x = inv (A) * f
 
@@ -87,7 +87,7 @@ namespace Tailor
         d4 = (f(3) - b41 * d1 -b42 * d2 - b43 * d3) * b44;
         d5 = (f(4) - b51 * d1 -b52 * d2 - b53 * d3 - b54 * d4) * b55;
         //
-        vararray x;
+        Vector5 x;
         x(4) = d5;
         x(3) = d4 - u45 * d5;
         x(2) = d3 - u34 * x(3) - u35 * d5;

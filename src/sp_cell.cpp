@@ -2,7 +2,7 @@
 
 namespace Tailor
 {
-    void SpatialPartition::connect_cells(std::function<bool(const vec3<double>&)> is_resi, Profiler* profiler, std::string name)
+    void SpatialPartition::connect_cells(std::function<bool(const Vector3&)> is_resi, Profiler* profiler, std::string name)
     {
         for (Mesh& m: mesh_)
         {

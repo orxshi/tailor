@@ -146,7 +146,7 @@ namespace Tailor
         {
             new_nstripe = vec3<int>(2 * nstripe(0), 2 * nstripe(1), 2 * nstripe(2));
         }
-        vec3<double> newh = h()/2.;
+        Vector3 newh = h()/2.;
         // Create new bins.
         std::vector<Bin> newbin;
         newbin.resize(new_nstripe(0)*new_nstripe(1)*new_nstripe(2));
@@ -251,8 +251,8 @@ namespace Tailor
                                 if (pseudo3D) {
                                     assert(ind.k() == 0);
                                 }
-                                vec3<double> llc(d0, d1, d2);
-                                vec3<double> ur = llc + newh;
+                                Vector3 llc(d0, d1, d2);
+                                Vector3 ur = llc + newh;
                                 if (pseudo3D) {
                                     ur.set(2, llc(2) + h(2));
                                 }

@@ -11,7 +11,7 @@ namespace Tailor
         public:
             //HoleMap(const MPI_Comm& comm, const Mesh* wall, const Mesh* dirichlet, const Mesh* farfield, const Mesh* interog, bool pseudo3D);
             HoleMap(const MPI_Comm& comm, const Mesh* mesh, bool pseudo3D, const std::vector<AABB>& hole_aabb);
-            bool is_inside_holebin(const vec3<double>& querypoint) const;
+            bool is_inside_holebin(const Vector3& querypoint) const;
             const Tag& tag() const;
             //const AABB& wallaabb() const;
             //bool holeless() const;

@@ -71,6 +71,6 @@ namespace Tailor
         mach_ = vm["mach"].as<double>();
         dirx_ = vm["dirx"].as<double>();
         dirz_ = vm["dirz"].as<double>();
-        pivot_ = vec3<double>(pivotx, pivoty, pivotz);
+        pivot_ = Vector3(pivotx, pivoty, pivotz);
     }
 }

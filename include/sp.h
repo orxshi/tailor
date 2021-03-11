@@ -40,17 +40,17 @@ namespace Tailor
 
         void determine_non_residents();
 
-        void connect_partition_cells(ArrCon<Nei>& arrival_cell, std::function<bool(const vec3<double>&, int celltag)> is_resi, Profiler*);
+        void connect_partition_cells(ArrCon<Nei>& arrival_cell, std::function<bool(const Vector3&, int celltag)> is_resi, Profiler*);
         //void update_ghost_primitives(const ArrCon<Var>& arrival_cell);
         void oga_interpolate(const ArrCon<Var>& arrival_cell);
         void convert_to_fortran() const;
-        //void solve(Solver& solver, const vec3<double>& vel, std::function<void(CellExchanger& cell_exchanger)> exchange_ghosts);
-        //void solve(Solver& solver, const vec3<double>& vel, std::function<void()> exchange_ghosts, bool called_exc_ghosts);
+        //void solve(Solver& solver, const Vector3& vel, std::function<void(CellExchanger& cell_exchanger)> exchange_ghosts);
+        //void solve(Solver& solver, const Vector3& vel, std::function<void()> exchange_ghosts, bool called_exc_ghosts);
         void init_sod();
         //void init_interior();
         //void init_dirichlet();
         void init();
-        void connect_after_exchange(std::function<bool(const vec3<double>&)> is_resi, Profiler*, std::string);
+        void connect_after_exchange(std::function<bool(const Vector3&)> is_resi, Profiler*, std::string);
         void disconnect_orphan_faces();
         void update_prev_cand_donor();
         const std::vector<RegularMesh>& rm() const;
@@ -76,8 +76,8 @@ namespace Tailor
         void reset_all_oga_status();
         void update_connectivity(int rank);
 
-        //bool is_resident(const vec3<double>& cnt, const Outline& outline) const;
-        //bool is_resident(const vec3<double>& cnt) const;
+        //bool is_resident(const Vector3& cnt, const Outline& outline) const;
+        //bool is_resident(const Vector3& cnt) const;
         std::deque<std::vector<Point>> mesh_pts(const Outline& outline) const;
         std::deque<std::vector<Point>> mesh_pts() const;
         bool fully_resident(const MeshCell& mc) const;
@@ -94,11 +94,11 @@ namespace Tailor
         void make_regular_maps_for_mesh_serial();
 
         // Connect cells
-        void connect_cells(std::function<bool(const vec3<double>&)> is_resi, Profiler* profiler, std::string name);
+        void connect_cells(std::function<bool(const Vector3&)> is_resi, Profiler* profiler, std::string name);
 
         // Move mesh
-        void rotate_mesh(const Tag& _parent_mesh, double angle, int axis, const vec3<double>& rot_point);
-        void move_mesh(const Tag& _parent_mesh, const vec3<double>& v);
+        void rotate_mesh(const Tag& _parent_mesh, double angle, int axis, const Vector3& rot_point);
+        void move_mesh(const Tag& _parent_mesh, const Vector3& v);
 
         // Add mesh
         void add_mesh(const Mesh& m);
@@ -118,7 +118,7 @@ namespace Tailor
 
         void remove_dup_cells_and_points();
         //void dummy(LoadEstim load_estim_type, double& total_ml, double& total_nwall, double& total_nouter, double& total_npart);
-        void set_neighborship(const vec3<unsigned int>& global_nstripe, std::vector<unsigned int>& bin_to_proc);
+        void set_neighborship(const Vector3Int& global_nstripe, std::vector<unsigned int>& bin_to_proc);
         void remove_mesh(Tag mt);
 
         void mark_to_be_erased(const Tag& im, const Tag& ic);

@@ -2,10 +2,10 @@
 
 namespace Tailor
 {
-    //State::State(const vararray& conss, double gamma, const varmat& T, double vfn)
-    //State::State(const vararray& conss, double gamma, const varmat& T, const vec3<double>& mv, double vfn)
-    State::State(const vararray& conss, double gamma, const varmat& T, const vec3<double>& mv, double vfn, const vec3<double>& vf, bool verbose, const vec3<double>& normal, int rank)
-    //State::State(const vararray& conss, double gamma, const varmat& T, const MeshCell& mc)
+    //State::State(const Vector5& conss, double gamma, const Matrix5& T, double vfn)
+    //State::State(const Vector5& conss, double gamma, const Matrix5& T, const Vector3& mv, double vfn)
+    State::State(const Vector5& conss, double gamma, const Matrix5& T, const Vector3& mv, double vfn, const Vector3& vf, bool verbose, const Vector3& normal, int rank)
+    //State::State(const Vector5& conss, double gamma, const Matrix5& T, const MeshCell& mc)
     {
         //NormTang nt(normal);
 
@@ -66,7 +66,7 @@ namespace Tailor
         //zaxis[1] = 0.;
         //zaxis[2] = 1.;
 
-        vararray vff;
+        Vector5 vff;
         vff[0] = 0.; 
         vff[1] = vf(0); 
         vff[2] = vf(1); 
@@ -108,8 +108,8 @@ namespace Tailor
         //auto tmpy = RT * yaxis;
         //auto tmpz = RT * zaxis;
 
-        //vec3<double> ya(tmpy[0], tmpy[1], tmpy[2]);
-        //vec3<double> za(tmpz[0], tmpz[1], tmpz[2]);
+        //Vector3 ya(tmpy[0], tmpy[1], tmpy[2]);
+        //Vector3 za(tmpz[0], tmpz[1], tmpz[2]);
 
         //auto vfl = dotp(vf, ya);
         //auto vfm = dotp(vf, za);

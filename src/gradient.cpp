@@ -2,9 +2,9 @@
 
 namespace Tailor
 {
-    std::array<vec3<double>, NVAR> Gradient::ls_grad(const Mesh& mesh, const MeshCell& mc)
+    std::array<Vector3, NVAR> Gradient::ls_grad(const Mesh& mesh, const MeshCell& mc)
     {    
-        std::array<vec3<double>, NVAR> data_;
+        std::array<Vector3, NVAR> data_;
 
         for (int i=0; i<NVAR; ++i)
         {

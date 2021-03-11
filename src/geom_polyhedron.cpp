@@ -2,7 +2,7 @@
 
 namespace Tailor
 {
-    Polyhedron create_with_sweep(const Polygon& polygon, const vec3<double>& v)
+    Polyhedron create_with_sweep(const Polygon& polygon, const Vector3& v)
     {
         if (polygon.vertex().size() == 3)
         {
@@ -77,12 +77,12 @@ namespace Tailor
         return shape_;
     }
 
-    void Polyhedron::set_min(vec3<double> min)
+    void Polyhedron::set_min(Vector3 min)
     {
         min_ = min;
     }
 
-    void Polyhedron::set_max(vec3<double> max)
+    void Polyhedron::set_max(Vector3 max)
     {
         max_ = max;
     }
@@ -104,7 +104,7 @@ namespace Tailor
         vertex_[7].set_r(max(0), min(1), max(2));
     }
 
-    void Polyhedron::set_bbox(vec3<double> min, vec3<double> max)
+    void Polyhedron::set_bbox(Vector3 min, Vector3 max)
     {
         min_ = min;
         max_ = max;
@@ -112,8 +112,13 @@ namespace Tailor
 
     void Polyhedron::set_bbox(double xmin, double ymin, double zmin, double xmax, double ymax, double zmax)
     {
-        min_.set(xmin, ymin, zmin);
-        max_.set(xmax, ymax, zmax);
+        min_(0) = xmin;
+        min_(1) = ymin;
+        min_(2) = zmin;
+
+        max_(0) = xmax;
+        max_(1) = ymax;
+        max_(2) = zmax;
     }
 
     void Polyhedron::set_shape(Shape shape)
@@ -123,22 +128,23 @@ namespace Tailor
 
     void Polyhedron::set_bbox()
     {
-        min_.set_x(TAILOR_BIG_POS_NUM);
-        min_.set_y(TAILOR_BIG_POS_NUM);
-        min_.set_z(TAILOR_BIG_POS_NUM);
-        max_.set_x(TAILOR_BIG_NEG_NUM);
-        max_.set_y(TAILOR_BIG_NEG_NUM);
-        max_.set_z(TAILOR_BIG_NEG_NUM);
+        min_(0) = TAILOR_BIG_POS_NUM;
+        min_(1) = TAILOR_BIG_POS_NUM;
+        min_(2) = TAILOR_BIG_POS_NUM;
+
+        max_(0) = TAILOR_BIG_NEG_NUM;
+        max_(1) = TAILOR_BIG_NEG_NUM;
+        max_(2) = TAILOR_BIG_NEG_NUM;
 
         for (int i=0; i<vertex_.size(); ++i)
         {
-            min_.set_x(std::min(min_(0), vertex_[i].r(0)));
-            min_.set_y(std::min(min_(1), vertex_[i].r(1)));
-            min_.set_z(std::min(min_(2), vertex_[i].r(2)));
+            min_(0) = std::min(min_(0), vertex_[i].r(0));
+            min_(1) = std::min(min_(1), vertex_[i].r(1));
+            min_(2) = std::min(min_(2), vertex_[i].r(2));
 
-            max_.set_x(std::max(max_(0), vertex_[i].r(0)));
-            max_.set_y(std::max(max_(1), vertex_[i].r(1)));
-            max_.set_z(std::max(max_(2), vertex_[i].r(2)));
+            max_(0) = std::max(max_(0), vertex_[i].r(0));
+            max_(1) = std::max(max_(1), vertex_[i].r(1));
+            max_(2) = std::max(max_(2), vertex_[i].r(2));
         }
     }
 
@@ -164,7 +170,7 @@ namespace Tailor
         return face_[i];
     }
 
-    void Polyhedron::rotate_points(double angle, double axis, const vec3<double>& rot_point)
+    void Polyhedron::rotate_points(double angle, double axis, const Vector3& rot_point)
     {
         RotationMatrix rm;
 
@@ -184,7 +190,7 @@ namespace Tailor
         reset_centroid_ = true;
     }
 
-    const vec3<double>& Polyhedron::min() const
+    const Vector3& Polyhedron::min() const
     {
         //std::cout << "returning hedron min" << std::endl;
         //std::cout << "min0: " << min_(0) << std::endl;
@@ -193,7 +199,7 @@ namespace Tailor
         return min_;
     }
     
-    const vec3<double>& Polyhedron::max() const
+    const Vector3& Polyhedron::max() const
     {
         return max_;
     }
@@ -216,7 +222,7 @@ namespace Tailor
         return max_(i);
     }
 
-    void Polyhedron::move_points(const vec3<double>& v)
+    void Polyhedron::move_points(const Vector3& v)
     {
         for (Point& _p: vertex_)
         {
@@ -315,7 +321,7 @@ namespace Tailor
             //}
             //assert(dotp(f->centroid(), f->normal()) != 0.);
             
-            sum += dotp(f->centroid(), f->normal()) * std::abs(f->signed_area());
+            sum += dot(f->centroid(), f->normal()) * std::abs(f->signed_area());
 
             //std::cout << "tsum: " << dotp(f->centroid(), f->normal()) * std::abs(f->signed_area()) << std::endl;
             //std::cout << "----------------" << std::endl;
@@ -329,7 +335,7 @@ namespace Tailor
         return volume;
     }
 
-    vec3<double> Polyhedron::centroid() const
+    Vector3 Polyhedron::centroid() const
     {
         // this assumes that only vertices have weight.
 
@@ -353,10 +359,10 @@ namespace Tailor
         cnt_y /= vertex_.size();
         cnt_z /= vertex_.size();
 
-        vec3<double> cnt;
-        cnt.set_x(cnt_x);
-        cnt.set_y(cnt_y);
-        cnt.set_z(cnt_z);
+        Vector3 cnt;
+        cnt(0) = cnt_x;
+        cnt(1) = cnt_y;
+        cnt(2) = cnt_z;
 
         assert((cnt(0) - min_(0)) > -TAILOR_ZERO);
         assert((cnt(1) - min_(1)) > -TAILOR_ZERO);
@@ -384,7 +390,7 @@ namespace Tailor
         return centroid_;
     }
 
-    /*vec3<double> Polyhedron::centroid() const
+    /*Vector3 Polyhedron::centroid() const
     {
         // based on http://wwwf.imperial.ac.uk/~rn/centroid.pdf
 
@@ -415,7 +421,7 @@ namespace Tailor
             assert(!std::isnan(cy));
             assert(!std::isnan(cz));
 
-            vec3<double> n = f->normal();
+            Vector3 n = f->normal();
             assert(!std::isnan(n(0)));
             assert(!std::isnan(n(1)));
             assert(!std::isnan(n(2)));
@@ -425,7 +431,7 @@ namespace Tailor
             cnt_z += (cz * cz) * n(2);
         }
 
-        vec3<double> cnt;
+        Vector3 cnt;
         cnt.set_x(cnt_x);
         cnt.set_y(cnt_y);
         cnt.set_z(cnt_z);
@@ -778,7 +784,7 @@ namespace Tailor
         erase_rubbing_faces_(xy, 2);
     }*/
 
-    bool Polyhedron::do_intersect(const vec3<double>& r, bool verbose) const
+    bool Polyhedron::do_intersect(const Vector3& r, bool verbose) const
     {
         for (int i=0; i<TAILOR_N_DIM; ++i)
         {
@@ -805,7 +811,7 @@ namespace Tailor
             std::cout << "min: " << min_(0) << " " << min_(1) << " " << min_(2) << std::endl;
             std::cout << "max: " << max_(0) << " " << max_(1) << " " << max_(2) << std::endl;
         }
-        a.set(0, a(0) - (max_(0) - min_(0)));
+        a(0) = a(0) - (max_(0) - min_(0));
 
         //Point p_(min_(0) - off, min_(1) - off/2., min_(2) - off/3.);
         Point p_(a);

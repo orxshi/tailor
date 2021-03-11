@@ -20,21 +20,21 @@ namespace Tailor
 {
     class Point
     {
-        vec3<double> r_;
+        Vector3 r_;
         friend class boost::serialization::access;
 
         public:
 
         Point(): Point(0., 0., 0.) {};
         Point(double x, double y, double z);
-        Point(const vec3<double>& r);
+        Point(const Vector3& r);
         Point(const Point& p);
 
         size_t mem() const;
-        const vec3<double>& r() const;
+        const Vector3& r() const;
         double r(int i) const;
         void set_r(double x, double y, double z);
-        void set_r(const vec3<double>& _r);
+        void set_r(const Vector3& _r);
         void set_r(int i, double v);
         bool operator==(const Point& other) const;
         bool operator<(const Point& other) const;
@@ -56,20 +56,20 @@ namespace Tailor
         Segment(const Point&, const Point&);
         Segment(const Segment& other);
 
-        vec3<double> normal() const;
-        //vec3<double> centroid() const;
+        Vector3 normal() const;
+        //Vector3 centroid() const;
         const Terminal& vertex() const;
         const Point& vertex(int i) const;
         bool do_intersect(const Point&, int ignoredim) const;
         bool do_intersect(const Segment& s, bool point_on_segment_means_inter, int ignoredim, bool verbose=false) const;
-        void rotate_points(double ang, double axis, const vec3<double>& rot_axis);
-        const vec3<double>& min() const;
-        const vec3<double>& max() const;
+        void rotate_points(double ang, double axis, const Vector3& rot_axis);
+        const Vector3& min() const;
+        const Vector3& max() const;
         double min(int i) const;
         double max(int i) const;
-        void move_points(const vec3<double>& v);
+        void move_points(const Vector3& v);
         double len() const;
-        //vec3<double> area() const;
+        //Vector3 area() const;
         template<class Archive> void serialize(Archive & ar, const unsigned int version)
         {
             ar & vertex_;
@@ -80,8 +80,8 @@ namespace Tailor
         private:
         
         Terminal vertex_;
-        vec3<double> min_;
-        vec3<double> max_;
+        Vector3 min_;
+        Vector3 max_;
 
         void set_bbox();
 
@@ -99,27 +99,27 @@ namespace Tailor
         Polygon(const std::vector<Point>& vertex);
 
         double cross_len() const;
-        const vec3<double>& min() const;
-        const vec3<double>& max() const;
+        const Vector3& min() const;
+        const Vector3& max() const;
         bool degenerate() const;
         void set_vertices(const std::vector<Point>& vertex);
         void set_edge();
-        void rotate_points(double ang, double axis, const vec3<double>& rot_axis);
-        void move_points(const vec3<double>& v);
+        void rotate_points(double ang, double axis, const Vector3& rot_axis);
+        void move_points(const Vector3& v);
         const Vertices& vertex() const;
         const Point& vertex(int i) const;
         const Edges& edge() const;
         const Segment& edge(int i) const;
         double signed_area() const;
-        vec3<double> centroid() const;
+        Vector3 centroid() const;
         bool do_intersect(const Segment& s, bool& just_on_face, bool verbose=false) const;
-        bool do_intersect(const vec3<double>& r, int ignoredim, bool verbose=false) const;
-        bool do_plane_intersect(const Segment& s, vec3<double>& interp, bool verbose) const;
+        bool do_intersect(const Vector3& r, int ignoredim, bool verbose=false) const;
+        bool do_plane_intersect(const Segment& s, Vector3& interp, bool verbose) const;
         //bool do_intersect(const Point&) const;
-        //bool do_intersect(const vec3<double>& r) const;
+        //bool do_intersect(const Vector3& r) const;
         //bool do_intersect(const Polygon&) const;
         double longest_edge_length() const;
-        vec3<double> normal() const;
+        Vector3 normal() const;
         double normal(int i) const;
         template<class Archive> void serialize(Archive & ar, const unsigned int version)
         {
@@ -140,19 +140,19 @@ namespace Tailor
 
         private:
 
-        vec3<double> min_;
-        vec3<double> max_;
+        Vector3 min_;
+        Vector3 max_;
         Vertices vertex_;
         Edges edge_;
         mutable bool reset_centroid_;
         mutable bool reset_signed_area_;
         mutable bool reset_normal_;
         mutable double signed_area_;
-        mutable vec3<double> centroid_;
-        mutable vec3<double> normal_;
+        mutable Vector3 centroid_;
+        mutable Vector3 normal_;
         //mutable boost::optional<double> signed_area_;
         //int nvertex_;
-        //mutable boost::optional<vec3<double>> normal_; // don't use this directly even for internal usage. use normal().
+        //mutable boost::optional<Vector3> normal_; // don't use this directly even for internal usage. use normal().
         void set_bbox();
         std::vector<double> centroid_ab(int i0, int i1) const;
 
@@ -195,22 +195,22 @@ namespace Tailor
         bool face_cross_len() const;
         bool degenerate() const;
         Shape shape() const;
-        void rotate_points(double ang, double axis, const vec3<double>& rot_axis);
-        void move_points(const vec3<double>& v);
+        void rotate_points(double ang, double axis, const Vector3& rot_axis);
+        void move_points(const Vector3& v);
         const Vertices& vertices() const;
         const Faces& faces() const;
-        vec3<double> centroid() const;
-        bool do_intersect(const vec3<double>& r, bool verbose=false) const;
+        Vector3 centroid() const;
+        bool do_intersect(const Vector3& r, bool verbose=false) const;
         bool do_intersect(const Segment&) const;
         double volume() const;
-        const vec3<double>& min() const;
-        const vec3<double>& max() const;
+        const Vector3& min() const;
+        const Vector3& max() const;
         double min(int i) const;
         double max(int i) const;
         const Polygon& face(int i) const;
-        void set_min(vec3<double> min);
-        void set_max(vec3<double> max);
-        void set_bbox(vec3<double> min, vec3<double> max);
+        void set_min(Vector3 min);
+        void set_max(Vector3 max);
+        void set_bbox(Vector3 min, Vector3 max);
         void set_bbox(double xmin, double ymin, double zmin, double xmax, double ymax, double zmax);
         void set_shape(Shape shape);
         void set_faces();
@@ -236,7 +236,7 @@ namespace Tailor
 
         mutable bool reset_centroid_;
         mutable bool reset_volume_;
-        mutable vec3<double> centroid_;
+        mutable Vector3 centroid_;
         mutable double volume_;
         Vertices vertex_;
         Faces face_;
@@ -246,14 +246,14 @@ namespace Tailor
 
         protected:
 
-        vec3<double> min_; 
-        vec3<double> max_; 
+        Vector3 min_; 
+        Vector3 max_; 
 
         //double volume_triface(std::array<Polygon>::const_iterator begin, std::array<Polygon>::const_iterator end) const;
         double volume_triface(const Polygon* begin, const Polygon* end) const;
         void set_bbox();
         void set_vertices(const std::vector<Point>& vertex);
-        //vec3<double> centroid(std::array<Polygon>::const_iterator begin, std::array<Polygon>::const_iterator end) const;
+        //Vector3 centroid(std::array<Polygon>::const_iterator begin, std::array<Polygon>::const_iterator end) const;
 
         friend class boost::serialization::access;
     };
@@ -266,7 +266,7 @@ namespace Tailor
         public:
 
         RegularHexahedron();
-        RegularHexahedron(vec3<double> min, vec3<double> max);
+        RegularHexahedron(Vector3 min, Vector3 max);
         RegularHexahedron(double minx, double miny, double maxx, double maxy, double zmin, double zmax);
         RegularHexahedron(const std::vector<Point>& points);
         RegularHexahedron(const Polyhedron&);
@@ -294,13 +294,13 @@ namespace Tailor
     {
         public:
 
-            /*void build(const std::vector<std::vector<vec3<double>>>& point, int dummyrank);
-            //bool contain(vec3<double> p, bool strict) const;
+            /*void build(const std::vector<std::vector<Vector3>>& point, int dummyrank);
+            //bool contain(Vector3 p, bool strict) const;
             const Tag& tag() const;
             void set_tag(const Tag& t);
             const std::vector<Segment>& segment() const;
-            //bool do_intersect(const std::vector<vec3<double>>& vertices) const;
-            bool do_contain(const vec3<double>& v, bool strict) const;
+            //bool do_intersect(const std::vector<Vector3>& vertices) const;
+            bool do_contain(const Vector3& v, bool strict) const;
             //Polygon_2 polygon() const;
             void build_polygon(int dummyrank);*/
 
@@ -318,11 +318,11 @@ namespace Tailor
 
     };
 
-    int orientation (const vec3<double>& p, const vec3<double>& q, const vec3<double>& r, int ignoredim, bool verbose=false);
-    Polyhedron create_with_sweep(const Polygon& polygon, const vec3<double>& v);
-    Polygon create_with_sweep(const Segment& segment, const vec3<double>& v);
-    vec3<double> normal_plane(const vec3<double>& v0, const vec3<double>& v1, const vec3<double>& v2);
-    bool do_intersect_plane_segment(const vec3<double>& a, const vec3<double>& b, const vec3<double>& c, const Segment& s, vec3<double>& interp);
+    int orientation (const Vector3& p, const Vector3& q, const Vector3& r, int ignoredim, bool verbose=false);
+    Polyhedron create_with_sweep(const Polygon& polygon, const Vector3& v);
+    Polygon create_with_sweep(const Segment& segment, const Vector3& v);
+    Vector3 normal_plane(const Vector3& v0, const Vector3& v1, const Vector3& v2);
+    bool do_intersect_plane_segment(const Vector3& a, const Vector3& b, const Vector3& c, const Segment& s, Vector3& interp);
     Polygon make_outline(const std::vector<Polygon>& pgon);
 }
 

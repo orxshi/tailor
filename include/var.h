@@ -10,9 +10,9 @@ namespace Tailor
         int source_rank_;
         int source_tag_;
         std::pair<int, int> mesh_cell_;
-        vararray var_;
+        Vector5 var_;
 
-        Var(int source_rank, int source_tag, const vararray& var, int mesh, int cell);
+        Var(int source_rank, int source_tag, const Vector5& var, int mesh, int cell);
         Var() = default; // for serialization (easy way)
 
         template<class Archive> void serialize(Archive & ar, const unsigned int version)

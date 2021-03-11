@@ -6,9 +6,9 @@ namespace Tailor
     {
     }
 
-    vec3<double> tangent_vector(const vec3<double>& n)
+    Vector3 tangent_vector(const Vector3& n)
     {
-        vec3<double> t = n;
+        Vector3 t = n;
 
         for (int i=0; i<TAILOR_N_DIM; ++i)
         {
@@ -92,12 +92,12 @@ namespace Tailor
     //    return MR_;
     //}
 
-    double sum_face_velocities(const Polygon& polygon, double dt, const vec3<double>& vel)
+    double sum_face_velocities(const Polygon& polygon, double dt, const Vector3& vel)
     {
         assert(!(vel(0) == 0. && vel(1) == 0.));
         double sum = 0.;
 
-        vec3<double> d = vel * dt;
+        Vector3 d = vel * dt;
         for (const Segment& seg: polygon.edge())
         {
             auto normal = seg.normal();
@@ -110,18 +110,18 @@ namespace Tailor
         return sum;
     }
 
-    double sum_face_velocities2(const Polyhedron& hedron, double dt, const vec3<double>& vel)
+    double sum_face_velocities2(const Polyhedron& hedron, double dt, const Vector3& vel)
     {
         assert(!(vel(0) == 0. && vel(1) == 0. && vel(2) == 0.));
         double sum = 0.;
-        //vec3<double> sum;
+        //Vector3 sum;
         //sum.set_x(0.);
         //sum.set_y(0.);
         //sum.set_z(0.);
 
         std::cout << "dt: " << dt << std::endl;
 
-        vec3<double> d = vel * dt;
+        Vector3 d = vel * dt;
         for (const Polygon& face: hedron.faces())
         {
             Polyhedron swept = create_with_sweep(face, d);
@@ -146,18 +146,18 @@ namespace Tailor
         return sum;
     }
 
-    double sum_face_velocities(const Polyhedron& hedron, double dt, const vec3<double>& vel)
+    double sum_face_velocities(const Polyhedron& hedron, double dt, const Vector3& vel)
     {
         assert(!(vel(0) == 0. && vel(1) == 0. && vel(2) == 0.));
         double sum = 0.;
-        //vec3<double> sum;
+        //Vector3 sum;
         //sum.set_x(0.);
         //sum.set_y(0.);
         //sum.set_z(0.);
 
         std::cout << "dt: " << dt << std::endl;
 
-        vec3<double> d = vel * dt;
+        Vector3 d = vel * dt;
         for (const Polygon& face: hedron.faces())
         {
             Polyhedron swept = create_with_sweep(face, d);
@@ -194,7 +194,7 @@ namespace Tailor
         return sum;
     }
 
-    //vec3<double> MeshFace::vgn() const
+    //Vector3 MeshFace::vgn() const
     //{
         //return vgn_;
     //}
@@ -203,7 +203,7 @@ namespace Tailor
     {
         return vgn_;
     }
-    const vec3<double>& MeshFace::vf() const
+    const Vector3& MeshFace::vf() const
     {
         return vf_;
     }
@@ -249,13 +249,13 @@ namespace Tailor
 
         double cinf = std::sqrt(fs.gamma_ * pinf / rhoinf);
 
-        vec3<double> vel;
+        Vector3 vel;
         double omega, alpha, thetax, thetay, r;
         if (rotation)
         {
             // rpm_foil is positive if ccw.
             double om = rpm * 2. * PI / 60.; // rad/s
-            vec3<double> omega(0., 0., om);
+            Vector3 omega(0., 0., om);
 
             if (rotaxis == 0)
             {
@@ -278,12 +278,12 @@ namespace Tailor
                 }
                 assert(vel(2) == 0.);
 
-                //auto rvec = vec3<double>(cnt(0), cnt(1), pivot(2));
+                //auto rvec = Vector3(cnt(0), cnt(1), pivot(2));
                 //r = (rvec - pivot).len();
                 //alpha = std::atan2(cnt(0), cnt(1));
                 //thetax = -std::sin(alpha);
                 //thetay = std::cos(alpha);
-                //vel = vec3<double>(
+                //vel = Vector3(
                 //        omega * r * thetax,
                 //        omega * r * thetay,
                 //        0.);
@@ -291,13 +291,13 @@ namespace Tailor
         }
         else
         {
-            //vel = vec3<double>(0., 0., 0.);
-            //vel = vec3<double>(
+            //vel = Vector3(0., 0., 0.);
+            //vel = Vector3(
                     //machfoil * cinf * std::cos(deg_to_rad(aoa_foil_x)),
                     //machfoil * cinf * std::cos(deg_to_rad(90. - aoa_foil_x)),
                     //machfoil * cinf * std::cos(deg_to_rad(aoa_foil_z)));
 
-            vel = vec3<double>(
+            vel = Vector3(
                     mach * cinf * std::cos(deg_to_rad(dirx)),
                     mach * cinf * std::cos(deg_to_rad(90. - dirx)),
                     mach * cinf * std::cos(deg_to_rad(dirz))
@@ -311,7 +311,7 @@ namespace Tailor
         /*
         if (vel.len() > TAILOR_ZERO)
         {
-            vec3<double> d = vel * dt;
+            Vector3 d = vel * dt;
             double swvol = 0.;
             if (std::abs(dotp(n, d)) > TAILOR_ZERO)
             {
@@ -410,7 +410,7 @@ namespace Tailor
         return face_;
     }
 
-    void MeshFace::move(const vec3<double>& v)
+    void MeshFace::move(const Vector3& v)
     {
         //Point p0, p1;
         //p0.set_r(segment_.vertex(0).r(0) + v(0), segment_.vertex(0).r(1) + v(1));
@@ -419,7 +419,7 @@ namespace Tailor
         face_.move_points(v);
     }
 
-    void MeshFace::rotate(double angle, int axis, const vec3<double>& rot_point)
+    void MeshFace::rotate(double angle, int axis, const Vector3& rot_point)
     {
         face_.rotate_points(angle, axis, rot_point);
     }

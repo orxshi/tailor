@@ -103,13 +103,13 @@ namespace Tailor
     }
 
 
-    //bool SpatialPartition::is_resident(const vec3<double>& cnt) const
+    //bool SpatialPartition::is_resident(const Vector3& cnt) const
     //{
     //    assert(!aabb_.faces().empty());
     //    return aabb_.do_intersect(cnt);
     //}
 
-    //bool SpatialPartition::is_resident(const vec3<double>& cnt, const Outline& outline) const
+    //bool SpatialPartition::is_resident(const Vector3& cnt, const Outline& outline) const
     //{
     //    assert(false);
     //    //return outline.do_contain(cnt);

@@ -2,7 +2,7 @@
 
 namespace Tailor
 {
-    Var::Var(int source_rank, int source_tag, const vararray& var, int mesh, int cell): source_rank_(source_rank), source_tag_(source_tag), var_(var)
+    Var::Var(int source_rank, int source_tag, const Vector5& var, int mesh, int cell): source_rank_(source_rank), source_tag_(source_tag), var_(var)
     {
         mesh_cell_ = std::make_pair(mesh, cell);
     }

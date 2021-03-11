@@ -3,7 +3,7 @@
 
 #include <fstream>
 #include "boost/program_options.hpp"
-#include "vec3.h"
+#include "matrix.h"
 #include "tag.h"
 
 namespace Tailor
@@ -40,7 +40,7 @@ namespace Tailor
         double mach_;
         double dirx_;
         double dirz_;
-        vec3<double> pivot_;
+        Vector3 pivot_;
 
         void read(const Tag& mtag);
     };

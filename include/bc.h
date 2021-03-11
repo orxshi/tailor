@@ -20,8 +20,8 @@ namespace Tailor
         void farfield4(Mesh& mesh);
         void farfield5(Mesh& mesh);
         void slipwall(Mesh& mesh, MeshCell& mc);
-        void init_farfield(Mesh& mesh, const vararray& prim);
-        void set_dirichlet(Mesh& mesh, const vararray& prim);
+        void init_farfield(Mesh& mesh, const Vector5& prim);
+        void set_dirichlet(Mesh& mesh, const Vector5& prim);
         void update_fs(const Freestream& fs);
 
         BoundaryCondition();
@@ -33,7 +33,7 @@ namespace Tailor
         }
     };
 
-    varmat make_rot_matrix(const vec3<double>& n, bool verbose=false);
+    Matrix5 make_rot_matrix(const Vector3& n, bool verbose=false);
 }
 
 

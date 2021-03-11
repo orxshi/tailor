@@ -5,13 +5,18 @@ namespace Tailor
     RegularHexahedron::RegularHexahedron()
     {
         set_shape(Shape::hex);
-        min_.set(TAILOR_BIG_POS_NUM, TAILOR_BIG_POS_NUM, TAILOR_BIG_POS_NUM);
-        max_.set(TAILOR_BIG_NEG_NUM, TAILOR_BIG_NEG_NUM, TAILOR_BIG_NEG_NUM);
+        min_(0) = TAILOR_BIG_POS_NUM;
+        min_(1) = TAILOR_BIG_POS_NUM;
+        min_(2) = TAILOR_BIG_POS_NUM;
+
+        max_(0) = TAILOR_BIG_NEG_NUM;
+        max_(1) = TAILOR_BIG_NEG_NUM;
+        max_(2) = TAILOR_BIG_NEG_NUM;
         //assert(!faces().empty());
         //// not faces set here. calling volume would result in error!
     }
 
-    RegularHexahedron::RegularHexahedron(vec3<double> min, vec3<double> max)
+    RegularHexahedron::RegularHexahedron(Vector3 min, Vector3 max)
     {
         set_shape(Shape::hex);
         set_bbox(min, max);
@@ -55,8 +60,8 @@ namespace Tailor
             zmax = std::max(zmax, vz);
         }
 
-        set_min(vec3<double>(xmin, ymin, zmin));
-        set_max(vec3<double>(xmax, ymax, zmax));
+        set_min(Vector3(xmin, ymin, zmin));
+        set_max(Vector3(xmax, ymax, zmax));
     }
 
     bool RegularHexahedron::extend(const RegularHexahedron& other)

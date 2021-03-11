@@ -136,7 +136,7 @@ namespace Tailor
     //}
 
     //void SpatialPartition::connect_partition_cells(const std::vector<MeshCell>& arrival_cell)
-    void SpatialPartition::connect_partition_cells(ArrCon<Nei>& arrival_cell, std::function<bool(const vec3<double>&, int celltag)> is_resi, Profiler* profiler)
+    void SpatialPartition::connect_partition_cells(ArrCon<Nei>& arrival_cell, std::function<bool(const Vector3&, int celltag)> is_resi, Profiler* profiler)
     {
         //assert(!arrival_cell.empty());
         //if (arrival_cell.empty()) {
@@ -205,7 +205,7 @@ namespace Tailor
         Freestream fs;
         fs.read();
 
-        vararray L, R;
+        Vector5 L, R;
         L[0] = 1.;
         L[1] = 0.;
         L[2] = 0.;
@@ -255,7 +255,7 @@ namespace Tailor
         //double pivotx = vm["pivotx"].as<double>();
         //double pivoty = vm["pivoty"].as<double>();
         //double pivotz = vm["pivotz"].as<double>();
-        //auto pivot = vec3<double>(pivotx, pivoty, pivotz);
+        //auto pivot = Vector3(pivotx, pivoty, pivotz);
 
 
 
@@ -265,28 +265,28 @@ namespace Tailor
         
 
         double cinf = std::sqrt(fs.gamma_ * fs.pinf_ / fs.rhoinf_);
-        vec3<double> vinf_air;
+        Vector3 vinf_air;
 
         if (fs.velair_ != 0.)
         {
-            vinf_air = vec3<double>(
+            vinf_air = Vector3(
                     fs.velair_ * std::cos(deg_to_rad(fs.aoa_air_x_)),
                     fs.velair_ * std::cos(deg_to_rad(90. - fs.aoa_air_x_)),
                     fs.velair_ * std::cos(deg_to_rad(fs.aoa_air_z_)));
         }
         else
         {
-            vinf_air = vec3<double>(
+            vinf_air = Vector3(
                     fs.machair_ * cinf * std::cos(deg_to_rad(fs.aoa_air_x_)),
                     fs.machair_ * cinf * std::cos(deg_to_rad(90. - fs.aoa_air_x_)),
                     fs.machair_ * cinf * std::cos(deg_to_rad(fs.aoa_air_z_)));
         }
 
-        //vec3<double> vinf_foil(
+        //Vector3 vinf_foil(
                 //fs.machfoil_ * cinf * std::cos(deg_to_rad(fs.aoa_foil_x_)),
                 //fs.machfoil_ * cinf * std::cos(deg_to_rad(90. - fs.aoa_foil_x_)),
                 //fs.machfoil_ * cinf * std::cos(deg_to_rad(fs.aoa_foil_z_)));
-        //vec3<double> vinf = vinf_air;
+        //Vector3 vinf = vinf_air;
         //vinf.set(0, 0, 0); // TODO test
 
         for (int i=0; i<mesh_.size(); ++i)
@@ -324,7 +324,7 @@ namespace Tailor
             in >> pinf;
             in >> mach;
             in >> aoa;
-            vararray prim;
+            Vector5 prim;
             prim[0] = rhoinf;
             prim[1] = mach * std::cos(deg_to_rad(aoa));
             prim[2] = mach * std::sin(deg_to_rad(aoa));
@@ -353,7 +353,7 @@ namespace Tailor
         for (int i=0; i<mesh_.size(); ++i)
         {
             go_to_beg_of_line(in, i*NVAR);
-            vararray prim;
+            Vector5 prim;
             for (int j=0; j<NVAR; ++j)
             {
                 in >> prim[j];
@@ -364,8 +364,8 @@ namespace Tailor
         in.close();
     }*/
 
-    //void SpatialPartition::solve(Solver& solver, const vec3<double>& vel, std::function<void(CellExchanger& cell_exchanger)> exchange_ghosts)
-    //void SpatialPartition::solve(Solver& solver, const vec3<double>& vel, std::function<void()> exchange_ghosts, bool called_exc_ghosts)
+    //void SpatialPartition::solve(Solver& solver, const Vector3& vel, std::function<void(CellExchanger& cell_exchanger)> exchange_ghosts)
+    //void SpatialPartition::solve(Solver& solver, const Vector3& vel, std::function<void()> exchange_ghosts, bool called_exc_ghosts)
     //{
         //for (int i=0; i<mesh_.size(); ++i)
         //{
@@ -379,7 +379,7 @@ namespace Tailor
         //}
     //}
 
-    void SpatialPartition::connect_after_exchange(std::function<bool(const vec3<double>&)> is_resi, Profiler* profiler, std::string proc)
+    void SpatialPartition::connect_after_exchange(std::function<bool(const Vector3&)> is_resi, Profiler* profiler, std::string proc)
     {
         for (Mesh& m: mesh_)
         {
@@ -886,8 +886,8 @@ namespace Tailor
 
         for (AABB& ab: aabb)
         {
-            vec3<double> minn(TAILOR_BIG_POS_NUM, TAILOR_BIG_POS_NUM, TAILOR_BIG_POS_NUM);
-            vec3<double> maxx(TAILOR_BIG_NEG_NUM, TAILOR_BIG_NEG_NUM, TAILOR_BIG_NEG_NUM);
+            Vector3 minn(TAILOR_BIG_POS_NUM, TAILOR_BIG_POS_NUM, TAILOR_BIG_POS_NUM);
+            Vector3 maxx(TAILOR_BIG_NEG_NUM, TAILOR_BIG_NEG_NUM, TAILOR_BIG_NEG_NUM);
             ab.set_bbox(minn, maxx);
         }
 
@@ -902,7 +902,7 @@ namespace Tailor
                     continue;
                 }
 
-                vec3<double> min_, max_;
+                Vector3 min_, max_;
                 min_.set(ab.min(0), ab.min(1), ab.min(2));
                 max_.set(ab.max(0), ab.max(1), ab.max(2));
 
@@ -936,8 +936,8 @@ namespace Tailor
 
         for (AABB& ab: aabb)
         {
-            vec3<double> minn(TAILOR_BIG_POS_NUM, TAILOR_BIG_POS_NUM, TAILOR_BIG_POS_NUM);
-            vec3<double> maxx(TAILOR_BIG_NEG_NUM, TAILOR_BIG_NEG_NUM, TAILOR_BIG_NEG_NUM);
+            Vector3 minn(TAILOR_BIG_POS_NUM, TAILOR_BIG_POS_NUM, TAILOR_BIG_POS_NUM);
+            Vector3 maxx(TAILOR_BIG_NEG_NUM, TAILOR_BIG_NEG_NUM, TAILOR_BIG_NEG_NUM);
             ab.set_bbox(minn, maxx);
         }
 
@@ -952,7 +952,7 @@ namespace Tailor
                     //continue;
                 //}
 
-                vec3<double> min_, max_;
+                Vector3 min_, max_;
                 min_.set(ab.min(0), ab.min(1), ab.min(2));
                 max_.set(ab.max(0), ab.max(1), ab.max(2));
 

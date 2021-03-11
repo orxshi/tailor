@@ -2,7 +2,7 @@
 
 namespace Tailor
 {
-    vec3<double> MeshCell::vgn() const
+    Vector3 MeshCell::vgn() const
     {
         return vgn_;
     }
@@ -23,13 +23,13 @@ namespace Tailor
 
         double cinf = std::sqrt(fs.gamma_ * pinf / rhoinf);
 
-        vec3<double> vel;
+        Vector3 vel;
         double omega, alpha, thetax, thetay, r;
         if (rotation)
         {
             // rpm_foil is positive if ccw.
             double om = rpm * 2. * PI / 60.; // rad/s
-            vec3<double> omega(0., 0., om);
+            Vector3 omega(0., 0., om);
 
             if (rotaxis == 0)
             {
@@ -49,7 +49,7 @@ namespace Tailor
         }
         else
         {
-            vel = vec3<double>(
+            vel = Vector3(
                     mach * cinf * std::cos(deg_to_rad(dirx)),
                     mach * cinf * std::cos(deg_to_rad(90. - dirx)),
                     mach * cinf * std::cos(deg_to_rad(dirz))
@@ -58,7 +58,7 @@ namespace Tailor
 
         vgn_ = vel;
     }
-    void MeshCell::init(const vec3<double>& vinf_air, const Freestream& fs, const Component& compo)
+    void MeshCell::init(const Vector3& vinf_air, const Freestream& fs, const Component& compo)
     {
         double rotation = compo.rotation_;
         double rotaxis = compo.rotaxis_;
@@ -70,12 +70,12 @@ namespace Tailor
 
         double cinf = std::sqrt(fs.gamma_ * fs.pinf_ / fs.rhoinf_);
 
-        vec3<double> vel(0.,0.,0.);
+        Vector3 vel(0.,0.,0.);
 
         //if (rotation)
         //{
         //    double om = rpm * 2. * PI / 60.; // rad/s
-        //    vec3<double> omega(0., 0., om);
+        //    Vector3 omega(0., 0., om);
 
         //    if (rotaxis == 0)
         //    {
@@ -89,12 +89,12 @@ namespace Tailor
         //    {
         //        auto cnt = poly_.centroid();
         //        auto r = cnt - pivot;
-        //        //auto rvec = vec3<double>(cnt(0), cnt(1), pivot(2));
+        //        //auto rvec = Vector3(cnt(0), cnt(1), pivot(2));
         //        //double r = (rvec - pivot).len();
         //        //double alpha = std::atan2(cnt(0), cnt(1));
         //        //double thetax = -std::sin(alpha);
         //        //double thetay = std::cos(alpha);
-        //        //vel = vec3<double>(
+        //        //vel = Vector3(
         //                //omega * r * thetax,
         //                //omega * r * thetay,
         //                //0.);
@@ -104,7 +104,7 @@ namespace Tailor
         //else
         //{
 
-            //vel = vec3<double>(
+            //vel = Vector3(
                     //mach * cinf * std::cos(deg_to_rad(dirx)),
                     //mach * cinf * std::cos(deg_to_rad(90 - dirx)),
                     //mach * cinf * std::cos(deg_to_rad(dirz))
@@ -113,9 +113,9 @@ namespace Tailor
 
         assert(!vel.isnan());
 
-        vec3<double> vinf = vinf_air - vel;
+        Vector3 vinf = vinf_air - vel;
 
-        vararray prim;
+        Vector5 prim;
         prim_(0) = fs.rhoinf_;
         prim_(1) = vinf(0);
         prim_(2) = vinf(1);
@@ -126,7 +126,7 @@ namespace Tailor
 
         cons_sp1_ = prim_to_cons(prim_, fs.gamma_);
     }
-    void minmax(const mcc& cell, vec3<double>& min, vec3<double>& max)
+    void minmax(const mcc& cell, Vector3& min, Vector3& max)
     {
         double xmin = TAILOR_BIG_POS_NUM;
         double ymin = TAILOR_BIG_POS_NUM;
@@ -154,8 +154,8 @@ namespace Tailor
             }
         }
 
-        min = vec3<double>(xmin, ymin, zmin);
-        max = vec3<double>(xmax, ymax, zmax);
+        min = Vector3(xmin, ymin, zmin);
+        max = Vector3(xmax, ymax, zmax);
     }
 
     void MeshCell::reset_btype()
@@ -180,7 +180,7 @@ namespace Tailor
         }
     }
 
-    void MeshCell::set_prim(const vararray& other)
+    void MeshCell::set_prim(const Vector5& other)
     {
         prim_ = other;
     }
@@ -190,17 +190,17 @@ namespace Tailor
         return D(i,j);
     }
 
-    const vararray& MeshCell::R() const
+    const Vector5& MeshCell::R() const
     {
         return R_;
     }
 
-    const vararray& MeshCell::dQ() const
+    const Vector5& MeshCell::dQ() const
     {
         return dQ_;
     }
 
-    const vararray& MeshCell::old_dQ() const
+    const Vector5& MeshCell::old_dQ() const
     {
         return old_dQ_;
     }
@@ -215,27 +215,27 @@ namespace Tailor
         return R_(i);
     }
 
-    const vararray& MeshCell::prim() const
+    const Vector5& MeshCell::prim() const
     {
         return prim_;
     }
 
-    const vararray& MeshCell::cons_sp1() const
+    const Vector5& MeshCell::cons_sp1() const
     {
         return cons_sp1_;
     }
 
-    const vararray& MeshCell::cons_s() const
+    const Vector5& MeshCell::cons_s() const
     {
         return cons_s_;
     }
 
-    const vararray& MeshCell::cons_n() const
+    const Vector5& MeshCell::cons_n() const
     {
         return cons_n_;
     }
 
-    const vararray& MeshCell::cons_nm1() const
+    const Vector5& MeshCell::cons_nm1() const
     {
         return cons_nm1_;
     }
@@ -740,7 +740,7 @@ namespace Tailor
       return residency_;
       }*/
 
-    void MeshCell::rotate_points(double ang, int axis, const vec3<double>& rot_axis)
+    void MeshCell::rotate_points(double ang, int axis, const Vector3& rot_axis)
     {
         for (MeshFace& mf: face_)
         {
@@ -755,7 +755,7 @@ namespace Tailor
         //polytope_->rotate_points(ang, rot_axis);
     }
 
-    void MeshCell::move_points(const vec3<double>& v)
+    void MeshCell::move_points(const Vector3& v)
     {
         for (MeshFace& mf: face_)
         {

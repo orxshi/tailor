@@ -87,8 +87,8 @@ namespace Tailor
         void set_load(double l);
         double load() const;
 
-        void move(const vec3<double>& v);
-        void rotate(double ang, int axis, const vec3<double>& rot_point);
+        void move(const Vector3& v);
+        void rotate(double ang, int axis, const Vector3& rot_point);
 
         //std::deque<std::vector<Point>> mesh_pts(const std::deque<Mesh>& mesh) const;
         const boost::bimap<int, int>& mesh_tag_index_map_res() const;
@@ -96,14 +96,14 @@ namespace Tailor
         void register_cells_to_rm(const std::deque<Mesh>& meshes, bool pseudo3D, int rank, RegType);
         void init_rm(const Bin& other);
         //void init_rm(int mintag);
-        void init_rm(int mintag, const Tag& rmtag, const vec3<int>& stripe, bool pseudo3D);
+        void init_rm(int mintag, const Tag& rmtag, const Vector3Int& stripe, bool pseudo3D);
         const Tag& tag() const;
         void clear_cells();
         //boost::shared_ptr<RegularMesh> rm() const;
         RegularMesh* rm() const;
         void merge(const Bin& other);
         //const boost::bimap<int, int>& mesh_list() const;
-        bool is_resident(const vec3<double>& cnt) const;
+        bool is_resident(const Vector3& cnt) const;
         void set_aabb(const AABB& aabb);
         //std::deque<Mesh> group_mesh(const std::deque<Mesh>& mesh) const;
         void group_mesh_res(const std::deque<Mesh>& mesh, std::deque<Mesh>& mb, int rank) const;

@@ -125,7 +125,7 @@ namespace Tailor
         return false;
     }*/
 
-    bool HoleMap::is_inside_holebin(const vec3<double>& querypoint) const
+    bool HoleMap::is_inside_holebin(const Vector3& querypoint) const
     {
         //if (holeless_)
         //{

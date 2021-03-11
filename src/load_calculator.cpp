@@ -1212,7 +1212,7 @@ namespace Tailor
     {    
         const vec3<int>& nstripe = rm.nstripe();
         const AABB& aabb = rm.aabb();
-        const vec3<double>& h = rm.h();
+        const Vector3& h = rm.h();
 
         std::ofstream out;    
         out.open (file_name);

@@ -10,12 +10,12 @@ namespace Tailor
     {
         public:
 
-            std::array<vec3<double>, NVAR> ls_grad(const Mesh& mesh, const MeshCell& mc);
+            std::array<Vector3, NVAR> ls_grad(const Mesh& mesh, const MeshCell& mc);
             void calc_ls_coef(Mesh& mesh);
 
         private:
 
-            std::array<vec3<double>, NVAR> data_;
+            std::array<Vector3, NVAR> data_;
     };
 }
 

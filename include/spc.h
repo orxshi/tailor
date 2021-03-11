@@ -24,8 +24,8 @@ namespace Tailor
         void set_profiler(Profiler* prof);
         int nresi() const;
         void get_coef(const Freestream& fs, int iter, double dt) const;
-        //bool search_rm(const vec3<double>& cnt, BinRMTag& brmt, int& rank) const;
-        bool search_rm(const vec3<double>& cnt, Tag& bintag, int& rank, bool verbose=false) const;
+        //bool search_rm(const Vector3& cnt, BinRMTag& brmt, int& rank) const;
+        bool search_rm(const Vector3& cnt, Tag& bintag, int& rank, bool verbose=false) const;
         //std::map<BinRMTag, int> search_rm(const AABB& aabb) const;
         //std::map<Tag, int> search_rm(const AABB& aabb, bool verbose=false) const;
         void make_global_adt();
@@ -36,22 +36,22 @@ namespace Tailor
         void remove_nonresidents();
         void update_connectivity();
         void reset_all_oga_status();
-        bool is_resident(const vec3<double>& cnt, int celltag, Tag& brmt) const;
-        //bool is_resident(const vec3<double>& cnt, int celltag, Tag& brmt, int& dest_rank) const;
+        bool is_resident(const Vector3& cnt, int celltag, Tag& brmt) const;
+        //bool is_resident(const Vector3& cnt, int celltag, Tag& brmt, int& dest_rank) const;
         void connect_partition_cells(ArrCon<Nei>& storage);
         //void update_ghost_primitives(const std::vector<Storage<Var>>& storage);
         //void update_ghost_primitives(const RecvCon<Var>& storage);
         void oga_interpolate(const ArrCon<Var>& stor);
         void convert_to_fortran() const;
-        //void solve(Solver& solver, const vec3<double>& vel, std::function<void(CellExchanger& cell_exchanger)> exchange_ghosts);
-        //void solve(Solver& solver, const vec3<double>& vel, std::function<void()> exchange_ghosts);
+        //void solve(Solver& solver, const Vector3& vel, std::function<void(CellExchanger& cell_exchanger)> exchange_ghosts);
+        //void solve(Solver& solver, const Vector3& vel, std::function<void()> exchange_ghosts);
         void init_sod();
         //void init_interior();
         //void init_dirichlet();
         void init();
         void connect_after_exchange(Profiler* profiler, std::string proc);
         void update_prev_cand_donor();
-            //void make_outline(std::vector<std::vector<vec3<double>>> allpts);
+            //void make_outline(std::vector<std::vector<Vector3>> allpts);
             const std::map<int, int>& bintag_proc_map() const;
             //const std::map<int, int>& bintag_proc_map() const;
 
@@ -83,8 +83,8 @@ namespace Tailor
             void make_regular_maps_uniproc();
 
             // Move mesh
-            void rotate_meshblocks(const Tag& _parent_mesh, double ang, int axis, const vec3<double>& rot_axis);
-            void move_meshblocks(const Tag& _parent_mesh, const vec3<double>& v);
+            void rotate_meshblocks(const Tag& _parent_mesh, double ang, int axis, const Vector3& rot_axis);
+            void move_meshblocks(const Tag& _parent_mesh, const Vector3& v);
 
             // Remap
             //void push_sp(std::vector<SpatialPartition>& sp, const std::vector<bool>& cond);
@@ -104,7 +104,7 @@ namespace Tailor
             //void print_all_meshes_in_partitions_uniproc();
             bool load();
             void set_global_rm(const RegularMesh& rm);
-            std::map<Tag, int> search_rm(const AABB& aabb, const vec3<double>& cnt, std::pair<Tag, int>& resbin, bool verbose) const;
+            std::map<Tag, int> search_rm(const AABB& aabb, const Vector3& cnt, std::pair<Tag, int>& resbin, bool verbose) const;
 
             //void reduce_sp();
             void reset_mesh_connectivity();

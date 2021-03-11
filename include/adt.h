@@ -34,11 +34,11 @@ namespace Tailor
         //ADTPoint(const std::vector<Point>& vertex): ADTPoint(vertex, -1) {}
         template<typename Rai> ADTPoint(Rai begin, Rai end, int idx);
         template<typename Rai> ADTPoint(Rai begin, Rai end): ADTPoint(begin, end, -1) {}
-        ADTPoint(const vec3<double>& p, int idx);
-        ADTPoint(const vec3<double>& p): ADTPoint(p, -1) {}
+        ADTPoint(const Vector3& p, int idx);
+        ADTPoint(const Vector3& p): ADTPoint(p, -1) {}
 
-        void rotate(double ang, int axis, const vec3<double>& rot_point);
-        void move(const vec3<double>& v);
+        void rotate(double ang, int axis, const Vector3& rot_point);
+        void move(const Vector3& v);
         void set_idx(int i);
         double dim(int i) const;
         const std::vector<double>& dim() const;
@@ -74,8 +74,8 @@ namespace Tailor
         Node(const Node& other);
         ~Node();
 
-        void rotate(double ang, int axis, const vec3<double>& rot_point);
-        void move(const vec3<double>& v);
+        void rotate(double ang, int axis, const Vector3& rot_point);
+        void move(const Vector3& v);
         double c(int i) const;
         double d(int i) const;
         void add_point(const ADTPoint& point);
@@ -134,8 +134,8 @@ namespace Tailor
 
         const AABB& aabb() const;
         //bool extend_aabb(const AABB& other_aabb);
-        void rotate(double ang, int axis, const vec3<double>& rot_point);
-        void move(const vec3<double>& v);
+        void rotate(double ang, int axis, const Vector3& rot_point);
+        void move(const Vector3& v);
         const Node* const root() const;
         bool remove(int id);
         //void insert(const std::vector<ADTPoint>& points);

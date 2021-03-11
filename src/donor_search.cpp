@@ -239,7 +239,7 @@ namespace Tailor
 
     void set_type_no_overlap(Mesh& active_mesh, const HoleMap* passivehm, const MeshCell& mc)
     {
-        const vec3<double>& target = mc.poly().centroid();
+        const Vector3& target = mc.poly().centroid();
         const Tag& ct = mc.tag();
         auto cell_type = mc.oga_cell_type();
 
@@ -261,7 +261,7 @@ namespace Tailor
     {
         ++adthit;
         const Tag& ct = mc.tag();
-        const vec3<double>& target = mc.poly().centroid();
+        const Vector3& target = mc.poly().centroid();
         ADTPoint targetadt(target, mc.tag()());
         std::vector<int> res = passive_cell_adt.search(targetadt);
 
@@ -598,7 +598,7 @@ namespace Tailor
         const Tag& ct = mc.tag();
         const MeshCell* closest_cell;
         int iter = 0;
-        const vec3<double>& target = mc.poly().centroid();
+        const Vector3& target = mc.poly().centroid();
         StencilWalkResult result = stencil_walk(passive_mesh, target, starting_cell, closest_cell, dummyrank, iter, false);
         min_iter = std::min(min_iter, iter);
         max_iter = std::max(max_iter, iter);

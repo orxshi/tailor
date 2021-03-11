@@ -7,7 +7,7 @@ namespace Tailor
         calc_roe_ave_vars(left, right, gamma, isbou);
     }
 
-    //vararray RiemannSolver::jump_ver_1(const State& left, const State& right)
+    //Vector5 RiemannSolver::jump_ver_1(const State& left, const State& right)
     //{
     //    double rhoL = left.rho;
     //    double pL = left.p;
@@ -30,7 +30,7 @@ namespace Tailor
     //    assert(!std::isnan(left.ql));
     //    assert(!std::isnan(right.ql));
 
-    //    vararray jump;
+    //    Vector5 jump;
 
     //    jump[0] = rhoR - rhoL;
     //    jump[1] = pR - pL;
@@ -44,7 +44,7 @@ namespace Tailor
     //    return jump;
     //}
     
-    vararray RiemannSolver::jump_ver_2(const State& left, const State& right)
+    Vector5 RiemannSolver::jump_ver_2(const State& left, const State& right)
     {
         double rhoL = left.rho;
         double uL = left.u;
@@ -57,7 +57,7 @@ namespace Tailor
         double wR = right.w;
         double ER = right.E;
 
-        vararray jump;
+        Vector5 jump;
 
         jump[0] = rhoR - rhoL;
         jump[1] = rhoR*uR - rhoL*uL; 
@@ -68,7 +68,7 @@ namespace Tailor
         return jump;
     }
 
-    //vararray RiemannSolver::jump_ver_3(const State& left, const State& right)
+    //Vector5 RiemannSolver::jump_ver_3(const State& left, const State& right)
     //{
     //    double rhoL = left.rho;
     //    double uL = left.u;
@@ -81,7 +81,7 @@ namespace Tailor
     //    double wR = right.w;
     //    double pR = right.p;
 
-    //    vararray jump;
+    //    Vector5 jump;
 
     //    jump[0] = rhoR - rhoL;
     //    jump[1] = uR - uL;
@@ -161,9 +161,9 @@ namespace Tailor
         //asq = std::pow(a,2.);
     }
 
-    varmat RiemannSolver::right_eigenv(double vfn)
+    Matrix5 RiemannSolver::right_eigenv(double vfn)
     {
-        varmat R;
+        Matrix5 R;
 
         double vnet = u - vfn;
 
@@ -200,7 +200,7 @@ namespace Tailor
         return R;
     }
 
-    void rhll_normals(const State& left, const State& right, const vec3<double>& normal, double& alpha1, double& alpha2, vec3<double>& n1, vec3<double>& n2, bool isbou)
+    void rhll_normals(const State& left, const State& right, const Vector3& normal, double& alpha1, double& alpha2, Vector3& n1, Vector3& n2, bool isbou)
     {
         double nx = normal(0);
         double ny = normal(1);
@@ -451,11 +451,11 @@ namespace Tailor
         //SRp = u + a;
     }
 
-    /*varmat RiemannSolver::rhll_abs_eigen(double alpha1, double alpha2, double SLm, double SRp, double vfn)
+    /*Matrix5 RiemannSolver::rhll_abs_eigen(double alpha1, double alpha2, double SLm, double SRp, double vfn)
     {
         auto ws = abs_eigen(vfn);
         auto eig = eigen(vfn);
-        varmat I;
+        Matrix5 I;
         I = 0.;
         double temp = alpha1 * 2. * SRp * SLm;
         I(0,0) = temp;
@@ -469,11 +469,11 @@ namespace Tailor
         return comws;
     }*/
 
-    varmat RiemannSolver::eigen(double vfn)
+    Matrix5 RiemannSolver::eigen(double vfn)
     {
         // wave speeds
 
-        varmat ws;
+        Matrix5 ws;
         ws = 0.;
 
         assert(!std::isnan(a));
@@ -489,11 +489,11 @@ namespace Tailor
         return ws;
     }
 
-    varmat RiemannSolver::abs_eigen(double vfn, const State& left, const State& right)
+    Matrix5 RiemannSolver::abs_eigen(double vfn, const State& left, const State& right)
     {
         // Absolute values of the wave speeds
 
-        varmat ws;
+        Matrix5 ws;
         ws = 0.;
 
         assert(!std::isnan(a));
@@ -547,11 +547,11 @@ namespace Tailor
         return ws;
     }
 
-    /*vararray RiemannSolver::wave_strength_ver_2(const State& left, const State& right, const vec3<double>& n)
+    /*Vector5 RiemannSolver::wave_strength_ver_2(const State& left, const State& right, const Vector3& n)
     {
         auto jump = jump_ver_2(left, right);
 
-        vararray ldu;
+        Vector5 ldu;
 
         double nx = n(0);
         double ny = n(1);
@@ -569,10 +569,10 @@ namespace Tailor
         return ldu;
     }*/
 
-    vararray RiemannSolver::wave_strength_ver_1(const State& left, const State& right, double gamma, double vfn)
+    Vector5 RiemannSolver::wave_strength_ver_1(const State& left, const State& right, double gamma, double vfn)
     {
-        vararray jump = jump_ver_2(left, right);
-        vararray ldu;
+        Vector5 jump = jump_ver_2(left, right);
+        Vector5 ldu;
         
         auto vnet = u - vfn;
 
@@ -614,11 +614,11 @@ namespace Tailor
         return ldu;
     }
 
-    vararray RiemannSolver::dissipation_term(const State& left, const State& right, const varmat& ws, const varmat& R, double gamma, double vfn)
+    Vector5 RiemannSolver::dissipation_term(const State& left, const State& right, const Matrix5& ws, const Matrix5& R, double gamma, double vfn)
     {
-        vararray diss;
+        Vector5 diss;
 
-        vararray ldu = wave_strength_ver_1(left, right, gamma, vfn);
+        Vector5 ldu = wave_strength_ver_1(left, right, gamma, vfn);
         //auto ldu = wave_strength_ver_2(left, right, n);
 
 
@@ -637,22 +637,22 @@ namespace Tailor
         return diss;
     }
 
-    vararray RiemannSolver::rhll_numerical_flux(double SLm, double SRp, const State& left, const State& right, const State& leftn2, const State& rightn2, const varmat& ws, const varmat& R, double facearea, const vec3<double>& n, double gamma, double vfn)
+    Vector5 RiemannSolver::rhll_numerical_flux(double SLm, double SRp, const State& left, const State& right, const State& leftn2, const State& rightn2, const Matrix5& ws, const Matrix5& R, double facearea, const Vector3& n, double gamma, double vfn)
     {
-        vararray diss = dissipation_term(leftn2, rightn2, ws, R, gamma, vfn);
+        Vector5 diss = dissipation_term(leftn2, rightn2, ws, R, gamma, vfn);
         auto nf = (SRp*left.flux - SLm*right.flux)/(SRp-SLm) - 0.5 * diss;
         nf = facearea * nf;
         return nf;
     }
 
-    vararray RiemannSolver::hlle_numerical_flux(double SLm, double SRp, const State& left, const State& right, double facearea)
+    Vector5 RiemannSolver::hlle_numerical_flux(double SLm, double SRp, const State& left, const State& right, double facearea)
     {
         auto nf = (SRp*left.flux - SLm*right.flux + SLm*SRp*(right.cons-left.cons))/(SRp-SLm);
         nf = facearea * nf;
         return nf;
     }
 
-    vararray RiemannSolver::hllc_numerical_flux(double SLm, double SRp, const State& left, const State& right, double facearea)
+    Vector5 RiemannSolver::hllc_numerical_flux(double SLm, double SRp, const State& left, const State& right, double facearea)
     {
         auto rhoL = left.rho;
         auto uL = left.u;
@@ -675,14 +675,14 @@ namespace Tailor
 
         auto Ss = (pR - pL + uL * temp1 - uR * temp2) / (temp1 - temp2);
 
-        vararray vecL;
+        Vector5 vecL;
         vecL[0] = 1.;
         vecL[1] = Ss;
         vecL[2] = vL;
         vecL[3] = wL;
         vecL[4] = EL / rhoL + (Ss - uL) * (Ss + pL / (rhoL * (SLm - uL)));
 
-        vararray vecR;
+        Vector5 vecR;
         vecR[0] = 1.;
         vecR[1] = Ss;
         vecR[2] = vR;
@@ -729,9 +729,9 @@ namespace Tailor
         //}
     }
 
-    vararray RiemannSolver::numerical_flux(const State& left, const State& right, const varmat& ws, const varmat& R, double facearea, double gamma, double vfn)
+    Vector5 RiemannSolver::numerical_flux(const State& left, const State& right, const Matrix5& ws, const Matrix5& R, double facearea, double gamma, double vfn)
     {
-        vararray diss = dissipation_term(left, right, ws, R, gamma, vfn);
+        Vector5 diss = dissipation_term(left, right, ws, R, gamma, vfn);
         assert(!std::isnan(left.flux[0]));
         assert(!std::isnan(right.flux[0]));
         assert(!std::isnan(diss[0]));
@@ -771,7 +771,7 @@ namespace Tailor
         //double lstny = 0.5 * a * ny / asq;
         //double lstnz = 0.5 * a * nz / asq;
 
-        varmat L;
+        Matrix5 L;
 
         double gc = gamma - 1.;
 
@@ -874,15 +874,15 @@ namespace Tailor
         return L;
     }
 
-    varmat RiemannSolver::Jacobian(const varmat& ws, const varmat& R, double gamma, double vfn)
+    Matrix5 RiemannSolver::Jacobian(const Matrix5& ws, const Matrix5& R, double gamma, double vfn)
     {
         return ((R * ws) * left_eigenv(gamma, vfn));
     }
 
-    void RiemannSolver::roe(const State& left, const State& right, const State& leftorig, const State& rightorig, vararray& numflux, varmat& Aroe, double& max_eigen, double signed_area, double gamma, double vfn)
+    void RiemannSolver::roe(const State& left, const State& right, const State& leftorig, const State& rightorig, Vector5& numflux, Matrix5& Aroe, double& max_eigen, double signed_area, double gamma, double vfn)
     {
-        varmat R = right_eigenv(vfn);
-        varmat ws = abs_eigen(vfn, left, right);
+        Matrix5 R = right_eigenv(vfn);
+        Matrix5 ws = abs_eigen(vfn, left, right);
         numflux = numerical_flux(left, right, ws, R, signed_area, gamma, vfn);
         Aroe = Jacobian(ws, R, gamma, vfn);
         max_eigen = ws.max();
@@ -905,14 +905,14 @@ namespace Tailor
         //assert(abs(numflux(3)) < 1e-0);
     }
 
-    //void RiemannSolver::rhll(const State& left, const State& right, vararray& numflux, varmat& Aroe, double& max_eigen, double signed_area, const vec3<double>& normal, double gamma, bool isbou, double& SLm ,double& SRp)
+    //void RiemannSolver::rhll(const State& left, const State& right, Vector5& numflux, Matrix5& Aroe, double& max_eigen, double signed_area, const Vector3& normal, double gamma, bool isbou, double& SLm ,double& SRp)
     //{
     //    if (isbou)
     //    {
     //        return bbb(left, right, numflux, Aroe, max_eigen, signed_area, normal, gamma);
     //    }
     //    double alpha1, alpha2;
-    //    vec3<double> n1, n2;
+    //    Vector3 n1, n2;
 
     //    rhll_normals(left, right, normal, alpha1, alpha2, n1, n2, isbou);
     //    rhll_ws_est(left, right, SLm, SRp);
@@ -929,7 +929,7 @@ namespace Tailor
     //    rightn2.nz = n2(2); 
 
     //    calc_roe_ave_vars(leftn2, rightn2, gamma, isbou);
-    //    varmat R = right_eigenv();
+    //    Matrix5 R = right_eigenv();
     //    auto ws = rhll_abs_eigen(alpha1, alpha2, SLm, SRp);
     //    numflux = rhll_numerical_flux(SLm, SRp, left, right, leftn2, rightn2, ws, R, signed_area, n2, gamma);
 
@@ -937,24 +937,24 @@ namespace Tailor
     //    max_eigen = std::max({std::abs(ws(0,0)), std::abs(ws(1,1)), std::abs(ws(2,2)), std::abs(ws(3,3)), std::abs(ws(4,4))});
     //}
 
-    void RiemannSolver::hlle(const State& left, const State& right, vararray& numflux, double& max_eigen, double signed_area, double gamma, bool isbou, double& SLm ,double& SRp, double vfn)
+    void RiemannSolver::hlle(const State& left, const State& right, Vector5& numflux, double& max_eigen, double signed_area, double gamma, bool isbou, double& SLm ,double& SRp, double vfn)
     {
         rhll_ws_est(left, right, SLm, SRp, vfn);
         //ws_est_pbased(left, right, SLm, SRp, gamma);
 
-        varmat ws = abs_eigen(vfn, left, right);
+        Matrix5 ws = abs_eigen(vfn, left, right);
         numflux = hlle_numerical_flux(SLm, SRp, left, right, signed_area);
 
         max_eigen = std::max({std::abs(ws(0,0)), std::abs(ws(1,1)), std::abs(ws(2,2)), std::abs(ws(3,3)), std::abs(ws(4,4))});
     }
 
-    void RiemannSolver::hllc(const State& left, const State& right, vararray& numflux, double& max_eigen, double signed_area, double gamma, bool isbou, double& SLm , double& SRp, double vfn)
+    void RiemannSolver::hllc(const State& left, const State& right, Vector5& numflux, double& max_eigen, double signed_area, double gamma, bool isbou, double& SLm , double& SRp, double vfn)
     {
         //rhll_ws_est(left, right, SLm, SRp, vfn);
         rhll_ws_est_pres(left, right, SLm, SRp, vfn, gamma);
         //ws_est_pbased(left, right, SLm, SRp, gamma);
 
-        varmat ws = abs_eigen(vfn, left, right);
+        Matrix5 ws = abs_eigen(vfn, left, right);
         numflux = hllc_numerical_flux(SLm, SRp, left, right, signed_area);
 
         max_eigen = std::max({std::abs(ws(0,0)), std::abs(ws(1,1)), std::abs(ws(2,2)), std::abs(ws(3,3)), std::abs(ws(4,4))});

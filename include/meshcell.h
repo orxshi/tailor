@@ -71,20 +71,20 @@ namespace Tailor
         Donorcon prev_cand_donor_;
         //FinalCandDonor prev_cand_donor_mesh_;
         //FinalCandDonor prev_cand_donor_cell_;
-        vec3<double> vgn_;
+        Vector3 vgn_;
 
-        vararray prim_;
-        vararray cons_sp1_;
-        vararray cons_s_;
-        vararray cons_n_;
-        vararray cons_nm1_;
-        vararray dQ_; 
-        vararray old_dQ_;
+        Vector5 prim_;
+        Vector5 cons_sp1_;
+        Vector5 cons_s_;
+        Vector5 cons_n_;
+        Vector5 cons_nm1_;
+        Vector5 dQ_; 
+        Vector5 old_dQ_;
         double max_eigen_;
-        vararray R_;
-        Matrix<NVAR, NVAR> D_;
-        vararray R_mid_;
-        Matrix<NVAR, NVAR> D_mid_;
+        Vector5 R_;
+        Matrix5 D_;
+        Vector5 R_mid_;
+        Matrix5 D_mid_;
         std::vector<double> ls_wx_;
         std::vector<double> ls_wy_;
         std::vector<double> ls_wz_;
@@ -100,9 +100,9 @@ namespace Tailor
 
         public:
 
-        vec3<double> vgn() const;
+        Vector3 vgn() const;
         void mesh_velocity(double dt, const Freestream& fs, const Component& compo);
-        void init(const vec3<double>& vinf_air, const Freestream& fs, const Component& compo);
+        void init(const Vector3& vinf_air, const Freestream& fs, const Component& compo);
         std::vector<Tag> boundaries() const;
         //const MeshCell* donor_addr() const;
         void reset_face_tags();
@@ -111,19 +111,19 @@ namespace Tailor
         double cons_s(int i) const;
         double cons_n(int i) const;
         double cons_nm1(int i) const;
-        const vararray& prim() const;
-        const vararray& cons_sp1() const;
-        const vararray& cons_s() const;
-        const vararray& cons_n() const;
-        const vararray& cons_nm1() const;
-        const vararray& R() const;
-        const vararray& dQ() const;
-        const vararray& old_dQ() const;
-        const Matrix<NVAR, NVAR>& D() const;
+        const Vector5& prim() const;
+        const Vector5& cons_sp1() const;
+        const Vector5& cons_s() const;
+        const Vector5& cons_n() const;
+        const Vector5& cons_nm1() const;
+        const Vector5& R() const;
+        const Vector5& dQ() const;
+        const Vector5& old_dQ() const;
+        const Matrix5& D() const;
         double D(int i, int j) const;
-        const Matrix<NVAR, NVAR>& M() const;
+        const Matrix5& M() const;
         double R(int i) const;
-        void set_prim(const vararray& other);
+        void set_prim(const Vector5& other);
 
         void deparent_neis_from_faces();
         void update_prev_cand_donor();
@@ -164,9 +164,9 @@ namespace Tailor
         void reset_oga_status();
         const Tag& parent_mesh() const;
         void remove_parent_cells_of_vertices();
-        void rotate_points(double ang, const vec3<double>& rot_axis);
-        void rotate_points(double ang, int axis, const vec3<double>& rot_axis);
-        void move_points(const vec3<double>& final_loc);
+        void rotate_points(double ang, const Vector3& rot_axis);
+        void rotate_points(double ang, int axis, const Vector3& rot_axis);
+        void move_points(const Vector3& final_loc);
         void remove_cand_donor(const Tag& donor_cell, const Tag& donor_mesh);
         void set_donor(const Tag& im, const Tag& ic, const MeshCell* donor_addr);
         void set_oga_cell_type(OGA_cell_type_t t, const Tag& donor_mesh, const Tag& donor_cell, const MeshCell* donor_addr);
@@ -257,7 +257,7 @@ namespace Tailor
     };
 
     int nnon_boundary_face(const MeshCell& mc);
-    void minmax(const mcc& cell, vec3<double>& min, vec3<double>& max);
+    void minmax(const mcc& cell, Vector3& min, Vector3& max);
 }
 
 #endif

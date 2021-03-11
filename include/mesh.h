@@ -100,14 +100,14 @@ namespace Tailor
         mcc::iterator query_itp(const Tag& ic);
         int priority() const;
         void set_priority(int pri);
-        void connect_partition_cells(ArrCon<Nei>& arrival_cell, int rank, std::function<bool(const vec3<double>&, int celltag)> is_resi, Profiler*);
+        void connect_partition_cells(ArrCon<Nei>& arrival_cell, int rank, std::function<bool(const Vector3&, int celltag)> is_resi, Profiler*);
         void update_ghost_primitives(const ArrCon<Var>& arrival, int rank, double gamma);
         void oga_interpolate(const ArrCon<Var>& arrival, int rank);
         void oga_interpolate(const std::deque<Mesh>& mesh, int rank);
         void equate_RD_to_RDmid();
 
-        void init_sod(const vararray& L, const vararray& R, const Freestream& fs);
-        void init(const vec3<double>& vinf_air, const Freestream& fs);
+        void init_sod(const Vector5& L, const Vector5& R, const Freestream& fs);
+        void init(const Vector3& vinf_air, const Freestream& fs);
 
         void connect_add_bou_to_interior(BouType boutype, int rank);
         void reset_R_checked();
@@ -121,9 +121,9 @@ namespace Tailor
         void calc_mesh_velocities(const Freestream& fs, int rank);
         void reset_R();
         void reset_D();
-        void set_prim_cons(BouType btype, const vararray& prim, double gamma);
+        void set_prim_cons(BouType btype, const Vector5& prim, double gamma);
 
-        void connect_after_exchange(std::function<bool(const vec3<double>&)> is_resi, int rank, Profiler*, std::string);
+        void connect_after_exchange(std::function<bool(const Vector3&)> is_resi, int rank, Profiler*, std::string);
         void update_interior_face(MeshFace& mf, MeshFace& cf, MeshCell& mc, MeshCell& cc, MeshFace& gmf);
         //void updateface(MeshFace& mf, MeshFace& cf);
         //void addface(MeshFace& mf, MeshFace& cf, int& facecounter);
@@ -149,7 +149,7 @@ namespace Tailor
 
         //size_t mem() const;
 
-        void bbox(vec3<double>& min_, vec3<double>& max_) const;
+        void bbox(Vector3& min_, Vector3& max_) const;
 
         void reset_erase_marks();
 
@@ -221,8 +221,8 @@ namespace Tailor
         const MeshCell* empty_boundary(const Tag& t) const;
         bool do_point_exist(const Tag& t) const;
 
-        void move(const vec3<double>& v);
-        void rotate(double angle, int axis, const vec3<double>& rot_point);
+        void move(const Vector3& v);
+        void rotate(double angle, int axis, const Vector3& rot_point);
         void print_as_vtk (std::string file_name) const;
         void print_as_vtk_geometry(std::string file_name) const;
         void print_wall_as_vtk(std::string file_name) const;
@@ -262,7 +262,7 @@ namespace Tailor
         // donor search
         void convert_candholes_to_holes();
         void convert_undefined_to_field();
-        void convert_undefined_to_nonresident(std::function<bool(const vec3<double>& cnt)> resi_fn);
+        void convert_undefined_to_nonresident(std::function<bool(const Vector3& cnt)> resi_fn);
         void set_as_hole(const std::set<Tag>& overlaps);
         void set_as_hole(const Tag& t);
         //void set_as_mreceptor(const Tag& t);
@@ -281,8 +281,8 @@ namespace Tailor
         // connectivity
         void connect_add_bou_to_interior(Mesh& boumesh, BouType boutype, int rank);
         //void connect_cells();
-        void connect_cells(std::function<bool(const vec3<double>&)> is_resi, int rank);
-        void connect_cells(std::function<bool(const vec3<double>&)> is_resi, int rank, Profiler* profiler, std::string name);
+        void connect_cells(std::function<bool(const Vector3&)> is_resi, int rank);
+        void connect_cells(std::function<bool(const Vector3&)> is_resi, int rank, Profiler* profiler, std::string name);
         //void connect_add_outer_to_interior(const Mesh& wm, std::string dummyfilename);
         //void connect_add_wall_to_interior(const Mesh& wm);
         void destroy_cell_hood();

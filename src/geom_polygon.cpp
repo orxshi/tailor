@@ -2,11 +2,11 @@
 
 namespace Tailor
 {
-    const vec3<double>& Polygon::min() const
+    const Vector3& Polygon::min() const
     {
         return min_;
     }
-    const vec3<double>& Polygon::max() const
+    const Vector3& Polygon::max() const
     {
         return max_;
     }
@@ -46,11 +46,11 @@ namespace Tailor
     //bool Polygon::do_intersect_plane(const Polygon& other)
     //{
         // takes in two in-plane polygons.
-        //vec3<double> interp;
+        //Vector3 interp;
         //bool do_intersect_plane_segment(vertex_[0].r(), vertex_[1].r(), vertex_[2].r(), other.edge(0), interp);
     //}
 
-    Polygon create_with_sweep(const Segment& segment, const vec3<double>& v)
+    Polygon create_with_sweep(const Segment& segment, const Vector3& v)
     {
         assert(segment.vertex().size() == 2);
         std::vector<Point> vtx;
@@ -74,7 +74,7 @@ namespace Tailor
         return Polygon(vtx);
     }
 
-    /*bool Polygon::do_intersect(const vec3<double>& v) const
+    /*bool Polygon::do_intersect(const Vector3& v) const
     {
     // any need for this function?
         for (int i=0; i<3; ++i)
@@ -110,7 +110,7 @@ namespace Tailor
         return edge_[i];
     }
 
-    void Polygon::rotate_points(double angle, double axis, const vec3<double>& rot_point)
+    void Polygon::rotate_points(double angle, double axis, const Vector3& rot_point)
     {
         RotationMatrix rm;
 
@@ -133,7 +133,7 @@ namespace Tailor
         reset_centroid_ = true;
     }
 
-    void Polygon::move_points(const vec3<double>& v)
+    void Polygon::move_points(const Vector3& v)
     {
         for (Point& _p: vertex_)
         {
@@ -162,22 +162,22 @@ namespace Tailor
 
     void Polygon::set_bbox()
     {
-        min_.set_x(TAILOR_BIG_POS_NUM);
-        min_.set_y(TAILOR_BIG_POS_NUM);
-        min_.set_z(TAILOR_BIG_POS_NUM);
-        max_.set_x(TAILOR_BIG_NEG_NUM);
-        max_.set_y(TAILOR_BIG_NEG_NUM);
-        max_.set_z(TAILOR_BIG_NEG_NUM);
+        min_(0) = TAILOR_BIG_POS_NUM;
+        min_(1) = TAILOR_BIG_POS_NUM;
+        min_(2) = TAILOR_BIG_POS_NUM;
+        max_(0) = TAILOR_BIG_NEG_NUM;
+        max_(1) = TAILOR_BIG_NEG_NUM;
+        max_(2) = TAILOR_BIG_NEG_NUM;
 
         for (int i=0; i<vertex_.size(); ++i)
         {
-            min_.set_x(std::min(min_(0), vertex_[i].r(0)));
-            min_.set_y(std::min(min_(1), vertex_[i].r(1)));
-            min_.set_z(std::min(min_(2), vertex_[i].r(2)));
+            min_(0) = std::min(min_(0), vertex_[i].r(0));
+            min_(1) = std::min(min_(1), vertex_[i].r(1));
+            min_(2) = std::min(min_(2), vertex_[i].r(2));
 
-            max_.set_x(std::max(max_(0), vertex_[i].r(0)));
-            max_.set_y(std::max(max_(1), vertex_[i].r(1)));
-            max_.set_z(std::max(max_(2), vertex_[i].r(2)));
+            max_(0) = std::max(max_(0), vertex_[i].r(0));
+            max_(1) = std::max(max_(1), vertex_[i].r(1));
+            max_(2) = std::max(max_(2), vertex_[i].r(2));
         }
     }
 
@@ -259,25 +259,25 @@ namespace Tailor
         auto v1 = vertex_[1].r();
         auto v2 = vertex_[2].r();
 
-        vec3<double> cr = cross((v0-v1), (v2-v1));
+        Vector3 cr = cross((v0-v1), (v2-v1));
 
         if (std::abs(cr(0)) <= TAILOR_ZERO)
         {
-            cr.set_x(0.);
+            cr(0) = 0.;
         }
         if (std::abs(cr(1)) <= TAILOR_ZERO)
         {
-            cr.set_y(0.);
+            cr(1) = 0.;
         }
         if (std::abs(cr(2)) <= TAILOR_ZERO)
         {
-            cr.set_z(0.);
+            cr(2) = 0.;
         }
 
-        return cr.len();
+        return len(cr);
     }
 
-    vec3<double> Polygon::normal() const
+    Vector3 Polygon::normal() const
     {
         if (reset_normal_ == false)
         {
@@ -301,7 +301,7 @@ namespace Tailor
         //return *normal_;
     }
 
-    /*vec3<double> Polygon::normal() const
+    /*Vector3 Polygon::normal() const
     {
         // 3 points or two edges are enough to calculate normal.
         // No need to calculate area first.
@@ -316,9 +316,9 @@ namespace Tailor
         }
         assert(vertex_.size() >= 3);
 
-        vec3<double> a = vertex_[0].r();
-        vec3<double> b = vertex_[1].r();
-        vec3<double> c = vertex_[2].r();
+        Vector3 a = vertex_[0].r();
+        Vector3 b = vertex_[1].r();
+        Vector3 c = vertex_[2].r();
 
         auto cr = cross((a-b), (c-b)); 
         if (cr.len() <= TAILOR_ZERO)
@@ -463,7 +463,7 @@ namespace Tailor
         return cnt;
     }
 
-    vec3<double> Polygon::centroid() const
+    Vector3 Polygon::centroid() const
     {
         // https://stackoverflow.com/a/2360507/1128551
 
@@ -486,15 +486,15 @@ namespace Tailor
             cntz += v.r(2);
         }
 
-        vec3<double> cnt;
-        cnt.set_x(cntx / vertex_.size());
-        cnt.set_y(cnty / vertex_.size());
-        cnt.set_z(cntz / vertex_.size());
+        Vector3 cnt;
+        cnt(0) = cntx / vertex_.size();
+        cnt(1) = cnty / vertex_.size();
+        cnt(2) = cntz / vertex_.size();
 
         /*std::vector<double> cnt_xy = Polygon::centroid_ab(0, 1);
         std::vector<double> cnt_xz = Polygon::centroid_ab(0, 2);
 
-        vec3<double> cnt;
+        Vector3 cnt;
         cnt.set_x(cnt_xy[0]);
         cnt.set_y(cnt_xy[1]);
         cnt.set_z(cnt_xz[1]);*/
@@ -526,7 +526,7 @@ namespace Tailor
             if ((max_(i) - cnt(i)) < 0.)
             {
                 assert(std::abs((max_(i) - cnt(i))) <= TAILOR_ZERO);
-                cnt.set(i, max_(i));
+                cnt(i) = max_(i);
             }
 
             if ((min_(i) - cnt(i)) > 0.)
@@ -540,7 +540,7 @@ namespace Tailor
                     std::cout << "diffmin: " << cnt(i) - min_(i) << std::endl;
                 }
                 assert(std::abs((cnt(i) - min_(i))) <= TAILOR_ZERO);
-                cnt.set(i, min_(i));
+                cnt(i) = min_(i);
             }
         }
 
@@ -709,15 +709,15 @@ namespace Tailor
         return *signed_area_;
     }*/
 
-    double magcross2D(const vec3<double>& a, const vec3<double>& b)
+    double magcross2D(const Vector3& a, const Vector3& b)
     {
         return std::abs(a(0) * b(1) - a(1) * b(0));
     }
 
-    //vec3<double> normalize(const vec3<double>& a)
+    //Vector3 normalize(const Vector3& a)
     //{
         //double mag = std::sqrt(a(0)*a(0) + a(1)*a(1));
-        //vec3<double> b;
+        //Vector3 b;
         //b.set(a(0)/mag, b(0)/mag);
         //return b;
     //}
@@ -727,7 +727,7 @@ namespace Tailor
         return vertex_[i];
     }
 
-    bool Polygon::do_intersect(const vec3<double>& r, int ignoredim, bool verbose) const
+    bool Polygon::do_intersect(const Vector3& r, int ignoredim, bool verbose) const
     {
         // 2D polygon-point inclusion test.
 
@@ -768,17 +768,17 @@ namespace Tailor
 
         //double off = edge_[0].len() / 2.;
 
-        //vec3<double> a(min_(0) - off / 2., min_(1) - off, min_(2) - off / 3.);
+        //Vector3 a(min_(0) - off / 2., min_(1) - off, min_(2) - off / 3.);
         auto a = centroid();
         //a.set(ignoredim, 0.);
-        a.set(ignoredim, min_(ignoredim));
+        a(ignoredim) = min_(ignoredim);
         for (int i=0; i<TAILOR_N_DIM; ++i)
         {
             if (i == ignoredim) {
                 continue;
             }
 
-            a.set(i, a(i) - (max_(i) - min_(i)));
+            a(i) = a(i) - (max_(i) - min_(i));
             break;
         }
 
@@ -794,8 +794,8 @@ namespace Tailor
         int counter = 0;
         for (const Segment& f: edge_)
         {
-            //vec3<double> t0(f.vertex(0).r());
-            //vec3<double> t1(f.vertex(1).r());
+            //Vector3 t0(f.vertex(0).r());
+            //Vector3 t1(f.vertex(1).r());
             //t0.set(ignoredim, 0.);
             //t1.set(ignoredim, 0.);
             //Point pp0(t0);
@@ -835,10 +835,10 @@ namespace Tailor
         return true;
     }
 
-    bool Polygon::do_plane_intersect(const Segment& s, vec3<double>& interp, bool verbose) const
+    bool Polygon::do_plane_intersect(const Segment& s, Vector3& interp, bool verbose) const
     {
-        const vec3<double>& p0 = s.vertex(0).r();
-        const vec3<double>& p1 = s.vertex(1).r();
+        const Vector3& p0 = s.vertex(0).r();
+        const Vector3& p1 = s.vertex(1).r();
 
         auto w = p0 - vertex_[0].r();
         auto u = p1 - p0;
@@ -854,24 +854,24 @@ namespace Tailor
             std::cout << "w: " << w(0) << " " << w(1) << " " << w(2) << std::endl;
             std::cout << "u: " << u(0) << " " << u(1) << " " << u(2) << std::endl;
             std::cout << "n: " << n(0) << " " << n(1) << " " << n(2) << std::endl;
-            std::cout << "dot: " << std::abs(dotp(n, u)) << std::endl;
+            std::cout << "dot: " << std::abs(dot(n, u)) << std::endl;
             }
         }
 
         // first check if the polygon and the segment are parallel.
-        if (std::abs(dotp(n, u)) <= TAILOR_ZERO) {
+        if (std::abs(dot(n, u)) <= TAILOR_ZERO) {
 
             return false;
         }
 
-        double si = -dotp(n, w) / dotp(n, u);
+        double si = -dot(n, w) / dot(n, u);
 
         if (verbose)
         {
             //if (n(0) == 1 && n(1) == 0 && n(2) == 0)
             {
-            std::cout << "-dotp(n, w): " << -dotp(n, w) << std::endl;
-            std::cout << "dotp(n, u): " << dotp(n, u) << std::endl;
+            std::cout << "-dot(n, w): " << -dot(n, w) << std::endl;
+            std::cout << "dot(n, u): " << dot(n, u) << std::endl;
             std::cout << "si: " << si << std::endl;
             }
         }
@@ -1088,7 +1088,7 @@ namespace Tailor
 
     bool Polygon::do_intersect(const Segment& s, bool& just_on_face, bool verbose) const
     {
-        vec3<double> interp;
+        Vector3 interp;
         //bool inter = do_intersect_plane_segment(vertex_[0].r(), vertex_[1].r(), vertex_[2].r(), s, interp);
         bool inter = do_plane_intersect(s, interp, verbose);
 
@@ -1139,7 +1139,7 @@ namespace Tailor
         int ignoredim = std::distance(nn.begin(), it);
 
         //interp.set(ignoredim, 0.);
-        interp.set(ignoredim, min_(ignoredim));
+        interp(ignoredim) = min_(ignoredim);
         return do_intersect(interp, ignoredim, verbose);
     }
 
@@ -1148,9 +1148,9 @@ namespace Tailor
         //https://stackoverflow.com/questions/5666222/3d-line-plane-intersection
         //https://developer.blender.org/diffusion/B/browse/master/source/blender/blenlib/intern/math_geom.c;6856ea06425357921bd9a7e5089c2f2adbf1413a$1352
 
-        vec3<double> p0 = s.vertex(0).r();
-        vec3<double> p1 = s.vertex(1).r();
-        vec3<double> v0 = vertex_[0].r();
+        Vector3 p0 = s.vertex(0).r();
+        Vector3 p1 = s.vertex(1).r();
+        Vector3 v0 = vertex_[0].r();
 
         auto n = normal();
 
@@ -1180,9 +1180,9 @@ namespace Tailor
     {
         // https://math.stackexchange.com/questions/47594/plane-intersecting-line-segment
 
-        vec3<double> p0 = s.vertex(0).r();
-        vec3<double> p1 = s.vertex(1).r();
-        vec3<double> v0 = vertex_[0].r();
+        Vector3 p0 = s.vertex(0).r();
+        Vector3 p1 = s.vertex(1).r();
+        Vector3 v0 = vertex_[0].r();
         if (vertex_.size() < 3)
         {
             std::cout << "vertex size in signed area: " << vertex_.size() << std::endl;
@@ -1233,9 +1233,9 @@ namespace Tailor
     {
         // based on http://geomalgorithms.com/a05-_intersect-1.html
 
-        vec3<double> p0 = s.vertex(0).r();
-        vec3<double> p1 = s.vertex(1).r();
-        vec3<double> v0 = vertex_[0].r();
+        Vector3 p0 = s.vertex(0).r();
+        Vector3 p1 = s.vertex(1).r();
+        Vector3 v0 = vertex_[0].r();
 
         auto w = v0 - p0;
         auto u = p1 - p0;

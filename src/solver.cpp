@@ -400,7 +400,7 @@ namespace Tailor
         }
     }
 
-    void Solver::rotate(const Tag &mesh, double ang, int axis, const vec3<double> &pivot)
+    void Solver::rotate(const Tag &mesh, double ang, int axis, const Vector3 &pivot)
     {
         partition_->rotate(mesh, ang, axis, pivot);
     }
@@ -635,7 +635,7 @@ namespace Tailor
                 //continue;
                 //}
 
-                vararray primL, primR;
+                Vector5 primL, primR;
 
                 if (sorder_ == 2)
                 {
@@ -648,11 +648,11 @@ namespace Tailor
                     primR = RC->prim();
                 }
 
-                vararray flux;
-                varmat Aroe;
+                Vector5 flux;
+                Matrix5 Aroe;
                 double max_eigen;
 
-                vec3<double> normal;
+                Vector3 normal;
                 double vgn;
                 double signed_area;
                 const MeshCell *refcell = nullptr;
@@ -695,7 +695,7 @@ namespace Tailor
                 State left(LC->cons_sp1(), fs_.gamma_, T, LC->vgn(), vfn, vf, verbose, normal, comm_->rank());
                 State right(RC->cons_sp1(), fs_.gamma_, T, RC->vgn(), vfn, vf, verbose, normal, comm_->rank());
 
-                varmat TD;
+                Matrix5 TD;
                 TD(0, 0) = 1.;
                 TD(1, 1) = 1.;
                 TD(2, 2) = 1.;
@@ -1127,10 +1127,10 @@ namespace Tailor
         }
     }
 
-    vararray Solver::resi(Mesh &mesh)
+    Vector5 Solver::resi(Mesh &mesh)
     {
         // TODO refactor as L1 norm, abs, etc.
-        vararray res;
+        Vector5 res;
         res = 0.;
         //res = TAILOR_BIG_NEG_NUM;
         for (MeshCell &mc : mesh.cell_)
@@ -1480,8 +1480,8 @@ namespace Tailor
         bc_.update_fs(fs_);
     }
 
-    varmat Jacobian(const vararray& prim, double gamma, const vec3<double>& vf)
-    //varmat Jacobian(const State &state, double gamma)
+    Matrix5 Jacobian(const Vector5& prim, double gamma, const Vector3& vf)
+    //Matrix5 Jacobian(const State &state, double gamma)
     {
         //double rho = state.rho;
         //double u = state.u;
@@ -1508,7 +1508,7 @@ namespace Tailor
 
         double gs = gamma - 1.;
 
-        varmat A;
+        Matrix5 A;
 
         A(0, 0) = 0.;
         A(0, 1) = 1.;
@@ -1543,11 +1543,11 @@ namespace Tailor
         return A;
     }
 
-    /*varmat Jacobian(const vararray& q, const vec3<double>& n, double vgn, double gamma)
+    /*Matrix5 Jacobian(const Vector5& q, const Vector3& n, double vgn, double gamma)
     {
         // this is not Roe jacobian.
 
-        varmat A;
+        Matrix5 A;
 
         double gs = gamma - 1.;
 
@@ -1591,11 +1591,11 @@ namespace Tailor
         return A;
     }*/
 
-    /*varmat Jacobian(const vararray& q, const vec3<double>& n, double vgn)
+    /*Matrix5 Jacobian(const Vector5& q, const Vector3& n, double vgn)
     {
         // this is not Roe jacobian.
 
-        varmat A;
+        Matrix5 A;
 
         double gs = GAMMA - 1.;
 
@@ -1644,7 +1644,7 @@ namespace Tailor
         return A;
     }*/
 
-    /*void Solver::rhhl_update_matrices(const Matrix<NVAR, NVAR>& Aroe, MeshFace* myface, MeshFace* commonface, MeshCell& LC, MeshCell& RC, const vec3<double>& n, double vgn, double facearea, double SLm, double SRp, double vfn)
+    /*void Solver::rhhl_update_matrices(const Matrix<NVAR, NVAR>& Aroe, MeshFace* myface, MeshFace* commonface, MeshCell& LC, MeshCell& RC, const Vector3& n, double vgn, double facearea, double SLm, double SRp, double vfn)
     {
         auto JL = Jacobian(LC.prim(), fs_.gamma_, vfn);
         auto JR = Jacobian(RC.prim(), fs_.gamma_, vfn);
@@ -1666,12 +1666,12 @@ namespace Tailor
         }
     }*/
 
-    /*void Solver::hhl_update_matrices(MeshFace* myface, MeshFace* commonface, MeshCell& LC, MeshCell& RC, double facearea, double SL, double SR, const varmat& T, double vfn)
+    /*void Solver::hhl_update_matrices(MeshFace* myface, MeshFace* commonface, MeshCell& LC, MeshCell& RC, double facearea, double SL, double SR, const Matrix5& T, double vfn)
     {
         auto JL = Jacobian(T * LC.prim(), fs_.gamma_, vfn);
         auto JR = Jacobian(T * RC.prim(), fs_.gamma_, vfn);
 
-        varmat I;
+        Matrix5 I;
         I = 0.;
         I(0,0) = 1.;
         I(1,1) = 1.;
@@ -1698,8 +1698,8 @@ namespace Tailor
         }
     }*/
 
-    //void Solver::update_matrices(Mesh& mesh, const vararray& flux, const Matrix<NVAR, NVAR>& Aroe, MeshFace& mf, MeshCell& LC, MeshCell& RC, const vec3<double>& n, double vgn, double facearea)
-    void Solver::update_matrices(Mesh &mesh, const vararray &flux, const Matrix<NVAR, NVAR> &Aroe, MeshFace *myface, MeshFace *commonface, MeshCell &LC, MeshCell &RC, double facearea, double vol, double vfn, const vec3<double> &vf, const State &left, const State &right, const varmat &TT)
+    //void Solver::update_matrices(Mesh& mesh, const Vector5& flux, const Matrix<NVAR, NVAR>& Aroe, MeshFace& mf, MeshCell& LC, MeshCell& RC, const Vector3& n, double vgn, double facearea)
+    void Solver::update_matrices(Mesh &mesh, const Vector5 &flux, const Matrix<NVAR, NVAR> &Aroe, MeshFace *myface, MeshFace *commonface, MeshCell &LC, MeshCell &RC, double facearea, double vol, double vfn, const Vector3 &vf, const State &left, const State &right, const Matrix5 &TT)
     {
         auto JL = Jacobian(LC.prim(), fs_.gamma_, vf);
         auto JR = Jacobian(RC.prim(), fs_.gamma_, vf);
@@ -1708,7 +1708,7 @@ namespace Tailor
 
         //if (mf.btype() == boundary_t::interior)
         //{
-        //varmat I;
+        //Matrix5 I;
         //I = 0.;
         //I(0,0) = 1.;
         //I(1,1) = 1.;
@@ -1792,7 +1792,7 @@ namespace Tailor
         }*/
     }
 
-    Matrix<NVAR, NVAR> Solver::slipwall_M(const vec3<double> &n)
+    Matrix<NVAR, NVAR> Solver::slipwall_M(const Vector3 &n)
     {
         double nx = n(0);
         double ny = n(1);
@@ -1833,7 +1833,7 @@ namespace Tailor
         return M;
     }
 
-    void Solver::limit_prim_cons(Mesh &mesh, const MeshCell &mc, const MeshFace &mf, vararray &prim)
+    void Solver::limit_prim_cons(Mesh &mesh, const MeshCell &mc, const MeshFace &mf, Vector5 &prim)
     {
         if (mc.oga_cell_type() == OGA_cell_type_t::non_resident || mc.oga_cell_type() == OGA_cell_type_t::ghost)
         {
@@ -1895,7 +1895,7 @@ namespace Tailor
 
     void Solver::RK4(Mesh &mesh)
     {
-        vararray k1, k2, k3, k4;
+        Vector5 k1, k2, k3, k4;
 
         for (MeshCell &mc : mesh.cell_)
         {
@@ -1977,7 +1977,7 @@ namespace Tailor
         }
     }
 
-    void Solver::sweep(Mesh &mesh, MeshCell &mc, vararray &r1, vararray &r2, vararray &r3, int &maxcell)
+    void Solver::sweep(Mesh &mesh, MeshCell &mc, Vector5 &r1, Vector5 &r2, Vector5 &r3, int &maxcell)
     {
         mc.dQ_ = (1. - omega_) * mc.old_dQ_ + omega_ * mc.R() / mc.D();
 
@@ -2098,7 +2098,7 @@ namespace Tailor
             {
                 int rindex = cell_index[mc.tag()()];
 
-                std::map<int, varmat> order;
+                std::map<int, Matrix5> order;
                 order.insert(std::make_pair(rindex, mc.D()));
 
                 for (const auto &mf : mc.face())
@@ -2297,11 +2297,11 @@ namespace Tailor
         }
 
         int maxcell;
-        vararray r1;
-        vararray r3;
+        Vector5 r1;
+        Vector5 r3;
         for (int i = 0; i < nsweep_; ++i)
         {
-            vararray r2;
+            Vector5 r2;
             r2 = 0.;
             r1 = TAILOR_BIG_NEG_NUM;
             r3 = TAILOR_BIG_NEG_NUM;

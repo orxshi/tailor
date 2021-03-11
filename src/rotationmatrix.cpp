@@ -67,7 +67,7 @@ namespace Tailor
         assert(!std::isnan(rz[8]));
     }
 
-    vec3<double> RotationMatrix::rotate(double angle, int axis, const vec3<double>& v)
+    Vector3 RotationMatrix::rotate(double angle, int axis, const Vector3& v)
     {
         if (axis == 0) {
             set_rx(angle);
@@ -89,9 +89,9 @@ namespace Tailor
         }
     }
 
-    vec3<double> RotationMatrix::mul(const trimat& m, const vec3<double>& v)
+    Vector3 RotationMatrix::mul(const trimat& m, const Vector3& v)
     {
-        vec3<double> c;
+        Vector3 c;
 
         c.set_x(m[0] * v(0) + m[1] * v(1) + m[2] * v(2));
         c.set_y(m[3] * v(0) + m[4] * v(1) + m[5] * v(2));

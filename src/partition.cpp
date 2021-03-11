@@ -45,7 +45,7 @@ namespace Tailor
         read_settings();
     }
 
-    void Partition::rotate(const Tag& mesh, double ang, int axis, const vec3<double>& pivot)
+    void Partition::rotate(const Tag& mesh, double ang, int axis, const Vector3& pivot)
     {
         spc_->rotate_meshblocks(mesh, ang, axis, pivot);
     }

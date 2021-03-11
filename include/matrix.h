@@ -6,13 +6,7 @@
 
 namespace Tailor
 {
-    template<int nrow, int ncol>
-        class Matrix;
-
-    template<int nrow>
-        using Vector = Matrix<nrow, 1>;
-
-    template<int nrow, int ncol>
+    template<int nrow, int ncol, class T>
         class Matrix
         {
             public:
@@ -26,6 +20,16 @@ namespace Tailor
                             (*this)(r,c) = 0.;
                         }
                     }
+                }
+
+                Matrix(T a, T b, T c)
+                {
+                    assert(nrow == 3);
+                    assert(ncol == 1);
+
+                    (*this)(0) = a;
+                    (*this)(1) = b;
+                    (*this)(2) = c;
                 }
 
                 Matrix transpose()
@@ -47,9 +51,9 @@ namespace Tailor
                     return m;
                 }
 
-                double max() const
+                T max() const
                 {
-                    double mx = TAILOR_BIG_NEG_NUM;
+                    T mx = TAILOR_BIG_NEG_NUM;
 
                     for (int r=0; r<nrow; ++r)
                     {
@@ -62,24 +66,24 @@ namespace Tailor
                     return mx;
                 }
 
-                double& operator()(int row, int col)
+                T& operator()(int row, int col)
                 {
                     return data_[row * ncol + col]; 
                 }
 
-                double operator()(int row, int col) const
+                T operator()(int row, int col) const
                 {
                     return data_[row * ncol + col]; 
                 }
 
-                double& operator()(int row)
+                T& operator()(int row)
                 {
                     assert(ncol == 1);
                     int col = 1;
                     return (*this)(row, col);
                 }
 
-                double operator()(int row) const
+                T operator()(int row) const
                 {
                     assert(ncol == 1);
                     int col = 1;
@@ -102,13 +106,14 @@ namespace Tailor
                     return false;
                 }
 
-                template<int nrowo, int ncolo> Matrix<nrow, ncolo> operator*(const Matrix<nrowo, ncolo>& other) const
+                template<int nrowo, int ncolo>
+                    Matrix<nrow, ncolo, T> operator*(const Matrix<nrowo, ncolo, T>& other) const
                 {
                     // matrix-matrix product
 
                     assert(nrowo == ncol);
 
-                    Matrix<nrow, ncolo> mat;
+                    Matrix<nrow, ncolo, T> mat;
 
                     for (int r=0; r<nrow; ++r)
                     {
@@ -179,9 +184,9 @@ namespace Tailor
                 //    return vec;
                 //}
 
-                Matrix operator*(double s) const
+                Matrix operator*(T s) const
                 {
-                    Matrix<nrow, ncol> mat;
+                    Matrix<nrow, ncol, T> mat;
 
                     for (int r=0; r<nrow; ++r)
                     {
@@ -195,7 +200,23 @@ namespace Tailor
                     return mat;
                 }
 
-                Matrix& operator+=(const Matrix<nrow, ncol>& M)
+                Matrix operator/(T s) const
+                {
+                    Matrix<nrow, ncol, T> mat;
+
+                    for (int r=0; r<nrow; ++r)
+                    {
+                        for (int c=0; c<ncol; ++c)
+                        {
+                            //mat(r, c) = s * data_(r * ncol + c);
+                            mat(r,c) = (*this)(r,c) / s;
+                        }
+                    }
+
+                    return mat;
+                }
+
+                Matrix& operator+=(const Matrix<nrow, ncol, T>& M)
                 {
                     for (int r=0; r<nrow; ++r)
                     {
@@ -209,7 +230,7 @@ namespace Tailor
                     return *this;
                 }
 
-                Matrix& operator-=(const Matrix<nrow, ncol>& M)
+                Matrix& operator-=(const Matrix<nrow, ncol, T>& M)
                 {
                     for (int r=0; r<nrow; ++r)
                     {
@@ -222,7 +243,7 @@ namespace Tailor
                     return *this;
                 }
 
-                Matrix& add_diag(double d)
+                Matrix& add_diag(T d)
                 {
                     for (int r=0; r<nrow; ++r)
                     {
@@ -232,7 +253,7 @@ namespace Tailor
                     return *this;
                 }
 
-                Matrix& operator+=(double d)
+                Matrix& operator+=(T d)
                 {
                     for (int r=0; r<nrow; ++r)
                     {
@@ -246,7 +267,7 @@ namespace Tailor
                     return *this;
                 }
 
-                Matrix& operator*=(double d)
+                Matrix& operator*=(T d)
                 {
                     for (int r=0; r<nrow; ++r)
                     {
@@ -259,9 +280,9 @@ namespace Tailor
                     return *this;
                 }
 
-                Matrix operator+(const Matrix<nrow, ncol>& M) const
+                Matrix operator+(const Matrix<nrow, ncol, T>& M) const
                 {
-                    Matrix<nrow, ncol> mat;
+                    Matrix<nrow, ncol, T> mat;
 
                     for (int r=0; r<nrow; ++r)
                     {
@@ -275,9 +296,9 @@ namespace Tailor
                     return mat;
                 }
 
-                Matrix operator-(const Matrix<nrow, ncol>& M) const
+                Matrix operator-(const Matrix<nrow, ncol, T>& M) const
                 {
-                    Matrix<nrow, ncol> mat;
+                    Matrix<nrow, ncol, T> mat;
 
                     for (int r=0; r<nrow; ++r)
                     {
@@ -291,7 +312,7 @@ namespace Tailor
                     return mat;
                 }
 
-                Matrix& operator=(double s)
+                Matrix& operator=(T s)
                 {
                     for (int r=0; r<nrow; ++r)
                     {
@@ -305,7 +326,7 @@ namespace Tailor
                     return *this;
                 }
 
-                bool operator==(const Matrix<nrow, ncol>& M) const
+                bool operator==(const Matrix<nrow, ncol, T>& M) const
                 {
                     for (int r=0; r<nrow; ++r)
                     {
@@ -321,6 +342,11 @@ namespace Tailor
                     return true;
                 }
 
+                double len()
+                {
+                    return std::sqrt(std::pow(data_[0], 2.) + std::pow(data_[1], 2.) + std::pow(data_[2], 2.));
+                }
+
                 template<class Archive> void serialize(Archive & ar, const unsigned int version)
                 {
                     ar & data_;
@@ -330,37 +356,18 @@ namespace Tailor
 
             private:
 
-                Array<double, nrow * ncol> data_;
+                Array<T, nrow * ncol> data_;
         };
 
+    template<int nrow, class T>
+        using Vector = Matrix<nrow, 1, T>;
 
-    //template<int nrow>
-    //    class Vector: public Matrix<nrow, 1>
-    //{
-    //    public:
+    using Vector5 = Vector<5, double>;
+    using Vector3 = Vector<3, double>;
+    using Vector3Int = Vector<3, int>;
 
-    //        double& operator()(int row)
-    //        {
-    //            return Matrix<nrow, 1>::operator()(row, 1);
-    //        }
-
-    //        double operator()(int row) const
-    //        {
-    //            return Matrix<nrow, 1>::operator()(row, 1);
-    //        }
-
-    //        template<class Archive> void serialize(Archive & ar, const unsigned int version)
-    //        {
-    //            ar & boost::serialization::base_object<Matrix<nrow, 1>>(*this);
-    //        }
-    //};
-
-    //vararray operator/(const vararray& f, const Matrix<NVAR, NVAR>& A);
-    using vararray = Vector<NVAR>;
-    using Vector3 = Vector<3>;
-
-    template<int nrow, int ncol>
-        std::ostream& operator<<(std::ostream& os, const Matrix<nrow, ncol>& mat)
+    template<int nrow, int ncol, class T>
+        std::ostream& operator<<(std::ostream& os, const Matrix<nrow, ncol, T>& mat)
         {
             for (int i=0; i<nrow; ++i)
             {
@@ -375,16 +382,19 @@ namespace Tailor
             return os;
         }
 
-    using varmat = Matrix<NVAR, NVAR>;
+    using Matrix5 = Matrix<5, 5, double>;
 
-    template<int nrow>
-        Vector<nrow> cross(const Vector<nrow>& a, const Vector<nrow>& b);
+    template<int nrow, class T>
+        double len(const Vector<nrow, T> a);
 
-    template<int nrow>
-        double dot(const Vector<nrow>& a, const Vector<nrow>& b);
+    template<int nrow, class T>
+        Vector<nrow, T> cross(const Vector<nrow, T>& a, const Vector<nrow, T>& b);
 
-    template<int nrow>
-        Vector<nrow> normals(const Vector<nrow>& a, const Vector<nrow>& b, const Vector<nrow>& c);
+    template<int nrow, class T>
+        double dot(const Vector<nrow, T>& a, const Vector<nrow, T>& b);
+
+    template<int nrow, class T>
+        Vector<nrow, T> normals(const Vector<nrow, T>& a, const Vector<nrow, T>& b, const Vector<nrow, T>& c);
 }
 
 #endif

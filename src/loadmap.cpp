@@ -221,7 +221,7 @@ namespace Tailor
         bintag_proc_map_.clear();
     }
 
-    /*void Loadmap::move_mesh(const std::vector<vec3<double>>& v)
+    /*void Loadmap::move_mesh(const std::vector<Vector3>& v)
     {
         //for (int i=0; i<mesh_.size(); ++i)
         int i = 0;
@@ -233,7 +233,7 @@ namespace Tailor
         }
     }*/
 
-    /*void Loadmap::rotate_mesh(const std::vector<double>& rotation, int axis, const std::vector<vec3<double>>& rot_point)
+    /*void Loadmap::rotate_mesh(const std::vector<double>& rotation, int axis, const std::vector<Vector3>& rot_point)
     {
         int i = 0;
         for (Mesh& m: mesh_)
@@ -539,8 +539,8 @@ namespace Tailor
 
     /*void Loadmap::make_regular_map_uniproc_resident()
     {
-        vec3<double> global_steplength_;
-        vec3<double> global_aabb_min_;
+        Vector3 global_steplength_;
+        Vector3 global_aabb_min_;
         
         AABB aabb = max_aabb();
 
@@ -561,8 +561,8 @@ namespace Tailor
 
     /*void Loadmap::make_regular_map_uniproc()
     {
-        vec3<double> global_steplength_;
-        vec3<double> global_aabb_min_;
+        Vector3 global_steplength_;
+        Vector3 global_aabb_min_;
         
         AABB aabb = max_aabb();
 

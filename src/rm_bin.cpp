@@ -23,7 +23,7 @@ namespace Tailor
         load_ = l;
     }
 
-    void Bin::move(const vec3<double>& v)
+    void Bin::move(const Vector3& v)
     {
         aabb_.move_points(v);
         if (rm_ != nullptr)
@@ -32,7 +32,7 @@ namespace Tailor
         }
     }
 
-    void Bin::rotate(double ang, int axis, const vec3<double>& rot_point)
+    void Bin::rotate(double ang, int axis, const Vector3& rot_point)
     {
         aabb_.rotate_points(ang, axis, rot_point);
         if (rm_ != nullptr)
@@ -126,8 +126,8 @@ namespace Tailor
 
         for (AABB& ab: aabb)
         {
-            vec3<double>minn(TAILOR_BIG_POS_NUM, TAILOR_BIG_POS_NUM, TAILOR_BIG_POS_NUM);
-            vec3<double>maxx(TAILOR_BIG_NEG_NUM, TAILOR_BIG_NEG_NUM, TAILOR_BIG_NEG_NUM);
+            Vector3minn(TAILOR_BIG_POS_NUM, TAILOR_BIG_POS_NUM, TAILOR_BIG_POS_NUM);
+            Vector3maxx(TAILOR_BIG_NEG_NUM, TAILOR_BIG_NEG_NUM, TAILOR_BIG_NEG_NUM);
             ab.set_bbox(minn, maxx);
         }
 
@@ -150,7 +150,7 @@ namespace Tailor
             }
             AABB& ab = aabb[i];
 
-            vec3<double> min_, max_;
+            Vector3 min_, max_;
             min_.set(ab.min(0), ab.min(1), ab.min(2));
             max_.set(ab.max(0), ab.max(1), ab.max(2));
 
@@ -337,7 +337,7 @@ namespace Tailor
         //}
     }
 
-    void Bin::init_rm(int mintag, const Tag& rmtag, const vec3<int>& nstripe, bool pseudo3D)
+    void Bin::init_rm(int mintag, const Tag& rmtag, const VectorInt3& nstripe, bool pseudo3D)
     {
         //rm_ = boost::make_shared<RegularMesh>();
         rm_ = new RegularMesh();
@@ -375,7 +375,7 @@ namespace Tailor
         return rm_;
     }
 
-    bool Bin::is_resident(const vec3<double>& cnt) const
+    bool Bin::is_resident(const Vector3& cnt) const
     {
         return aabb_.do_intersect(cnt);
     }

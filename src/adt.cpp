@@ -21,14 +21,14 @@ namespace Tailor
         return b;
     }*/
 
-    void ADT::rotate(double ang, int axis, const vec3<double>& rot_point)
+    void ADT::rotate(double ang, int axis, const Vector3& rot_point)
     {
         assert(root_ != nullptr);
 
         root_->rotate(ang, axis, rot_point);
     }
 
-    void ADT::move(const vec3<double>& v)
+    void ADT::move(const Vector3& v)
     {
         assert(root_ != nullptr);
 

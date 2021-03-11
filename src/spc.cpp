@@ -143,10 +143,10 @@ namespace Tailor
         double dpM = dpF * R;
 
         double fuslen = 78.57 * INCH_TO_M / 1.997;
-        vec3<double> hub(0.696 * fuslen, 0., 0.322 * fuslen);
+        Vector3 hub(0.696 * fuslen, 0., 0.322 * fuslen);
 
-        vec3<double> F(0., 0., 0.);
-        vec3<double> M(0., 0., 0.);
+        Vector3 F(0., 0., 0.);
+        Vector3 M(0., 0., 0.);
 
         for (auto mc = wall.begin(); mc != wall.end(); ++mc)
         {
@@ -347,7 +347,7 @@ namespace Tailor
         {
             for (const auto& mesh: sp.mesh())
             {
-                vec3<double> min, max;
+                Vector3 min, max;
                 minmax(mesh.wall_boundaries(), min, max);
                 if (mesh.tag()() >= laabb.size())
                 {
@@ -441,7 +441,7 @@ namespace Tailor
         return false;
     }*/
 
-    std::map<Tag, int> SpatialPartitionContainer::search_rm(const AABB& aabb, const vec3<double>& cnt, std::pair<Tag, int>& resbin, bool verbose) const
+    std::map<Tag, int> SpatialPartitionContainer::search_rm(const AABB& aabb, const Vector3& cnt, std::pair<Tag, int>& resbin, bool verbose) const
     {
         auto adtpoint = ADTPoint(aabb.vertices().begin(), aabb.vertices().end());
         auto res = global_adt_.search(adtpoint, verbose);
@@ -497,7 +497,7 @@ namespace Tailor
     //    return map;
     //}
 
-    bool SpatialPartitionContainer::search_rm(const vec3<double>& cnt, Tag& bintag, int& rank, bool verbose) const
+    bool SpatialPartitionContainer::search_rm(const Vector3& cnt, Tag& bintag, int& rank, bool verbose) const
     {
         auto adtpoint = ADTPoint(cnt);
         std::vector<int> res = global_adt_.search(adtpoint, verbose);
@@ -527,9 +527,9 @@ namespace Tailor
         //return brmt_rank(res[0], brmt, rank);
     }
 
-    //bool SpatialPartitionContainer::is_resident(const vec3<double>& cnt, int celltag, BinRMTag& brmt) const
-    //bool SpatialPartitionContainer::is_resident(const vec3<double>& cnt, int celltag, Tag& brmt, int& dest_rank) const
-    bool SpatialPartitionContainer::is_resident(const vec3<double>& cnt, int celltag, Tag& brmt) const
+    //bool SpatialPartitionContainer::is_resident(const Vector3& cnt, int celltag, BinRMTag& brmt) const
+    //bool SpatialPartitionContainer::is_resident(const Vector3& cnt, int celltag, Tag& brmt, int& dest_rank) const
+    bool SpatialPartitionContainer::is_resident(const Vector3& cnt, int celltag, Tag& brmt) const
     {
         if (comm_->size() == 1) {
             return true;
@@ -601,7 +601,7 @@ namespace Tailor
 
     void SpatialPartitionContainer::connect_partition_cells(ArrCon<Nei>& arrival)
     {
-        std::function<bool(const vec3<double>&, int)> is_resi = [this](const vec3<double>& cnt, int celltag)
+        std::function<bool(const Vector3&, int)> is_resi = [this](const Vector3& cnt, int celltag)
         {
             Tag spt;
             return is_resident(cnt, celltag, spt);
@@ -653,8 +653,8 @@ namespace Tailor
         }
     }
 
-    //void SpatialPartitionContainer::solve(Solver& solver, const vec3<double>& vel, std::function<void(CellExchanger& cell_exchanger)> exchange_ghosts)
-    //void SpatialPartitionContainer::solve(Solver& solver, const vec3<double>& vel, std::function<void()> exchange_ghosts)
+    //void SpatialPartitionContainer::solve(Solver& solver, const Vector3& vel, std::function<void(CellExchanger& cell_exchanger)> exchange_ghosts)
+    //void SpatialPartitionContainer::solve(Solver& solver, const Vector3& vel, std::function<void()> exchange_ghosts)
     //{
         //bool called_exc_ghosts;
         //for (int i=0; i<sp_.size(); ++i)
@@ -711,7 +711,7 @@ namespace Tailor
 
     void SpatialPartitionContainer::connect_after_exchange(Profiler* profiler, std::string proc)
     {
-        std::function<bool(const vec3<double>&)> is_resi = [this](const vec3<double>& cnt)
+        std::function<bool(const Vector3&)> is_resi = [this](const Vector3& cnt)
         {
             Tag spt;
             return is_resident(cnt, -1, spt);
@@ -975,7 +975,7 @@ namespace Tailor
         }
     }*/
 
-    /*void SpatialPartitionContainer::make_outline(std::vector<std::vector<vec3<double>>> allpts)
+    /*void SpatialPartitionContainer::make_outline(std::vector<std::vector<Vector3>> allpts)
     {
         Outline outline;
         if (!master())
@@ -1264,7 +1264,7 @@ namespace Tailor
     //}
 
 
-    void SpatialPartitionContainer::rotate_meshblocks(const Tag& _parent_mesh, double ang, int axis, const vec3<double>& rot_axis)
+    void SpatialPartitionContainer::rotate_meshblocks(const Tag& _parent_mesh, double ang, int axis, const Vector3& rot_axis)
     {
         // this is a temporary function to mimic solver.
         // aim is to displace certain meshblocks.
@@ -1280,7 +1280,7 @@ namespace Tailor
         }
     }
 
-    void SpatialPartitionContainer::move_meshblocks(const Tag& _parent_mesh, const vec3<double>& v)
+    void SpatialPartitionContainer::move_meshblocks(const Tag& _parent_mesh, const Vector3& v)
     {
         // this is a temporary function to mimic solver.
         // aim is to displace certain meshblocks.
@@ -1293,7 +1293,7 @@ namespace Tailor
 
     void SpatialPartitionContainer::connect_cells(std::string name)
     {
-        std::function<bool(const vec3<double>&)> is_resi = [this](const vec3<double>& cnt)
+        std::function<bool(const Vector3&)> is_resi = [this](const Vector3& cnt)
         {
             Tag spt;
             return is_resident(cnt, -1, spt);

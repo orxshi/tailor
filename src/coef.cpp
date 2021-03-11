@@ -25,7 +25,7 @@ namespace Tailor
         //double dpa = dp * total_area;
 
         // total force on airfoil
-        vec3<double> F(0., 0., 0.);
+        Vector3 F(0., 0., 0.);
         for (auto mc = wall.begin(); mc != wall.end(); ++mc)
         {
             const MeshCell& in = mesh.cell(mc->interior_boundary());

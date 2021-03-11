@@ -22,8 +22,8 @@ namespace Tailor
         //AABB mesh_aabb(mesh(mt).rawpoint());
 
         profiler_->start("mrm - aabb");
-        vec3<double> minn;
-        vec3<double> maxx;
+        Vector3 minn;
+        Vector3 maxx;
         mesh(mt).bbox(minn, maxx);
         AABB mesh_aabb(minn, maxx);
         profiler_->stop("mrm - aabb");

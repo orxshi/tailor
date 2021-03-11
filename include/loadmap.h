@@ -99,8 +99,8 @@ namespace Tailor
         //void make_map(const std::vector<std::string>& file_name);
         const std::deque<Mesh>* mesh() const;
         //void merge_donor_info(std::vector<boost::mpi::request>& request);
-        //void move_mesh(const std::vector<vec3<double>>& v);
-        //void rotate_mesh(const std::vector<double>& rotation, int axis, const std::vector<vec3<double>>& rot_point);
+        //void move_mesh(const std::vector<Vector3>& v);
+        //void rotate_mesh(const std::vector<double>& rotation, int axis, const std::vector<Vector3>& rot_point);
         //void read_mesh_all_procs(const std::vector<std::string>& file_name);
         void make(int nmake_map, bool adaptive);
         void get_bin_to_proc();

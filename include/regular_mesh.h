@@ -51,16 +51,16 @@ namespace Tailor
     };
 
     bool in_range(const RegularMeshIndex& index, const RegularMeshIndex& global_min, const RegularMeshIndex& global_max);
-    unsigned int mat_to_vec_index(const RegularMeshIndex& index, const vec3<unsigned int>& nstripe);
-    RelativePosition get_relative_position(int index, int targetindex, const vec3<unsigned int>& nstripe, size_t maxbinsize, bool& exact);
-    int get_binindex(unsigned int index, RelativePosition rp, const vec3<unsigned int>& nstripe, unsigned int binsize);
-    vec3<double> llcoor(const RegularMeshIndex& index, const vec3<double>& aabb_min, const vec3<double>& h);
+    unsigned int mat_to_vec_index(const RegularMeshIndex& index, const Vector3Int& nstripe);
+    RelativePosition get_relative_position(int index, int targetindex, const Vector3Int& nstripe, size_t maxbinsize, bool& exact);
+    int get_binindex(unsigned int index, RelativePosition rp, const Vector3Int& nstripe, unsigned int binsize);
+    Vector3 llcoor(const RegularMeshIndex& index, const Vector3& aabb_min, const Vector3& h);
 
     class RegularMesh
     {
         Tag tag_;
-        vec3<int> nstripe_;
-        vec3<double> h_;
+        Vector3Int nstripe_;
+        Vector3 h_;
         AABB aabb_;
         std::vector<Bin> bin_;
         RegularMeshIndex global_min_;
@@ -74,7 +74,7 @@ namespace Tailor
         Bin& bin_p(const RegularMeshIndex& ind);
         Bin& bin_p(const Tag& t);
         //Bin& bin_p(const BinRMTag& bt);
-        bool is_resident(const vec3<double>& cnt) const;
+        bool is_resident(const Vector3& cnt) const;
         int get_new_bt_p() const;
         int get_new_bt() const;
         int get_new_rmtag() const;
@@ -86,9 +86,9 @@ namespace Tailor
 
         void print_(std::string file_name) const;
 
-        bool get_index_regular(const vec3<double>& cv, std::vector<RegularMeshIndex>& index, bool closest, int rank, int celltag) const;
-        RegularMeshIndex get_index_regular_unique(const vec3<double>& cv) const;
-        void get_bintag_adaptive_unique_(const vec3<double>& cv, std::vector<BinRMTag>& tag, int rank, int celltag) const;
+        bool get_index_regular(const Vector3& cv, std::vector<RegularMeshIndex>& index, bool closest, int rank, int celltag) const;
+        RegularMeshIndex get_index_regular_unique(const Vector3& cv) const;
+        void get_bintag_adaptive_unique_(const Vector3& cv, std::vector<BinRMTag>& tag, int rank, int celltag) const;
 
         public:
 
@@ -105,8 +105,8 @@ namespace Tailor
 
         void flood(const Tag& start, const AABB& aabb);
 
-        void move(const vec3<double>& v);
-        void rotate(double ang, int axis, const vec3<double>& rot_point);
+        void move(const Vector3& v);
+        void rotate(double ang, int axis, const Vector3& rot_point);
 
         // Getters
         const Tag& tag() const;
@@ -121,10 +121,10 @@ namespace Tailor
         RegularMeshIndex global_index(const RegularMeshIndex& i) const;
         const RegularMeshIndex& global_min() const;
         const RegularMeshIndex& global_max() const;
-        const vec3<int>& nstripe() const;
+        const Vector3Int& nstripe() const;
         int nstripe(int i) const;
         const std::vector<Bin>& bin() const;
-        const vec3<double>& h() const;
+        const Vector3& h() const;
         double h(int i) const;
         const AABB& aabb() const;
 
@@ -166,21 +166,21 @@ namespace Tailor
         void set_global_min(int i, int j, int k);
         void set_global_max(int i, int j, int k);
         void set_nstripe(int x, int y, int z);
-        void set_nstripe(const vec3<int>& ns);
-        void set_h(const vec3<double>& v);
+        void set_nstripe(const Vector3Int& ns);
+        void set_h(const Vector3& v);
         void set_h(double v0, double v1, double v2);
         void set_aabb(const AABB& aabb);
-        //void set_aabb_min(const vec3<double>& m);
-        //void set_aabb_max(const vec3<double>& m);
-        vec3<double> centroid(const RegularMeshIndex&) const;
-        vec3<double> llcoor(const RegularMeshIndex& index) const;
-        void get_bintag_adaptive_unique(const vec3<double>& cv, BinRMTag& tag, int rank, int celltag) const;
-        //bool get_bintag_adaptive(const vec3<double>& cv, std::vector<BinRMTag>& tag, bool closest) const;
+        //void set_aabb_min(const Vector3& m);
+        //void set_aabb_max(const Vector3& m);
+        Vector3 centroid(const RegularMeshIndex&) const;
+        Vector3 llcoor(const RegularMeshIndex& index) const;
+        void get_bintag_adaptive_unique(const Vector3& cv, BinRMTag& tag, int rank, int celltag) const;
+        //bool get_bintag_adaptive(const Vector3& cv, std::vector<BinRMTag>& tag, bool closest) const;
         void get_bintag_adaptive(const AABB& aabb, std::vector<BinRMTag>& tag, int& nlevel, int celltag) const;
         void get_bintag_adaptive_(const AABB& aabb, std::vector<BinRMTag>& tag, int& nlevel, int celltag) const;
         void print(std::string aux) const;
         void merge(const RegularMesh& other);
-        bool point_inside_bin(const RegularMeshIndex& ind, const vec3<double>& p);
+        bool point_inside_bin(const RegularMeshIndex& ind, const Vector3& p);
         void insert_bins(int mintag, int mesh_load_size, int rank);
         void set_props(const Mesh& mesh, const AABB& forced_min_aabb, int _nstripe=0);
         void info() const;
@@ -214,7 +214,7 @@ namespace Tailor
         }
     };
 
-    //bool get_index_regular(const vec3<double>& cv, std::vector<RegularMeshIndex>& index, const vec3<double>& aabb_min, const vec3<double>& h, const vec3<int>& nstripe, bool closest);
+    //bool get_index_regular(const Vector3& cv, std::vector<RegularMeshIndex>& index, const Vector3& aabb_min, const Vector3& h, const vec3<int>& nstripe, bool closest);
     Tag closest_non_empty_bin(const RegularMeshIndex& ind, const RegularMesh& rm, const Mesh& m);
     void make_adt(const RegularMesh& rm, ADT& adt, int rank);
 }

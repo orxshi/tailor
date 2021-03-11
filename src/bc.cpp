@@ -2,7 +2,7 @@
 
 namespace Tailor
 {
-    varmat make_rot_matrix(const vec3<double>& n, bool verbose)
+    Matrix5 make_rot_matrix(const Vector3& n, bool verbose)
     {
         //auto l = tangent_vector(n);
         //auto m = cross(n, l);
@@ -41,8 +41,8 @@ namespace Tailor
         //double my = 0.;
         //double mz = cosy;
 
-        //vec3<double> l(lx, ly, lz);
-        //vec3<double> m(mx, my, mz);
+        //Vector3 l(lx, ly, lz);
+        //Vector3 m(mx, my, mz);
 
         //if (verbose)
         //{
@@ -81,7 +81,7 @@ namespace Tailor
             //std::cout << "cross(2): " << cross(m, n)(2) << std::endl;
         //}
 
-        /*varmat T;
+        /*Matrix5 T;
 
         T(0,0) = 1.;
         T(0,1) = 0.;
@@ -133,7 +133,7 @@ namespace Tailor
         double cosy = std::cos(thetay);
         double siny = std::sin(thetay);
 
-        varmat T;
+        Matrix5 T;
 
         T(0,0) = 1.;
         T(0,1) = 0.;
@@ -207,21 +207,20 @@ namespace Tailor
 
         double cinf = std::sqrt(gamma * pinf / rhoinf);
 
-        vec3<double> vinf_air;
+        Vector3 vinf_air;
+        Vector3 compo;
+
+        compo(0) = std::cos(deg_to_rad(fs_.aoa_air_x_));
+        compo(1) = std::cos(deg_to_rad(90. - fs_.aoa_air_x_));
+        compo(2) = std::cos(deg_to_rad(fs_.aoa_air_z_));
 
         if (fs_.velair_ != 0.)
         {
-            vinf_air = vec3<double>(
-                    fs_.velair_ * std::cos(deg_to_rad(fs_.aoa_air_x_)),
-                    fs_.velair_ * std::cos(deg_to_rad(90. - fs_.aoa_air_x_)),
-                    fs_.velair_ * std::cos(deg_to_rad(fs_.aoa_air_z_)));
+            vinf_air = compo * fs_.velair_;
         }
         else
         {
-            vinf_air = vec3<double>(
-                    fs_.machair_ * cinf * std::cos(deg_to_rad(fs_.aoa_air_x_)),
-                    fs_.machair_ * cinf * std::cos(deg_to_rad(90. - fs_.aoa_air_x_)),
-                    fs_.machair_ * cinf * std::cos(deg_to_rad(fs_.aoa_air_z_)));
+            vinf_air = compo * fs_.machair_ * cinf;
         }
 
         for (MeshCell& mc: mesh.farfield_boundaries_)
@@ -234,14 +233,14 @@ namespace Tailor
             auto n = mf->face().normal();
 
             //const auto& mf = mc.face()[0];
-            //vec3<double> n = mf.face().normal();
+            //Vector3 n = mf.face().normal();
 
-            //vec3<double> vinf = vinf_air - normalize(n) * mesh.face(mf.tag()).vgn();
-            //vec3<double> vinf = vinf_air - normalize(n) * mf->vgn();
-            //vec3<double> vinf = vinf_air - mf->vgn();
-            //vec3<double> vinf = vinf_air - (n * mf->vgn());
-            //vec3<double> vinf = vinf_air - mf->vf();
-            vec3<double> vinf = vinf_air;
+            //Vector3 vinf = vinf_air - normalize(n) * mesh.face(mf.tag()).vgn();
+            //Vector3 vinf = vinf_air - normalize(n) * mf->vgn();
+            //Vector3 vinf = vinf_air - mf->vgn();
+            //Vector3 vinf = vinf_air - (n * mf->vgn());
+            //Vector3 vinf = vinf_air - mf->vf();
+            Vector3 vinf = vinf_air;
             //if (mf->vf()(0) != 0. || vinf(1) != 0.)
             //{
             //    std::cout << "vf(0): " << mf->vf()(0) << std::endl;
@@ -284,9 +283,9 @@ namespace Tailor
                 std::cout << "prim(4): " << interior.prim(4) << std::endl;
             }
             assert(pi >= 0.);
-            vec3<double> vi(interior.prim(1), interior.prim(2), interior.prim(3));
-            double vin = dotp(vi, n);
-            double vinfn = dotp(vinf, n);
+            Vector3 vi(interior.prim(1), interior.prim(2), interior.prim(3));
+            double vin = dot(vi, n);
+            double vinfn = dot(vinf, n);
             double ci = std::sqrt(gamma * pi / rhoi);
 
             double rplus, rminus;
@@ -311,7 +310,7 @@ namespace Tailor
                 double vb = 0.5 * (rplus + rminus);
                 double cb = (gamma - 1.) * (rplus - rminus) / 4.;
 
-                vec3<double> v = vinf + n * (vb - vinfn);
+                Vector3 v = vinf + n * (vb - vinfn);
 
                 //if (std::abs(v(1)) > TAILOR_ZERO)
                 //if (interior.tag()() == 23475)
@@ -363,7 +362,7 @@ namespace Tailor
                 double vb = 0.5 * (rplus + rminus);
                 double cb = (gamma - 1.) * (rplus - rminus) / 4.;
 
-                vec3<double> v = vi + n * (vb - vin);
+                Vector3 v = vi + n * (vb - vin);
 
 
                 //if (std::abs(v(1)) > TAILOR_ZERO)
@@ -440,23 +439,23 @@ namespace Tailor
         
         double cinf = std::sqrt(GAMMA * pinf / rhoinf);
         //double vinf = machinf * cinf;
-        vec3<double> vinf(machinf * cinf * std::cos(deg_to_rad(aoa)), machinf * cinf * std::sin(deg_to_rad(aoa)), 0.);
+        Vector3 vinf(machinf * cinf * std::cos(deg_to_rad(aoa)), machinf * cinf * std::sin(deg_to_rad(aoa)), 0.);
         double sinf = std::pow(rhoinf, GAMMA) / pinf;
 
         for (MeshCell& mc: mesh.farfield_boundaries_)
         {
             assert(mc.face().size() == 1);
-            vec3<double> normal = mc.face()[0].face().normal();
+            Vector3 normal = mc.face()[0].face().normal();
 
-            //vec3<double> vinf1 = normal * vinf;
-            vec3<double> vinf1 = normal * dotp(vinf, normal);
+            //Vector3 vinf1 = normal * vinf;
+            Vector3 vinf1 = normal * dotp(vinf, normal);
 
             const MeshCell& interior = mesh.cell(mc.interior_boundary());
 
             double rhobound = interior.prim(0);
             double pbound = interior.prim(4);
             assert(pbound >= 0.); // lets return u_inf values if p is negative
-            vec3<double> vbound1(interior.prim(1), interior.prim(2), interior.prim(3));
+            Vector3 vbound1(interior.prim(1), interior.prim(2), interior.prim(3));
             double vbound = dotp(vbound1, normal);
             double cbound = std::sqrt(GAMMA * pbound / rhobound);
             double sbound = std::pow(rhobound, GAMMA) / pbound;
@@ -524,7 +523,7 @@ namespace Tailor
 
                     rplus = rplus1;
                     v = 0.5 * (rplus + rminus);
-                    vec3<double> vv;
+                    Vector3 vv;
                     vv = normal * v;
                     double c = 0.25 * (rplus - rminus) * (GAMMA - 1.);
 
@@ -568,7 +567,7 @@ namespace Tailor
                 {
                     assert(false);
                     subsonic = false;
-                    vec3<double> vbound2 = normal * dotp(vbound1, normal);
+                    Vector3 vbound2 = normal * dotp(vbound1, normal);
                     mc.prim_[0] = rhobound;
                     mc.prim_[1] = vbound2(0);
                     mc.prim_[2] = vbound2(1);
@@ -584,7 +583,7 @@ namespace Tailor
             //double v = 0.5 * (rplus + rminus);
             //double c = 0.25 * (rplus - rminus) * (GAMMA - 1.);
             //double s;
-            vec3<double> vv;
+            Vector3 vv;
             vv = normal * v;
 
             //if (vbound > 0.) // outflow
@@ -641,7 +640,7 @@ namespace Tailor
             return;
         }
 
-        vararray primL, primR;
+        Vector5 primL, primR;
         double centerx;
 
         in >> primL[0];
@@ -719,22 +718,22 @@ namespace Tailor
 
         double cinf = std::sqrt(GAMMA * pinf / rhoinf);
         //double vinf = machinf * cinf;
-        vec3<double> vinf(machinf * cinf * std::cos(deg_to_rad(aoa)), machinf * cinf * std::sin(deg_to_rad(aoa)), 0.);
+        Vector3 vinf(machinf * cinf * std::cos(deg_to_rad(aoa)), machinf * cinf * std::sin(deg_to_rad(aoa)), 0.);
         double sinf = std::pow(rhoinf, GAMMA) / pinf;
 
         for (MeshCell& mc: mesh.farfield_boundaries_)
         {
             assert(mc.face().size() == 1);
-            vec3<double> normal = mc.face()[0].face().normal();
+            Vector3 normal = mc.face()[0].face().normal();
 
-            //vec3<double> vinf1 = normal * vinf;
-            vec3<double> vinf1 = normal * dotp(vinf, normal);
+            //Vector3 vinf1 = normal * vinf;
+            Vector3 vinf1 = normal * dotp(vinf, normal);
 
             const MeshCell& interior = mesh.cell(mc.interior_boundary());
 
             double rhobound = interior.prim(0);
             double pbound = interior.prim(4);
-            vec3<double> vbound1(interior.prim(1), interior.prim(2), interior.prim(3));
+            Vector3 vbound1(interior.prim(1), interior.prim(2), interior.prim(3));
             double vbound = dotp(vbound1, normal);
             double cbound = std::sqrt(GAMMA * pbound / rhobound);
             double sbound = std::pow(rhobound, GAMMA) / pbound;
@@ -769,7 +768,7 @@ namespace Tailor
             double v = 0.5 * (rplus + rminus);
             double c = 0.25 * (rplus - rminus) * (GAMMA - 1.);
             double s;
-            vec3<double> vv;
+            Vector3 vv;
 
 
             if (dotp(vinf, normal) > 0.)
@@ -862,7 +861,7 @@ namespace Tailor
         //        break;
         //    }
         //}
-        assert(dotp(mf->face().normal(), n) > TAILOR_ZERO);
+        assert(dot(mf->face().normal(), n) > TAILOR_ZERO);
 
         auto T = make_rot_matrix(n);
         auto neii = nei.prim();
@@ -892,14 +891,11 @@ namespace Tailor
         //}
         //assert(mc.prim_[0] < 1e9);
 
-        vec3<double> vel;
-        vel.set_x(nei.prim(1));
-        vel.set_y(nei.prim(2));
-        vel.set_z(nei.prim(3));
+        Vector3 vel(nei.prim(1), nei.prim(2), nei.prim(3));
 
         assert(!nei.prim_.isnan());
 
-        auto normvel = n * dotp(vel, n);
+        auto normvel = n * dot(vel, n);
         //auto tangvel = vel - normvel;
 
         //assert(!std::isnan(mf->vgn()));
@@ -914,13 +910,13 @@ namespace Tailor
         double vgx = aa(0);
         double vgy = aa(1);
         double vgz = aa(2);
-        vec3<double> vgn(vgx, vgy, vgz);
+        Vector3 vgn(vgx, vgy, vgz);
 
         //mc.prim_[1] = tangvel(0) + vgx;
         //mc.prim_[2] = tangvel(1) + vgy;
         //mc.prim_[3] = tangvel(2) + vgz;
 
-        vec3<double> v = vel - normvel * 2. + vgn;
+        Vector3 v = vel - normvel * 2. + vgn;
         mc.prim_(1) = v(0);
         mc.prim_(2) = v(1);
         mc.prim_(3) = v(2);
@@ -928,7 +924,7 @@ namespace Tailor
         mc.cons_sp1_ = prim_to_cons(mc.prim_, fs_.gamma_);
     }
 
-    void BoundaryCondition::init_farfield(Mesh& mesh, const vararray& prim)
+    void BoundaryCondition::init_farfield(Mesh& mesh, const Vector5& prim)
     {
         for (MeshCell& mc: mesh.farfield_boundaries_)
         {
@@ -937,7 +933,7 @@ namespace Tailor
         }
     }
 
-    void BoundaryCondition::set_dirichlet(Mesh& mesh, const vararray& prim)
+    void BoundaryCondition::set_dirichlet(Mesh& mesh, const Vector5& prim)
     {
         for (MeshCell& mc: mesh.dirichlet_boundaries_)
         {
