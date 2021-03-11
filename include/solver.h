@@ -55,6 +55,7 @@ namespace Tailor
 
             template<class Archive> void serialize(Archive & ar, const unsigned int version)
             {
+                ar & dual_ts_;
                 ar & repart_ratio_;
                 ar & initratio_;
                 ar & print_imbalance_;
@@ -100,6 +101,7 @@ namespace Tailor
 
         private:    
                 
+            bool dual_ts_;
             RiemannSolverType riemann_solver_type_;
             int repart_ratio_;
             double initratio_;

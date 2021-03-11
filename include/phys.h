@@ -13,6 +13,7 @@ namespace Tailor
     double speed_of_sound(double rho, double p, double gamma);
     vararray prim_to_cons(const vararray& prim, double gamma);
     vararray cons_to_prim(const vararray& cons, double gamma);
+    void test_phys(const vararray& cons, double gamma);
     //vararray calc_flux(double rho, double p, double u, double v, double w, double H, double qn, double vb, const vec3<double>& n);
     vararray calc_flux(double rho, double p, double u, double v, double w, double H, double vfn);
     

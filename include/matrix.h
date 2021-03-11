@@ -202,6 +202,16 @@ namespace Tailor
                     return *this;
                 }
 
+                Matrix& add_diag(double d)
+                {
+                    for (int r=0; r<nrow; ++r)
+                    {
+                        (*this)(r,r) += d;
+                    }
+
+                    return *this;
+                }
+
                 Matrix& operator+=(double d)
                 {
                     for (int r=0; r<nrow; ++r)

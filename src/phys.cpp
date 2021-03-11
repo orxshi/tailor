@@ -42,7 +42,39 @@ namespace Tailor
 
         return cons;
     }
-    
+
+    void test_phys(const vararray& cons, double gamma)
+    {
+        vararray prim;
+
+        prim[0] = cons[0];
+        prim[1] = cons[1] / prim[0];
+        prim[2] = cons[2] / prim[0];
+        prim[3] = cons[3] / prim[0];
+
+        double k = spec_kine_energy(prim[1], prim[2], prim[3]);
+        double e = cons[4] / prim[0] - k;
+        if (e <= 0. || std::isnan(e))
+        {
+            std::cout << "cons[0]: " << cons[0] << std::endl;
+            std::cout << "cons[1]: " << cons[1] << std::endl;
+            std::cout << "cons[2]: " << cons[2] << std::endl;
+            std::cout << "cons[3]: " << cons[3] << std::endl;
+            std::cout << "cons[4]: " << cons[4] << std::endl;
+
+            std::cout << "prim[0]: " << prim[0] << std::endl;
+            std::cout << "prim[1]: " << prim[1] << std::endl;
+            std::cout << "prim[2]: " << prim[2] << std::endl;
+            std::cout << "prim[3]: " << prim[3] << std::endl;
+
+            std::cout << "k: " << k << std::endl;
+            std::cout << "E: " << cons[4] / prim[0] << std::endl;
+            std::cout << "e: " << e << std::endl;
+
+        }
+        assert(e > 0. && !std::isnan(e));
+    }
+
     vararray cons_to_prim(const vararray& cons, double gamma)
     {
         vararray prim;

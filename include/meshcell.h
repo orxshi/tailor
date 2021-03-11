@@ -246,6 +246,9 @@ namespace Tailor
             ar & btype_;
             ar & prim_;
             ar & cons_sp1_;
+            ar & cons_s_;
+            ar & cons_n_;
+            ar & cons_nm1_;
             ar & sumarea_;
 
             assert(!std::isnan(prim_[0]));

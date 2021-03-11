@@ -88,7 +88,8 @@ namespace Tailor
                        init_max_res_(0.),
                        last_max_res_(0.),
                        donor_var_exc_(nullptr),
-                       riemann_solver_type_(RiemannSolverType::roe)
+                       riemann_solver_type_(RiemannSolverType::roe),
+                       dual_ts_(false)
     {
     }
 
@@ -96,13 +97,14 @@ namespace Tailor
     init_max_res_(0.),
     last_max_res_(0.)
     {
-        read_settings();
-
         if (steady_)
         {
             dt_ = TAILOR_BIG_POS_NUM;
             maxtimestep_ = int(1e6);
         }
+
+        read_settings();
+
         ncfl_increase_ = 0;
 
         if (partition_ == nullptr)
@@ -490,7 +492,7 @@ namespace Tailor
         po::options_description all_options;
 
         po::options_description desc{"Solver options"};
-        desc.add_options()("solver.repart-ratio", po::value<int>()->default_value(100), "")("solver.rebalance-thres", po::value<double>()->default_value(40.), "")("solver.show_inner_res", po::value<bool>()->default_value(true), "Show inner loop residual")("solver.show_inner_norm", po::value<bool>()->default_value(true), "Show inner loop norm")("solver.print_outer_norm", po::value<bool>()->default_value(true), "Print outer norm")("solver.steady", po::value<bool>()->default_value(false), "Steady state")("solver.progressive_cfl", po::value<bool>()->default_value(false), "Progressive CFL increase")("solver.tempo_discre", po::value<std::string>()->default_value("back_euler"), "Temporal discretization")("solver.dt", po::value<double>()->default_value(0.001), "Real time step")("solver.nsweep", po::value<int>()->default_value(1), "Number of sweeps in SOR")("solver.omega", po::value<double>()->default_value(1), "Relaxation parameter in SOR")("solver.tol", po::value<double>()->default_value(1e-12), "Error tolerance")("solver.sorder", po::value<int>()->default_value(1), "Spatial order of accuracy")("solver.torder", po::value<int>()->default_value(1), "Temporal order of accuracy")("solver.printfreq", po::value<int>()->default_value(100), "Printting frequency")("solver.cfl", po::value<double>()->default_value(0.5), "CFL number")("solver.delta_cfl", po::value<double>()->default_value(0.), "Delta CFL number for progressive cfl increase")("solver.cfl_increase_freq", po::value<int>()->default_value(5), "CFL increase frequency for progressive cfl increase")("solver.finaltime", po::value<double>()->default_value(0.5), "Final time")("solver.make-load-balance", po::value<bool>()->default_value(true), "Make load balance (for area or hybrid load estimation)")("solver.load-estim", po::value<int>()->default_value(2), "Load estimation method")("general.pseudo3D", po::value<bool>()->default_value(false), "2.5D simulation with 1 layer in depth")("solver.print-map", po::value<bool>()->default_value(false), "Print map.")("solver.max-time-step", po::value<int>()->default_value(10000), "")("solver.half-cfl", po::value<bool>()->default_value(true), "")("solver.save-solution", po::value<bool>()->default_value(false), "")("solver.restore-solution", po::value<bool>()->default_value(false), "")("solver.can-rebalance", po::value<bool>()->default_value(true), "Make load rebalance if needed.")("solver.force-rebalance", po::value<bool>()->default_value(false), "Force load rebalance even if relabalance is not needed.")("solver.print-vtk", po::value<bool>()->default_value(false), "")("solver.print-repart-info", po::value<bool>()->default_value(false), "")("solver.print-imbalance", po::value<bool>()->default_value(false), "")("solver.riemann-solver", po::value<int>()->default_value(0), "");
+        desc.add_options()("solver.repart-ratio", po::value<int>()->default_value(100), "")("solver.rebalance-thres", po::value<double>()->default_value(40.), "")("solver.show_inner_res", po::value<bool>()->default_value(true), "Show inner loop residual")("solver.show_inner_norm", po::value<bool>()->default_value(true), "Show inner loop norm")("solver.print_outer_norm", po::value<bool>()->default_value(true), "Print outer norm")("solver.steady", po::value<bool>()->default_value(false), "Steady state")("solver.progressive_cfl", po::value<bool>()->default_value(false), "Progressive CFL increase")("solver.tempo_discre", po::value<std::string>()->default_value("back_euler"), "Temporal discretization")("solver.dt", po::value<double>()->default_value(0.001), "Real time step")("solver.nsweep", po::value<int>()->default_value(1), "Number of sweeps in SOR")("solver.omega", po::value<double>()->default_value(1), "Relaxation parameter in SOR")("solver.tol", po::value<double>()->default_value(1e-12), "Error tolerance")("solver.sorder", po::value<int>()->default_value(1), "Spatial order of accuracy")("solver.torder", po::value<int>()->default_value(1), "Temporal order of accuracy")("solver.printfreq", po::value<int>()->default_value(100), "Printting frequency")("solver.cfl", po::value<double>()->default_value(0.5), "CFL number")("solver.delta_cfl", po::value<double>()->default_value(0.), "Delta CFL number for progressive cfl increase")("solver.cfl_increase_freq", po::value<int>()->default_value(5), "CFL increase frequency for progressive cfl increase")("solver.finaltime", po::value<double>()->default_value(0.5), "Final time")("solver.make-load-balance", po::value<bool>()->default_value(true), "Make load balance (for area or hybrid load estimation)")("solver.load-estim", po::value<int>()->default_value(2), "Load estimation method")("general.pseudo3D", po::value<bool>()->default_value(false), "2.5D simulation with 1 layer in depth")("solver.print-map", po::value<bool>()->default_value(false), "Print map.")("solver.max-time-step", po::value<int>()->default_value(10000), "")("solver.half-cfl", po::value<bool>()->default_value(true), "")("solver.save-solution", po::value<bool>()->default_value(false), "")("solver.restore-solution", po::value<bool>()->default_value(false), "")("solver.can-rebalance", po::value<bool>()->default_value(true), "Make load rebalance if needed.")("solver.force-rebalance", po::value<bool>()->default_value(false), "Force load rebalance even if relabalance is not needed.")("solver.print-vtk", po::value<bool>()->default_value(false), "")("solver.print-repart-info", po::value<bool>()->default_value(false), "")("solver.print-imbalance", po::value<bool>()->default_value(false), "")("solver.riemann-solver", po::value<int>()->default_value(0), "")("solver.dual-ts", po::value<bool>()->default_value(false), "");
 
         all_options.add(desc);
 
@@ -541,6 +543,7 @@ namespace Tailor
         else {
             assert(false);
         }
+        dual_ts_ = vm["solver.dual-ts"].as<bool>();
     }
 
     double Solver::dt() const
@@ -950,100 +953,20 @@ namespace Tailor
                 {
                     continue;
                 }
-                //mc.cons_sp1_ = mc.cons_s_ + mc.R_ / ((1/mc.dtao_ + 1/dt_) * mc.poly().volume());
-                // if (steady_)
-                // {
-                    mc.cons_sp1_ = mc.cons_s_ + mc.R_ / ((1. / mc.dtao_) * mc.poly().volume());
-                    //if (mc.R_[0] > 1e5 || mc.R_[1] > 1e5 || mc.R_[2] > 1e5 || mc.R_[3] > 1e5 || mc.R_[4] > 1e5)
-                    //{
-                    //    std::cout << "R: " << mc.R_[0] << std::endl;
-                    //    std::cout << "R: " << mc.R_[1] << std::endl;
-                    //    std::cout << "R: " << mc.R_[2] << std::endl;
-                    //    std::cout << "R: " << mc.R_[3] << std::endl;
-                    //    std::cout << "R: " << mc.R_[4] << std::endl;
-                    //    std::cout << "dtao: " << mc.dtao_ << std::endl;
-                    //    std::cout << "volume: " << mc.poly().volume() << std::endl;
-                    //    std::cout << "mc.cons_sp1: " << mc.cons_sp1_[0] << std::endl;
-                    //    std::cout << "mc.cons_s: " << mc.cons_s_[0] << std::endl;
-                    //}
-                // }
-                 //else
-                 //{
-                     //mc.cons_sp1_ = mc.cons_s_ + mc.R_ / ((1 / dt_) * mc.poly().volume());
-                 //}
 
-                    vararray prim;
-        prim[0] = mc.cons_sp1_[0];
-        prim[1] = mc.cons_sp1_[1] / prim[0];
-        prim[2] = mc.cons_sp1_[2] / prim[0];
-        prim[3] = mc.cons_sp1_[3] / prim[0];
-                    double k = spec_kine_energy(prim[1], prim[2], prim[3]);
-                    double e = mc.cons_sp1_[4] / prim[0] - k;
-        if (e <= 0. || std::isnan(e))
-        {
-            std::cout << "cons[0]: " << mc.cons_sp1_[0] << std::endl;
-            std::cout << "cons[1]: " << mc.cons_sp1_[1] << std::endl;
-            std::cout << "cons[2]: " << mc.cons_sp1_[2] << std::endl;
-            std::cout << "cons[3]: " << mc.cons_sp1_[3] << std::endl;
-            std::cout << "cons[4]: " << mc.cons_sp1_[4] << std::endl;
+                if (dual_ts_) {
+                    mc.cons_sp1_ = mc.cons_s_ + mc.R_ * mc.dtao_ / mc.poly().volume();
+                }
+                else {
+                    mc.cons_sp1_ = mc.cons_s_ + mc.R_ * dt_ / mc.poly().volume();
+                }
 
-            std::cout << "prim[0]: " << prim[0] << std::endl;
-            std::cout << "prim[1]: " << prim[1] << std::endl;
-            std::cout << "prim[2]: " << prim[2] << std::endl;
-            std::cout << "prim[3]: " << prim[3] << std::endl;
-
-            std::cout << "k: " << k << std::endl;
-            std::cout << "E: " << mc.cons_sp1_[4] / prim[0] << std::endl;
-            std::cout << "e: " << e << std::endl;
-            
-                        std::cout << "R: " << mc.R_[0] << std::endl;
-                        std::cout << "R: " << mc.R_[1] << std::endl;
-                        std::cout << "R: " << mc.R_[2] << std::endl;
-                        std::cout << "R: " << mc.R_[3] << std::endl;
-                        std::cout << "R: " << mc.R_[4] << std::endl;
-                        std::cout << "dtao: " << mc.dtao_ << std::endl;
-                        std::cout << "volume: " << mc.poly().volume() << std::endl;
-                        std::cout << "mc.cons_sp1: " << mc.cons_sp1_[0] << std::endl;
-                        std::cout << "mc.cons_s: " << mc.cons_s_[0] << std::endl;
-
-        }
-        assert(e > 0. && !std::isnan(e));
                 mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
-                assert(mc.prim(0) > 0.);
-                /*if (comm_->rank() == 0)
-                {
-                    std::cout << mc.tag()() << std::endl;
-                    std::cout << mc.poly().volume() << std::endl;
-                    std::cout << "R: " << mc.R_[0] << std::endl;
-                    std::cout << "R: " << mc.R_[1] << std::endl;
-                    std::cout << "R: " << mc.R_[2] << std::endl;
-                    std::cout << "R: " << mc.R_[3] << std::endl;
-                    std::cout << "R: " << mc.R_[4] << std::endl;
-                    std::cout << "conss: " << mc.cons_s_[0] << std::endl;
-                    std::cout << "conss: " << mc.cons_s_[1] << std::endl;
-                    std::cout << "conss: " << mc.cons_s_[2] << std::endl;
-                    std::cout << "conss: " << mc.cons_s_[3] << std::endl;
-                    std::cout << "conss: " << mc.cons_s_[4] << std::endl;
-                    std::cout << "consp1: " << mc.cons_s_[0] << std::endl;
-                    std::cout << "consp1: " << mc.cons_s_[1] << std::endl;
-                    std::cout << "consp1: " << mc.cons_s_[2] << std::endl;
-                    std::cout << "consp1: " << mc.cons_s_[3] << std::endl;
-                    std::cout << "consp1: " << mc.cons_s_[4] << std::endl;
-                    std::cout << "prim: " << mc.prim_[0] << std::endl;
-                    std::cout << "prim: " << mc.prim_[1] << std::endl;
-                    std::cout << "prim: " << mc.prim_[2] << std::endl;
-                    std::cout << "prim: " << mc.prim_[3] << std::endl;
-                    std::cout << "prim: " << mc.prim_[4] << std::endl;
-
-                    //std::cout << mc.prim_[2] << std::endl;
-                    //std::cout << mc.prim_[3] << std::endl;
-                    //std::cout << mc.prim_[4] << std::endl;
-                    //assert(false);
-                }*/
             }
         }
         else if (torder_ == 2)
         {
+            assert(false);
             for (MeshCell &mc : mesh.cell_)
             {
                 if (!calc_cell(mc))
@@ -1051,16 +974,16 @@ namespace Tailor
                     continue;
                 }
 
-                if (steady_)
-                {
-                    mc.cons_sp1_ = mc.cons_s_ + mc.R_ / ((1 / mc.dtao_) * mc.poly().volume());
-                }
-                else
-                {
-                    //mc.cons_sp1_ = mc.cons_s_ + mc.R_ / ((1./dt_) * mc.poly().volume());
-                    //mc.cons_sp1_ = mc.cons_s_ + (2. / 3.) * mc.R_ / ((1. / dt_) * mc.poly().volume());
-                    mc.cons_sp1_ = mc.cons_s_ + (2. / 3.) * mc.R_ / ((1. / mc.dtao_) * mc.poly().volume());
-                }
+                //if (steady_)
+                //{
+                mc.cons_sp1_ = mc.cons_s_ + mc.R_ / ((1 / mc.dtao_) * mc.poly().volume());
+                //}
+                //else
+                //{
+                //    //mc.cons_sp1_ = mc.cons_s_ + mc.R_ / ((1./dt_) * mc.poly().volume());
+                //    //mc.cons_sp1_ = mc.cons_s_ + (2. / 3.) * mc.R_ / ((1. / dt_) * mc.poly().volume());
+                //    mc.cons_sp1_ = mc.cons_s_ + (2. / 3.) * mc.R_ / ((1. / mc.dtao_) * mc.poly().volume());
+                //}
 
                 mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
             }
@@ -1109,50 +1032,7 @@ namespace Tailor
                 continue;
             }
 
-            /*if (mesh.tag()() == 1)
-                {
-                    if (mc.R_[0] > 5 || mc.R_[1] > 5 || mc.R_[2] > 5 || mc.R_[3] > 5 || mc.R_[4] > 5)
-                    {
-                    std::cout << "rank: " << comm_->rank() << std::endl;
-                    std::cout << "mc: " << mc.tag()() << std::endl;
-                    std::cout << "prim[0]: " << mc.prim_[0] << std::endl;
-                    std::cout << "prim[1]: " << mc.prim_[1] << std::endl;
-                    std::cout << "prim[2]: " << mc.prim_[2] << std::endl;
-                    std::cout << "prim[3]: " << mc.prim_[3] << std::endl;
-                    std::cout << "prim[4]: " << mc.prim_[4] << std::endl;
-                    std::cout << "R: " << mc.R_[0] << std::endl;
-                    std::cout << "R: " << mc.R_[1] << std::endl;
-                    std::cout << "R: " << mc.R_[2] << std::endl;
-                    std::cout << "R: " << mc.R_[3] << std::endl;
-                    std::cout << "R: " << mc.R_[4] << std::endl;
-                    std::cout << "dQ: " << mc.dQ_[0] << std::endl;
-                    std::cout << "dQ: " << mc.dQ_[1] << std::endl;
-                    std::cout << "dQ: " << mc.dQ_[2] << std::endl;
-                    std::cout << "dQ: " << mc.dQ_[3] << std::endl;
-                    std::cout << "dQ: " << mc.dQ_[4] << std::endl;
-                    std::cout << "vol: " << mc.poly().volume() << std::endl;
-                    std::cout << "D: " << mc.D_ << std::endl;
-                    //std::cout << "D: " << mc.D_(0,0) << std::endl;
-                    //std::cout << "D: " << mc.D_(1,1) << std::endl;
-                    //std::cout << "D: " << mc.D_(2,2) << std::endl;
-                    //std::cout << "D: " << mc.D_(3,3) << std::endl;
-                    //std::cout << "D: " << mc.D_(4,4) << std::endl;
-                    std::cout << "dtao: " << mc.dtao_ << std::endl;
-                    //for (const auto& mf: mc.face())
-                    //{
-                        //std::cout << "M: " << mf.M_(0,0) << std::endl;
-                        //std::cout << "M: " << mf.M_(1,1) << std::endl;
-                        //std::cout << "M: " << mf.M_(2,2) << std::endl;
-                        //std::cout << "M: " << mf.M_(3,3) << std::endl;
-                        //std::cout << "M: " << mf.M_(4,4) << std::endl;
-                    //}
-                    assert(false);
-                    }
-                }*/
-
-            //mc.cons_sp1_ = mc.cons_s_ + mc.dQ_;
             mc.cons_sp1_ = mc.cons_s_ + mc.dQ_;
-            //std::cout << mc.dQ_[0] << mc.cons_sp1_[0] << mc.cons_s_[0] << std::endl;
             mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
         }
     }
@@ -1190,7 +1070,9 @@ namespace Tailor
         }
 
         solve_(comm_->rank());
-        ++nsolve_;
+        if (!steady_) {
+            ++nsolve_;
+        }
 
         if (save_solution_)
         {
@@ -1244,6 +1126,7 @@ namespace Tailor
 
     void Solver::restore_solution()
     {
+        // useless since boost serialization.
         for (auto &mesh : partition_->spc_->sp_.front().mesh_)
         {
             std::string fn = "save-";
@@ -1273,6 +1156,8 @@ namespace Tailor
 
     void Solver::save_solution()
     {
+        // useless since boost serialization.
+        assert(false);
         for (const auto &mesh : partition_->spc().sp().front().mesh())
         {
             std::string fn = "save-";
@@ -1295,62 +1180,32 @@ namespace Tailor
 
     vararray Solver::resi(Mesh &mesh)
     {
+        // TODO refactor as L1 norm, abs, etc.
         vararray res;
         res = 0.;
         //res = TAILOR_BIG_NEG_NUM;
-        //if (!steady_)
+        for (MeshCell &mc : mesh.cell_)
         {
-            for (MeshCell &mc : mesh.cell_)
+            if (!calc_cell(mc))
             {
-                if (!calc_cell(mc))
-                {
-                    continue;
-                }
+                continue;
+            }
 
-                //if (mc.oga_cell_type() == OGA_cell_type_t::field)
-                //if (mc.oga_cell_type() == OGA_cell_type_t::hole) {continue;}
-                //if (mc.oga_cell_type() == OGA_cell_type_t::non_resident) {continue;}
-                //if (mc.oga_cell_type() == OGA_cell_type_t::ghost) {continue;}
-                //assert(mc.oga_cell_type() != OGA_cell_type_t::orphan);
-                //assert(mc.oga_cell_type() != OGA_cell_type_t::hole_candidate);
-                //assert(mc.oga_cell_type() != OGA_cell_type_t::undefined);
-                //{
-                /*{
-                  if (std::abs(mc.R_[3]) >= TAILOR_ZERO)
-                  {
-                  std::cout << " mc.R_[3]: " << mc.R_[3] << std::endl;
-                  }
-                  assert(std::abs(mc.R_[3]) < TAILOR_ZERO);
-                  }*/
-                for (int i = 0; i < NVAR; ++i)
-                {
-                    //res[i] = std::max(res[i], std::abs(mc.cons_sp1_[i] - mc.cons_s_[i]) * mc.poly().volume() / mc.dtao_);
-                    //res[i] = std::max(res[i], std::abs(mc.cons_sp1_[i] - mc.cons_s_[i]) * (1./mc.dtao_ + 1./dt_));
-                    //res[i] = std::max(res[i], std::abs(-mc.R_[i] - mc.poly().volume() * (mc.cons_s_[i] - mc.cons_n_[i]) / dt_));
-                    //assert(std::abs(mc.R_[i]) < 1e3);
-                    res[i] += std::abs(mc.R_[i]);
-                    //res[i] += std::abs(mc.poly().volume() * (mc.cons_sp1_[i] - mc.cons_s_[i]) / dt_ + mc.R_[i]);
-                    //res[i] += std::abs(mc.cons_sp1(i) - mc.cons_s(i));
-                    //std::cout << "resi: " << mc.tag()() << " " << mc.R_[i] << std::endl;
-                    //assert(std::abs(res[i]) < 1e3);
-                    //res[i] += std::pow((mc.cons_sp1_(i) - mc.cons_s_(i)), 2);
-                    //res[i] += std::pow((mc.R_[i]), 2.);
-                }
+            for (int i = 0; i < NVAR; ++i)
+            {
+                //res[i] = std::max(res[i], std::abs(mc.cons_sp1_[i] - mc.cons_s_[i]) * mc.poly().volume() / mc.dtao_);
+                //res[i] = std::max(res[i], std::abs(mc.cons_sp1_[i] - mc.cons_s_[i]) * (1./mc.dtao_ + 1./dt_));
+                //res[i] = std::max(res[i], std::abs(-mc.R_[i] - mc.poly().volume() * (mc.cons_s_[i] - mc.cons_n_[i]) / dt_));
+                //assert(std::abs(mc.R_[i]) < 1e3);
+                res[i] += std::abs(mc.R_[i]);
+                //res[i] += std::abs(mc.poly().volume() * (mc.cons_sp1_[i] - mc.cons_s_[i]) / dt_ + mc.R_[i]);
+                //res[i] += std::abs(mc.cons_sp1(i) - mc.cons_s(i));
+                //std::cout << "resi: " << mc.tag()() << " " << mc.R_[i] << std::endl;
+                //assert(std::abs(res[i]) < 1e3);
+                //res[i] += std::pow((mc.cons_sp1_(i) - mc.cons_s_(i)), 2);
+                //res[i] += std::pow((mc.R_[i]), 2.);
             }
         }
-        /*else
-        {
-            for (MeshCell& mc: mesh.cell_)
-            {
-                if (mc.oga_cell_type() == OGA_cell_type_t::field)
-                {
-                    for (int i=0; i<NVAR; ++i)
-                    {
-                        res[i] = std::max(res[i], mc.poly().volume() * (std::abs(mc.cons_sp1_[i] - mc.cons_s_[i]) * (1./mc.dtao_ + 1./dt_) + std::abs(mc.cons_s_[i] - mc.cons_n_[i]) / dt_));
-                    }
-                }
-            }
-        }*/
         //for (int i=0; i<NVAR; ++i)
         //{
         //res[i] = std::sqrt(res[i]);
@@ -1442,6 +1297,7 @@ namespace Tailor
 
         for (int ntimestep = 0; ntimestep < maxtimestep_; ++ntimestep)
         {
+
             if (var_exc_ != nullptr)
             {
                 var_exc_->update(profiler_, "sol-ghost-exc");
@@ -1462,6 +1318,7 @@ namespace Tailor
             for (int i = 0; i < sp.mesh_.size(); ++i)
             {
                 Mesh &mesh = sp.mesh_[i];
+
 
                 if (sp.mesh_.size() != 1)
                 {
@@ -1504,6 +1361,7 @@ namespace Tailor
 
                 tempo_discre(mesh, true);
 
+
                 auto res = resi(mesh);
                 //std::cout << res[0] << std::endl;
                 //std::cout << res[1] << std::endl;
@@ -1511,6 +1369,7 @@ namespace Tailor
                 //std::cout << res[3] << std::endl;
                 //std::cout << res[4] << std::endl;
                 local_res = std::max(local_res, max(res));
+
 
                 if (tempo_discre_ == "back_euler")
                 {
@@ -1945,7 +1804,8 @@ namespace Tailor
         //I(3,3) = 1.;
         //I(4,4) = 1.;
         //myface->M_ = TT * (JL + Aroe) * 0.5 * facearea;
-        myface->M_ = (JL + Aroe) * 0.5 * facearea;
+        //myface->M_ = (JL + Aroe) * 0.5 * facearea;
+        myface->M_ = (JL) * 0.5 * facearea;
         //myface->M_ = ((JL + Aroe) * 0.5 - I * vfn) * facearea;
         //if (std::abs(myface->M_(0,0)) > 1e5)
         //if (mesh.tag()() == 1)
@@ -1968,7 +1828,8 @@ namespace Tailor
         {
             //commonface->M_ = (JR - Aroe) * 0.5 * facearea;
             //commonface->M_ = TT * (JR - Aroe) * 0.5 * facearea * -1;
-            commonface->M_ = (JR - Aroe) * 0.5 * facearea * -1;
+            //commonface->M_ = (JR - Aroe) * 0.5 * facearea * -1;
+            commonface->M_ = (JR) * 0.5 * facearea * -1;
             //commonface->M_ = ((JR - Aroe) * 0.5 - I * vfn) * facearea * -1;
         }
 
@@ -2640,92 +2501,46 @@ namespace Tailor
         return false;
     }
 
+    double calc_local_time_step(double sumarea, double volume, double cfl)
+    {
+        double charlen = volume / sumarea;
+        double dtau = cfl * charlen;
+
+        return dtau;
+    }
+
     void Solver::tempo_discre(Mesh &mesh, bool calc_dtau)
     {
         for (MeshCell &mc : mesh.cell_)
         {
             if (!calc_cell(mc))
             {
-                //if (mc.oga_cell_type() != OGA_cell_type_t::field) {
                 continue;
             }
+
             double vol = mc.poly().volume();
-            //double sumarea = 0.;
-            //double max_eigen = TAILOR_BIG_NEG_NUM;
-            //for (const MeshFace& cmf: mc.face())
-            //{
-            //if (cmf.btype() == BouType::empty) {
-            //continue;
-            //}
-            //max_eigen = std::max(max_eigen, mesh.face(cmf.tag()).max_eigen_);
-            //sumarea += std::abs(cmf.face().signed_area()) * mesh.face(cmf.tag()).max_eigen_;
-            //sumarea += std::abs(cmf.face().signed_area());
-            //}
-            //double charlen = 2. * vol / mc.sumarea_; // why multiply by 2 ?????????????? /TODO
-            if (calc_dtau)
-            {
-                double charlen = vol / mc.sumarea_;
-                assert(mc.sumarea_ != 0.);
-                //mc.dtao_ = cfl_ * charlen / mc.max_eigen_;
-                mc.dtao_ = cfl_ * charlen;
-                //std::cout << "dtau: " << mc.dtao_ << std::endl;
-                //std::cout << "cfl: " << cfl_ << std::endl;
-                //std::cout << "vol: " << vol << std::endl;
-                //std::cout << "sumarea: " << mc.sumarea_ << std::endl;
-                assert(!std::isnan(vol));
-                assert(!std::isnan(mc.sumarea_));
-                assert(!std::isnan(cfl_));
-                assert(!std::isnan(charlen));
-                assert(!std::isnan(mc.dtao_));
-            }
-            //if (mc.tag()() == 1)
-            //{
-            //std::cout << "sumarea: " << sumarea << std::endl;
-            //std::cout << "vol: " << vol << std::endl;
-            //std::cout << "charlen: " << charlen << std::endl;
-            //std::cout << "cfl: " << cfl_ << std::endl;
-            //}
-            //mc.dtao_ = cfl_ * std::pow(vol, 1./3.) / mc.max_eigen_;
-            //std::cout << mc.dtao_ << " " << cfl_ <<" " << std::pow(vol, 1./3.) << " " << mc.max_eigen_ << std::endl;
+            double mc.dtao_ = calc_local_time_step(mc.sumarea_, vol, cfl_);
 
-            switch (torder_)
+            if (torder_ == 1)
             {
-            case 1:
-            {
-                //double t = vol * (1./mc.dtao_ + 1./dt_);
-                double t = vol * (1./mc.dtao_);
-                // double t = vol * (1. / dt_);
-                for (int i = 0; i < NVAR; ++i)
+                if (dual_ts_)
                 {
-                    mc.D_(i, i) += t;
-                }
+                    double t = vol / mc.dtao_;
+                    mc.D_.add_diag(t);
 
-                /*{
-                          if (std::abs(mc.R_[3]) >= TAILOR_ZERO)
-                          {
-                          std::cout << " mc.R_[3]: " << mc.R_[3] << std::endl;
-                          }
-                          assert(std::abs(mc.R_[3]) < TAILOR_ZERO);
-                          }*/
-
-                //auto rb = mc.R_;
-                //if (!steady_) {
                     mc.R_ -= vol * (mc.cons_sp1() - mc.cons_n()) / dt_;
-                //}
-                //std::cout << "aaaa: " << mc.dQ_[0] << " " << mc.cons_sp1_[0] << " " << mc.cons_s_[0] << " " << rb[0] << " " << mc.R_[0] << " " << mc.prim_[1] << " " << mc.prim_[2] << " " << mc.prim_[3] << std::endl;
-                /*{
-                          if (std::abs(mc.R_[3]) >= TAILOR_ZERO)
-                          {
-                          std::cout << " mc.R_[3]: " << mc.R_[3] << std::endl;
-                          }
-                          assert(std::abs(mc.R_[3]) < TAILOR_ZERO);
-                          }*/
+                }
+                else
+                {
+                    double t = vol / mc.dtao_;
+                    mc.D_.add_diag(t);
+                }
             }
-            break;
-            case 2:
+            else if (torder_ == 2)
             {
+                assert(false);
                 //double t = vol * (1./mc.dtao_ + 1.5/dt_);
-                 double t = vol * (1./mc.dtao_);
+                double t = vol * (1./mc.dtao_);
                 // double t = vol * (1.5 / dt_);
                 for (int i = 0; i < NVAR; ++i)
                 {
@@ -2733,22 +2548,18 @@ namespace Tailor
                 }
 
                 //if (!steady_) {
-                    if (nsolve_ > 1)
-                    {
-                        mc.R_ -= 0.5 * vol * (3. * mc.cons_sp1() - 4. * mc.cons_n() + mc.cons_nm1()) / dt_;
-                    }
-                    else
-                    {
-                        mc.R_ -= vol * (mc.cons_sp1() - mc.cons_n()) / dt_;
-                    }
+                //    if (nsolve_ > 1)
+                //    {
+                //        mc.R_ -= 0.5 * vol * (3. * mc.cons_sp1() - 4. * mc.cons_n() + mc.cons_nm1()) / dt_;
+                //    }
+                //    else
+                //    {
+                //        mc.R_ -= vol * (mc.cons_sp1() - mc.cons_n()) / dt_;
+                //    }
                 //}
             }
-            break;
-            default:
-            {
+            else {
                 assert(false);
-            }
-            break;
             }
         }
     }

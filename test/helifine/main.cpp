@@ -7,7 +7,7 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <filesystem>
 
-const int SAVE_THRES = 0; // 74
+const int SAVE_THRES = 74; // 74
 
 namespace bmpi = boost::mpi;
 
@@ -120,12 +120,12 @@ int main()
     Tailor::Profiler profiler(comm, false);
 
     std::vector<std::string> fn;
-    fn.push_back("msh/64/fuspyl");
-    fn.push_back("msh/64/wing0");
-    fn.push_back("msh/64/wing1");
-    fn.push_back("msh/64/wing2");
-    fn.push_back("msh/64/wing3");
-    fn.push_back("msh/64/hubshaft");
+    fn.push_back("msh/128/fuspyl");
+    fn.push_back("msh/128/wing0");
+    fn.push_back("msh/128/wing1");
+    fn.push_back("msh/128/wing2");
+    fn.push_back("msh/128/wing3");
+    fn.push_back("msh/128/hubshaft");
 
     Tailor::Freestream fs;
     fs.read();
@@ -135,9 +135,9 @@ int main()
 
     bool use_shared_partition = true;
 
-    //assembler = new Tailor::Assembler();
-    //solver = new Tailor::Solver();
-    //load(*assembler, *solver, comm, nullptr, use_shared_partition, "sv-2249");
+    assembler = new Tailor::Assembler();
+    solver = new Tailor::Solver();
+    load(*assembler, *solver, comm, nullptr, use_shared_partition, "sv-0");
 
     int counter = 0;
 
@@ -147,34 +147,34 @@ int main()
         a.append(std::to_string(i));
         profiler.start(a);
 
-        if (i == 0)
-        {
-            //profiler.start("asm-ctr");
-            //assembler = new Tailor::Assembler(comm, &profiler, fn);
-            assembler = new Tailor::Assembler(comm, nullptr, fn);
-            //assembler = new Tailor::Assembler();
-            //profiler.stop("asm-ctr");
+        //if (i == 0)
+        //{
+        //    //profiler.start("asm-ctr");
+        //    //assembler = new Tailor::Assembler(comm, &profiler, fn);
+        //    assembler = new Tailor::Assembler(comm, nullptr, fn);
+        //    //assembler = new Tailor::Assembler();
+        //    //profiler.stop("asm-ctr");
 
-            //profiler.start("sol-ctr");
-            if (use_shared_partition)
-            {
-                //solver = new Tailor::Solver(comm, fn, &profiler, assembler->partition());
-                solver = new Tailor::Solver(comm, fn, nullptr, assembler->partition());
-                //solver = new Tailor::Solver();
-            }
-            else
-            {
-                //solver = new Tailor::Solver(comm, fn, &profiler);
-                solver = new Tailor::Solver(comm, fn, nullptr);
-            }
-            //profiler.stop("sol-ctr");
-        }
+        //    //profiler.start("sol-ctr");
+        //    if (use_shared_partition)
+        //    {
+        //        //solver = new Tailor::Solver(comm, fn, &profiler, assembler->partition());
+        //        solver = new Tailor::Solver(comm, fn, nullptr, assembler->partition());
+        //        //solver = new Tailor::Solver();
+        //    }
+        //    else
+        //    {
+        //        //solver = new Tailor::Solver(comm, fn, &profiler);
+        //        solver = new Tailor::Solver(comm, fn, nullptr);
+        //    }
+        //    //profiler.stop("sol-ctr");
+        //}
 
-        {
-            std::string mems = "start-iter-";
-            mems.append(std::to_string(i));
-            Tailor::mem_usage(comm, mems);
-        }
+        //{
+        //    std::string mems = "start-iter-";
+        //    mems.append(std::to_string(i));
+        //    Tailor::mem_usage(comm, mems);
+        //}
 
         //profiler.start("asm-asm");
         assembler->assemble();

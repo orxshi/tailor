@@ -1,13 +1,13 @@
 #!/bin/bash
-#SBATCH -p mid1
-#SBATCH -x barbun[2-80]
+#SBATCH -p short
+##SBATCH -x barbun[2-103]
 ##SBATCH -x levrek[129-136,138-164]
 ##SBATCH -x sardalya[2-64,97-150]
 #SBATCH -J helifine
-#SBATCH --ntasks=64
+#SBATCH --ntasks=128
 ##SBATCH --nodes=7
 #SBATCH --hint=nomultithread
-#SBATCH -t 01-00:00:00
+#SBATCH -t 00-00:10:00
 #SBATCH --output=slurm-%j.out
 #SBATCH --error=slurm-%j.err
 ##SBATCH --signal=TERM@300
