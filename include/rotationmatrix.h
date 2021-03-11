@@ -1,7 +1,8 @@
 #ifndef ROTATIONMATRIX_H
 #define	ROTATIONMATRIX_H
 
-#include <vec3.h>
+//#include <vec3.h>
+#include "matrix.h"
 
 namespace Tailor
 {
@@ -9,7 +10,7 @@ namespace Tailor
     {
         public: 
 
-        vec3<double> rotate(double angle, int axis, const vec3<double>& v);
+        Vector3 rotate(double angle, int axis, const Vector3& v);
 
         private:
 

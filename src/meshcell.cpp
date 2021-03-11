@@ -111,26 +111,18 @@ namespace Tailor
                     //);
         //}
 
-            assert(!std::isnan(vel(0)));
-            assert(!std::isnan(vel(1)));
-            assert(!std::isnan(vel(2)));
+        assert(!vel.isnan());
+
         vec3<double> vinf = vinf_air - vel;
 
         vararray prim;
-        prim_[0] = fs.rhoinf_;
-        prim_[1] = vinf(0);
-        prim_[2] = vinf(1);
-        prim_[3] = vinf(2);
-        prim_[4] = fs.pinf_;
+        prim_(0) = fs.rhoinf_;
+        prim_(1) = vinf(0);
+        prim_(2) = vinf(1);
+        prim_(3) = vinf(2);
+        prim_(4) = fs.pinf_;
 
-        //assert(std::abs(prim_[2]) < TAILOR_ZERO);
-        //assert(std::abs(prim_[3]) < TAILOR_ZERO);
-
-            assert(!std::isnan(prim_[0]));
-            assert(!std::isnan(prim_[1]));
-            assert(!std::isnan(prim_[2]));
-            assert(!std::isnan(prim_[3]));
-            assert(!std::isnan(prim_[4]));
+        assert(!prim_.isnan());
 
         cons_sp1_ = prim_to_cons(prim_, fs.gamma_);
     }
@@ -220,7 +212,7 @@ namespace Tailor
 
     double MeshCell::R(int i) const
     {
-        return R_[i];
+        return R_(i);
     }
 
     const vararray& MeshCell::prim() const
@@ -250,27 +242,27 @@ namespace Tailor
 
     double MeshCell::prim(int i) const
     {
-        return prim_[i];
+        return prim_(i);
     }
 
     double MeshCell::cons_sp1(int i) const
     {
-        return cons_sp1_[i];
+        return cons_sp1_(i);
     }
 
     double MeshCell::cons_s(int i) const
     {
-        return cons_s_[i];
+        return cons_s_(i);
     }
 
     double MeshCell::cons_n(int i) const
     {
-        return cons_n_[i];
+        return cons_n_(i);
     }
 
     double MeshCell::cons_nm1(int i) const
     {
-        return cons_nm1_[i];
+        return cons_nm1_(i);
     }
 
     void MeshCell::set_btype(BouType btype)
@@ -1139,27 +1131,17 @@ const Tag& MeshCell::tag() const
 
 MeshCell::MeshCell(): sumarea_(0.), erase_(false), max_eigen_(TAILOR_BIG_NEG_NUM), OGA_cell_type_(OGA_cell_type_t::undefined), dtao_(0.)
 {
-    for (int i=0; i<NVAR; ++i)
-    {
-        prim_[i] = 0.;
-        cons_sp1_[i] = 0.;
-        cons_s_[i] = 0.;
-        cons_n_[i] = 0.;
-        cons_nm1_[i] = 0.;
-        dQ_[i] = 0.;
-        old_dQ_[i] = 0.;
-        R_[i] = 0.;
-        R_mid_[i] = 0.;
-    }
-
-    for (int i=0; i<NVAR; ++i)
-    {
-        for (int j=0; j<NVAR; ++j)
-        {
-            D_(i,j) = 0.;
-            D_mid_(i,j) = 0.;
-        }
-    }
+    prim_     = 0.;
+    cons_sp1_ = 0.;
+    cons_s_   = 0.;
+    cons_n_   = 0.;
+    cons_nm1_ = 0.;
+    dQ_       = 0.;
+    old_dQ_   = 0.;
+    R_        = 0.;
+    R_mid_    = 0.;
+    D_        = 0.;
+    D_mid_    = 0.;
 }
 
 MeshCell::MeshCell(const Tag& tag, const Tag& parent_mesh, const std::vector<MeshPoint>& point, BouType btype, Shape shape): tag_(tag), parent_mesh_(parent_mesh), OGA_cell_type_(OGA_cell_type_t::undefined), erase_(false), btype_(btype), max_eigen_(TAILOR_BIG_NEG_NUM), sumarea_(0.)
@@ -1209,27 +1191,18 @@ MeshCell::MeshCell(const Tag& tag, const Tag& parent_mesh, const std::vector<Mes
     first_tag_ = tag_;
     root_parent_mesh_ = parent_mesh_;
 
-    for (int i=0; i<NVAR; ++i)
-    {
-        prim_[i] = 0.;
-        cons_sp1_[i] = 0.;
-        cons_s_[i] = 0.;
-        cons_n_[i] = 0.;
-        cons_nm1_[i] = 0.;
-        dQ_[i] = 0.;
-        old_dQ_[i] = 0.;
-        R_[i] = 0.;
-        R_mid_[i] = 0.;
-    }
+    prim_     = 0.;
+    cons_sp1_ = 0.;
+    cons_s_   = 0.;
+    cons_n_   = 0.;
+    cons_nm1_ = 0.;
+    dQ_       = 0.;
+    old_dQ_   = 0.;
+    R_        = 0.;
+    R_mid_    = 0.;
 
-    for (int i=0; i<NVAR; ++i)
-    {
-        for (int j=0; j<NVAR; ++j)
-        {
-            D_(i,j) = 0.;
-            D_mid_(i,j) = 0.;
-        }
-    }
+    D_ = 0.;
+    D_mid_ = 0.;
 }
 
 void MeshCell::add_vertex(const MeshPoint& p, const Tag& pointtag)

@@ -2,6 +2,50 @@
 
 namespace Tailor
 {
+    template<int nrow>
+        double len(const Vector<nrow> a)
+        {
+            return std::sqrt(std::pow(a(0), 2.) + std::pow(a(1), 2.) + std::pow(a(2), 2.));
+        }
+
+    template<int nrow>
+        Vector<nrow> cross(const Vector<nrow>& a, const Vector<nrow>& b)
+        {
+            Vector<nrow> c;
+
+            c(0) = a(1) * b(2) - a(2) * b(1);
+            c(1) = a(2) * b(0) - a(0) * b(2);
+            c(2) = a(0) * b(1) - a(1) * b(0);
+
+            return c;
+        }
+
+    template<int nrow>
+        double dot(const Vector<nrow>& a, const Vector<nrow>& b)
+        {
+            auto c = a(0) * b(0) + a(1) * b(1) + a(2) * b(2);
+
+            return c;
+        }
+    
+    template<int nrow>
+        Vector<nrow> normals(const Vector<nrow>& a, const Vector<nrow>& b, const Vector<nrow>& c)
+        {
+            return cross((a-b), (c-b));
+        }
+
+    template<int nrow>
+        double angle(const Vector<nrow>& a, const Vector<nrow>& b)
+    {
+        return std::acos(dot(a, b) / (len(a) * len(b))); // radian
+    }
+
+    template<int nrow>
+        Vector<nrow> normalize(const Vector<nrow>& a)
+    {
+        return a / len(a);
+    }
+
     vararray operator/(const vararray& f, const varmat& A)
     {
         // perform x = inv (A) * f
@@ -37,18 +81,18 @@ namespace Tailor
         b54 = A(4,3) - b51 * u14 - b52 * u24 - b53 * u34;
         b55 = 1 / (A(4,4) - b51 * u15 - b52 * u25 - b53 * u35 - b54 * u45);
         //
-        d1 = f[0] * b11;
-        d2 = (f[1] - b21 * d1) * b22;
-        d3 = (f[2] - b31 * d1 -b32 * d2) *b33;
-        d4 = (f[3] - b41 * d1 -b42 * d2 - b43 * d3) * b44;
-        d5 = (f[4] - b51 * d1 -b52 * d2 - b53 * d3 - b54 * d4) * b55;
+        d1 = f(0) * b11;
+        d2 = (f(1) - b21 * d1) * b22;
+        d3 = (f(2) - b31 * d1 -b32 * d2) *b33;
+        d4 = (f(3) - b41 * d1 -b42 * d2 - b43 * d3) * b44;
+        d5 = (f(4) - b51 * d1 -b52 * d2 - b53 * d3 - b54 * d4) * b55;
         //
         vararray x;
-        x[4] = d5;
-        x[3] = d4 - u45 * d5;
-        x[2] = d3 - u34 * x[3] - u35 * d5;
-        x[1] = d2 - u23 * x[2] - u24 * x[3] - u25 * d5;
-        x[0] = d1 - u12 * x[1] - u13 * x[2] - u14 * x[3] - u15 * d5;
+        x(4) = d5;
+        x(3) = d4 - u45 * d5;
+        x(2) = d3 - u34 * x(3) - u35 * d5;
+        x(1) = d2 - u23 * x(2) - u24 * x(3) - u25 * d5;
+        x(0) = d1 - u12 * x(1) - u13 * x(2) - u14 * x(3) - u15 * d5;
 
         /*double sum = 0.;
         for (int i=0; i<NVAR; ++i)

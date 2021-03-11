@@ -187,7 +187,6 @@ namespace Tailor
             const MeshCell& nei = mesh.cell(mc.interior_boundary());
 
             mc.prim_ = nei.prim();
-            assert(mc.prim_[0] > 0.);
             mc.cons_sp1_ = prim_to_cons(mc.prim_, fs_.gamma_);
         }
     }
@@ -341,13 +340,12 @@ namespace Tailor
                 assert(rhob > 0.);
 
                 assert(rhob != 0.);
-                mc.prim_[0] = rhob;
-                mc.prim_[1] = v(0);
-                mc.prim_[2] = v(1);
-                mc.prim_[3] = v(2);
-                mc.prim_[4] = pb;
+                mc.prim_(0) = rhob;
+                mc.prim_(1) = v(0);
+                mc.prim_(2) = v(1);
+                mc.prim_(3) = v(2);
+                mc.prim_(4) = pb;
 
-                assert(mc.prim_[0] > 0.);
                 mc.cons_sp1_ = prim_to_cons(mc.prim_, gamma);
             }
             else // outflow
@@ -406,21 +404,14 @@ namespace Tailor
                 assert(rhob > 0.);
 
                 assert(rhob != 0.);
-                mc.prim_[0] = rhob;
-                mc.prim_[1] = v(0);
-                mc.prim_[2] = v(1);
-                mc.prim_[3] = v(2);
-                mc.prim_[4] = pb;
+                mc.prim_(0) = rhob;
+                mc.prim_(1) = v(0);
+                mc.prim_(2) = v(1);
+                mc.prim_(3) = v(2);
+                mc.prim_(4) = pb;
 
-                assert(mc.prim_[0] > 0.);
                 mc.cons_sp1_ = prim_to_cons(mc.prim_, gamma);
             }
-            if (mesh.tag()() == 0) {
-                assert(mc.prim_[0] != 0.);
-            }
-
-            //assert(mc.prim(0) != 0.);
-            assert(mc.prim(0) > 0.);
         }
     }
 
@@ -821,7 +812,6 @@ namespace Tailor
     {
         assert(mesh.query(mc.interior_boundary()) != nullptr); 
         mc.prim_ = mesh.cell(mc.interior_boundary()).prim();
-        assert(mc.prim_[0] > 0.);
         mc.cons_sp1_ = prim_to_cons(mc.prim_, fs_.gamma_);
     }
 
@@ -877,23 +867,23 @@ namespace Tailor
         auto T = make_rot_matrix(n);
         auto neii = nei.prim();
         auto vf = mf->vf();
-        neii[1] -= vf(0);
-        neii[2] -= vf(1);
-        neii[3] -= vf(2);
+        neii(1) -= vf(0);
+        neii(2) -= vf(1);
+        neii(3) -= vf(2);
         //auto prim = T * nei.prim();
         auto prim = T * neii;
-        prim[1] *= -1.;
+        prim(1) *= -1.;
 
         mc.prim_ = T.transpose() * prim;
-        mc.prim_[1] += vf(0);
-        mc.prim_[2] += vf(1);
-        mc.prim_[3] += vf(2);
+        mc.prim_(1) += vf(0);
+        mc.prim_(2) += vf(1);
+        mc.prim_(3) += vf(2);
         mc.cons_sp1_ = prim_to_cons(mc.prim_, fs_.gamma_);
 
         return;
 
-        mc.prim_[0] = nei.prim(0);
-        mc.prim_[4] = nei.prim(4);
+        mc.prim_(0) = nei.prim(0);
+        mc.prim_(4) = nei.prim(4);
 
         //if (mc.tag()() == 40)
         //{
@@ -907,9 +897,7 @@ namespace Tailor
         vel.set_y(nei.prim(2));
         vel.set_z(nei.prim(3));
 
-        assert(!std::isnan(nei.prim_[1]));
-        assert(!std::isnan(nei.prim_[2]));
-        assert(!std::isnan(nei.prim_[3]));
+        assert(!nei.prim_.isnan());
 
         auto normvel = n * dotp(vel, n);
         //auto tangvel = vel - normvel;
@@ -933,11 +921,10 @@ namespace Tailor
         //mc.prim_[3] = tangvel(2) + vgz;
 
         vec3<double> v = vel - normvel * 2. + vgn;
-        mc.prim_[1] = v(0);
-        mc.prim_[2] = v(1);
-        mc.prim_[3] = v(2);
+        mc.prim_(1) = v(0);
+        mc.prim_(2) = v(1);
+        mc.prim_(3) = v(2);
 
-        assert(mc.prim_[0] > 0.);
         mc.cons_sp1_ = prim_to_cons(mc.prim_, fs_.gamma_);
     }
 
@@ -946,7 +933,6 @@ namespace Tailor
         for (MeshCell& mc: mesh.farfield_boundaries_)
         {
             mc.prim_ = prim;
-            assert(mc.prim_[0] > 0.);
             mc.cons_sp1_ = prim_to_cons(prim, fs_.gamma_);
         }
     }
@@ -956,7 +942,6 @@ namespace Tailor
         for (MeshCell& mc: mesh.dirichlet_boundaries_)
         {
             mc.prim_ = prim;
-            assert(mc.prim_[0] > 0.);
             mc.cons_sp1_ = prim_to_cons(prim, fs_.gamma_);
         }
     }
@@ -972,9 +957,9 @@ namespace Tailor
 
             mc.prim_ = nei.prim();
 
-            mc.prim_[1] -= vgn(0);
-            mc.prim_[2] -= vgn(1);
-            mc.prim_[3] -= vgn(2);
+            mc.prim_(1) -= vgn(0);
+            mc.prim_(2) -= vgn(1);
+            mc.prim_(3) -= vgn(2);
 
             mc.cons_sp1_ = prim_to_cons(mc.prim_, fs_.gamma_);
         }

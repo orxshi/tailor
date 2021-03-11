@@ -4,7 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include "core.h"
-#include "vec3.h"
+//#include "vec3.h"
 #include "array.h"
 #include "tag.h"
 #include "rotationmatrix.h"

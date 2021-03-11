@@ -7,6 +7,12 @@
 namespace Tailor
 {
     template<int nrow, int ncol>
+        class Matrix;
+
+    template<int nrow>
+        using Vector = Matrix<nrow, 1>;
+
+    template<int nrow, int ncol>
         class Matrix
         {
             public:
@@ -66,6 +72,20 @@ namespace Tailor
                     return data_[row * ncol + col]; 
                 }
 
+                double& operator()(int row)
+                {
+                    assert(ncol == 1);
+                    int col = 1;
+                    return (*this)(row, col);
+                }
+
+                double operator()(int row) const
+                {
+                    assert(ncol == 1);
+                    int col = 1;
+                    return (*this)(row, col);
+                }
+
                 bool isnan() const
                 {
                     for (int r=0; r<nrow; ++r)
@@ -122,42 +142,42 @@ namespace Tailor
                 }
 
                 /*Matrix operator*(const Vector<ncol>& v) const
+                  {
+                // matrix-diag matrix product
+                // v is ncol x ncol diagonal square matrix
+
+                Matrix<nrow, ncol> mat;
+
+                for (int r=0; r<nrow; ++r)
                 {
-                    // matrix-diag matrix product
-                    // v is ncol x ncol diagonal square matrix
+                for (int c=0; c<ncol; ++c)
+                {
+                //mat(r, c) = data_(r * ncol + c) * v(c);
+                mat(r,c) = (*this)(r,c) * v(c);
+                }
+                }
 
-                    Matrix<nrow, ncol> mat;
-
-                    for (int r=0; r<nrow; ++r)
-                    {
-                        for (int c=0; c<ncol; ++c)
-                        {
-                            //mat(r, c) = data_(r * ncol + c) * v(c);
-                            mat(r,c) = (*this)(r,c) * v(c);
-                        }
-                    }
-
-                    return mat;
+                return mat;
                 }*/
 
-                Vector<nrow> operator*(const Vector<ncol>& v) const
-                {
-                    // matrix-vector product
+                //Vector<nrow> operator*(const Vector<ncol>& v) const
+                //{
+                //    // matrix-vector product
 
-                    Vector<nrow> vec;
-                    vec = 0.;
+                //    Vector<nrow> vec;
+                //    vec = 0.;
 
-                    for (int r=0; r<nrow; ++r)
-                    {
-                        for (int c=0; c<ncol; ++c)
-                        {
-                            //vec[r] += data_(r * ncol + c) * v(c);
-                            vec[r] += (*this)(r,c) * v[c];
-                        }
-                    }
+                //    for (int r=0; r<nrow; ++r)
+                //    {
+                //        for (int c=0; c<ncol; ++c)
+                //        {
+                //            //vec[r] += data_(r * ncol + c) * v(c);
+                //            vec[r] += (*this)(r,c) * v[c];
+                //        }
+                //    }
 
-                    return vec;
-                }
+                //    return vec;
+                //}
 
                 Matrix operator*(double s) const
                 {
@@ -301,13 +321,43 @@ namespace Tailor
                     return true;
                 }
 
+                template<class Archive> void serialize(Archive & ar, const unsigned int version)
+                {
+                    ar & data_;
+                }
+
+                friend class boost::serialization::access;
 
             private:
 
-                Vector<nrow * ncol> data_;
+                Array<double, nrow * ncol> data_;
         };
 
-    vararray operator/(const vararray& f, const Matrix<NVAR, NVAR>& A);
+
+    //template<int nrow>
+    //    class Vector: public Matrix<nrow, 1>
+    //{
+    //    public:
+
+    //        double& operator()(int row)
+    //        {
+    //            return Matrix<nrow, 1>::operator()(row, 1);
+    //        }
+
+    //        double operator()(int row) const
+    //        {
+    //            return Matrix<nrow, 1>::operator()(row, 1);
+    //        }
+
+    //        template<class Archive> void serialize(Archive & ar, const unsigned int version)
+    //        {
+    //            ar & boost::serialization::base_object<Matrix<nrow, 1>>(*this);
+    //        }
+    //};
+
+    //vararray operator/(const vararray& f, const Matrix<NVAR, NVAR>& A);
+    using vararray = Vector<NVAR>;
+    using Vector3 = Vector<3>;
 
     template<int nrow, int ncol>
         std::ostream& operator<<(std::ostream& os, const Matrix<nrow, ncol>& mat)
@@ -326,6 +376,15 @@ namespace Tailor
         }
 
     using varmat = Matrix<NVAR, NVAR>;
+
+    template<int nrow>
+        Vector<nrow> cross(const Vector<nrow>& a, const Vector<nrow>& b);
+
+    template<int nrow>
+        double dot(const Vector<nrow>& a, const Vector<nrow>& b);
+
+    template<int nrow>
+        Vector<nrow> normals(const Vector<nrow>& a, const Vector<nrow>& b, const Vector<nrow>& c);
 }
 
 #endif

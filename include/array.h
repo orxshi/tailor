@@ -217,115 +217,115 @@ namespace Tailor
             friend class boost::serialization::access;
         };
 
-    template<size_t max_size>
-        class Vector: public Array<double, max_size>
-        {
-            public:
+    //template<size_t max_size>
+    //    class Vector: public Array<double, max_size>
+    //    {
+    //        public:
 
-                Vector(): Array<double, max_size>(true) {}
+    //            Vector(): Array<double, max_size>(true) {}
 
-                Vector& operator=(double v)
-                {
-                    this->set_data(v);
-                    return *this;
-                }
+    //            Vector& operator=(double v)
+    //            {
+    //                this->set_data(v);
+    //                return *this;
+    //            }
 
-            private:
-        };
+    //        private:
+    //    };
 
     //template<size_t max_size> using Vector = Array<double, max_size>;
-    using vararray = Vector<NVAR>;
+    //using vararray = Vector<NVAR>;
 
-    template<size_t max_size> 
-        Vector<max_size> operator+(const Vector<max_size>& a, const Vector<max_size>& b)
-        {
-            Vector<max_size> c;
-            for (int i=0; i<max_size; ++i)
-            {
-                c[i] = a[i] + b[i];
-            }
+    //template<size_t max_size> 
+    //    Vector<max_size> operator+(const Vector<max_size>& a, const Vector<max_size>& b)
+    //    {
+    //        Vector<max_size> c;
+    //        for (int i=0; i<max_size; ++i)
+    //        {
+    //            c[i] = a[i] + b[i];
+    //        }
 
-            return c;
-        }
-    template<size_t max_size> 
-        Vector<max_size> operator-(const Vector<max_size>& a, const Vector<max_size>& b)
-        {
-            Vector<max_size> c;
-            for (int i=0; i<max_size; ++i)
-            {
-                c[i] = a[i] - b[i];
-            }
+    //        return c;
+    //    }
+    //template<size_t max_size> 
+    //    Vector<max_size> operator-(const Vector<max_size>& a, const Vector<max_size>& b)
+    //    {
+    //        Vector<max_size> c;
+    //        for (int i=0; i<max_size; ++i)
+    //        {
+    //            c[i] = a[i] - b[i];
+    //        }
 
-            return c;
-        }
+    //        return c;
+    //    }
 
-    template<size_t max_size> 
-        Vector<max_size> operator*(const Vector<max_size>& a, double d)
-        {
-            Vector<max_size> v;
-            for (int i=0; i<max_size; ++i)
-            {
-                v[i] = a[i] * d;
-            }
+    //template<size_t max_size> 
+    //    Vector<max_size> operator*(const Vector<max_size>& a, double d)
+    //    {
+    //        Vector<max_size> v;
+    //        for (int i=0; i<max_size; ++i)
+    //        {
+    //            v[i] = a[i] * d;
+    //        }
 
-            return v;
-        }
+    //        return v;
+    //    }
 
-    template<size_t max_size> 
-        Vector<max_size> operator*(double d, const Vector<max_size>& a)
-        {
-            Vector<max_size> v;
-            for (int i=0; i<max_size; ++i)
-            {
-                v[i] = a[i] * d;
-            }
+    //template<size_t max_size> 
+    //    Vector<max_size> operator*(double d, const Vector<max_size>& a)
+    //    {
+    //        Vector<max_size> v;
+    //        for (int i=0; i<max_size; ++i)
+    //        {
+    //            v[i] = a[i] * d;
+    //        }
 
-            return v;
-        }
+    //        return v;
+    //    }
 
-    template<size_t max_size> 
-        Vector<max_size> operator/(const Vector<max_size>& a, double d)
-        {
-            Vector<max_size> v;
-            for (int i=0; i<max_size; ++i)
-            {
-                v[i] = a[i] / d;
-            }
+    //template<size_t max_size> 
+    //    Vector<max_size> operator/(const Vector<max_size>& a, double d)
+    //    {
+    //        Vector<max_size> v;
+    //        for (int i=0; i<max_size; ++i)
+    //        {
+    //            v[i] = a[i] / d;
+    //        }
 
-            return v;
-        }
-    template<size_t max_size> 
-        Vector<max_size>& operator+=(Vector<max_size>& a, const Vector<max_size>& b)
-        {
-            for (int i=0; i<max_size; ++i)
-            {
-                a[i] += b[i];
-            }
+    //        return v;
+    //    }
+    //template<size_t max_size> 
+    //    Vector<max_size>& operator+=(Vector<max_size>& a, const Vector<max_size>& b)
+    //    {
+    //        for (int i=0; i<max_size; ++i)
+    //        {
+    //            a[i] += b[i];
+    //        }
 
-            return a;
-        }
-     template<size_t max_size> 
-        Vector<max_size>& operator-=(Vector<max_size>& a, const Vector<max_size>& b)
-        {
-            for (int i=0; i<max_size; ++i)
-            {
-                a[i] -= b[i];
-            }
+    //        return a;
+    //    }
+    // template<size_t max_size> 
+    //    Vector<max_size>& operator-=(Vector<max_size>& a, const Vector<max_size>& b)
+    //    {
+    //        for (int i=0; i<max_size; ++i)
+    //        {
+    //            a[i] -= b[i];
+    //        }
 
-            return a;
-        }
+    //        return a;
+    //    }
 
-     template<size_t max_size> 
-        double max(Vector<max_size>& a)
-        {
-            double d = TAILOR_BIG_NEG_NUM;
-            for (int i=0; i<max_size; ++i)
-            {
-                d = std::max(d, a[i]);
-            }
+    // template<size_t max_size> 
+    //    double max(Vector<max_size>& a)
+    //    {
+    //        double d = TAILOR_BIG_NEG_NUM;
+    //        for (int i=0; i<max_size; ++i)
+    //        {
+    //            d = std::max(d, a[i]);
+    //        }
 
-            return d;
-        }
+    //        return d;
+    //    }
 }
 
 #endif

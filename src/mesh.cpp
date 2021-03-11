@@ -186,15 +186,11 @@ namespace Tailor
                 const auto& donor_cell = m->cell(mc.donor().cell_tag_);
 
                 mc.prim_ = donor_cell.prim_;
-                mc.prim_[1] -= donor_cell.vgn()(0);
-                mc.prim_[2] -= donor_cell.vgn()(1);
-                mc.prim_[3] -= donor_cell.vgn()(2);
+                mc.prim_(1) -= donor_cell.vgn()(0);
+                mc.prim_(2) -= donor_cell.vgn()(1);
+                mc.prim_(3) -= donor_cell.vgn()(2);
 
-                assert(!std::isnan(mc.prim_[0]));
-                assert(!std::isnan(mc.prim_[1]));
-                assert(!std::isnan(mc.prim_[2]));
-                assert(!std::isnan(mc.prim_[3]));
-                assert(!std::isnan(mc.prim_[4]));
+                assert(!mc.prim_.isnan());
             }
         }
     }
@@ -235,11 +231,7 @@ namespace Tailor
                 }
                 assert(iter != arrival.end());
 
-                assert(!std::isnan(iter->var_[0]));
-                assert(!std::isnan(iter->var_[1]));
-                assert(!std::isnan(iter->var_[2]));
-                assert(!std::isnan(iter->var_[3]));
-                assert(!std::isnan(iter->var_[4]));
+                assert(!iter->var_.isnan());
 
                 mc.prim_ = iter->var_;
 
@@ -273,11 +265,7 @@ namespace Tailor
             //}
             //assert(mc.oga_cell_type() == OGA_cell_type_t::ghost);
 
-            assert(!std::isnan(v.var_[0]));
-            assert(!std::isnan(v.var_[1]));
-            assert(!std::isnan(v.var_[2]));
-            assert(!std::isnan(v.var_[3]));
-            assert(!std::isnan(v.var_[4]));
+            assert(!v.var_.isnan());
 
             mc.prim_ = v.var_;
             mc.cons_sp1_ = prim_to_cons(mc.prim_, gamma);
@@ -1981,19 +1969,19 @@ namespace Tailor
         {
             if (mc.poly().centroid()(0) <= 0.)
             {
-                mc.prim_[0] = L[0];
-                mc.prim_[1] = L[1];
-                mc.prim_[2] = L[2];
-                mc.prim_[3] = L[3];
-                mc.prim_[4] = L[4];
+                mc.prim_(0) = L(0);
+                mc.prim_(1) = L(1);
+                mc.prim_(2) = L(2);
+                mc.prim_(3) = L(3);
+                mc.prim_(4) = L(4);
             }
             else
             {
-                mc.prim_[0] = R[0];
-                mc.prim_[1] = R[1];
-                mc.prim_[2] = R[2];
-                mc.prim_[3] = R[3];
-                mc.prim_[4] = R[4];
+                mc.prim_(0) = R(0);
+                mc.prim_(1) = R(1);
+                mc.prim_(2) = R(2);
+                mc.prim_(3) = R(3);
+                mc.prim_(4) = R(4);
             }
 
             mc.cons_sp1_ = prim_to_cons(mc.prim_, fs.gamma_);
@@ -2003,19 +1991,19 @@ namespace Tailor
         {
             if (mc.poly().centroid()(0) <= 0.)
             {
-                mc.prim_[0] = L[0];
-                mc.prim_[1] = L[1];
-                mc.prim_[2] = L[2];
-                mc.prim_[3] = L[3];
-                mc.prim_[4] = L[4];
+                mc.prim_(0) = L(0);
+                mc.prim_(1) = L(1);
+                mc.prim_(2) = L(2);
+                mc.prim_(3) = L(3);
+                mc.prim_(4) = L(4);
             }
             else
             {
-                mc.prim_[0] = R[0];
-                mc.prim_[1] = R[1];
-                mc.prim_[2] = R[2];
-                mc.prim_[3] = R[3];
-                mc.prim_[4] = R[4];
+                mc.prim_(0) = R(0);
+                mc.prim_(1) = R(1);
+                mc.prim_(2) = R(2);
+                mc.prim_(3) = R(3);
+                mc.prim_(4) = R(4);
             }
 
             mc.cons_sp1_ = prim_to_cons(mc.prim_, fs.gamma_);
@@ -5324,7 +5312,7 @@ int Mesh::priority() const
                 assert(!cell().empty());
                 for (const MeshCell& mc: cell())
                 {
-                    out << mc.cons_sp1_[0] << std::endl;
+                    out << mc.cons_sp1_(0) << std::endl;
                 }
 
                 out << "SCALARS " << "q1 " << "float " << "1" << std::endl;
@@ -5332,7 +5320,7 @@ int Mesh::priority() const
                 assert(!cell().empty());
                 for (const MeshCell& mc: cell())
                 {
-                    out << mc.cons_sp1_[1] << std::endl;
+                    out << mc.cons_sp1_(1) << std::endl;
                 }
 
                 out << "SCALARS " << "q2 " << "float " << "1" << std::endl;
@@ -5340,7 +5328,7 @@ int Mesh::priority() const
                 assert(!cell().empty());
                 for (const MeshCell& mc: cell())
                 {
-                    out << mc.cons_sp1_[2] << std::endl;
+                    out << mc.cons_sp1_(2) << std::endl;
                 }
 
                 out << "SCALARS " << "q3 " << "float " << "1" << std::endl;
@@ -5348,7 +5336,7 @@ int Mesh::priority() const
                 assert(!cell().empty());
                 for (const MeshCell& mc: cell())
                 {
-                    out << mc.cons_sp1_[3] << std::endl;
+                    out << mc.cons_sp1_(3) << std::endl;
                 }
 
                 out << "SCALARS " << "q4 " << "float " << "1" << std::endl;
@@ -5356,7 +5344,7 @@ int Mesh::priority() const
                 assert(!cell().empty());
                 for (const MeshCell& mc: cell())
                 {
-                    out << mc.cons_sp1_[4] << std::endl;
+                    out << mc.cons_sp1_(4) << std::endl;
                 }
 
                 out << "SCALARS " << "R0 " << "float " << "1" << std::endl;

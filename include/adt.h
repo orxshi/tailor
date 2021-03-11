@@ -3,7 +3,7 @@
 
 #include <map>
 #include <deque>
-#include "vec3.h"
+//#include "vec3.h"
 #include "core.h"
 #include "geom.h"
 #include "rotationmatrix.h"

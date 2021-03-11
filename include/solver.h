@@ -89,7 +89,7 @@ namespace Tailor
                 ar & verbose_;
                 ar & printfreq_;
                 ar & finaltime_;
-                ar & tempo_discre_;
+                ar & temporal_discretization_;
                 ar & nsolve_;
                 ar & bc_;
                 ar & load_estim_type_;
@@ -138,7 +138,7 @@ namespace Tailor
             bool verbose_;
             int printfreq_;
             double finaltime_;
-            std::string tempo_discre_;
+            std::string temporal_discretization_;
             int nsolve_;
             BoundaryCondition bc_;
 
@@ -161,8 +161,11 @@ namespace Tailor
             //void calc_steady(Mesh& mesh, std::function<void(CellExchanger& cell_exchanger)> exchange_ghosts);
             void calc_steady(Mesh& mesh, int rank);
             void calc_steady();
-            void update_cons_explicitly(Mesh& mesh);
-            void update_cons_implicitly(Mesh& mesh, int ntimestep);
+            //void update_cons_explicitly(Mesh& mesh);
+            //void update_cons_implicitly(Mesh& mesh, int ntimestep);
+            void calc_change_in_conserved_var(Mesh &mesh);
+            void evolve_solution_in_time(Mesh& mesh);
+            void evolve_old_solution_in_time(Mesh& mesh);
             void calc_R(Mesh& mesh);
             //void update_matrices(Mesh& mesh, const vararray& flux, const Matrix<NVAR, NVAR>& Aroe, MeshFace& mf, MeshCell& LC, MeshCell& RC, const vec3<double>& n, double vgn, double facearea);
             void update_matrices(Mesh& mesh, const vararray& flux, const Matrix<NVAR, NVAR>& Aroe, MeshFace* myface, MeshFace* commonface, MeshCell& LC, MeshCell& RC, double facearea, double volume, double vfn, const vec3<double>& vf, const State& left, const State& right, const varmat& TT);
@@ -170,7 +173,7 @@ namespace Tailor
             //void hhl_update_matrices(MeshFace* myface, MeshFace* commonface, MeshCell& LC, MeshCell& RC, double facearea, double SLm, double SRp, const varmat& T, double vfn);
             void limit_prim_cons(Mesh& mesh, const MeshCell& mc, const MeshFace& mf, vararray& prim);
             bool sor(Mesh& mesh, int ntimestep);
-            void tempo_discre(Mesh& mesh, bool calc_dtau);
+            void temporal_discretization(Mesh &mesh);
             //void residual(Mesh& mesh);
             vararray resi(Mesh& mesh);
             void sweep(Mesh& mesh, MeshCell& mc, vararray& r, vararray& r2, vararray& r3, int& maxcell);

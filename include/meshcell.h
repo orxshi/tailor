@@ -251,17 +251,8 @@ namespace Tailor
             ar & cons_nm1_;
             ar & sumarea_;
 
-            assert(!std::isnan(prim_[0]));
-            assert(!std::isnan(prim_[1]));
-            assert(!std::isnan(prim_[2]));
-            assert(!std::isnan(prim_[3]));
-            assert(!std::isnan(prim_[4]));
-
-            assert(!std::isnan(cons_sp1_[0]));
-            assert(!std::isnan(cons_sp1_[1]));
-            assert(!std::isnan(cons_sp1_[2]));
-            assert(!std::isnan(cons_sp1_[3]));
-            assert(!std::isnan(cons_sp1_[4]));
+            assert(!prim_.isnan());
+            assert(!cons_sp1_.isnan());
         }
     };
 

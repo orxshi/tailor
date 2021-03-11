@@ -78,7 +78,7 @@ namespace Tailor
                        verbose_(false),
                        printfreq_(0),
                        finaltime_(0.),
-                       tempo_discre_(""),
+                       temporal_discretization_(""),
                        nsolve_(0),
                        partition_(nullptr),
                        comm_(nullptr),
@@ -171,10 +171,6 @@ namespace Tailor
         //        m.print_wall_as_vtk(fn);
         //    }
         //}
-
-        assert(partition_->spc_->global_rm().aabb().min(0) < partition_->spc_->global_rm().aabb().max(0));
-        assert(partition_->spc_->global_rm().aabb().min(1) < partition_->spc_->global_rm().aabb().max(1));
-        assert(partition_->spc_->global_rm().aabb().min(2) < partition_->spc_->global_rm().aabb().max(2));
     }
 
     void Solver::reconnectivity()
@@ -492,7 +488,7 @@ namespace Tailor
         po::options_description all_options;
 
         po::options_description desc{"Solver options"};
-        desc.add_options()("solver.repart-ratio", po::value<int>()->default_value(100), "")("solver.rebalance-thres", po::value<double>()->default_value(40.), "")("solver.show_inner_res", po::value<bool>()->default_value(true), "Show inner loop residual")("solver.show_inner_norm", po::value<bool>()->default_value(true), "Show inner loop norm")("solver.print_outer_norm", po::value<bool>()->default_value(true), "Print outer norm")("solver.steady", po::value<bool>()->default_value(false), "Steady state")("solver.progressive_cfl", po::value<bool>()->default_value(false), "Progressive CFL increase")("solver.tempo_discre", po::value<std::string>()->default_value("back_euler"), "Temporal discretization")("solver.dt", po::value<double>()->default_value(0.001), "Real time step")("solver.nsweep", po::value<int>()->default_value(1), "Number of sweeps in SOR")("solver.omega", po::value<double>()->default_value(1), "Relaxation parameter in SOR")("solver.tol", po::value<double>()->default_value(1e-12), "Error tolerance")("solver.sorder", po::value<int>()->default_value(1), "Spatial order of accuracy")("solver.torder", po::value<int>()->default_value(1), "Temporal order of accuracy")("solver.printfreq", po::value<int>()->default_value(100), "Printting frequency")("solver.cfl", po::value<double>()->default_value(0.5), "CFL number")("solver.delta_cfl", po::value<double>()->default_value(0.), "Delta CFL number for progressive cfl increase")("solver.cfl_increase_freq", po::value<int>()->default_value(5), "CFL increase frequency for progressive cfl increase")("solver.finaltime", po::value<double>()->default_value(0.5), "Final time")("solver.make-load-balance", po::value<bool>()->default_value(true), "Make load balance (for area or hybrid load estimation)")("solver.load-estim", po::value<int>()->default_value(2), "Load estimation method")("general.pseudo3D", po::value<bool>()->default_value(false), "2.5D simulation with 1 layer in depth")("solver.print-map", po::value<bool>()->default_value(false), "Print map.")("solver.max-time-step", po::value<int>()->default_value(10000), "")("solver.half-cfl", po::value<bool>()->default_value(true), "")("solver.save-solution", po::value<bool>()->default_value(false), "")("solver.restore-solution", po::value<bool>()->default_value(false), "")("solver.can-rebalance", po::value<bool>()->default_value(true), "Make load rebalance if needed.")("solver.force-rebalance", po::value<bool>()->default_value(false), "Force load rebalance even if relabalance is not needed.")("solver.print-vtk", po::value<bool>()->default_value(false), "")("solver.print-repart-info", po::value<bool>()->default_value(false), "")("solver.print-imbalance", po::value<bool>()->default_value(false), "")("solver.riemann-solver", po::value<int>()->default_value(0), "")("solver.dual-ts", po::value<bool>()->default_value(false), "");
+        desc.add_options()("solver.repart-ratio", po::value<int>()->default_value(100), "")("solver.rebalance-thres", po::value<double>()->default_value(40.), "")("solver.show_inner_res", po::value<bool>()->default_value(true), "Show inner loop residual")("solver.show_inner_norm", po::value<bool>()->default_value(true), "Show inner loop norm")("solver.print_outer_norm", po::value<bool>()->default_value(true), "Print outer norm")("solver.steady", po::value<bool>()->default_value(false), "Steady state")("solver.progressive_cfl", po::value<bool>()->default_value(false), "Progressive CFL increase")("solver.temporal-discretization", po::value<std::string>()->default_value("forward_euler"), "Temporal discretization")("solver.dt", po::value<double>()->default_value(0.001), "Real time step")("solver.nsweep", po::value<int>()->default_value(1), "Number of sweeps in SOR")("solver.omega", po::value<double>()->default_value(1), "Relaxation parameter in SOR")("solver.tol", po::value<double>()->default_value(1e-12), "Error tolerance")("solver.sorder", po::value<int>()->default_value(1), "Spatial order of accuracy")("solver.torder", po::value<int>()->default_value(1), "Temporal order of accuracy")("solver.printfreq", po::value<int>()->default_value(100), "Printting frequency")("solver.cfl", po::value<double>()->default_value(0.5), "CFL number")("solver.delta_cfl", po::value<double>()->default_value(0.), "Delta CFL number for progressive cfl increase")("solver.cfl_increase_freq", po::value<int>()->default_value(5), "CFL increase frequency for progressive cfl increase")("solver.finaltime", po::value<double>()->default_value(0.5), "Final time")("solver.make-load-balance", po::value<bool>()->default_value(true), "Make load balance (for area or hybrid load estimation)")("solver.load-estim", po::value<int>()->default_value(2), "Load estimation method")("general.pseudo3D", po::value<bool>()->default_value(false), "2.5D simulation with 1 layer in depth")("solver.print-map", po::value<bool>()->default_value(false), "Print map.")("solver.max-time-step", po::value<int>()->default_value(10000), "")("solver.half-cfl", po::value<bool>()->default_value(true), "")("solver.save-solution", po::value<bool>()->default_value(false), "")("solver.restore-solution", po::value<bool>()->default_value(false), "")("solver.can-rebalance", po::value<bool>()->default_value(true), "Make load rebalance if needed.")("solver.force-rebalance", po::value<bool>()->default_value(false), "Force load rebalance even if relabalance is not needed.")("solver.print-vtk", po::value<bool>()->default_value(false), "")("solver.print-repart-info", po::value<bool>()->default_value(false), "")("solver.print-imbalance", po::value<bool>()->default_value(false), "")("solver.riemann-solver", po::value<int>()->default_value(0), "")("solver.dual-ts", po::value<bool>()->default_value(false), "");
 
         all_options.add(desc);
 
@@ -507,7 +503,7 @@ namespace Tailor
         show_inner_norm_ = vm["solver.show_inner_norm"].as<bool>();
         progressive_cfl_ = vm["solver.progressive_cfl"].as<bool>();
         steady_ = vm["solver.steady"].as<bool>();
-        tempo_discre_ = vm["solver.tempo_discre"].as<std::string>();
+        temporal_discretization_ = vm["solver.temporal-discretization"].as<std::string>();
         dt_ = vm["solver.dt"].as<double>();
         nsweep_ = vm["solver.nsweep"].as<int>();
         omega_ = vm["solver.omega"].as<double>();
@@ -652,17 +648,6 @@ namespace Tailor
                     primR = RC->prim();
                 }
 
-                assert(!std::isnan(primL[0]));
-                if (std::isnan(primR[0]))
-                {
-                    std::cout << "rank: " << comm_->rank() << std::endl;
-                    std::cout << "mc: " << mesh.tag()() << " " << RC->tag()() << std::endl;
-                    std::cout << "mc oga: " << static_cast<int>(mc.oga_cell_type()) << std::endl;
-                    std::cout << "mc btype: " << static_cast<int>(mc.btype()) << std::endl;
-                    std::cout << "mf btype: " << static_cast<int>(mf.btype()) << std::endl;
-                }
-                assert(!std::isnan(primR[0]));
-
                 vararray flux;
                 varmat Aroe;
                 double max_eigen;
@@ -696,30 +681,6 @@ namespace Tailor
                 auto vf = mf.vf();
                 signed_area = mf.face().signed_area();
                 assert(signed_area > 0.);
-                //for (const MeshFace& cmf: refcell->face())
-                //{
-                //    if (cmf.tag() == mf.tag())
-                //    {
-                //        normal = cmf.face().normal();
-                //        if (normal(0) == 0.)
-                //        {
-                //            if (normal(1) == 0.)
-                //            {
-                //                assert(normal(2) != 0.);
-                //            }
-                //        }
-                //        signed_area = cmf.face().signed_area();
-
-                //        if (dotp(normal, mf.face().normal()) < TAILOR_ZERO)
-                //        {
-                //            vgn = -mf.vgn();
-                //        }
-                //        else
-                //        {
-                //            vgn = mf.vgn();
-                //        }
-                //    }
-                //}
 
                 MeshFace *commonface = nullptr;
                 if (!mf.is_boundary())
@@ -728,24 +689,7 @@ namespace Tailor
                     assert(commonface != nullptr);
                 }
 
-                //varmat T;
                 auto T = make_rot_matrix(normal);
-
-                // TODO test
-                //if (comm_->rank() == 0)
-                //{
-                //normal.set(1, 1, 1);
-                //normal = normalize(normal);
-                //auto T = make_rot_matrix(normal, true);
-                //std::cout << T << std::endl;
-                //assert(false);
-                //}
-
-                //State left(LC->cons_sp1(), fs_.gamma_, T, vfn);
-                //State right(RC->cons_sp1(), fs_.gamma_, T, vfn);
-
-                //State left(LC->cons_sp1(), fs_.gamma_, T, LC->vgn(), vfn);
-                //State right(RC->cons_sp1(), fs_.gamma_, T, RC->vgn(), vfn);
 
                 bool verbose = false;
                 State left(LC->cons_sp1(), fs_.gamma_, T, LC->vgn(), vfn, vf, verbose, normal, comm_->rank());
@@ -775,7 +719,7 @@ namespace Tailor
                 }
                 else if (riemann_solver_type_ == RiemannSolverType::hllc)
                 {
-                    assert(tempo_discre_ == "forw_euler");
+                    assert(temporal_discretization_ == "forward_euler");
                     double SLm, SRp;
                     riemann_solver.hllc(left, right, flux, max_eigen, signed_area, fs_.gamma_, mf.is_boundary(), SLm, SRp, 0.);
                 }
@@ -922,7 +866,7 @@ namespace Tailor
                 LC->max_eigen_ = std::max(LC->max_eigen_, max_eigen);
                 RC->max_eigen_ = std::max(RC->max_eigen_, max_eigen);
 
-                if (tempo_discre_ == "back_euler")
+                if (temporal_discretization_ == "backward_euler")
                 {
                     //update_matrices(mesh, flux, Aroe, mf, *LC, *RC, normal, vgn, signed_area);
                     update_matrices(mesh, flux, Aroe, &mf, commonface, *LC, *RC, signed_area, vol, vfn, vf, left, right, TT);
@@ -943,99 +887,104 @@ namespace Tailor
         }
     }
 
-    void Solver::update_cons_explicitly(Mesh &mesh)
+    void Solver::evolve_solution_in_time(Mesh& mesh)
     {
-        if (torder_ == 1)
-        {
-            for (MeshCell &mc : mesh.cell_)
-            {
-                if (!calc_cell(mc))
-                {
-                    continue;
-                }
-
-                if (dual_ts_) {
-                    mc.cons_sp1_ = mc.cons_s_ + mc.R_ * mc.dtao_ / mc.poly().volume();
-                }
-                else {
-                    mc.cons_sp1_ = mc.cons_s_ + mc.R_ * dt_ / mc.poly().volume();
-                }
-
-                mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
-            }
-        }
-        else if (torder_ == 2)
-        {
-            assert(false);
-            for (MeshCell &mc : mesh.cell_)
-            {
-                if (!calc_cell(mc))
-                {
-                    continue;
-                }
-
-                //if (steady_)
-                //{
-                mc.cons_sp1_ = mc.cons_s_ + mc.R_ / ((1 / mc.dtao_) * mc.poly().volume());
-                //}
-                //else
-                //{
-                //    //mc.cons_sp1_ = mc.cons_s_ + mc.R_ / ((1./dt_) * mc.poly().volume());
-                //    //mc.cons_sp1_ = mc.cons_s_ + (2. / 3.) * mc.R_ / ((1. / dt_) * mc.poly().volume());
-                //    mc.cons_sp1_ = mc.cons_s_ + (2. / 3.) * mc.R_ / ((1. / mc.dtao_) * mc.poly().volume());
-                //}
-
-                mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
-            }
-        }
-        else
-        {
-            assert(false);
-        }
-    }
-
-    void Solver::update_cons_implicitly(Mesh &mesh, int ntimestep)
-    {
-        //tempo_discre(mesh);
-        gmres(mesh);
-        //sor(mesh, ntimestep);
-        /*bool converged = false;
-        double orig_cfl = cfl_;
-        while(!converged)
-        {
-            //std::string fn = "inner-norm-";
-            //fn.append(std::to_string(comm_->rank()));
-            //fn.append(".dat");
-            //std::ofstream out;
-            //out.open(fn, std::ios_base::app);
-            //out << "cfl = " << cfl_ << std::endl;
-            //out.close();
-            tempo_discre(mesh);
-            converged = sor(mesh, ntimestep);
-            if (!half_cfl_) {
-                break;
-            }
-            if (!converged)
-            {
-                // actually whole calc_R isn't needed. just need to revert R and D after calc_R, before update_matrices state.
-                //calc_R(mesh);
-                mesh.equate_RD_to_RDmid();
-                cfl_ = cfl_ / 2;
-            }
-        }
-        cfl_ = orig_cfl;*/
-
         for (MeshCell &mc : mesh.cell_)
         {
-            if (!calc_cell(mc))
-            {
-                continue;
-            }
-
             mc.cons_sp1_ = mc.cons_s_ + mc.dQ_;
             mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
+        }   
+    }
+
+    void Solver::evolve_old_solution_in_time(Mesh& mesh)
+    {
+        for (MeshCell &mc : mesh.cell_)
+        {
+            mc.cons_s_ = mc.cons_sp1_;
+            if (steady_)
+            {
+                mc.cons_nm1_ = mc.cons_n_;
+                mc.cons_n_ = mc.cons_sp1_;
+            }
         }
     }
+
+    void Solver::calc_change_in_conserved_var(Mesh &mesh)
+    {
+        if (temporal_discretization_ == "backward_euler")
+        {
+            gmres(mesh);
+        }
+        else if (temporal_discretization_ == "forward_euler")
+        {
+            for (MeshCell &mc : mesh.cell_)
+            {
+                if (!calc_cell(mc)) {
+                    continue;
+                }
+
+                double volume = mc.poly().volume();
+                mc.dQ_ = mc.R_ / volume;
+
+                if (dual_ts_) {
+                    mc.dQ_ *= mc.dtao_;
+                }
+                else
+                {
+                    if (torder_ == 1)
+                    {
+                        mc.dQ_ *= dt_;
+                    }
+                    else if (torder_ == 2)
+                    {
+                        mc.dQ_ *= (2. / 3.) * dt_;
+                    }
+                }
+            }
+        }
+    }
+
+    //void Solver::update_cons_implicitly(Mesh &mesh, int ntimestep)
+    //{
+    //    //tempo_discre(mesh);
+    //    gmres(mesh);
+    //    //sor(mesh, ntimestep);
+    //    /*bool converged = false;
+    //    double orig_cfl = cfl_;
+    //    while(!converged)
+    //    {
+    //        //std::string fn = "inner-norm-";
+    //        //fn.append(std::to_string(comm_->rank()));
+    //        //fn.append(".dat");
+    //        //std::ofstream out;
+    //        //out.open(fn, std::ios_base::app);
+    //        //out << "cfl = " << cfl_ << std::endl;
+    //        //out.close();
+    //        tempo_discre(mesh);
+    //        converged = sor(mesh, ntimestep);
+    //        if (!half_cfl_) {
+    //            break;
+    //        }
+    //        if (!converged)
+    //        {
+    //            // actually whole calc_R isn't needed. just need to revert R and D after calc_R, before update_matrices state.
+    //            //calc_R(mesh);
+    //            mesh.equate_RD_to_RDmid();
+    //            cfl_ = cfl_ / 2;
+    //        }
+    //    }
+    //    cfl_ = orig_cfl;*/
+
+    //    for (MeshCell &mc : mesh.cell_)
+    //    {
+    //        if (!calc_cell(mc))
+    //        {
+    //            continue;
+    //        }
+
+    //        update_solution(mc, gamma);
+    //    }
+    //}
 
     void Solver::solve()
     {
@@ -1359,51 +1308,14 @@ namespace Tailor
                     ++ncfl_increase_;
                 }
 
-                tempo_discre(mesh, true);
-
+                temporal_discretization(mesh);
 
                 auto res = resi(mesh);
-                //std::cout << res[0] << std::endl;
-                //std::cout << res[1] << std::endl;
-                //std::cout << res[2] << std::endl;
-                //std::cout << res[3] << std::endl;
-                //std::cout << res[4] << std::endl;
                 local_res = std::max(local_res, max(res));
 
-
-                if (tempo_discre_ == "back_euler")
-                {
-                    update_cons_implicitly(mesh, ntimestep);
-                }
-                else if (tempo_discre_ == "forw_euler")
-                {
-                    update_cons_explicitly(mesh);
-                }
-                else if (tempo_discre_ == "rk4")
-                {
-                    RK4(mesh);
-                }
-                else
-                {
-                    assert(false);
-                }
-
-                //for (MeshCell& mc: mesh.cell_)
-                //{
-                //mc.cons_s_ = mc.cons_sp1_;
-                //assert(mc.cons_s_[0] != 0.);
-                //}
-
-                for (MeshCell &mc : mesh.cell_)
-                {
-                    mc.cons_s_ = mc.cons_sp1_;
-                    assert(mc.cons_s_[0] != 0.);
-                    if (steady_)
-                    {
-                        mc.cons_nm1_ = mc.cons_n_;
-                        mc.cons_n_ = mc.cons_sp1_;
-                    }
-                }
+                calc_change_in_conserved_var(mesh);
+                evolve_solution_in_time(mesh);
+                evolve_old_solution_in_time(mesh);
             }
 
             if (profiler_ != nullptr)
@@ -2509,7 +2421,7 @@ namespace Tailor
         return dtau;
     }
 
-    void Solver::tempo_discre(Mesh &mesh, bool calc_dtau)
+    void Solver::temporal_discretization(Mesh &mesh)
     {
         for (MeshCell &mc : mesh.cell_)
         {
@@ -2518,48 +2430,47 @@ namespace Tailor
                 continue;
             }
 
-            double vol = mc.poly().volume();
-            double mc.dtao_ = calc_local_time_step(mc.sumarea_, vol, cfl_);
+            double volume = mc.poly().volume();
+            mc.dtao_ = calc_local_time_step(mc.sumarea_, volume, cfl_);
 
             if (torder_ == 1)
             {
                 if (dual_ts_)
                 {
-                    double t = vol / mc.dtao_;
+                    double t = volume / mc.dtao_;
                     mc.D_.add_diag(t);
 
-                    mc.R_ -= vol * (mc.cons_sp1() - mc.cons_n()) / dt_;
+                    mc.R_ -= volume * (mc.cons_sp1() - mc.cons_n()) / dt_;
                 }
                 else
                 {
-                    double t = vol / mc.dtao_;
+                    double t = volume / dt_;
                     mc.D_.add_diag(t);
                 }
             }
             else if (torder_ == 2)
             {
-                assert(false);
-                //double t = vol * (1./mc.dtao_ + 1.5/dt_);
-                double t = vol * (1./mc.dtao_);
-                // double t = vol * (1.5 / dt_);
-                for (int i = 0; i < NVAR; ++i)
-                {
-                    mc.D_(i, i) += t;
-                }
+                double t = volume * (1. / mc.dtao_ + 1.5 / dt_);
+                mc.D_.add_diag(t);
 
-                //if (!steady_) {
-                //    if (nsolve_ > 1)
-                //    {
-                //        mc.R_ -= 0.5 * vol * (3. * mc.cons_sp1() - 4. * mc.cons_n() + mc.cons_nm1()) / dt_;
-                //    }
-                //    else
-                //    {
-                //        mc.R_ -= vol * (mc.cons_sp1() - mc.cons_n()) / dt_;
-                //    }
-                //}
-            }
-            else {
-                assert(false);
+                if (dual_ts_)
+                {
+                    if (nsolve_ > 1)
+                    {
+                        mc.R_ -= 0.5 * volume * (3. * mc.cons_sp1() - 4. * mc.cons_n() + mc.cons_nm1()) / dt_;
+                    }
+                    else
+                    {
+                        mc.R_ -= volume * (mc.cons_sp1() - mc.cons_n()) / dt_;
+                    }
+                }
+                else
+                {
+                    if (nsolve_ > 1)
+                    {
+                        mc.R_ -= 0.5 * volume * (-4. * mc.cons_n() + mc.cons_nm1()) / dt_;
+                    }
+                }
             }
         }
     }
