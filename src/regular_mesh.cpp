@@ -1138,7 +1138,9 @@ namespace Tailor
         //assert(x > 1);
         //assert(y > 1);
         //assert(z > 1);
-        nstripe_.set(x, y, z);
+        nstripe_(0) = x;
+        nstripe_(1) = y;
+        nstripe_(2) = z;
     }
 
     void RegularMesh::set_nstripe(const Vector3Int& ns)
@@ -1153,7 +1155,9 @@ namespace Tailor
 
     void RegularMesh::set_h(double v0, double v1, double v2)
     {
-        h_.set(v0, v1, v2);
+        h_(0) = v0;
+        h_(1) = v1;
+        h_(2) = v2;
     }
 
     double RegularMesh::h(int i) const
@@ -1356,7 +1360,9 @@ namespace Tailor
         double d0 = aabb().min(0) + index.j() * h(0) + h(0)/2.;
         double d1 = aabb().min(1) + index.i() * h(1) + h(1)/2.;
         double d2 = aabb().min(2) + index.k() * h(2) + h(2)/2.;
-        c.set(d0, d1, d2);
+        c(0) = d0;
+        c(1) = d1;
+        c(2) = d2;
 
         return c;
     }
@@ -1695,18 +1701,42 @@ namespace Tailor
             Vector3 newcv(cv);
             // cv might be out of bounds of rm. if closest is true return closest index to cv.
             if (newcv(0) < aabb_.min(0))
-                newcv.set(aabb_.min(0), newcv(1), newcv(2));
+            {
+                newcv(0) = aabb_.min(0);
+                newcv(1) = newcv(1);
+                newcv(2) = newcv(2);
+            }
             if (newcv(1) < aabb_.min(1))
-                newcv.set(newcv(0), aabb_.min(1), newcv(2));
+            {
+                newcv(0) = newcv(0);
+                newcv(1) = aabb_.min(1);
+                newcv(2) = newcv(2);
+            }
             if (newcv(2) < aabb_.min(2))
-                newcv.set(newcv(0), newcv(1), aabb_.min(2));
+            {
+                newcv(0) = newcv(0);
+                newcv(1) = newcv(1);
+                newcv(2) = aabb_.min(2);
+            }
 
             if (newcv(0) > aabb_.max(0))
-                newcv.set(aabb_.max(0), newcv(1), newcv(2));
+            {
+                newcv(0) = aabb_.max(0);
+                newcv(1) = newcv(1);
+                newcv(2) = newcv(2);
+            }
             if (newcv(1) > aabb_.max(1))
-                newcv.set(newcv(0), aabb_.max(1), newcv(2));
+            {
+                newcv(0) = newcv(0);
+                newcv(1) = aabb_.max(1);
+                newcv(2) = newcv(2);
+            }
             if (newcv(2) > aabb_.max(2))
-                newcv.set(newcv(0), newcv(1), aabb_.max(2));
+            {
+                newcv(0) = newcv(0);
+                newcv(1) = newcv(1);
+                newcv(2) = aabb_.max(2);
+            }
 
             assert(newcv(0) >= aabb_.min(0));
             assert(newcv(1) >= aabb_.min(1));

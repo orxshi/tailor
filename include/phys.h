@@ -1,8 +1,7 @@
 #ifndef POES_PHYS_H
 #define POES_PHYS_H
 
-#include "array.h"
-//#include "vec3.h"
+#include "matrix.h"
 
 namespace Tailor
 {

@@ -2,50 +2,6 @@
 
 namespace Tailor
 {
-    template<int nrow, class T>
-        double len(const Vector<nrow, T> a)
-        {
-            return std::sqrt(std::pow(a(0), 2.) + std::pow(a(1), 2.) + std::pow(a(2), 2.));
-        }
-
-    template<int nrow, class T>
-        Vector<nrow, T> cross(const Vector<nrow, T>& a, const Vector<nrow, T>& b)
-        {
-            Vector<nrow, T> c;
-
-            c(0) = a(1) * b(2) - a(2) * b(1);
-            c(1) = a(2) * b(0) - a(0) * b(2);
-            c(2) = a(0) * b(1) - a(1) * b(0);
-
-            return c;
-        }
-
-    template<int nrow, class T>
-        double dot(const Vector<nrow, T>& a, const Vector<nrow, T>& b)
-        {
-            auto c = a(0) * b(0) + a(1) * b(1) + a(2) * b(2);
-
-            return c;
-        }
-    
-    template<int nrow, class T>
-        Vector<nrow, T> normals(const Vector<nrow, T>& a, const Vector<nrow, T>& b, const Vector<nrow, T>& c)
-        {
-            return cross((a-b), (c-b));
-        }
-
-    template<int nrow, class T>
-        double angle(const Vector<nrow, T>& a, const Vector<nrow, T>& b)
-    {
-        return std::acos(dot(a, b) / (len(a) * len(b))); // radian
-    }
-
-    template<int nrow, class T>
-        Vector<nrow, T> normalize(const Vector<nrow, T>& a)
-    {
-        return a / len(a);
-    }
-
     Vector5 operator/(const Vector5& f, const Matrix5& A)
     {
         // perform x = inv (A) * f

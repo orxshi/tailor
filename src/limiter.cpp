@@ -57,7 +57,7 @@ namespace Tailor
 
             for (int k=0; k<NVAR; ++k)
             {
-                double tmp = dotp(grad[k], dis);
+                double tmp = dot(grad[k], dis);
 
                 if (tmp > 0.)
                 {

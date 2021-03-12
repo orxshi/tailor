@@ -30,9 +30,9 @@ namespace Tailor
                     }
                 }
 
-                t.set(j, 1.);
-                t.set(k, 1.);
-                t.set(i, (-t(j) * n(j) - t(k) * n(k)) / n(i));
+                t(j) = 1.;
+                t(k) = 1.;
+                t(i) = (-t(j) * n(j) - t(k) * n(k)) / n(i);
 
                 t = normalize(t);
                 return t;
@@ -77,7 +77,7 @@ namespace Tailor
         return parent_cell(0);
     }
 
-    const Matrix<NVAR, NVAR>& MeshFace::M() const
+    const Matrix5& MeshFace::M() const
     {
         return M_;
     }
@@ -165,7 +165,7 @@ namespace Tailor
             //auto vgn = face.normal() * swept.volume() / dt;
             //auto vgn = swept.volume() / dt;
             double vgn;
-            if (dotp(vel, face.normal()) >= 0.)
+            if (dot(vel, face.normal()) >= 0.)
             {
                 vgn = swept.volume() / dt;
             }
@@ -269,7 +269,7 @@ namespace Tailor
             {
                 auto cnt = face_.centroid();
                 auto r = cnt - pivot;
-                r.set(2, 0.);
+                r(2) = 0.;
 
                 vel = cross(omega, r);
                 if (vel(2) != 0.)
@@ -335,7 +335,7 @@ namespace Tailor
             }
         }*/
 
-        vgn_ = dotp(vel, n);
+        vgn_ = dot(vel, n);
         vf_ = vel;
         //if (vf_(2) != 0.)
         //{
@@ -476,7 +476,7 @@ namespace Tailor
     MeshFace::MeshFace(std::vector<MeshPoint>& pts): btype_(BouType::undefined)
     {
         vgn_ = 0.;
-        vf_.set(0., 0., 0.);
+        vf_ = 0.;
 
         assert(!pts.empty());
         std::vector<Point> rawpts;

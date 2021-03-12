@@ -205,7 +205,7 @@ namespace Tailor
         return old_dQ_;
     }
 
-    const Matrix<NVAR, NVAR>& MeshCell::D() const
+    const Matrix5& MeshCell::D() const
     {
         return D_;
     }
@@ -1146,7 +1146,7 @@ MeshCell::MeshCell(): sumarea_(0.), erase_(false), max_eigen_(TAILOR_BIG_NEG_NUM
 
 MeshCell::MeshCell(const Tag& tag, const Tag& parent_mesh, const std::vector<MeshPoint>& point, BouType btype, Shape shape): tag_(tag), parent_mesh_(parent_mesh), OGA_cell_type_(OGA_cell_type_t::undefined), erase_(false), btype_(btype), max_eigen_(TAILOR_BIG_NEG_NUM), sumarea_(0.)
 {
-    vgn_.set(0., 0., 0.);
+    vgn_ = 0;
 
     assert(btype != BouType::undefined);
     assert(tag.isvalid());

@@ -1210,7 +1210,7 @@ namespace Tailor
     //void print_regmesh(std::string file_name, const std::map<BinRMTag, int>& bintag_proc_map, const LoadCalculator& lc, const RegularMesh& rm, const std::deque<Mesh>& mesh)
     void print_regmesh(std::string file_name, const std::map<int, int>& bintag_proc_map, const LoadCalculator& lc, const RegularMesh& rm, const std::deque<Mesh>& mesh)
     {    
-        const vec3<int>& nstripe = rm.nstripe();
+        const Vector3Int& nstripe = rm.nstripe();
         const AABB& aabb = rm.aabb();
         const Vector3& h = rm.h();
 

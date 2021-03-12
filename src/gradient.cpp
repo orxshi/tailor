@@ -8,9 +8,7 @@ namespace Tailor
 
         for (int i=0; i<NVAR; ++i)
         {
-            data_[i].set_x(0.);
-            data_[i].set_y(0.);
-            data_[i].set_z(0.);
+            data_[i] = 0.;
         }
 
         int ff=0;
@@ -20,9 +18,10 @@ namespace Tailor
             for (int i=0; i<NVAR; ++i)
             {
                 if (nei.btype() == BouType::partition) {
-                    data_[i].set_x(0.);
-                    data_[i].set_y(0.);
-                    data_[i].set_z(0.);
+                    data_[i] = 0.;
+                    //data_[i].set_x(0.);
+                    //data_[i].set_y(0.);
+                    //data_[i].set_z(0.);
                     continue;
                 }
 
@@ -51,9 +50,9 @@ namespace Tailor
                 double tempf = nei.prim(i) - mc.prim(i);
                 //double tempf = f.const_addr()->prim(i) - mc.prim(i);
 
-                data_[i].set_x(data_[i](0) + mc.ls_wx_[ff] * tempf);
-                data_[i].set_y(data_[i](1) + mc.ls_wy_[ff] * tempf);
-                data_[i].set_z(data_[i](2) + mc.ls_wz_[ff] * tempf);
+                data_[i](0) = data_[i](0) + mc.ls_wx_[ff] * tempf;
+                data_[i](1) = data_[i](1) + mc.ls_wy_[ff] * tempf;
+                data_[i](2) = data_[i](2) + mc.ls_wz_[ff] * tempf;
             }
 
             if (nei.btype() == BouType::partition) {
@@ -65,9 +64,10 @@ namespace Tailor
 
         for (int i=0; i<NVAR; ++i)
         {
-            assert(!std::isnan(data_[i](0)));
-            assert(!std::isnan(data_[i](1)));
-            assert(!std::isnan(data_[i](2)));
+            assert(!data_[i].isnan());
+            //assert(!std::isnan(data_[i](0)));
+            //assert(!std::isnan(data_[i](1)));
+            //assert(!std::isnan(data_[i](2)));
         }
 
         return data_;

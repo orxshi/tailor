@@ -999,22 +999,18 @@ namespace Tailor
 
     void Mesh::bbox(Vector3& min_, Vector3& max_) const
     {
-        min_.set_x(TAILOR_BIG_POS_NUM);
-        min_.set_y(TAILOR_BIG_POS_NUM);
-        min_.set_z(TAILOR_BIG_POS_NUM);
-        max_.set_x(TAILOR_BIG_NEG_NUM);
-        max_.set_y(TAILOR_BIG_NEG_NUM);
-        max_.set_z(TAILOR_BIG_NEG_NUM);
+        min_ = TAILOR_BIG_POS_NUM;
+        max_ = TAILOR_BIG_NEG_NUM;
 
         for (const MeshPoint& mp: point_)
         {
-            min_.set_x(std::min(min_(0), mp.p().r(0)));
-            min_.set_y(std::min(min_(1), mp.p().r(1)));
-            min_.set_z(std::min(min_(2), mp.p().r(2)));
+            min_(0) = std::min(min_(0), mp.p().r(0));
+            min_(1) = std::min(min_(1), mp.p().r(1));
+            min_(2) = std::min(min_(2), mp.p().r(2));
 
-            max_.set_x(std::max(max_(0), mp.p().r(0)));
-            max_.set_y(std::max(max_(1), mp.p().r(1)));
-            max_.set_z(std::max(max_(2), mp.p().r(2)));
+            max_(0) = std::max(max_(0), mp.p().r(0));
+            max_(1) = std::max(max_(1), mp.p().r(1));
+            max_(2) = std::max(max_(2), mp.p().r(2));
         }
     }
 

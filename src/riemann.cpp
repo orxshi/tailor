@@ -59,11 +59,11 @@ namespace Tailor
 
         Vector5 jump;
 
-        jump[0] = rhoR - rhoL;
-        jump[1] = rhoR*uR - rhoL*uL; 
-        jump[2] = rhoR*vR - rhoL*vL; 
-        jump[3] = rhoR*wR - rhoL*wL; 
-        jump[4] = ER - EL; 
+        jump(0) = rhoR - rhoL;
+        jump(1) = rhoR*uR - rhoL*uL; 
+        jump(2) = rhoR*vR - rhoL*vL; 
+        jump(3) = rhoR*wR - rhoL*wL; 
+        jump(4) = ER - EL; 
 
         return jump;
     }
@@ -287,7 +287,9 @@ namespace Tailor
         nz1 = temp * nz1;
         alpha1 = temp * alpha1;
 
-        n1.set(nx1, ny1, nz1);
+        n1(0) = nx1;
+        n1(1) = ny1;
+        n1(2) = nz1;
 
         double tempx = ny1*nz - nz1*ny;
         double tempy = nz1*nx - nx1*nz;
@@ -333,14 +335,12 @@ namespace Tailor
         nz2 = temp * nz2;
         alpha2 = temp * alpha2;
 
-        n2.set(nx2, ny2, nz2);
+        n2(0) = nx2;
+        n2(1) = ny2;
+        n2(2) = nz2;
 
-        assert(!isnan(n1(0)));
-        assert(!isnan(n1(1)));
-        assert(!isnan(n1(2)));
-        assert(!isnan(n2(0)));
-        assert(!isnan(n2(1)));
-        assert(!isnan(n2(2)));
+        assert(!n1.isnan());
+        assert(!n2.isnan());
     }
 
     //void RiemannSolver::ws_est_pbased(const State& left, const State& right, double& SLm, double& SRp, double gamma)
@@ -576,20 +576,16 @@ namespace Tailor
         
         auto vnet = u - vfn;
 
-        ldu[2] = jump[2] - v * jump[0];
-        ldu[3] = jump[3] - w * jump[0];
+        ldu(2) = jump(2) - v * jump(0);
+        ldu(3) = jump(3) - w * jump(0);
 
-        double j4 = jump[4] - ldu[2] * v - ldu[3] * w;
+        double j4 = jump(4) - ldu(2) * v - ldu(3) * w;
 
-        ldu[1] = (gamma - 1.) * (jump[0] * (H - std::pow(vnet, 2.)) + vnet * jump[1] - j4) / std::pow(a, 2.); 
-        ldu[0] = (jump[0] * (vnet + a) - jump[1] - a * ldu[1]) / (2. * a); 
-        ldu[4] = jump[0] - (ldu[0] + ldu[1]);
+        ldu(1) = (gamma - 1.) * (jump(0) * (H - std::pow(vnet, 2.)) + vnet * jump(1) - j4) / std::pow(a, 2.); 
+        ldu(0) = (jump(0) * (vnet + a) - jump(1) - a * ldu(1)) / (2. * a); 
+        ldu(4) = jump(0) - (ldu(0) + ldu(1));
 
-        assert(!std::isnan(jump[0]));
-        assert(!std::isnan(jump[1]));
-        assert(!std::isnan(jump[2]));
-        assert(!std::isnan(jump[3]));
-        assert(!std::isnan(jump[4]));
+        assert(!jump.isnan());
         
 
         //double rhoL = left.rho;
@@ -624,13 +620,13 @@ namespace Tailor
 
         for (int i=0; i<NVAR; ++i)
         {
-            diss[i] = 0.;
+            diss(i) = 0.;
             for (int j=0; j<NVAR; ++j)
             {
                 assert(!std::isnan(ws(j,j)));
-                assert(!std::isnan(ldu[j]));
+                assert(!std::isnan(ldu(j)));
                 assert(!std::isnan(R(i,j)));
-                diss[i] += ws(j,j) * ldu[j] * R(i,j);
+                diss(i) += ws(j,j) * ldu(j) * R(i,j);
             }
         }
 
@@ -676,18 +672,18 @@ namespace Tailor
         auto Ss = (pR - pL + uL * temp1 - uR * temp2) / (temp1 - temp2);
 
         Vector5 vecL;
-        vecL[0] = 1.;
-        vecL[1] = Ss;
-        vecL[2] = vL;
-        vecL[3] = wL;
-        vecL[4] = EL / rhoL + (Ss - uL) * (Ss + pL / (rhoL * (SLm - uL)));
+        vecL(0) = 1.;
+        vecL(1) = Ss;
+        vecL(2) = vL;
+        vecL(3) = wL;
+        vecL(4) = EL / rhoL + (Ss - uL) * (Ss + pL / (rhoL * (SLm - uL)));
 
         Vector5 vecR;
-        vecR[0] = 1.;
-        vecR[1] = Ss;
-        vecR[2] = vR;
-        vecR[3] = wR;
-        vecR[4] = ER / rhoR + (Ss - uR) * (Ss + pR / (rhoR * (SRp - uR)));
+        vecR(0) = 1.;
+        vecR(1) = Ss;
+        vecR(2) = vR;
+        vecR(3) = wR;
+        vecR(4) = ER / rhoR + (Ss - uR) * (Ss + pR / (rhoR * (SRp - uR)));
 
         auto usL = vecL * rhoL * ((SLm - uL) / (SLm - Ss));
         auto usR = vecR * rhoR * ((SRp - uR) / (SRp - Ss));
@@ -732,9 +728,9 @@ namespace Tailor
     Vector5 RiemannSolver::numerical_flux(const State& left, const State& right, const Matrix5& ws, const Matrix5& R, double facearea, double gamma, double vfn)
     {
         Vector5 diss = dissipation_term(left, right, ws, R, gamma, vfn);
-        assert(!std::isnan(left.flux[0]));
-        assert(!std::isnan(right.flux[0]));
-        assert(!std::isnan(diss[0]));
+        assert(!left.flux.isnan());
+        assert(!right.flux.isnan());
+        assert(!diss.isnan());
         assert(!std::isnan(facearea));
         //auto nf = 0.5 * facearea * (left.flux + right.flux - diss - (left.cons + right.cons) * vfn);
         auto nf = 0.5 * facearea * (left.flux + right.flux - diss);

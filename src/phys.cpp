@@ -29,16 +29,16 @@ namespace Tailor
 
     Vector5 prim_to_cons(const Vector5& prim, double gamma)
     {
-        double k = spec_kine_energy(prim[1], prim[2], prim[3]);
-        double e = spec_inter_energy(prim[0], prim[4], gamma); 
+        double k = spec_kine_energy(prim(1), prim(2), prim(3));
+        double e = spec_inter_energy(prim(0), prim(4), gamma); 
 
         Vector5 cons;
 
-        cons[0] = prim[0];
-        cons[1] = prim[0] * prim[1];
-        cons[2] = prim[0] * prim[2];
-        cons[3] = prim[0] * prim[3];
-        cons[4] = total_energy(prim[0], k, e);
+        cons(0) = prim(0);
+        cons(1) = prim(0) * prim(1);
+        cons(2) = prim(0) * prim(2);
+        cons(3) = prim(0) * prim(3);
+        cons(4) = total_energy(prim(0), k, e);
 
         return cons;
     }
@@ -47,28 +47,28 @@ namespace Tailor
     {
         Vector5 prim;
 
-        prim[0] = cons[0];
-        prim[1] = cons[1] / prim[0];
-        prim[2] = cons[2] / prim[0];
-        prim[3] = cons[3] / prim[0];
+        prim(0) = cons(0);
+        prim(1) = cons(1) / prim(0);
+        prim(2) = cons(2) / prim(0);
+        prim(3) = cons(3) / prim(0);
 
-        double k = spec_kine_energy(prim[1], prim[2], prim[3]);
-        double e = cons[4] / prim[0] - k;
+        double k = spec_kine_energy(prim(1), prim(2), prim(3));
+        double e = cons(4) / prim(0) - k;
         if (e <= 0. || std::isnan(e))
         {
-            std::cout << "cons[0]: " << cons[0] << std::endl;
-            std::cout << "cons[1]: " << cons[1] << std::endl;
-            std::cout << "cons[2]: " << cons[2] << std::endl;
-            std::cout << "cons[3]: " << cons[3] << std::endl;
-            std::cout << "cons[4]: " << cons[4] << std::endl;
+            std::cout << "cons[0]: " << cons(0) << std::endl;
+            std::cout << "cons[1]: " << cons(1) << std::endl;
+            std::cout << "cons[2]: " << cons(2) << std::endl;
+            std::cout << "cons[3]: " << cons(3) << std::endl;
+            std::cout << "cons[4]: " << cons(4) << std::endl;
 
-            std::cout << "prim[0]: " << prim[0] << std::endl;
-            std::cout << "prim[1]: " << prim[1] << std::endl;
-            std::cout << "prim[2]: " << prim[2] << std::endl;
-            std::cout << "prim[3]: " << prim[3] << std::endl;
+            std::cout << "prim[0]: " << prim(0) << std::endl;
+            std::cout << "prim[1]: " << prim(1) << std::endl;
+            std::cout << "prim[2]: " << prim(2) << std::endl;
+            std::cout << "prim[3]: " << prim(3) << std::endl;
 
             std::cout << "k: " << k << std::endl;
-            std::cout << "E: " << cons[4] / prim[0] << std::endl;
+            std::cout << "E: " << cons(4) / prim(0) << std::endl;
             std::cout << "e: " << e << std::endl;
 
         }
@@ -79,34 +79,34 @@ namespace Tailor
     {
         Vector5 prim;
 
-        prim[0] = cons[0];
-        prim[1] = cons[1] / prim[0];
-        prim[2] = cons[2] / prim[0];
-        prim[3] = cons[3] / prim[0];
+        prim(0) = cons(0);
+        prim(1) = cons(1) / prim(0);
+        prim(2) = cons(2) / prim(0);
+        prim(3) = cons(3) / prim(0);
 
-        double k = spec_kine_energy(prim[1], prim[2], prim[3]);
-        double e = cons[4] / prim[0] - k;
+        double k = spec_kine_energy(prim(1), prim(2), prim(3));
+        double e = cons(4) / prim(0) - k;
         if (e <= 0. || std::isnan(e))
         {
-            std::cout << "cons[0]: " << cons[0] << std::endl;
-            std::cout << "cons[1]: " << cons[1] << std::endl;
-            std::cout << "cons[2]: " << cons[2] << std::endl;
-            std::cout << "cons[3]: " << cons[3] << std::endl;
-            std::cout << "cons[4]: " << cons[4] << std::endl;
+            std::cout << "cons[0]: " << cons(0) << std::endl;
+            std::cout << "cons[1]: " << cons(1) << std::endl;
+            std::cout << "cons[2]: " << cons(2) << std::endl;
+            std::cout << "cons[3]: " << cons(3) << std::endl;
+            std::cout << "cons[4]: " << cons(4) << std::endl;
 
-            std::cout << "prim[0]: " << prim[0] << std::endl;
-            std::cout << "prim[1]: " << prim[1] << std::endl;
-            std::cout << "prim[2]: " << prim[2] << std::endl;
-            std::cout << "prim[3]: " << prim[3] << std::endl;
+            std::cout << "prim[0]: " << prim(0) << std::endl;
+            std::cout << "prim[1]: " << prim(1) << std::endl;
+            std::cout << "prim[2]: " << prim(2) << std::endl;
+            std::cout << "prim[3]: " << prim(3) << std::endl;
 
             std::cout << "k: " << k << std::endl;
-            std::cout << "E: " << cons[4] / prim[0] << std::endl;
+            std::cout << "E: " << cons(4) / prim(0) << std::endl;
             std::cout << "e: " << e << std::endl;
 
         }
         assert(e > 0. && !std::isnan(e));
 
-        prim[4] = prim[0] * (gamma - 1.) * e;
+        prim(4) = prim(0) * (gamma - 1.) * e;
         
         return prim;
     }
@@ -117,11 +117,11 @@ namespace Tailor
 
         double vnet = u - vfn;
 
-        flx[0] = rho * vnet;
-        flx[1] = rho * vnet * u + p;
-        flx[2] = rho * vnet * v;
-        flx[3] = rho * vnet * w;
-        flx[4] = rho * vnet * H;
+        flx(0) = rho * vnet;
+        flx(1) = rho * vnet * u + p;
+        flx(2) = rho * vnet * v;
+        flx(3) = rho * vnet * w;
+        flx(4) = rho * vnet * H;
 
         return flx;
     }
@@ -187,13 +187,13 @@ namespace Tailor
         my = my / abs_n_cross_l;
         mz = mz / abs_n_cross_l;
 
-        l.set_x(lx);
-        l.set_y(ly);
-        l.set_z(lz);
+        l(0) = lx;
+        l(1) = ly;
+        l(2) = lz;
 
-        m.set_x(mx);
-        m.set_y(my);
-        m.set_z(mz);
+        m(0) = mx;
+        m(1) = my;
+        m(2) = mz;
 
         //l.set_x(ny);
         //l.set_y(-nx);
