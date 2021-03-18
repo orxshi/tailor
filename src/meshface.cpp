@@ -2,7 +2,7 @@
 
 namespace Tailor
 {
-    MeshFace::MeshFace(): R_checked_(false), btype_(BouType::undefined), vgn_(0.), max_eigen_(0.)
+    MeshFace::MeshFace(): R_checked_(false), btype_(BouType::undefined), vgn_(0.)
     {
     }
 

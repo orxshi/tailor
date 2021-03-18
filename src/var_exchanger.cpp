@@ -44,11 +44,7 @@ namespace Tailor
                 std::cout << comm_->rank() << " type: " << static_cast<int>(mc->oga_cell_type()) << std::endl;
             }*/
             //assert(mc->oga_cell_type() == OGA_cell_type_t::field);
-            assert(!std::isnan(mc->prim()[0]));
-            assert(!std::isnan(mc->prim()[1]));
-            assert(!std::isnan(mc->prim()[2]));
-            assert(!std::isnan(mc->prim()[3]));
-            assert(!std::isnan(mc->prim()[4]));
+            assert(!mc->prim().isnan());
 
             assert(mc->prim(0) > 0.);
 

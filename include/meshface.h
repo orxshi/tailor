@@ -28,7 +28,7 @@ namespace Tailor
         //Matrix<NVAR, NVAR> ML_;
         //Matrix<NVAR, NVAR> MR_;
         Matrix5 M_;
-        double max_eigen_;
+        //double max_eigen_;
 
         friend class boost::serialization::access;
         friend class Solver;

@@ -126,8 +126,8 @@ namespace Tailor
 
         for (AABB& ab: aabb)
         {
-            Vector3minn(TAILOR_BIG_POS_NUM, TAILOR_BIG_POS_NUM, TAILOR_BIG_POS_NUM);
-            Vector3maxx(TAILOR_BIG_NEG_NUM, TAILOR_BIG_NEG_NUM, TAILOR_BIG_NEG_NUM);
+            Vector3 minn(TAILOR_BIG_POS_NUM, TAILOR_BIG_POS_NUM, TAILOR_BIG_POS_NUM);
+            Vector3 maxx(TAILOR_BIG_NEG_NUM, TAILOR_BIG_NEG_NUM, TAILOR_BIG_NEG_NUM);
             ab.set_bbox(minn, maxx);
         }
 
@@ -150,9 +150,8 @@ namespace Tailor
             }
             AABB& ab = aabb[i];
 
-            Vector3 min_, max_;
-            min_.set(ab.min(0), ab.min(1), ab.min(2));
-            max_.set(ab.max(0), ab.max(1), ab.max(2));
+            Vector3 min_(ab.min(0), ab.min(1), ab.min(2));
+            Vector3 max_(ab.max(0), ab.max(1), ab.max(2));
 
             for (const MeshPoint& mp: mc.point())
             {
@@ -160,12 +159,12 @@ namespace Tailor
                 double vy = mp.p().r(1);
                 double vz = mp.p().r(2);
 
-                min_.set_x(std::min(min_(0), vx));
-                min_.set_y(std::min(min_(1), vy));
-                min_.set_z(std::min(min_(2), vz));
-                max_.set_x(std::max(max_(0), vx));
-                max_.set_y(std::max(max_(1), vy));
-                max_.set_z(std::max(max_(2), vz));
+                min_(0) = std::min(min_(0), vx);
+                min_(1) = std::min(min_(1), vy);
+                min_(2) = std::min(min_(2), vz);
+                max_(0) = std::max(max_(0), vx);
+                max_(1) = std::max(max_(1), vy);
+                max_(2) = std::max(max_(2), vz);
             }
 
             //ab.set_min(min_);
@@ -337,7 +336,7 @@ namespace Tailor
         //}
     }
 
-    void Bin::init_rm(int mintag, const Tag& rmtag, const VectorInt3& nstripe, bool pseudo3D)
+    void Bin::init_rm(int mintag, const Tag& rmtag, const Vector3Int& nstripe, bool pseudo3D)
     {
         //rm_ = boost::make_shared<RegularMesh>();
         rm_ = new RegularMesh();

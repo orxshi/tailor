@@ -350,8 +350,7 @@ namespace Tailor
     };
 
     std::ifstream& go_to_beg_of_line(std::ifstream& file, int num);
-    void left_right_cells(const Mesh& mesh, const MeshFace& mf, const MeshCell*& LC, const MeshCell*& RC);
-    void left_right_cells(Mesh& mesh, MeshFace& mf, MeshCell*& LC, MeshCell*& RC);
+    std::tuple<MeshCell*, MeshCell*> left_and_right_cells(Mesh& mesh, MeshFace& mf, const Tag& mctag);
     const MeshCell* opposing_nei(const Mesh& mesh, const MeshFace& mf, const Tag& me);
     //void convert_mesh_to_fortran(const Mesh& mesh);
     bool are_common_faces(const MeshFace& a, const MeshFace& b);

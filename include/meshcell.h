@@ -80,7 +80,7 @@ namespace Tailor
         Vector5 cons_nm1_;
         Vector5 dQ_; 
         Vector5 old_dQ_;
-        double max_eigen_;
+        //double max_eigen_;
         Vector5 R_;
         Matrix5 D_;
         Vector5 R_mid_;

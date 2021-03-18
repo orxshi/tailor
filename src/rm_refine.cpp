@@ -137,14 +137,14 @@ namespace Tailor
     void RegularMesh::refine(const std::vector<Mesh>& meshes, int rank, bool pseudo3D)
     {
         // Define new step length.
-        vec3<int>new_nstripe;
+        Vector3Int new_nstripe;
         if (pseudo3D)
         {
-            new_nstripe = vec3<int>(2 * nstripe(0), 2 * nstripe(1), 1);
+            new_nstripe = Vector3Int(2 * nstripe(0), 2 * nstripe(1), 1);
         }
         else
         {
-            new_nstripe = vec3<int>(2 * nstripe(0), 2 * nstripe(1), 2 * nstripe(2));
+            new_nstripe = Vector3Int(2 * nstripe(0), 2 * nstripe(1), 2 * nstripe(2));
         }
         Vector3 newh = h()/2.;
         // Create new bins.
@@ -254,7 +254,7 @@ namespace Tailor
                                 Vector3 llc(d0, d1, d2);
                                 Vector3 ur = llc + newh;
                                 if (pseudo3D) {
-                                    ur.set(2, llc(2) + h(2));
+                                    ur(2) = llc(2) + h(2);
                                 }
                                 _bin.set_aabb(AABB(llc, ur));
                                 //std::vector<Point> pts = {Point(llc), Point(llc(0)+newh(0), llc(1)), Point(llc+newh), Point(llc(0), llc(1)+newh(1))};

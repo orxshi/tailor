@@ -2,47 +2,19 @@
 
 namespace Tailor
 {
-    RiemannSolver::RiemannSolver(const State& left, const State& right, double gamma, bool isbou)
+    RiemannSolver::RiemannSolver(RiemannSolverType riemann_solver_type, const State& left_state, const State& right_state, double face_area, double gamma, double& max_eigen, Vector5& flux)
     {
-        calc_roe_ave_vars(left, right, gamma, isbou);
+        if (riemann_solver_type == RiemannSolverType::roe)
+        {
+            Matrix5 Aroe;
+            roe(left_state, right_state, flux, Aroe, max_eigen, face_area, gamma);
+        }
+        else if (riemann_solver_type == RiemannSolverType::hllc)
+        {
+            double SLm, SRp;
+            hllc(left_state, right_state, flux, max_eigen, face_area, gamma, SLm, SRp);
+        }
     }
-
-    //Vector5 RiemannSolver::jump_ver_1(const State& left, const State& right)
-    //{
-    //    double rhoL = left.rho;
-    //    double pL = left.p;
-    //    //double qnL = left.qn;
-    //    //double qlL = left.ql;
-    //    //double qmL = left.qm;
-    //    double uL = left.u;
-    //    double vL = left.v;
-    //    double wL = left.w;
-
-    //    double rhoR = right.rho;
-    //    double pR = right.p;
-    //    //double qnR = right.qn;
-    //    //double qlR = right.ql;
-    //    //double qmR = right.qm;
-    //    double uR = right.u;
-    //    double vR = right.v;
-    //    double wR = right.w;
-
-    //    assert(!std::isnan(left.ql));
-    //    assert(!std::isnan(right.ql));
-
-    //    Vector5 jump;
-
-    //    jump[0] = rhoR - rhoL;
-    //    jump[1] = pR - pL;
-    //    //jump[2] = qnR - qnL;
-    //    //jump[3] = qlR - qlL;
-    //    //jump[4] = qmR - qmL;
-    //    jump[2] = uR - uL;
-    //    jump[3] = vR - vL;
-    //    jump[4] = wR - wL;
-
-    //    return jump;
-    //}
     
     Vector5 RiemannSolver::jump_ver_2(const State& left, const State& right)
     {
@@ -92,7 +64,7 @@ namespace Tailor
     //    return jump;
     //}
 
-    void RiemannSolver::calc_roe_ave_vars(const State& left, const State& right, double gamma, bool isbou)
+    void RiemannSolver::calc_roe_ave_vars(const State& left, const State& right, double gamma)
     {
         double rhoL = left.rho;
         double uL = left.u;
@@ -132,7 +104,6 @@ namespace Tailor
             std::cout << "ROE VALUES" << std::endl;
             std::cout << "H: " << H << std::endl;
             std::cout << "k: " << k << std::endl;
-            std::cout << "isbou: " << isbou << std::endl;
         }
         assert(H > k);
         assert(!std::isnan(H));
@@ -161,11 +132,11 @@ namespace Tailor
         //asq = std::pow(a,2.);
     }
 
-    Matrix5 RiemannSolver::right_eigenv(double vfn)
+    Matrix5 RiemannSolver::right_eigenv()
     {
         Matrix5 R;
 
-        double vnet = u - vfn;
+        double vnet = u;
 
         R(0,0) = 1.;
         R(1,0) = vnet - a;
@@ -200,7 +171,7 @@ namespace Tailor
         return R;
     }
 
-    void rhll_normals(const State& left, const State& right, const Vector3& normal, double& alpha1, double& alpha2, Vector3& n1, Vector3& n2, bool isbou)
+    void rhll_normals(const State& left, const State& right, const Vector3& normal, double& alpha1, double& alpha2, Vector3& n1, Vector3& n2)
     {
         double nx = normal(0);
         double ny = normal(1);
@@ -320,7 +291,6 @@ namespace Tailor
             std::cout << "xx: : " << xx << std::endl;
             std::cout << "yy: : " << yy << std::endl;
             std::cout << "zz: : " << zz << std::endl;
-            std::cout << "isbou: " << isbou << std::endl;
         }
         assert(temp != 0.);
         nx2 = nx2 / temp;
@@ -382,7 +352,7 @@ namespace Tailor
     //    SRp = qnR + aR * q;
     //}
 
-    void RiemannSolver::rhll_ws_est_pres(const State& left, const State& right, double& SLm, double& SRp, double vfn, double gamma)
+    void RiemannSolver::rhll_ws_est_pres(const State& left, const State& right, double& SLm, double& SRp, double gamma)
     {
         double rhoL = left.rho;
         double uL = left.u;
@@ -426,7 +396,7 @@ namespace Tailor
         SRp = uR + aR * qR;
     }
 
-    void RiemannSolver::rhll_ws_est(const State& left, const State& right, double& SLm, double& SRp, double vfn)
+    void RiemannSolver::rhll_ws_est(const State& left, const State& right, double& SLm, double& SRp)
     {
         double uL = left.u;
         double vL = left.v;
@@ -469,7 +439,7 @@ namespace Tailor
         return comws;
     }*/
 
-    Matrix5 RiemannSolver::eigen(double vfn)
+    Matrix5 RiemannSolver::eigen()
     {
         // wave speeds
 
@@ -478,7 +448,7 @@ namespace Tailor
 
         assert(!std::isnan(a));
 
-        double vnet = u - vfn;
+        double vnet = u;
 
         ws(0,0) = vnet - a;
         ws(1,1) = vnet;
@@ -489,7 +459,7 @@ namespace Tailor
         return ws;
     }
 
-    Matrix5 RiemannSolver::abs_eigen(double vfn, const State& left, const State& right)
+    Matrix5 RiemannSolver::abs_eigen(const State& left, const State& right)
     {
         // Absolute values of the wave speeds
 
@@ -498,7 +468,7 @@ namespace Tailor
 
         assert(!std::isnan(a));
 
-        double vnet = u - vfn;
+        double vnet = u;
 
         ws(0,0) = std::abs(vnet - a);
         ws(1,1) = std::abs(vnet);
@@ -569,12 +539,12 @@ namespace Tailor
         return ldu;
     }*/
 
-    Vector5 RiemannSolver::wave_strength_ver_1(const State& left, const State& right, double gamma, double vfn)
+    Vector5 RiemannSolver::wave_strength_ver_1(const State& left, const State& right, double gamma)
     {
         Vector5 jump = jump_ver_2(left, right);
         Vector5 ldu;
         
-        auto vnet = u - vfn;
+        auto vnet = u;
 
         ldu(2) = jump(2) - v * jump(0);
         ldu(3) = jump(3) - w * jump(0);
@@ -610,11 +580,11 @@ namespace Tailor
         return ldu;
     }
 
-    Vector5 RiemannSolver::dissipation_term(const State& left, const State& right, const Matrix5& ws, const Matrix5& R, double gamma, double vfn)
+    Vector5 RiemannSolver::dissipation_term(const State& left, const State& right, const Matrix5& ws, const Matrix5& R, double gamma)
     {
         Vector5 diss;
 
-        Vector5 ldu = wave_strength_ver_1(left, right, gamma, vfn);
+        Vector5 ldu = wave_strength_ver_1(left, right, gamma);
         //auto ldu = wave_strength_ver_2(left, right, n);
 
 
@@ -633,9 +603,9 @@ namespace Tailor
         return diss;
     }
 
-    Vector5 RiemannSolver::rhll_numerical_flux(double SLm, double SRp, const State& left, const State& right, const State& leftn2, const State& rightn2, const Matrix5& ws, const Matrix5& R, double facearea, const Vector3& n, double gamma, double vfn)
+    Vector5 RiemannSolver::rhll_numerical_flux(double SLm, double SRp, const State& left, const State& right, const State& leftn2, const State& rightn2, const Matrix5& ws, const Matrix5& R, double facearea, const Vector3& n, double gamma)
     {
-        Vector5 diss = dissipation_term(leftn2, rightn2, ws, R, gamma, vfn);
+        Vector5 diss = dissipation_term(leftn2, rightn2, ws, R, gamma);
         auto nf = (SRp*left.flux - SLm*right.flux)/(SRp-SLm) - 0.5 * diss;
         nf = facearea * nf;
         return nf;
@@ -725,9 +695,9 @@ namespace Tailor
         //}
     }
 
-    Vector5 RiemannSolver::numerical_flux(const State& left, const State& right, const Matrix5& ws, const Matrix5& R, double facearea, double gamma, double vfn)
+    Vector5 RiemannSolver::numerical_flux(const State& left, const State& right, const Matrix5& ws, const Matrix5& R, double facearea, double gamma)
     {
-        Vector5 diss = dissipation_term(left, right, ws, R, gamma, vfn);
+        Vector5 diss = dissipation_term(left, right, ws, R, gamma);
         assert(!left.flux.isnan());
         assert(!right.flux.isnan());
         assert(!diss.isnan());
@@ -746,7 +716,7 @@ namespace Tailor
         return nf;
     }
 
-    auto RiemannSolver::left_eigenv(double gamma, double vfn)
+    auto RiemannSolver::left_eigenv(double gamma)
     {
         // inverse(R) or inverse(right_eigenv)
 
@@ -771,7 +741,7 @@ namespace Tailor
 
         double gc = gamma - 1.;
 
-        auto vnet = u - vfn;
+        auto vnet = u;
 
         L(0,0) = H + a * (vnet - a) / gc;
         L(0,1) = -(vnet + a / gc);
@@ -870,24 +840,26 @@ namespace Tailor
         return L;
     }
 
-    Matrix5 RiemannSolver::Jacobian(const Matrix5& ws, const Matrix5& R, double gamma, double vfn)
+    Matrix5 RiemannSolver::Jacobian(const Matrix5& ws, const Matrix5& R, double gamma)
     {
-        return ((R * ws) * left_eigenv(gamma, vfn));
+        return ((R * ws) * left_eigenv(gamma));
     }
 
-    void RiemannSolver::roe(const State& left, const State& right, const State& leftorig, const State& rightorig, Vector5& numflux, Matrix5& Aroe, double& max_eigen, double signed_area, double gamma, double vfn)
+    void RiemannSolver::roe(const State& left, const State& right, Vector5& numflux, Matrix5& Aroe, double& max_eigen, double signed_area, double gamma)
     {
-        Matrix5 R = right_eigenv(vfn);
-        Matrix5 ws = abs_eigen(vfn, left, right);
-        numflux = numerical_flux(left, right, ws, R, signed_area, gamma, vfn);
-        Aroe = Jacobian(ws, R, gamma, vfn);
-        max_eigen = ws.max();
+        calc_roe_ave_vars(left, right, gamma);
+
+        Matrix5 R = right_eigenv();
+        Matrix5 ws = abs_eigen(left, right);
+        numflux = numerical_flux(left, right, ws, R, signed_area, gamma);
+        Aroe = Jacobian(ws, R, gamma);
+        max_eigen = max(ws);
         assert(max_eigen > 0.);
 
-        calc_roe_ave_vars(leftorig, rightorig, gamma, false);
-        R = right_eigenv(vfn);
-        ws = abs_eigen(vfn, leftorig, rightorig);
-        Aroe = Jacobian(ws, R, gamma, vfn);
+        //calc_roe_ave_vars(leftorig, rightorig, gamma, false);
+        //R = right_eigenv(vfn);
+        //ws = abs_eigen(vfn, leftorig, rightorig);
+        //Aroe = Jacobian(ws, R, gamma, vfn);
 
         //if (abs(numflux(3)) >= 1e-0)
         //{
@@ -933,24 +905,26 @@ namespace Tailor
     //    max_eigen = std::max({std::abs(ws(0,0)), std::abs(ws(1,1)), std::abs(ws(2,2)), std::abs(ws(3,3)), std::abs(ws(4,4))});
     //}
 
-    void RiemannSolver::hlle(const State& left, const State& right, Vector5& numflux, double& max_eigen, double signed_area, double gamma, bool isbou, double& SLm ,double& SRp, double vfn)
+    void RiemannSolver::hlle(const State& left, const State& right, Vector5& numflux, double& max_eigen, double signed_area, double gamma, double& SLm ,double& SRp)
     {
-        rhll_ws_est(left, right, SLm, SRp, vfn);
+        rhll_ws_est(left, right, SLm, SRp);
         //ws_est_pbased(left, right, SLm, SRp, gamma);
 
-        Matrix5 ws = abs_eigen(vfn, left, right);
+        Matrix5 ws = abs_eigen(left, right);
         numflux = hlle_numerical_flux(SLm, SRp, left, right, signed_area);
 
         max_eigen = std::max({std::abs(ws(0,0)), std::abs(ws(1,1)), std::abs(ws(2,2)), std::abs(ws(3,3)), std::abs(ws(4,4))});
     }
 
-    void RiemannSolver::hllc(const State& left, const State& right, Vector5& numflux, double& max_eigen, double signed_area, double gamma, bool isbou, double& SLm , double& SRp, double vfn)
+    void RiemannSolver::hllc(const State& left, const State& right, Vector5& numflux, double& max_eigen, double signed_area, double gamma, double& SLm , double& SRp)
     {
+        //calc_roe_ave_vars(left, right, gamma); // needed if Roe vars are used to compute wave speed.
+
         //rhll_ws_est(left, right, SLm, SRp, vfn);
-        rhll_ws_est_pres(left, right, SLm, SRp, vfn, gamma);
+        rhll_ws_est_pres(left, right, SLm, SRp, gamma);
         //ws_est_pbased(left, right, SLm, SRp, gamma);
 
-        Matrix5 ws = abs_eigen(vfn, left, right);
+        Matrix5 ws = abs_eigen(left, right);
         numflux = hllc_numerical_flux(SLm, SRp, left, right, signed_area);
 
         max_eigen = std::max({std::abs(ws(0,0)), std::abs(ws(1,1)), std::abs(ws(2,2)), std::abs(ws(3,3)), std::abs(ws(4,4))});

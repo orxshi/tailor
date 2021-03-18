@@ -18,7 +18,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wno-deprecated")
 
 ADD_DEFINITIONS(-DBOOST_LOG_DYN_LINK)
 
-include_directories(~/TailorNew/include ${Boost_INCLUDE_DIRS} ${MPI_INCLUDE_PATH} ${METIS_INCLUDE_DIRS})
+include_directories(~/TailorNew/include ${Boost_INCLUDE_DIRS} ${MPI_INCLUDE_PATH} ${METIS_INCLUDE_DIRS} /truba/home/osibliyev/amgcl/include)
 link_directories(~/TailorNew/build)
 add_executable(out main.cpp)
 target_link_libraries(out tailor ${MPI_LIBRARIES} ${Boost_LIBRARIES} ${METIS_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES} Threads::Threads)

@@ -23,7 +23,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wreturn-type -Wempty-body -Wno-depr
 ADD_DEFINITIONS(-DBOOST_LOG_DYN_LINK)
 #ADD_DEFINITIONS(-DNDEBUG)
 
-include_directories(include ${Boost_INCLUDE_DIRS} ${MPI_INCLUDE_PATH} ${METIS_INCLUDE_DIRS})
+include_directories(include ${Boost_INCLUDE_DIRS} ${MPI_INCLUDE_PATH} ${METIS_INCLUDE_DIRS} /truba/home/osibliyev/amgcl/include)
 #file(GLOB SOURCES "src/*.cpp" "fortinter.f90")
 file(GLOB SOURCES "src/*.cpp")
 add_library(tailor SHARED ${SOURCES})

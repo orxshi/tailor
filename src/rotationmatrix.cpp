@@ -93,17 +93,11 @@ namespace Tailor
     {
         Vector3 c;
 
-        c.set_x(m[0] * v(0) + m[1] * v(1) + m[2] * v(2));
-        c.set_y(m[3] * v(0) + m[4] * v(1) + m[5] * v(2));
-        c.set_z(m[6] * v(0) + m[7] * v(1) + m[8] * v(2));
+        c(0) = m[0] * v(0) + m[1] * v(1) + m[2] * v(2);
+        c(1) = m[3] * v(0) + m[4] * v(1) + m[5] * v(2);
+        c(2) = m[6] * v(0) + m[7] * v(1) + m[8] * v(2);
 
-        assert(!std::isnan(c(0)));
-        assert(!std::isnan(c(1)));
-        assert(!std::isnan(c(2)));
-
-        //std::cout << "c[0]: " << c(0) << std::endl;
-        //std::cout << "c[1]: " << c(1) << std::endl;
-        //std::cout << "c[2]: " << c(2) << std::endl;
+        assert(!c.isnan());
 
         return c;
     }

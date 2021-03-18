@@ -1,8 +1,13 @@
 #ifndef POES_MATRIX_H
 #define POES_MATRIX_H
 
-#include "array.h"
+//#include "array.h"
+#include "core.h"
+#include <boost/serialization/utility.hpp>
 #include <cmath>
+#include <array>
+#include <cassert>
+#include <iostream>
 
 namespace Tailor
 {
@@ -13,16 +18,38 @@ namespace Tailor
 
                 Matrix();
                 Matrix(T a, T b, T c);
+                Matrix(T s);
 
                 Matrix transpose();
-                T max() const;
                 T& operator()(int row, int col);
                 T operator()(int row, int col) const;
                 T& operator()(int row);
                 T operator()(int row) const;
                 bool isnan() const;
                 template<int nrowo, int ncolo>
-                    Matrix<nrow, ncolo, T> operator*(const Matrix<nrowo, ncolo, T>& other) const;
+                    Matrix<nrow, ncolo, T> operator*(const Matrix<nrowo, ncolo, T>& other) const
+                    {
+                        // matrix-matrix product
+
+                        assert(nrowo == ncol);
+
+                        Matrix<nrow, ncolo, T> mat;
+
+                        for (int r=0; r<nrow; ++r)
+                        {
+                            for (int c=0; c<ncolo; ++c)
+                            {
+                                mat(r, c) = 0.; // take a row
+
+                                for (int j=0; j<ncol; ++j)
+                                {
+                                    mat(r,c) += (*this)(r,j) * other(j,c);
+                                }
+                            }
+                        }
+
+                        return mat;
+                    }
                 Matrix& operator-();
                 Matrix operator*(T s) const;
                 Matrix operator/(T s) const;
@@ -31,6 +58,7 @@ namespace Tailor
                 Matrix& add_diag(T d);
                 Matrix& operator+=(T d);
                 Matrix& operator*=(T d);
+                Matrix& operator/=(T s);
                 Matrix operator+(const Matrix<nrow, ncol, T>& M) const;
                 Matrix operator-(const Matrix<nrow, ncol, T>& M) const;
                 Matrix& operator=(T s);
@@ -46,7 +74,7 @@ namespace Tailor
 
             private:
 
-                Array<T, nrow * ncol> data_;
+                std::array<T, nrow * ncol> data_;
         };
 
     using Matrix5 = Matrix<5, 5, double>;
@@ -77,8 +105,20 @@ namespace Tailor
         Vector<nrow, T> normalize(const Vector<nrow, T>& a);
 
     Vector5 operator/(const Vector5& f, const Matrix5& A);
+
     template<int nrow, int ncol, class T>
         Matrix<nrow, ncol, T> operator*(T s, const Matrix<nrow, ncol, T>& m);
+
+    template<int nrow, int ncol, class T>
+        Matrix<nrow, ncol, T> abs(const Matrix<nrow, ncol, T>& m);
+
+    template<int nrow, int ncol, class T>
+        T max(const Matrix<nrow, ncol, T>& m);
+    
+    template<int nrow, int ncol, class T>
+        Matrix<nrow, ncol, T> unit_matrix();
 }
+
+#include "matrix.hpp"
 
 #endif

@@ -162,6 +162,8 @@ namespace Tailor
 
     void Polygon::set_bbox()
     {
+        assert(!vertex_.empty());
+
         min_(0) = TAILOR_BIG_POS_NUM;
         min_(1) = TAILOR_BIG_POS_NUM;
         min_(2) = TAILOR_BIG_POS_NUM;
@@ -169,15 +171,24 @@ namespace Tailor
         max_(1) = TAILOR_BIG_NEG_NUM;
         max_(2) = TAILOR_BIG_NEG_NUM;
 
+        assert(!vertex_.empty());
+
         for (int i=0; i<vertex_.size(); ++i)
         {
             min_(0) = std::min(min_(0), vertex_[i].r(0));
+            assert(!vertex_.empty());
             min_(1) = std::min(min_(1), vertex_[i].r(1));
             min_(2) = std::min(min_(2), vertex_[i].r(2));
 
+            assert(!vertex_.empty());
+
             max_(0) = std::max(max_(0), vertex_[i].r(0));
+            assert(!vertex_.empty());
             max_(1) = std::max(max_(1), vertex_[i].r(1));
+            assert(!vertex_.empty());
             max_(2) = std::max(max_(2), vertex_[i].r(2));
+
+            assert(!vertex_.empty());
         }
     }
 
@@ -220,17 +231,23 @@ namespace Tailor
     Polygon::Polygon(const std::vector<Point>& vertex): reset_signed_area_(true), reset_normal_(true), reset_centroid_(true), signed_area_(0.)
     {
         set_vertices(vertex); // because copy constructor cannot be triggered with init list: vertex_(vertex).
+        assert(!vertex_.empty());
         if (!degenerate())
         {
+            assert(!vertex_.empty());
             if (vertex_.size() < 3)
             {
                 std::cout << "polygon vertex size: " << vertex_.size() << std::endl;
             }
             assert(vertex_.size() >= 3);
+            assert(!vertex_.empty());
             set_edge();
+            assert(!vertex_.empty());
             set_bbox();
+            assert(!vertex_.empty());
             //normal_ = normal();
         }
+        assert(!vertex_.empty());
     }
 
     void Polygon::set_vertices(const std::vector<Point>& vertex)

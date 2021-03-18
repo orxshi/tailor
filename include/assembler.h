@@ -20,8 +20,8 @@ namespace Tailor
             Assembler();
             ~Assembler();
             void assemble();
-            Partition* partition();
             const Partition* partition() const;
+            Partition* partition();
             void rotate(const Tag& mesh, double ang, int axis, const Vector3& pivot);
             void exchange();
             void reset_oga_status();

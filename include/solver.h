@@ -16,17 +16,40 @@
 //#include "facerequest_exchanger.h"
 #include "mgmres.hpp"
 
+#include <amgcl/make_solver.hpp>
+#include <amgcl/solver/gmres.hpp>
+#include <amgcl/preconditioner/dummy.hpp>
+#include <amgcl/adapter/crs_tuple.hpp>
+#include <amgcl/backend/builtin.hpp>
+#include <amgcl/amg.hpp>
+#include <amgcl/coarsening/runtime.hpp>
+#include <amgcl/relaxation/runtime.hpp>
+#include <amgcl/solver/runtime.hpp>
+
+typedef amgcl::backend::builtin<double> Backend;
+
+typedef amgcl::make_solver<
+amgcl::amg<
+Backend,
+    amgcl::runtime::coarsening::wrapper,
+    amgcl::runtime::relaxation::wrapper
+    >,
+    amgcl::runtime::solver::wrapper<Backend>
+    > AMGCLSolver;
+
+//typedef amgcl::make_solver<
+//amgcl::preconditioner::dummy<Backend>
+//,
+    //amgcl::solver::gmres<Backend>
+    //>
+    //AMGCLSolver;
+
+
 namespace Tailor
 {   
     class Solver
     {           
         public:     
-
-            enum class RiemannSolverType
-            {
-                roe,
-                hllc, // currently only for explicit formulation.
-            };
     
             Solver(boost::mpi::communicator* comm, const std::vector<std::string>& filename, Profiler* profiler, Partition* partition=nullptr); 
             Solver();
@@ -48,8 +71,9 @@ namespace Tailor
             void reset_oga_status();
             void reconnectivity();
             void update_fs(const Freestream& fs);
+            Freestream fs() const;
             bool repartition();
-            void save_solution();
+            //void save_solution();
             const boost::mpi::communicator* comm() const;
             void read_settings();
 
@@ -64,8 +88,8 @@ namespace Tailor
                 ar & rebalance_thres_;
                 ar & can_rebalance_;
                 ar & force_rebalance_;
-                ar & save_solution_;
-                ar & restore_solution_;
+                //ar & save_solution_;
+                //ar & restore_solution_;
                 ar & half_cfl_;
                 ar & print_map_;
                 ar & fs_;
@@ -112,8 +136,8 @@ namespace Tailor
             bool can_rebalance_;
             bool force_rebalance_;
             Profiler* profiler_;
-            bool save_solution_;
-            bool restore_solution_;
+            //bool save_solution_;
+            //bool restore_solution_;
             bool half_cfl_;
             bool print_map_;
             Freestream fs_;
@@ -153,7 +177,7 @@ namespace Tailor
             double last_max_res_;
                 
             void RK4(Mesh& mesh);
-            void restore_solution();
+            //void restore_solution();
             void connect_partition_cells();
             void exchange_ghosts();
             void solve_(int rank);
@@ -166,12 +190,10 @@ namespace Tailor
             void calc_change_in_conserved_var(Mesh &mesh);
             void evolve_solution_in_time(Mesh& mesh);
             void evolve_old_solution_in_time(Mesh& mesh);
-            void calc_R(Mesh& mesh);
+            void compute_sum_of_fluxes(Mesh &mesh);
             //void update_matrices(Mesh& mesh, const Vector5& flux, const Matrix<NVAR, NVAR>& Aroe, MeshFace& mf, MeshCell& LC, MeshCell& RC, const Vector3& n, double vgn, double facearea);
-            void update_matrices(Mesh& mesh, const Vector5& flux, const Matrix5& Aroe, MeshFace* myface, MeshFace* commonface, MeshCell& LC, MeshCell& RC, double facearea, double volume, double vfn, const Vector3& vf, const State& left, const State& right, const Matrix5& TT);
             //void rhhl_update_matrices(const Matrix<NVAR, NVAR>& Aroe, MeshFace* myface, MeshFace* commonface, MeshCell& LC, MeshCell& RC, const Vector3& n, double vgn, double facearea, double SLm, double SRp, double vfn);
             //void hhl_update_matrices(MeshFace* myface, MeshFace* commonface, MeshCell& LC, MeshCell& RC, double facearea, double SLm, double SRp, const Matrix5& T, double vfn);
-            void limit_prim_cons(Mesh& mesh, const MeshCell& mc, const MeshFace& mf, Vector5& prim);
             bool sor(Mesh& mesh, int ntimestep);
             void temporal_discretization(Mesh &mesh);
             //void residual(Mesh& mesh);
@@ -180,7 +202,12 @@ namespace Tailor
             Matrix5 slipwall_M(const Vector3& n);
             void gmres(Mesh& mesh);
             void oga_interpolate(Mesh& mesh);
+            void update_matrices(MeshFace *this_face, MeshFace *common_face, MeshCell& left_cell, MeshCell& right_cell, double facearea, const Vector3& face_velocity, double gamma);
+            void apply_limiter(Mesh &mesh, MeshCell &mc, const MeshFace &mf);
     };
+
+    std::tuple<Matrix5, Matrix5> get_rotation_matrix(const Vector3& normal);
+    std::tuple<Vector5, double> compute_flux(RiemannSolverType riemann_solver_type, double face_area, const Matrix5& inverse_rotation_matrix, const State& rotated_left_state, const State& rotated_right_state, double gamma);
 }
 
 #endif

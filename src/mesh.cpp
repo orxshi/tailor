@@ -470,8 +470,11 @@ namespace Tailor
         }   
     }
 
-    void left_right_cells(Mesh& mesh, MeshFace& mf, MeshCell*& LC, MeshCell*& RC)
+    std::tuple<MeshCell*, MeshCell*> left_and_right_cells(Mesh& mesh, MeshFace& mf, const Tag& mctag)
     {
+        MeshCell *LC = nullptr;
+        MeshCell *RC = nullptr;
+
         if (mf.is_boundary())
         {
             assert(mf.parent_cell().size() == 2);
@@ -539,6 +542,11 @@ namespace Tailor
             //RC = mf.right_cell().addr();
 
         }
+
+        assert(LC->tag() == mctag);
+        assert(RC->tag() != mctag);
+
+        return std::make_tuple(LC, RC);
     }
 
     void left_right_cells(const Mesh& mesh, const MeshFace& mf, const MeshCell*& LC, const MeshCell*& RC)
