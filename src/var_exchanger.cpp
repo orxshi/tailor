@@ -2,7 +2,7 @@
 
 namespace Tailor
 {
-    Var::Var(int source_rank, int source_tag, const Vector5& var, int mesh, int cell): source_rank_(source_rank), source_tag_(source_tag), var_(var)
+    Var::Var(int source_rank, int source_tag, const Vector5& var, int mesh, int cell, const Vector5& dQ): source_rank_(source_rank), source_tag_(source_tag), var_(var), dQ_(dQ)
     {
         mesh_cell_ = std::make_pair(mesh, cell);
     }
@@ -49,7 +49,7 @@ namespace Tailor
             assert(mc->prim(0) > 0.);
 
             //sender_.front().add(r.source_rank_, r.source_tag_, Var(comm_->rank(), sp.tag()(), mc->prim(), m->tag()(), mc->tag()()));
-            add(r.source_rank_, r.source_tag_, Var(comm_->rank(), sp.tag()(), mc->prim(), m->tag()(), mc->tag()()));
+            add(r.source_rank_, r.source_tag_, Var(comm_->rank(), sp.tag()(), mc->prim(), m->tag()(), mc->tag()(), mc->dQ()));
 
             //if (mc->parent_mesh()() == 0 && mc->tag()() == 874)
             //{
@@ -103,6 +103,7 @@ namespace Tailor
                     //}
                     //assert(mc.prim(0) > 0.);
                     v.var_ = mc.prim();
+                    v.dQ_ = mc.dQ();
 
                     //if (gr.dest_rank_ == 1)
                     //{

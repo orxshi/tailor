@@ -501,7 +501,7 @@ namespace Tailor
             ("solver.print_outer_norm", po::value<bool>()->default_value(true), "Print outer norm")
             ("solver.steady", po::value<bool>()->default_value(false), "Steady state")
             ("solver.progressive_cfl", po::value<bool>()->default_value(false), "Progressive CFL increase")
-            ("solver.temporal-discretization", po::value<std::string>()->default_value("forward_euler"), "Temporal discretization")
+            ("solver.temporal_discretization", po::value<std::string>()->default_value("forward_euler"), "Temporal discretization")
             ("solver.dt", po::value<double>()->default_value(0.001), "Real time step")
             ("solver.nsweep", po::value<int>()->default_value(1), "Number of sweeps in SOR")
             ("solver.omega", po::value<double>()->default_value(1), "Relaxation parameter in SOR")
@@ -541,7 +541,7 @@ namespace Tailor
         show_inner_norm_ = vm["solver.show_inner_norm"].as<bool>();
         progressive_cfl_ = vm["solver.progressive_cfl"].as<bool>();
         steady_ = vm["solver.steady"].as<bool>();
-        temporal_discretization_ = vm["solver.temporal-discretization"].as<std::string>();
+        temporal_discretization_ = vm["solver.temporal_discretization"].as<std::string>();
         dt_ = vm["solver.dt"].as<double>();
         nsweep_ = vm["solver.nsweep"].as<int>();
         omega_ = vm["solver.omega"].as<double>();
@@ -610,7 +610,6 @@ namespace Tailor
         flux = inverse_rotation_matrix * flux;
 
         assert(!flux.isnan());
-        assert(max_eigen > 0.);
 
         return std::make_tuple(flux, max_eigen);
     }
@@ -1818,7 +1817,6 @@ namespace Tailor
         for (const auto &mc : mesh.cell())
         {
             if (calc_cell(mc))
-            //if (mc.oga_cell_type() == OGA_cell_type_t::field)
             {
                 cell_index.insert(std::make_pair(mc.tag()(), n));
                 ++n;
@@ -1831,7 +1829,6 @@ namespace Tailor
         for (const auto &mc : mesh.cell())
         {
             if (calc_cell(mc))
-            //if (mc.oga_cell_type() == OGA_cell_type_t::field)
             {
                 int rindex = cell_index[mc.tag()()];
 
@@ -1842,14 +1839,20 @@ namespace Tailor
                 {
                     if (mf.btype() == BouType::interior)
                     {
-                        auto nct = std::find_if(mf.parent_cell().begin(), mf.parent_cell().end(), [&](const auto &pc) { return pc != mc.tag(); });
-                        assert(nct != mf.parent_cell().end());
-                        auto &nc = mesh.cell(*nct);
+                        auto [left_cell, right_cell] = left_and_right_cells(mesh, mf, mc.tag());
 
-                        if (calc_cell(nc))
-                        //if (nc.oga_cell_type() == OGA_cell_type_t::field)
+                        auto common_face = mesh.common_face(*right_cell, mf.tag());
+                        assert(common_face != nullptr);
+
+                        //auto nct = std::find_if(mf.parent_cell().begin(), mf.parent_cell().end(), [&](const auto &pc) { return pc != mc.tag(); });
+                        //assert(nct != mf.parent_cell().end());
+                        //auto &nc = mesh.cell(*nct);
+
+                        //if (calc_cell(nc))
+                        if (calc_cell(*right_cell))
                         {
-                            order.insert(std::make_pair(cell_index[nc.tag()()], mf.M() * -1));
+                            //order.insert(std::make_pair(cell_index[nc.tag()()], mf.M() * -1));
+                            order.insert(std::make_pair(cell_index[right_cell->tag()()], common_face->M() * -1));
                         }
                     }
                 }
@@ -1882,12 +1885,32 @@ namespace Tailor
         for (const auto &mc : mesh.cell())
         {
             if (calc_cell(mc))
-            //if (mc.oga_cell_type() == OGA_cell_type_t::field)
             {
                 for (int j = 0; j < NVAR; ++j)
                 {
                     rhs[i * NVAR + j] = mc.R(j);
                 }
+
+                for (const auto &mf : mc.face())
+                {
+                    if (mf.btype() == BouType::partition)
+                    {
+                        auto [left_cell, right_cell] = left_and_right_cells(mesh, mf, mc.tag());
+
+                        assert(!calc_cell(*right_cell));
+
+                        auto common_face = mesh.common_face(*right_cell, mf.tag());
+                        assert(common_face != nullptr);
+
+                        Vector5 temp = common_face->M() * right_cell->dQ();
+
+                        for (int j = 0; j < NVAR; ++j)
+                        {
+                            rhs[i * NVAR + j] += temp(j);
+                        }
+                    }
+                }
+
                 ++i;
             }
         }
@@ -1969,36 +1992,64 @@ namespace Tailor
         //make_mat_st(mesh, n, nz_num, ia, ja, a, rhs);
         make_mat_cr(mesh, n, nz_num, ia, ja, a, rhs, comm_->rank());
 
-        boost::property_tree::ptree prm;
-
-        prm.put("solver.type", "bicgstab");
-        prm.put("solver.tol", 1e-3);
-        prm.put("solver.maxiter", 10);
-        prm.put("precond.coarsening.type", "smoothed_aggregation");
-        prm.put("precond.relax.type", "spai0");
-
-        AMGCLSolver solve(std::tie(n, ia, ja, a), prm);
-
-        if (n == 0)
-        {
-            int nfield = 0;
-            for (const auto &mc : mesh.cell())
-            {
-                if (calc_cell(mc))
-                //if (mc.oga_cell_type() == OGA_cell_type_t::field)
-                {
-                    ++nfield;
-                }
-            }
-            assert(nfield == 0);
-        }
-
         if (n == 0)
         {
             return;
         }
 
         std::vector<double> x(n, 0.);
+
+        //boost::property_tree::ptree prm;
+
+        //prm.put("solver.type", "bicgstab");
+        //prm.put("solver.type", "gmres");
+        //prm.put("solver.M", 100);
+        //if (n < 100)
+        //{
+            //prm.put("solver.M", n-1);
+        //}
+        //prm.put("solver.tol", TAILOR_BIG_POS_NUM);
+        //prm.put("solver.abstol", TAILOR_ZERO);
+        //prm.put("solver.maxiter", 10000);
+        //prm.put("precond.type", "dummy");
+        //prm.put("precond.coarsening.type", "smoothed_aggregation");
+        //prm.put("precond.relax.type", "spai0");
+        //prm.put("precond.relax.type", "ilu0");
+
+        typedef amgcl::make_solver<
+            //amgcl::relaxation::as_preconditioner<Backend, amgcl::relaxation::chebyshev>,
+            amgcl::amg<
+            Backend,
+            amgcl::coarsening::smoothed_aggregation,
+            amgcl::relaxation::chebyshev
+                >,
+            amgcl::solver::gmres<Backend>
+                > AMGCLSolver;
+
+        AMGCLSolver::params prm;
+        //prm.solver.maxiter = 10000;
+        //prm.solver.abstol = TAILOR_ZERO;
+        //prm.solver.tol = TAILOR_BIG_POS_NUM;
+
+        AMGCLSolver amgcl_solver(std::tie(n, ia, ja, a), prm);
+
+        //AMGCLSolver amgcl_solver(std::tie(n, ia, ja, a), prm);
+        //amgcl::make_solver<
+        //    amgcl::relaxation::as_preconditioner<Backend, amgcl::relaxation::ilu0>,
+        //    amgcl::solver::gmres<Backend>
+        //        > amgcl_solver(
+        //        amgcl::adapter::zero_copy(
+        //            n,
+        //            ia, 
+        //            ja, 
+        //            a
+        //            ), 
+        //        prm);
+        auto [iters, error] = amgcl_solver(rhs, x);
+
+        std::cout << iters << " " << error << std::endl;
+
+
         //int itr_max = 1;
         //int mr = 100;
         //if (n < mr)
@@ -2010,28 +2061,22 @@ namespace Tailor
         //double tol_rel = TAILOR_BIG_POS_NUM;
 
         //bool verbose = true;
-        ////if (comm_->rank() == 1) {
-        ////verbose = true;
-        ////}
 
-        ////mgmres_st(n, nz_num, ia.data(), ja.data(), a.data(), x.data(), rhs.data(), itr_max, mr, tol_abs, tol_rel, verbose);
+        //////mgmres_st(n, nz_num, ia.data(), ja.data(), a.data(), x.data(), rhs.data(), itr_max, mr, tol_abs, tol_rel, verbose);
         //pmgmres_ilu_cr(n, nz_num, ia.data(), ja.data(), a.data(), x.data(), rhs.data(), itr_max, mr, tol_abs, tol_rel, verbose);
 
-        //int i = 0;
-        //for (auto &mc : mesh.cell_)
-        //{
-        //    if (calc_cell(mc))
-        //    //if (mc.oga_cell_type() == OGA_cell_type_t::field)
-        //    {
-        //        for (int j = 0; j < NVAR; ++j)
-        //        {
-        //            mc.dQ_(j) = x[i * NVAR + j];
-        //        }
-        //        ++i;
-        //    }
-        //}
-
-        auto [iters, error] = solve(rhs, x);
+        int i = 0;
+        for (auto &mc : mesh.cell_)
+        {
+            if (calc_cell(mc))
+            {
+                for (int j = 0; j < NVAR; ++j)
+                {
+                    mc.dQ_(j) = x[i * NVAR + j];
+                }
+                ++i;
+            }
+        }
     }
 
     bool Solver::sor(Mesh &mesh, int ntimestep)

@@ -8,6 +8,9 @@ namespace Tailor
         {
             Matrix5 Aroe;
             roe(left_state, right_state, flux, Aroe, max_eigen, face_area, gamma);
+
+            assert(!flux.isnan());
+            assert(max_eigen > 0.);
         }
         else if (riemann_solver_type == RiemannSolverType::hllc)
         {
@@ -476,43 +479,43 @@ namespace Tailor
         ws(3,3) = std::abs(vnet);
         ws(4,4) = std::abs(vnet + a);
 
-        double lL[5];
-        double lR[5];
-        double l[5];
+        //double lL[5];
+        //double lR[5];
+        //double l[5];
 
-        lL[0] = left.u - left.a;
-        lL[1] = left.u;
-        lL[2] = left.u;
-        lL[3] = left.u;
-        lL[4] = left.u + left.a;
+        //lL[0] = left.u - left.a;
+        //lL[1] = left.u;
+        //lL[2] = left.u;
+        //lL[3] = left.u;
+        //lL[4] = left.u + left.a;
 
-        lR[0] = right.u - right.a;
-        lR[1] = right.u;
-        lR[2] = right.u;
-        lR[3] = right.u;
-        lR[4] = right.u + right.a;
+        //lR[0] = right.u - right.a;
+        //lR[1] = right.u;
+        //lR[2] = right.u;
+        //lR[3] = right.u;
+        //lR[4] = right.u + right.a;
 
-        l[0] = u - a;
-        l[1] = u;
-        l[2] = u;
-        l[3] = u;
-        l[4] = u + a;
+        //l[0] = u - a;
+        //l[1] = u;
+        //l[2] = u;
+        //l[3] = u;
+        //l[4] = u + a;
 
-        for (int i=0; i<5; ++i)
-        {
-            double sigma = std::max(0., l[i] - lL[i]);
-            sigma = std::max(sigma, lR[i] - l[i]);
+        //for (int i=0; i<5; ++i)
+        //{
+        //    double sigma = std::max(0., l[i] - lL[i]);
+        //    sigma = std::max(sigma, lR[i] - l[i]);
 
-            double akL = l[i] - sigma; 
-            double akR = l[i] + sigma; 
+        //    double akL = l[i] - sigma; 
+        //    double akR = l[i] + sigma; 
 
-            //if (lL[i] < 0. && lR[i] > 0.)
-            if (akL < 0. && akR > 0.)
-            {
-                //ws(i,i) = ((lR[i] + lL[i]) * l[i] - 2. * lR[i] * lL[i]) / (lR[i] - lL[i]);
-                ws(i,i) = ((akR + akL) * l[i] - 2. * akR * akL) / (akR - akL);
-            }
-        }
+        //    //if (lL[i] < 0. && lR[i] > 0.)
+        //    if (akL < 0. && akR > 0.)
+        //    {
+        //        //ws(i,i) = ((lR[i] + lL[i]) * l[i] - 2. * lR[i] * lL[i]) / (lR[i] - lL[i]);
+        //        ws(i,i) = ((akR + akL) * l[i] - 2. * akR * akL) / (akR - akL);
+        //    }
+        //}
 
         return ws;
     }

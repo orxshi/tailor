@@ -16,6 +16,7 @@
 //#include "facerequest_exchanger.h"
 #include "mgmres.hpp"
 
+#include <amgcl/relaxation/as_preconditioner.hpp>
 #include <amgcl/make_solver.hpp>
 #include <amgcl/solver/gmres.hpp>
 #include <amgcl/preconditioner/dummy.hpp>
@@ -25,28 +26,30 @@
 #include <amgcl/coarsening/runtime.hpp>
 #include <amgcl/relaxation/runtime.hpp>
 #include <amgcl/solver/runtime.hpp>
+#include <amgcl/adapter/zero_copy.hpp>
 
-typedef amgcl::backend::builtin<double> Backend;
+namespace Tailor
+{   
+    typedef amgcl::backend::builtin<double> Backend;
 
-typedef amgcl::make_solver<
-amgcl::amg<
-Backend,
-    amgcl::runtime::coarsening::wrapper,
-    amgcl::runtime::relaxation::wrapper
-    >,
-    amgcl::runtime::solver::wrapper<Backend>
-    > AMGCLSolver;
+    //typedef amgcl::make_solver<
+    //    amgcl::amg<
+    //    Backend,
+    //    amgcl::runtime::coarsening::wrapper,
+    //    amgcl::runtime::relaxation::wrapper
+    //        >,
+    //    amgcl::runtime::solver::wrapper<Backend>
+    //        > AMGCLSolver;
 
-//typedef amgcl::make_solver<
-//amgcl::preconditioner::dummy<Backend>
-//,
+
+
+    //typedef amgcl::make_solver<
+    //amgcl::preconditioner::dummy<Backend>
+    //,
     //amgcl::solver::gmres<Backend>
     //>
     //AMGCLSolver;
 
-
-namespace Tailor
-{   
     class Solver
     {           
         public:     

@@ -250,6 +250,7 @@ namespace Tailor
             ar & cons_n_;
             ar & cons_nm1_;
             ar & sumarea_;
+            ar & dQ_;
 
             assert(!prim_.isnan());
             assert(!cons_sp1_.isnan());

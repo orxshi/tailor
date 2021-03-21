@@ -21,7 +21,7 @@ void rotate(Tailor::Tailor& tailor)
 int main()
 {
     Tailor::Tailor tailor;
-    tailor.make(rotate(tailor));
+    tailor.make(rotate);
 
     return 0;
 }

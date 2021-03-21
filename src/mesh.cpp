@@ -269,6 +269,7 @@ namespace Tailor
 
             mc.prim_ = v.var_;
             mc.cons_sp1_ = prim_to_cons(mc.prim_, gamma);
+            mc.dQ_ = v.dQ_;
 
             assert(mc.prim(0) > 0.);
         }
@@ -468,6 +469,85 @@ namespace Tailor
         {   
             mc.set_btype(BouType::interior);
         }   
+    }
+
+    std::tuple<const MeshCell*, const MeshCell*> left_and_right_cells(const Mesh& mesh, const MeshFace& mf, const Tag& mctag)
+    {
+        const MeshCell *LC = nullptr;
+        const MeshCell *RC = nullptr;
+
+        if (mf.is_boundary())
+        {
+            assert(mf.parent_cell().size() == 2);
+            //if (mesh.query(mf.left_cell()) == nullptr)
+            //if (mf.left_cell().addr() == nullptr)
+            //{
+            //    std::cout << "btype" << static_cast<int>(mf.btype()) << std::endl;
+            //    std::cout << "mf.left_cell(): " << mf.left_cell().tag()() << std::endl;
+            //    std::cout << "mf.right_cell(): " << mf.right_cell().tag()() << std::endl;
+            //    mesh.print_as_vtk("ard.vtk");
+            //}
+            //assert(mesh.query(mf.left_cell()) != nullptr);
+            //assert(mf.left_cell().addr() != nullptr);
+            LC = &mesh.cell(mf.left_cell());
+            //LC = mf.left_cell().addr();
+            RC = mesh.boundary(mf.btype(), mf.right_cell());
+            assert(RC != nullptr);
+            //RC = mf.right_cell().addr();
+        }
+        else if (mf.btype() == BouType::partition)
+        {
+            assert(mf.parent_cell().size() == 2);
+            //if (mesh.query(mf.left_cell()) == nullptr || mesh.query(mf.right_cell()) == nullptr)
+            //if (mf.left_cell().addr() == nullptr || mf.right_cell().addr() == nullptr)
+            //{
+            //    std::cout << "btype" << static_cast<int>(mf.btype()) << std::endl;
+            //    std::cout << "mf.left_cell(): " << mf.left_cell().tag()() << std::endl;
+            //    std::cout << "mf.right_cell(): " << mf.right_cell().tag()() << std::endl;
+            //    mesh.print_as_vtk("ard.vtk");
+            //}
+            //assert(mesh.query(mf.left_cell()) != nullptr);
+            //assert(mf.left_cell().addr() != nullptr);
+            //assert(mesh.query(mf.right_cell()) != nullptr);
+            //assert(mf.right_cell().addr() != nullptr);
+            //LC = &mesh.cell_p(mf.left_cell());
+            LC = &mesh.cell(mf.right_cell());
+            //LC = mf.left_cell().addr();
+            //RC = &mesh.cell_p(mf.right_cell());
+            RC = &mesh.cell(mf.left_cell());
+            //RC = mf.right_cell().addr();
+            if (RC->oga_cell_type() == OGA_cell_type_t::non_resident)
+            {
+                std::cout << "LC oga: " << static_cast<int>(LC->oga_cell_type()) << std::endl;
+                std::cout << "RC oga: " << static_cast<int>(RC->oga_cell_type()) << std::endl;
+            }
+            assert(RC->oga_cell_type() != OGA_cell_type_t::non_resident);
+        }
+        else
+        {
+            assert(mf.parent_cell().size() == 2);
+            //if (mesh.query(mf.left_cell()) == nullptr || mesh.query(mf.right_cell()) == nullptr)
+            //if (mf.left_cell().addr() == nullptr || mf.right_cell().addr() == nullptr)
+            //{
+            //    std::cout << "btype" << static_cast<int>(mf.btype()) << std::endl;
+            //    std::cout << "mf.left_cell(): " << mf.left_cell().tag()() << std::endl;
+            //    std::cout << "mf.right_cell(): " << mf.right_cell().tag()() << std::endl;
+            //    mesh.print_as_vtk("ard.vtk");
+            //}
+
+            //LC = &mesh.cell_p(mf.left_cell());
+            LC = &mesh.cell(mf.right_cell());
+            //LC = mf.left_cell().addr();
+            //RC = &mesh.cell_p(mf.right_cell());
+            RC = &mesh.cell(mf.left_cell());
+            //RC = mf.right_cell().addr();
+
+        }
+
+        assert(LC->tag() == mctag);
+        assert(RC->tag() != mctag);
+
+        return std::make_tuple(LC, RC);
     }
 
     std::tuple<MeshCell*, MeshCell*> left_and_right_cells(Mesh& mesh, MeshFace& mf, const Tag& mctag)

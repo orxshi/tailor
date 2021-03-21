@@ -115,7 +115,6 @@ namespace Tailor
         const MeshCell* boundary(BouType btype, const Tag& t) const;
         void change_bou(BouType btype, MeshCell& mc, const FaceTag& ftag);
 
-        // POES specific
         void set_all_cells_as_interior();
         bool is_gcl_satisfied(int rank) const;
         void calc_mesh_velocities(const Freestream& fs, int rank);
@@ -351,6 +350,7 @@ namespace Tailor
 
     std::ifstream& go_to_beg_of_line(std::ifstream& file, int num);
     std::tuple<MeshCell*, MeshCell*> left_and_right_cells(Mesh& mesh, MeshFace& mf, const Tag& mctag);
+    std::tuple<const MeshCell*, const MeshCell*> left_and_right_cells(const Mesh& mesh, const MeshFace& mf, const Tag& mctag);
     const MeshCell* opposing_nei(const Mesh& mesh, const MeshFace& mf, const Tag& me);
     //void convert_mesh_to_fortran(const Mesh& mesh);
     bool are_common_faces(const MeshFace& a, const MeshFace& b);
