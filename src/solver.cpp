@@ -2016,22 +2016,24 @@ namespace Tailor
         //prm.put("precond.relax.type", "spai0");
         //prm.put("precond.relax.type", "ilu0");
 
-        typedef amgcl::make_solver<
-            //amgcl::relaxation::as_preconditioner<Backend, amgcl::relaxation::chebyshev>,
-            amgcl::amg<
-            Backend,
-            amgcl::coarsening::smoothed_aggregation,
-            amgcl::relaxation::chebyshev
-                >,
-            amgcl::solver::gmres<Backend>
-                > AMGCLSolver;
+        //typedef amgcl::make_solver<
+        //    //amgcl::relaxation::as_preconditioner<Backend, amgcl::relaxation::chebyshev>,
+        //    amgcl::preconditioner::dummy<Backend>,
+        //    //amgcl::amg<
+        //    //Backend,
+        //    //amgcl::coarsening::smoothed_aggregation,
+        //    //amgcl::relaxation::chebyshev
+        //        //>,
+        //    amgcl::solver::gmres<Backend>
+        //        > AMGCLSolver;
 
-        AMGCLSolver::params prm;
-        //prm.solver.maxiter = 10000;
-        //prm.solver.abstol = TAILOR_ZERO;
-        //prm.solver.tol = TAILOR_BIG_POS_NUM;
+        //AMGCLSolver::params prm;
+        //prm.solver.M = 100;
+        ////prm.solver.maxiter = 10000;
+        ////prm.solver.abstol = TAILOR_ZERO;
+        ////prm.solver.tol = TAILOR_BIG_POS_NUM;
 
-        AMGCLSolver amgcl_solver(std::tie(n, ia, ja, a), prm);
+        //AMGCLSolver amgcl_solver(std::tie(n, ia, ja, a), prm);
 
         //AMGCLSolver amgcl_solver(std::tie(n, ia, ja, a), prm);
         //amgcl::make_solver<
@@ -2045,25 +2047,25 @@ namespace Tailor
         //            a
         //            ), 
         //        prm);
-        auto [iters, error] = amgcl_solver(rhs, x);
+        //auto [iters, error] = amgcl_solver(rhs, x);
 
-        std::cout << iters << " " << error << std::endl;
+        //std::cout << iters << " " << error << std::endl;
 
 
-        //int itr_max = 1;
-        //int mr = 100;
-        //if (n < mr)
-        //{
-        //    mr = n - 1;
-        //}
-        //double tol_abs = TAILOR_ZERO;
-        ////double tol_rel = 1e6;
-        //double tol_rel = TAILOR_BIG_POS_NUM;
+        int itr_max = 10000;
+        int mr = 100;
+        if (n < mr)
+        {
+            mr = n - 1;
+        }
+        double tol_abs = TAILOR_ZERO;
+        //double tol_rel = 1e6;
+        double tol_rel = TAILOR_BIG_POS_NUM;
 
-        //bool verbose = true;
+        bool verbose = true;
 
-        //////mgmres_st(n, nz_num, ia.data(), ja.data(), a.data(), x.data(), rhs.data(), itr_max, mr, tol_abs, tol_rel, verbose);
-        //pmgmres_ilu_cr(n, nz_num, ia.data(), ja.data(), a.data(), x.data(), rhs.data(), itr_max, mr, tol_abs, tol_rel, verbose);
+        ////mgmres_st(n, nz_num, ia.data(), ja.data(), a.data(), x.data(), rhs.data(), itr_max, mr, tol_abs, tol_rel, verbose);
+        pmgmres_ilu_cr(n, nz_num, ia.data(), ja.data(), a.data(), x.data(), rhs.data(), itr_max, mr, tol_abs, tol_rel, verbose);
 
         int i = 0;
         for (auto &mc : mesh.cell_)

@@ -91,8 +91,6 @@ namespace Tailor
                 ar & rebalance_thres_;
                 ar & can_rebalance_;
                 ar & force_rebalance_;
-                //ar & save_solution_;
-                //ar & restore_solution_;
                 ar & half_cfl_;
                 ar & print_map_;
                 ar & fs_;
