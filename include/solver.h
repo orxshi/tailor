@@ -57,6 +57,7 @@ namespace Tailor
             Solver(boost::mpi::communicator* comm, const std::vector<std::string>& filename, Profiler* profiler, Partition* partition=nullptr); 
             Solver();
 
+            void print_settings() const;
             void set_partition(Partition* partition);
 
             void set_comm(boost::mpi::communicator* comm);
@@ -76,7 +77,6 @@ namespace Tailor
             void update_fs(const Freestream& fs);
             Freestream fs() const;
             bool repartition();
-            //void save_solution();
             const boost::mpi::communicator* comm() const;
             void read_settings();
 
@@ -98,7 +98,7 @@ namespace Tailor
                 ar & omega_;
                 ar & show_inner_res_;
                 ar & show_inner_norm_;
-                ar & print_outer_norm_;
+                ar & print_residual_;
                 ar & sorder_;
                 ar & torder_;
                 ar & maxtimestep_;
@@ -119,13 +119,17 @@ namespace Tailor
                 ar & bc_;
                 ar & load_estim_type_;
                 ar & make_load_balance_;
-                ar & init_max_res_;
-                ar & last_max_res_;
+                ar & initial_global_residual_;
+                ar & last_global_residual_;
                 ar & riemann_solver_type_;
+                ar & increase_cfl_;
+                ar & cfl_multiplier_;
             }
 
         private:    
                 
+            double cfl_multiplier_;
+            bool increase_cfl_;
             bool dual_ts_;
             RiemannSolverType riemann_solver_type_;
             int repart_ratio_;
@@ -147,7 +151,7 @@ namespace Tailor
             Gradient gradient_;
             bool show_inner_res_;
             bool show_inner_norm_;
-            bool print_outer_norm_;
+            bool print_residual_;
             int sorder_;
             int torder_;
             int maxtimestep_;
@@ -166,6 +170,8 @@ namespace Tailor
             std::string temporal_discretization_;
             int nsolve_;
             BoundaryCondition bc_;
+            double initial_global_residual_;
+            double last_global_residual_;
 
             Partition* partition_;
             boost::mpi::communicator* comm_;
@@ -173,38 +179,51 @@ namespace Tailor
             bool make_load_balance_;
             VarExchanger* var_exc_;
             VarExchanger* donor_var_exc_;
-
-            double init_max_res_;
-            double last_max_res_;
                 
+            double non_linear_iteration();
+            void init_old_conservative_var();
+            void compute_gradient_coef();
+            void calc_mesh_velocities();
+            void reset_overset_mesh_exchanger();
+            void reset_partitioned_mesh_exchanger();
+            void init_partitioned_mesh_exchanger();
+            void linear_solver(Mesh &mesh);
             void RK4(Mesh& mesh);
-            //void restore_solution();
             void connect_partition_cells();
             void exchange_ghosts();
-            void solve_(int rank);
             void set_from_settings();
             //void calc_steady(Mesh& mesh, std::function<void(CellExchanger& cell_exchanger)> exchange_ghosts);
-            void calc_steady(Mesh& mesh, int rank);
-            void calc_steady();
+            double calc_steady();
             //void update_cons_explicitly(Mesh& mesh);
             //void update_cons_implicitly(Mesh& mesh, int ntimestep);
-            void calc_change_in_conserved_var(Mesh &mesh);
-            void evolve_solution_in_time(Mesh& mesh);
-            void evolve_old_solution_in_time(Mesh& mesh);
+            void calc_change_in_conserved_var();
+            void evolve_solution_in_time();
+            void evolve_old_solution_in_time();
             void compute_sum_of_fluxes(Mesh &mesh);
+            void compute_sum_of_fluxes(int ntimestep);
             //void update_matrices(Mesh& mesh, const Vector5& flux, const Matrix<NVAR, NVAR>& Aroe, MeshFace& mf, MeshCell& LC, MeshCell& RC, const Vector3& n, double vgn, double facearea);
             //void rhhl_update_matrices(const Matrix<NVAR, NVAR>& Aroe, MeshFace* myface, MeshFace* commonface, MeshCell& LC, MeshCell& RC, const Vector3& n, double vgn, double facearea, double SLm, double SRp, double vfn);
             //void hhl_update_matrices(MeshFace* myface, MeshFace* commonface, MeshCell& LC, MeshCell& RC, double facearea, double SLm, double SRp, const Matrix5& T, double vfn);
             bool sor(Mesh& mesh, int ntimestep);
-            void temporal_discretization(Mesh &mesh);
+            void temporal_discretization();
             //void residual(Mesh& mesh);
-            Vector5 resi(Mesh& mesh);
+            double compute_residual();
             void sweep(Mesh& mesh, MeshCell& mc, Vector5& r, Vector5& r2, Vector5& r3, int& maxcell);
             Matrix5 slipwall_M(const Vector3& n);
             void gmres(Mesh& mesh);
             void oga_interpolate(Mesh& mesh);
             void update_matrices(MeshFace *this_face, MeshFace *common_face, MeshCell& left_cell, MeshCell& right_cell, double facearea, const Vector3& face_velocity, double gamma);
             void apply_limiter(Mesh &mesh, MeshCell &mc, const MeshFace &mf);
+            void print_residual(double residual);
+            void print_mesh_vtk();
+            void update_ghosts();
+            void update_donors();
+            void set_boundary_conditions();
+            double get_global_residual(double local_residual);
+            void increase_cfl(double global_residual);
+            void print_sub_solver_residual(int ntimestep, double residual);
+            std::vector<double> amgcl(int n, int nz_num, const std::vector<int>& ia, const std::vector<int>& ja, const std::vector<double>& a, const std::vector<double>& rhs);
+            std::vector<double> gmres(int n, int nz_num, std::vector<int>& ia, std::vector<int>& ja, std::vector<double>& a, std::vector<double>& rhs);
     };
 
     std::tuple<Matrix5, Matrix5> get_rotation_matrix(const Vector3& normal);

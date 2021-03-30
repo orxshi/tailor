@@ -2,7 +2,7 @@
 
 namespace Tailor
 {
-    RiemannSolver::RiemannSolver(RiemannSolverType riemann_solver_type, const State& left_state, const State& right_state, double face_area, double gamma, double& max_eigen, Vector5& flux)
+    RiemannSolver::RiemannSolver(RiemannSolverType riemann_solver_type, const State& left_state, const State& right_state, double face_area, double gamma, double& max_eigen, Vector5& flux, SpeedEstimateHLLC sehllc): speed_estimate_hllc_(sehllc)
     {
         if (riemann_solver_type == RiemannSolverType::roe)
         {
@@ -14,8 +14,12 @@ namespace Tailor
         }
         else if (riemann_solver_type == RiemannSolverType::hllc)
         {
-            double SLm, SRp;
-            hllc(left_state, right_state, flux, max_eigen, face_area, gamma, SLm, SRp);
+            double sL, sR;
+            std::tie(flux, max_eigen, sL, sR) = hllc(left_state, right_state, face_area, gamma);
+        }
+        else
+        {
+            assert(false);
         }
     }
     
@@ -316,46 +320,7 @@ namespace Tailor
         assert(!n2.isnan());
     }
 
-    //void RiemannSolver::ws_est_pbased(const State& left, const State& right, double& SLm, double& SRp, double gamma)
-    //{
-    //    double aL = left.a;
-    //    double pL = left.p;
-    //    double rhoL = left.rho;
-    //    double qnL = left.qn;
-
-    //    double aR = right.a;
-    //    double pR = right.p;
-    //    double rhoR = right.rho;
-    //    double qnR = right.qn;
-
-    //    auto ppvrs = 0.5 * (pL + pR) - 0.5 * (qnR - qnL) * 0.5 * (rhoL + rhoR) * 0.5 * (aL + aR);
-    //    auto ps = std::max(0., ppvrs);
-
-    //    double q;
-    //    if (ps <= pL)
-    //    {
-    //        q = 1.;
-    //    }
-    //    else
-    //    {
-    //        q = std::sqrt(1. + (gamma + 1) * (ps/pL - 1) / (2. * gamma));
-    //    }
-
-    //    SLm = qnL - aL * q;
-
-    //    if (ps <= pR)
-    //    {
-    //        q = 1.;
-    //    }
-    //    else
-    //    {
-    //        q = std::sqrt(1. + (gamma + 1) * (ps/pR - 1) / (2. * gamma));
-    //    }
-
-    //    SRp = qnR + aR * q;
-    //}
-
-    void RiemannSolver::rhll_ws_est_pres(const State& left, const State& right, double& SLm, double& SRp, double gamma)
+    std::tuple<double, double> RiemannSolver::rhll_ws_est_pres(const State& left, const State& right, double gamma)
     {
         double rhoL = left.rho;
         double uL = left.u;
@@ -374,32 +339,35 @@ namespace Tailor
         double rhodash = 0.5 * (rhoL + rhoR);
         double adash   = 0.5 * (aL + aR);
         double ppvrs = 0.5 * (pL + pR) - 0.5 * (uR - uL) * rhodash * adash;
+        double ps = std::max(0., ppvrs);
 
         double qL, qR;
 
-        if (ppvrs <= pL)
+        if (ps <= pL)
         {
             qL = 1.;
         }
         else
         {
-            qL = std::sqrt(1. + (gamma + 1.) * (ppvrs / pL - 1.) / (2. * gamma));
+            qL = std::sqrt(1. + (gamma + 1.) * (ps / pL - 1.) / (2. * gamma));
         }
 
-        if (ppvrs <= pR)
+        if (ps <= pR)
         {
             qR = 1.;
         }
         else
         {
-            qR = std::sqrt(1. + (gamma + 1.) * (ppvrs / pR - 1.) / (2. * gamma));
+            qR = std::sqrt(1. + (gamma + 1.) * (ps / pR - 1.) / (2. * gamma));
         }
 
-        SLm = uL - aL * qL;
-        SRp = uR + aR * qR;
+        double sL = uL - aL * qL;
+        double sR = uR + aR * qR;
+
+        return std::make_tuple(sL, sR);
     }
 
-    void RiemannSolver::rhll_ws_est(const State& left, const State& right, double& SLm, double& SRp)
+    std::tuple<double, double> RiemannSolver::rhll_ws_est(const State& left, const State& right)
     {
         double uL = left.u;
         double vL = left.v;
@@ -414,14 +382,16 @@ namespace Tailor
         //SLm = std::min({0., u - a + vfn, uL - aL + vfn});
         //SRp = std::max({0., u + a + vfn, uR + aR + vfn});
 
-        SLm = std::min({0., u - a, uL - aL});
-        SRp = std::max({0., u + a, uR + aR});
+        double sL = std::min({0., u - a, uL - aL});
+        double sR = std::max({0., u + a, uR + aR});
 
         //SLm = std::min({u - a, uL - aL});
         //SRp = std::max({u + a, uR + aR});
         
         //SLm = u - a;
         //SRp = u + a;
+
+        return std::make_tuple(sL, sR);
     }
 
     /*Matrix5 RiemannSolver::rhll_abs_eigen(double alpha1, double alpha2, double SLm, double SRp, double vfn)
@@ -876,60 +846,29 @@ namespace Tailor
         //assert(abs(numflux(3)) < 1e-0);
     }
 
-    //void RiemannSolver::rhll(const State& left, const State& right, Vector5& numflux, Matrix5& Aroe, double& max_eigen, double signed_area, const Vector3& normal, double gamma, bool isbou, double& SLm ,double& SRp)
-    //{
-    //    if (isbou)
-    //    {
-    //        return bbb(left, right, numflux, Aroe, max_eigen, signed_area, normal, gamma);
-    //    }
-    //    double alpha1, alpha2;
-    //    Vector3 n1, n2;
-
-    //    rhll_normals(left, right, normal, alpha1, alpha2, n1, n2, isbou);
-    //    rhll_ws_est(left, right, SLm, SRp);
-
-    //    State leftn2 = left;
-    //    State rightn2 = right;
-
-    //    leftn2.nx = n2(0); 
-    //    leftn2.ny = n2(1); 
-    //    leftn2.nz = n2(2); 
-
-    //    rightn2.nx = n2(0); 
-    //    rightn2.ny = n2(1); 
-    //    rightn2.nz = n2(2); 
-
-    //    calc_roe_ave_vars(leftn2, rightn2, gamma, isbou);
-    //    Matrix5 R = right_eigenv();
-    //    auto ws = rhll_abs_eigen(alpha1, alpha2, SLm, SRp);
-    //    numflux = rhll_numerical_flux(SLm, SRp, left, right, leftn2, rightn2, ws, R, signed_area, n2, gamma);
-
-    //    Aroe = Jacobian(ws, R, n2, gamma);
-    //    max_eigen = std::max({std::abs(ws(0,0)), std::abs(ws(1,1)), std::abs(ws(2,2)), std::abs(ws(3,3)), std::abs(ws(4,4))});
-    //}
-
-    void RiemannSolver::hlle(const State& left, const State& right, Vector5& numflux, double& max_eigen, double signed_area, double gamma, double& SLm ,double& SRp)
+    std::tuple<double, double> RiemannSolver::speed_estimate_hllc(const State& left, const State& right, double gamma)
     {
-        rhll_ws_est(left, right, SLm, SRp);
-        //ws_est_pbased(left, right, SLm, SRp, gamma);
-
-        Matrix5 ws = abs_eigen(left, right);
-        numflux = hlle_numerical_flux(SLm, SRp, left, right, signed_area);
-
-        max_eigen = std::max({std::abs(ws(0,0)), std::abs(ws(1,1)), std::abs(ws(2,2)), std::abs(ws(3,3)), std::abs(ws(4,4))});
+        if (speed_estimate_hllc_ == SpeedEstimateHLLC::roe)
+        {
+            calc_roe_ave_vars(left, right, gamma); // needed if Roe vars are used to compute wave speed.
+            return rhll_ws_est(left, right);
+        }
+        else if (speed_estimate_hllc_ == SpeedEstimateHLLC::pressure)
+        {
+            return rhll_ws_est_pres(left, right, gamma);
+        }
     }
 
-    void RiemannSolver::hllc(const State& left, const State& right, Vector5& numflux, double& max_eigen, double signed_area, double gamma, double& SLm , double& SRp)
+    std::tuple<Vector5, double, double, double> RiemannSolver::hllc(const State& left, const State& right, double signed_area, double gamma)
     {
-        //calc_roe_ave_vars(left, right, gamma); // needed if Roe vars are used to compute wave speed.
-
-        //rhll_ws_est(left, right, SLm, SRp, vfn);
-        rhll_ws_est_pres(left, right, SLm, SRp, gamma);
-        //ws_est_pbased(left, right, SLm, SRp, gamma);
+        auto [sL, sR] = speed_estimate_hllc(left, right, gamma);
 
         Matrix5 ws = abs_eigen(left, right);
-        numflux = hllc_numerical_flux(SLm, SRp, left, right, signed_area);
+        auto max_eigen = max(ws);
+        assert(max_eigen > 0.);
+        auto numflux = hllc_numerical_flux(sL, sR, left, right, signed_area);
 
-        max_eigen = std::max({std::abs(ws(0,0)), std::abs(ws(1,1)), std::abs(ws(2,2)), std::abs(ws(3,3)), std::abs(ws(4,4))});
+        return std::tie(numflux, max_eigen, sL, sR);
+
     }
 }

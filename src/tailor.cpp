@@ -88,6 +88,8 @@ namespace Tailor
         {
             solver.partition()->spc().global_rm().update_address();
         }
+
+        solver.read_settings();
     }
 
     void Tailor::rotate(const Tag& mesh, double ang, int axis, const Vector3& pivot)
@@ -276,6 +278,8 @@ namespace Tailor
 
         //profiler.print_iter(i);
         //profiler.clear_iter();
+
+        solver_->print_settings();
     }
 
     const Solver* Tailor::solver() const
