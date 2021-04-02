@@ -62,7 +62,7 @@ namespace Tailor
         }
     }
 
-    void VarExchanger::update(Profiler* profiler, std::string fname)
+    void VarExchanger::update(Mesh& mesh, Profiler* profiler, std::string fname)
     {
         //{
         //    std::ofstream out;
@@ -89,14 +89,21 @@ namespace Tailor
             //assert(sender_.size() == 1);
             //auto& s = sender_.front();
             //for (auto& gr: s.group())
+
             for (auto& gr: group())
             {
                 for (Var& v: gr.data_)
                 {
-                    auto m = std::find_if(sp.mesh().begin(), sp.mesh().end(), [&](const Mesh& mm){return mm.tag()() == v.mesh_cell_.first;});
-                    assert(m != sp.mesh().end());
+                    if (v.mesh_cell_.first != mesh.tag()())
+                    {
+                        continue;
+                    }
+
+                    //auto m = std::find_if(sp.mesh().begin(), sp.mesh().end(), [&](const Mesh& mm){return mm.tag()() == v.mesh_cell_.first;});
+                    //assert(m != sp.mesh().end());
                     //assert(m->query(Tag(v.mesh_cell_.second)) != nullptr);
-                    const auto& mc = m->cell(Tag(v.mesh_cell_.second));
+                    //const auto& mc = m->cell(Tag(v.mesh_cell_.second));
+                    const auto& mc = mesh.cell(Tag(v.mesh_cell_.second));
                     //if (mc.prim(0) <= 0.)
                     //{
                         //std::cout << "prim(0): " << mc.prim(0) << std::endl;

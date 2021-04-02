@@ -14,7 +14,7 @@ namespace Tailor
 
             //VarExchanger(const std::vector<SpatialPartition>* sp, const RecvCon<Request>*, const boost::mpi::communicator*);
             VarExchanger(const std::vector<SpatialPartition>* sp, const Exchanger<Request>*, const boost::mpi::communicator*);
-            void update(Profiler* profiler=nullptr, std::string fname="");
+            void update(Mesh& mesh, Profiler* profiler=nullptr, std::string fname="");
 
         private:
 
