@@ -965,9 +965,9 @@ namespace Tailor
     //    }
     //}
 
-    double Solver::compute_residual(Mesh& mesh)
+    Vector5 Solver::compute_residual(Mesh& mesh)
     {
-        double res = TAILOR_BIG_NEG_NUM;
+        Vector5 res(TAILOR_BIG_NEG_NUM);
 
         for (MeshCell &mc : mesh.cell_)
         {
@@ -978,18 +978,24 @@ namespace Tailor
 
             if (steady_)
             {
-                res = std::max(res, std::abs(max(mc.R_)));
+                for (int i = 0; i < len(mc.R_); ++i)
+                {
+                    res(i) = std::max(res(i), std::abs(mc.R_(i)));
+                }
             }
             else
             {
-                res = std::max(res, std::abs(max(mc.R_ - mc.poly().volume() * mc.dQ_ / dt_))); // first order
+                for (int i = 0; i < len(mc.R_); ++i)
+                {
+                    res(i) = std::max(res(i), std::abs(mc.R_(i) - mc.poly().volume() * mc.dQ_(i) / dt_)); // first order
+                }
             }
         }
 
         return res;
     }
 
-    void Solver::oga_interpolate(Mesh &mesh)
+    void Solver::oga_interpolate(Mesh& mesh)
     {
         auto &meshes = partition_->spc_->sp_.front().mesh_;
 
@@ -1036,15 +1042,13 @@ namespace Tailor
                     //}
                 }
 
-                auto vg = donor_cell.vgn();
-                assert(vg(0) == 0.);
-                assert(vg(1) == 0.);
-                assert(vg(2) == 0.);
+                //auto vg = donor_cell.vgn();
+                //assert(vg(0) == 0.);
+                //assert(vg(1) == 0.);
+                //assert(vg(2) == 0.);
                 //mc.prim_(1) -= vg(0);
                 //mc.prim_(2) -= vg(1);
                 //mc.prim_(3) -= vg(2);
-
-                //mc.prim_ = donor_cell.prim_;
 
                 assert(!mc.prim_.isnan());
             }
@@ -1094,27 +1098,52 @@ namespace Tailor
         out.close();
     }
 
-    void Solver::update_partitioned_mesh_exchanger(Mesh& mesh)
+    void Solver::update_partitioned_mesh_exchanger()
     {
-        if (var_exc_ != nullptr)
+        //auto &sp = partition_->spc_->sp_.front();
+
+        //auto global_nmesh = partition_->spc_->mesh_system_size();
+
+        //for (int i = 0; i < global_nmesh; ++i)
         {
-            var_exc_->update(mesh, profiler_, "sol-ghost-exc");
+            //Mesh* mesh_ptr = nullptr;
+            //auto meshp = std::find_if(sp.mesh_.begin(), sp.mesh_.end(), [i](Mesh& m){return m.tag()() == i;});
+            //auto& mesh = *meshp;
+
+            //if (meshp != sp.mesh_.end())
+            //{
+                //mesh_ptr = &mesh;
+            //}
+
+            if (var_exc_ != nullptr)
+            {
+                //var_exc_->update(mesh_ptr, profiler_, "sol-ghost-exc");
+                var_exc_->update(profiler_, "sol-ghost-exc");
+            }
         }
     }
 
-    void Solver::update_ghosts(Mesh& mesh)
+    void Solver::update_ghosts()
     {
-        if (comm_->size() != 1)
+        auto &sp = partition_->spc_->sp_.front();
+
+        for (Mesh& mesh: sp.mesh_)
         {
             mesh.update_ghost_primitives(var_exc_->arrival(), comm_->rank(), fs_.gamma_);
         }
     }
 
-    void Solver::update_overset_mesh_exchanger(Mesh& mesh)
+    void Solver::update_overset_mesh_exchanger()
     {
-        if (donor_var_exc_ != nullptr)
+        //auto &sp = partition_->spc_->sp_.front();
+
+        //for (Mesh& mesh: sp.mesh_)
         {
-            donor_var_exc_->update(mesh, profiler_, "sol-donor-exc");
+            if (donor_var_exc_ != nullptr)
+            {
+                //donor_var_exc_->update(&mesh, profiler_, "sol-donor-exc");
+                donor_var_exc_->update(profiler_, "sol-donor-exc");
+            }
         }
     }
 
@@ -1156,56 +1185,74 @@ namespace Tailor
         }
     }
 
-    double Solver::non_linear_iteration()
+    Vector5 Solver::non_linear_iteration()
     {
         // loop is needed
         // for several communication across overset and partitioned meshes.
         // for steady state solution.
         // for dual time stepping.
 
+        Vector5 global_residual(-1.);
+        auto global_nmesh = partition_->spc_->mesh_system_size();
+
         for (int ntimestep = 0; ntimestep < maxtimestep_; ++ntimestep)
         {
             double local_residual = TAILOR_BIG_NEG_NUM;
             auto &sp = partition_->spc_->sp_.front();
 
+            update_ghosts();
             update_donors();
 
-            for (auto& mesh: sp.mesh_)
+            for (int i = 0; i < global_nmesh; ++i)
             {
-                update_ghosts(mesh);
+                Mesh* mesh_ptr = nullptr;
+                auto meshp = std::find_if(sp.mesh_.begin(), sp.mesh_.end(), [i](Mesh& m){return m.tag()() == i;});
+                auto& mesh = *meshp;
 
-                set_boundary_conditions(mesh);
-                compute_sum_of_fluxes(mesh, ntimestep);
-                temporal_discretization(mesh);
+                if (meshp != sp.mesh_.end())
+                {
+                    set_boundary_conditions(mesh);
+                    compute_sum_of_fluxes(mesh, ntimestep);
+                    temporal_discretization(mesh);
 
-                auto local_mesh_residual = compute_residual(mesh);
-                local_residual = std::max(local_residual, local_mesh_residual);
+                    auto local_residual = compute_residual(mesh);
 
-                calc_change_in_conserved_var(mesh);
-                evolve_solution_in_time(mesh);
-                evolve_old_solution_in_time(mesh);
+                    calc_change_in_conserved_var(mesh);
+                    evolve_solution_in_time(mesh);
+                    evolve_old_solution_in_time(mesh);
 
-                update_partitioned_mesh_exchanger(mesh);
-                update_overset_mesh_exchanger(mesh);
+                    mesh_ptr = &mesh;
+                }
             }
 
-            auto global_residual = get_global_residual(local_residual);
+            update_partitioned_mesh_exchanger();
+            update_overset_mesh_exchanger();
+
+            global_residual = get_global_residual(local_residual);
             increase_cfl(global_residual);
             print_sub_solver_residual(ntimestep, global_residual);
 
             if (ntimestep != 0)
             {
-                if (global_residual < tol_)
+                for (int i = 0; i < len(global_residual); ++i)
                 {
-                    return global_residual;
+                    bool all_good = true;
+                    if (global_residual(i) > tol_)
+                    {
+                        all_good = false;
+                    }
+
+                    if (all_good) {
+                        return global_residual;
+                    }
                 }
             }
         }
 
-        return -1;
+        return global_residual;
     }
 
-    void Solver::print_sub_solver_residual(int ntimestep, double residual)
+    void Solver::print_sub_solver_residual(int ntimestep, const Vector5& residual)
     {
         {
             if (comm_->rank() == 0)
@@ -1216,18 +1263,29 @@ namespace Tailor
                 fn.append(".dat");
                 out.open(fn, std::ios_base::app);
 
-                out << ntimestep << std::scientific << " " << residual << std::fixed << std::endl;
+                out << ntimestep << " ";
+                for (int i = 0; i < len(residual); ++i)
+                {
+                    out << std::scientific << residual(i) << std::fixed;
+                    out << " ";
+                }
+                out << std::endl;
 
                 out.close();
             }
         }
     }
 
-    double Solver::get_global_residual(double local_residual)
+    Vector5 Solver::get_global_residual(const Vector5& local_residual)
     {
-        double global_residual;
-
-        boost::mpi::all_reduce(*comm_, local_residual, global_residual, boost::mpi::maximum<double>());
+        Vector5 global_residual;
+        for (int i = 0; i < len(local_residual); ++i)
+        {
+            double d;
+            //boost::mpi::all_reduce(*comm_, local_residual(i), global_residual(i), boost::mpi::maximum<double>());
+            boost::mpi::all_reduce(*comm_, local_residual(i), d, boost::mpi::maximum<double>());
+            global_residual(i) = d;
+        }
 
         if (nsolve_ ==  0)
         {
@@ -1238,15 +1296,20 @@ namespace Tailor
         return global_residual;
     }
 
-    void Solver::increase_cfl(double global_residual)
+    void Solver::increase_cfl(const Vector5& global_residual)
     {
         if (increase_cfl_)
         {
-            if (global_residual / last_global_residual_ > cfl_multiplier_)
+            for (int i = 0; i < len(global_residual); ++i)
             {
-                cfl_ *= 10.;
-                last_global_residual_ = global_residual;
+                if (global_residual(i) / last_global_residual_(i) < cfl_multiplier_)
+                {
+                    return;
+                }
             }
+
+            cfl_ *= 10.;
+            last_global_residual_ = global_residual;
         }
     }
 
@@ -1303,7 +1366,7 @@ namespace Tailor
         }
     }
 
-    void Solver::print_residual(double residual)
+    void Solver::print_residual(const Vector5& residual)
     {
         if (print_residual_)
         {
@@ -1312,7 +1375,13 @@ namespace Tailor
                 std::ofstream out;
                 out.open("residual.dat", std::ios_base::app);
 
-                out << nsolve_ << " " << std::scientific << residual << std::fixed << std::endl;
+                out << nsolve_ << " "; 
+                for (int i = 0; i < len(residual); ++i)
+                {
+                    out << std::scientific << residual(i) << std::fixed;
+                    out << " "; 
+                }
+                out << std::endl;
 
                 out.close();
             }

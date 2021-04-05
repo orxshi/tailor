@@ -62,66 +62,32 @@ namespace Tailor
         }
     }
 
-    void VarExchanger::update(Mesh& mesh, Profiler* profiler, std::string fname)
+    //void VarExchanger::update(Mesh* mesh, Profiler* profiler, std::string fname)
+    void VarExchanger::update(Profiler* profiler, std::string fname)
     {
-        //{
-        //    std::ofstream out;
-        //    std::string fn = fname; 
-        //    fn.append(".dat");
-        //    out.open(fn, std::ios_base::app);
-
-        //    int ncell = 0;
-        //    auto& s = sender_.front();
-        //    for (auto& gr: s.group())
-        //    {
-        //        ncell += gr.data_.size();
-        //    }
-
-        //    out << comm_->rank() << " " << ncell << std::endl;
-        //    out.close();
-        //}
-
         if (profiler != nullptr) {profiler->start(fname);}
-        assert(sp_->size() == 1);
+        //if (mesh != nullptr)
         {
-            auto& sp = sp_->front();
-            //auto& s = storage_.front();
-            //assert(sender_.size() == 1);
-            //auto& s = sender_.front();
-            //for (auto& gr: s.group())
-
-            for (auto& gr: group())
+            assert(sp_->size() == 1);
             {
-                for (Var& v: gr.data_)
+                auto& sp = sp_->front();
+
+                for (auto& gr: group())
                 {
-                    if (v.mesh_cell_.first != mesh.tag()())
+                    for (Var& v: gr.data_)
                     {
-                        continue;
-                    }
-
-                    //auto m = std::find_if(sp.mesh().begin(), sp.mesh().end(), [&](const Mesh& mm){return mm.tag()() == v.mesh_cell_.first;});
-                    //assert(m != sp.mesh().end());
-                    //assert(m->query(Tag(v.mesh_cell_.second)) != nullptr);
-                    //const auto& mc = m->cell(Tag(v.mesh_cell_.second));
-                    const auto& mc = mesh.cell(Tag(v.mesh_cell_.second));
-                    //if (mc.prim(0) <= 0.)
-                    //{
-                        //std::cout << "prim(0): " << mc.prim(0) << std::endl;
-                    //}
-                    //assert(mc.prim(0) > 0.);
-                    v.var_ = mc.prim();
-                    v.dQ_ = mc.dQ();
-
-                    //if (gr.dest_rank_ == 1)
-                    //{
-                        //if (comm_->rank() == 0)
-                        //if (v.mesh_cell_.first == 0 && v.mesh_cell_.second == 874)
+                        //if (v.mesh_cell_.first != mesh->tag()())
                         //{
-                            //assert((v.mesh_cell_.first == 0 && v.mesh_cell_.second == 708) == false);
-                            ///std::cout << "rankjjjjjjjjjjj: " << comm_->rank() << std::endl;
-                            //std::cout << "varrrrrrrrrrrrrrrrrr: " << v.mesh_cell_.first << " " << v.mesh_cell_.second << std::endl;
+                            //continue;
                         //}
-                    //}
+
+                        auto m = std::find_if(sp.mesh().begin(), sp.mesh().end(), [&](const Mesh& mm){return mm.tag()() == v.mesh_cell_.first;});
+                        assert(m != sp.mesh().end());
+                        //const auto& mc = mesh->cell(Tag(v.mesh_cell_.second));
+                        const auto& mc = m->cell(Tag(v.mesh_cell_.second));
+                        v.var_ = mc.prim();
+                        v.dQ_ = mc.dQ();
+                    }
                 }
             }
         }

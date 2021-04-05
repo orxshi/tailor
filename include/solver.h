@@ -170,8 +170,8 @@ namespace Tailor
             std::string temporal_discretization_;
             int nsolve_;
             BoundaryCondition bc_;
-            double initial_global_residual_;
-            double last_global_residual_;
+            Vector5 initial_global_residual_;
+            Vector5 last_global_residual_;
 
             Partition* partition_;
             boost::mpi::communicator* comm_;
@@ -180,7 +180,7 @@ namespace Tailor
             VarExchanger* var_exc_;
             VarExchanger* donor_var_exc_;
                 
-            double non_linear_iteration();
+            Vector5 non_linear_iteration();
             void init_old_conservative_var();
             void compute_gradient_coef();
             void calc_mesh_velocities();
@@ -205,26 +205,25 @@ namespace Tailor
             //void hhl_update_matrices(MeshFace* myface, MeshFace* commonface, MeshCell& LC, MeshCell& RC, double facearea, double SLm, double SRp, const Matrix5& T, double vfn);
             bool sor(Mesh& mesh, int ntimestep);
             void temporal_discretization(Mesh& mesh);
-            //void residual(Mesh& mesh);
-            double compute_residual(Mesh& mesh);
+            Vector5 compute_residual(Mesh& mesh);
             void sweep(Mesh& mesh, MeshCell& mc, Vector5& r, Vector5& r2, Vector5& r3, int& maxcell);
             Matrix5 slipwall_M(const Vector3& n);
             void gmres(Mesh& mesh);
             void oga_interpolate(Mesh& mesh);
             void update_matrices(MeshFace *this_face, MeshFace *common_face, MeshCell& left_cell, MeshCell& right_cell, double facearea, const Vector3& face_velocity, double gamma);
             void apply_limiter(Mesh &mesh, MeshCell &mc, const MeshFace &mf);
-            void print_residual(double residual);
+            void print_residual(const Vector5& residual);
             void print_mesh_vtk();
-            void update_ghosts(Mesh& mesh);
+            void update_ghosts();
             void update_donors();
             void set_boundary_conditions(Mesh& mesh);
-            double get_global_residual(double local_residual);
-            void increase_cfl(double global_residual);
-            void print_sub_solver_residual(int ntimestep, double residual);
+            Vector5 get_global_residual(const Vector5& local_residual);
+            void increase_cfl(const Vector5& global_residual);
+            void print_sub_solver_residual(int ntimestep, const Vector5& residual);
             std::vector<double> amgcl(int n, int nz_num, const std::vector<int>& ia, const std::vector<int>& ja, const std::vector<double>& a, const std::vector<double>& rhs);
             std::vector<double> gmres(int n, int nz_num, std::vector<int>& ia, std::vector<int>& ja, std::vector<double>& a, std::vector<double>& rhs);
-            void update_partitioned_mesh_exchanger(Mesh& mesh);
-            void update_overset_mesh_exchanger(Mesh& mesh);
+            void update_partitioned_mesh_exchanger();
+            void update_overset_mesh_exchanger();
     };
 
     std::tuple<Matrix5, Matrix5> get_rotation_matrix(const Vector3& normal);
