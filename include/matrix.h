@@ -64,6 +64,7 @@ namespace Tailor
                 Matrix& operator=(T s);
                 bool operator==(const Matrix<nrow, ncol, T>& M) const;
                 double len();
+                int nelm() const;
 
                 template<class Archive> void serialize(Archive & ar, const unsigned int version)
                 {

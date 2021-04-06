@@ -215,7 +215,7 @@ namespace Tailor
             void print_residual(const Vector5& residual);
             void print_mesh_vtk();
             void update_ghosts();
-            void update_donors();
+            void update_donors(Mesh& mesh);
             void set_boundary_conditions(Mesh& mesh);
             Vector5 get_global_residual(const Vector5& local_residual);
             void increase_cfl(const Vector5& global_residual);

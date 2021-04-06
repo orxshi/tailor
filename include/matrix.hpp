@@ -4,6 +4,12 @@
 namespace Tailor
 {
     template<int nrow, int ncol, class T>
+        int Matrix<nrow, ncol, T>::nelm() const
+        {
+            return nrow * ncol;
+        }
+
+    template<int nrow, int ncol, class T>
         Matrix<nrow, ncol, T>::Matrix()
         {
             for (int r=0; r<nrow; ++r)

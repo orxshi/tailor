@@ -978,14 +978,14 @@ namespace Tailor
 
             if (steady_)
             {
-                for (int i = 0; i < len(mc.R_); ++i)
+                for (int i = 0; i < mc.R_.nelm(); ++i)
                 {
                     res(i) = std::max(res(i), std::abs(mc.R_(i)));
                 }
             }
             else
             {
-                for (int i = 0; i < len(mc.R_); ++i)
+                for (int i = 0; i < mc.R_.nelm(); ++i)
                 {
                     res(i) = std::max(res(i), std::abs(mc.R_(i) - mc.poly().volume() * mc.dQ_(i) / dt_)); // first order
                 }
@@ -1147,7 +1147,7 @@ namespace Tailor
         }
     }
 
-    void Solver::update_donors()
+    void Solver::update_donors(Mesh& mesh)
     {
         auto &sp = partition_->spc_->sp_.front();
 
@@ -1155,7 +1155,7 @@ namespace Tailor
             return;
         }
 
-        for (Mesh& mesh: sp.mesh_)
+        //for (Mesh& mesh: sp.mesh_)
         {
             if (donor_var_exc_ == nullptr)
             {
@@ -1197,11 +1197,10 @@ namespace Tailor
 
         for (int ntimestep = 0; ntimestep < maxtimestep_; ++ntimestep)
         {
-            double local_residual = TAILOR_BIG_NEG_NUM;
+            Vector5 local_residual(TAILOR_BIG_NEG_NUM);
             auto &sp = partition_->spc_->sp_.front();
 
             update_ghosts();
-            update_donors();
 
             for (int i = 0; i < global_nmesh; ++i)
             {
@@ -1211,11 +1210,13 @@ namespace Tailor
 
                 if (meshp != sp.mesh_.end())
                 {
+                    update_donors(mesh);
+
                     set_boundary_conditions(mesh);
                     compute_sum_of_fluxes(mesh, ntimestep);
                     temporal_discretization(mesh);
 
-                    auto local_residual = compute_residual(mesh);
+                    local_residual = compute_residual(mesh);
 
                     calc_change_in_conserved_var(mesh);
                     evolve_solution_in_time(mesh);
@@ -1234,17 +1235,17 @@ namespace Tailor
 
             if (ntimestep != 0)
             {
-                for (int i = 0; i < len(global_residual); ++i)
+                bool all_good = true;
+                for (int i = 0; i < global_residual.nelm(); ++i)
                 {
-                    bool all_good = true;
                     if (global_residual(i) > tol_)
                     {
                         all_good = false;
                     }
+                }
 
-                    if (all_good) {
-                        return global_residual;
-                    }
+                if (all_good) {
+                    return global_residual;
                 }
             }
         }
@@ -1264,7 +1265,7 @@ namespace Tailor
                 out.open(fn, std::ios_base::app);
 
                 out << ntimestep << " ";
-                for (int i = 0; i < len(residual); ++i)
+                for (int i = 0; i < residual.nelm(); ++i)
                 {
                     out << std::scientific << residual(i) << std::fixed;
                     out << " ";
@@ -1279,12 +1280,14 @@ namespace Tailor
     Vector5 Solver::get_global_residual(const Vector5& local_residual)
     {
         Vector5 global_residual;
-        for (int i = 0; i < len(local_residual); ++i)
+
+        for (int i = 0; i < local_residual.nelm(); ++i)
+        //for (int i = 0; i < 1; ++i)
         {
-            double d;
-            //boost::mpi::all_reduce(*comm_, local_residual(i), global_residual(i), boost::mpi::maximum<double>());
-            boost::mpi::all_reduce(*comm_, local_residual(i), d, boost::mpi::maximum<double>());
-            global_residual(i) = d;
+            //double d;
+            boost::mpi::all_reduce(*comm_, local_residual(i), global_residual(i), boost::mpi::maximum<double>());
+            //boost::mpi::all_reduce(*comm_, local_residual(i), d, boost::mpi::maximum<double>());
+            //global_residual(i) = d;
         }
 
         if (nsolve_ ==  0)
@@ -1300,7 +1303,7 @@ namespace Tailor
     {
         if (increase_cfl_)
         {
-            for (int i = 0; i < len(global_residual); ++i)
+            for (int i = 0; i < global_residual.nelm(); ++i)
             {
                 if (global_residual(i) / last_global_residual_(i) < cfl_multiplier_)
                 {
@@ -1376,7 +1379,7 @@ namespace Tailor
                 out.open("residual.dat", std::ios_base::app);
 
                 out << nsolve_ << " "; 
-                for (int i = 0; i < len(residual); ++i)
+                for (int i = 0; i < residual.nelm(); ++i)
                 {
                     out << std::scientific << residual(i) << std::fixed;
                     out << " "; 
