@@ -224,6 +224,7 @@ namespace Tailor
             std::vector<double> gmres(int n, int nz_num, std::vector<int>& ia, std::vector<int>& ja, std::vector<double>& a, std::vector<double>& rhs);
             void update_partitioned_mesh_exchanger();
             void update_overset_mesh_exchanger();
+            void first_order_residual(Vector5& res, const MeshCell& mc);
     };
 
     std::tuple<Matrix5, Matrix5> get_rotation_matrix(const Vector3& normal);

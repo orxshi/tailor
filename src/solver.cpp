@@ -720,7 +720,8 @@ namespace Tailor
     {
         for (MeshCell &mc : mesh.cell_)
         {
-            mc.cons_sp1_ = mc.cons_s_ + mc.dQ_;
+            //mc.cons_sp1_ = mc.cons_s_ + mc.dQ_;
+            mc.cons_sp1_ = mc.cons_n_ + mc.dQ_;
             mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
         }   
     }
@@ -729,7 +730,7 @@ namespace Tailor
     {
         for (MeshCell &mc : mesh.cell_)
         {
-            mc.cons_s_ = mc.cons_sp1_;
+            //mc.cons_s_ = mc.cons_sp1_;
             if (steady_)
             {
                 mc.cons_nm1_ = mc.cons_n_;
@@ -965,6 +966,14 @@ namespace Tailor
     //    }
     //}
 
+    void Solver::first_order_residual(Vector5& res, const MeshCell& mc)
+    {
+        for (int i = 0; i < mc.R_.nelm(); ++i)
+        {
+            res(i) = std::max(res(i), std::abs(mc.R_(i) - mc.poly().volume() * mc.dQ_(i) / dt_));
+        }
+    }
+
     Vector5 Solver::compute_residual(Mesh& mesh)
     {
         Vector5 res(TAILOR_BIG_NEG_NUM);
@@ -985,9 +994,30 @@ namespace Tailor
             }
             else
             {
-                for (int i = 0; i < mc.R_.nelm(); ++i)
+                if (torder_ == 1)
                 {
-                    res(i) = std::max(res(i), std::abs(mc.R_(i) - mc.poly().volume() * mc.dQ_(i) / dt_)); // first order
+                    first_order_residual(res, mc);
+                }
+                else if (torder_ == 2)
+                {
+                    if (dual_ts_)
+                    {
+                        first_order_residual(res, mc);
+                    }
+                    else
+                    {
+                        if (nsolve_ > 1)
+                        {
+                            for (int i = 0; i < mc.R_.nelm(); ++i)
+                            {
+                                res(i) = std::max(res(i), std::abs(mc.R_(i) - 0.5 * mc.poly().volume() * (3. * mc.cons_sp1_(i) - 4. * mc.cons_n_(i) + mc.cons_nm1_(i)) / dt_));
+                            }
+                        }
+                        else
+                        {
+                            first_order_residual(res, mc);
+                        }
+                    }
                 }
             }
         }
@@ -1326,7 +1356,7 @@ namespace Tailor
             {
                 for (MeshCell &mc : mesh.cell_)
                 {
-                    mc.cons_s_ = mc.cons_sp1_;
+                    //mc.cons_s_ = mc.cons_sp1_;
                     mc.cons_nm1_ = mc.cons_sp1_;
                     mc.cons_n_ = mc.cons_sp1_;
                 }
@@ -1335,7 +1365,7 @@ namespace Tailor
             {
                 for (MeshCell &mc : mesh.cell_)
                 {
-                    mc.cons_s_ = mc.cons_sp1_;
+                    //mc.cons_s_ = mc.cons_sp1_;
                     mc.cons_nm1_ = mc.cons_n_;
                     mc.cons_n_ = mc.cons_sp1_;
                 }
@@ -1725,89 +1755,89 @@ namespace Tailor
         mc.cons_sp1_ = prim_to_cons(mc.prim(), fs_.gamma_);
     }
 
-    void Solver::RK4(Mesh &mesh)
-    {
-        Vector5 k1, k2, k3, k4;
+    //void Solver::RK4(Mesh &mesh)
+    //{
+    //    Vector5 k1, k2, k3, k4;
 
-        for (MeshCell &mc : mesh.cell_)
-        {
-            if (!calc_cell(mc))
-            {
-                continue;
-            }
+    //    for (MeshCell &mc : mesh.cell_)
+    //    {
+    //        if (!calc_cell(mc))
+    //        {
+    //            continue;
+    //        }
 
-            double vol = mc.poly().volume();
+    //        double vol = mc.poly().volume();
 
-            k1 = mc.dtao_ * mc.R_ / vol;
-            mc.cons_sp1_ = mc.cons_s_ + 0.5 * k1;
-            mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
-        }
+    //        k1 = mc.dtao_ * mc.R_ / vol;
+    //        mc.cons_sp1_ = mc.cons_s_ + 0.5 * k1;
+    //        mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
+    //    }
 
-        /*bc_.set_bc(mesh, profiler_);
-        if (comm_->size() != 1)
-        {
-            mesh.update_ghost_primitives(var_exc_->receiver().front().arrival(), comm_->rank(), fs_.gamma_);
-        }
-        calc_R(mesh);
-        tempo_discre(mesh, false);
+    //    /*bc_.set_bc(mesh, profiler_);
+    //    if (comm_->size() != 1)
+    //    {
+    //        mesh.update_ghost_primitives(var_exc_->receiver().front().arrival(), comm_->rank(), fs_.gamma_);
+    //    }
+    //    calc_R(mesh);
+    //    tempo_discre(mesh, false);
 
-        for (MeshCell& mc: mesh.cell_)
-        {
-            if (mc.oga_cell_type() != OGA_cell_type_t::field) {
-                continue;
-            }
+    //    for (MeshCell& mc: mesh.cell_)
+    //    {
+    //        if (mc.oga_cell_type() != OGA_cell_type_t::field) {
+    //            continue;
+    //        }
 
-            double vol = mc.poly().volume();
+    //        double vol = mc.poly().volume();
 
-            k2 = mc.dtao_ * mc.R_ / vol;
-            mc.cons_sp1_ = mc.cons_s_ + 0.5 * k2;
-            mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
-        }
+    //        k2 = mc.dtao_ * mc.R_ / vol;
+    //        mc.cons_sp1_ = mc.cons_s_ + 0.5 * k2;
+    //        mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
+    //    }
 
-        bc_.set_bc(mesh, profiler_);
-        if (comm_->size() != 1)
-        {
-            mesh.update_ghost_primitives(var_exc_->receiver().front().arrival(), comm_->rank(), fs_.gamma_);
-        }
-        calc_R(mesh);
-        tempo_discre(mesh, false);
+    //    bc_.set_bc(mesh, profiler_);
+    //    if (comm_->size() != 1)
+    //    {
+    //        mesh.update_ghost_primitives(var_exc_->receiver().front().arrival(), comm_->rank(), fs_.gamma_);
+    //    }
+    //    calc_R(mesh);
+    //    tempo_discre(mesh, false);
 
-        for (MeshCell& mc: mesh.cell_)
-        {
-            if (mc.oga_cell_type() != OGA_cell_type_t::field) {
-                continue;
-            }
+    //    for (MeshCell& mc: mesh.cell_)
+    //    {
+    //        if (mc.oga_cell_type() != OGA_cell_type_t::field) {
+    //            continue;
+    //        }
 
-            double vol = mc.poly().volume();
+    //        double vol = mc.poly().volume();
 
-            k3 = mc.dtao_ * mc.R_ / vol;
-            mc.cons_sp1_ = mc.cons_s_ + k3;
-            mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
-        }
+    //        k3 = mc.dtao_ * mc.R_ / vol;
+    //        mc.cons_sp1_ = mc.cons_s_ + k3;
+    //        mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
+    //    }
 
-        bc_.set_bc(mesh, profiler_);
-        if (comm_->size() != 1)
-        {
-            mesh.update_ghost_primitives(var_exc_->receiver().front().arrival(), comm_->rank(), fs_.gamma_);
-        }
-        calc_R(mesh);
-        tempo_discre(mesh, false);*/
+    //    bc_.set_bc(mesh, profiler_);
+    //    if (comm_->size() != 1)
+    //    {
+    //        mesh.update_ghost_primitives(var_exc_->receiver().front().arrival(), comm_->rank(), fs_.gamma_);
+    //    }
+    //    calc_R(mesh);
+    //    tempo_discre(mesh, false);*/
 
-        for (MeshCell &mc : mesh.cell_)
-        {
-            if (!calc_cell(mc))
-            {
-                continue;
-            }
+    //    for (MeshCell &mc : mesh.cell_)
+    //    {
+    //        if (!calc_cell(mc))
+    //        {
+    //            continue;
+    //        }
 
-            double vol = mc.poly().volume();
+    //        double vol = mc.poly().volume();
 
-            k4 = mc.dtao_ * mc.R_ / vol;
-            //mc.cons_sp1_ = mc.cons_s_ + (k1 + 2. * k2 + 2. * k3 + k4) / 6.;
-            mc.cons_sp1_ = mc.cons_s_ + k1;
-            mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
-        }
-    }
+    //        k4 = mc.dtao_ * mc.R_ / vol;
+    //        //mc.cons_sp1_ = mc.cons_s_ + (k1 + 2. * k2 + 2. * k3 + k4) / 6.;
+    //        mc.cons_sp1_ = mc.cons_s_ + k1;
+    //        mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
+    //    }
+    //}
 
     void Solver::sweep(Mesh &mesh, MeshCell &mc, Vector5 &r1, Vector5 &r2, Vector5 &r3, int &maxcell)
     {
@@ -2112,10 +2142,10 @@ namespace Tailor
                 > AMGCLSolver;
 
         AMGCLSolver::params prm;
-        prm.solver.M = 100;
-        prm.solver.maxiter = 1000;
-        //prm.solver.abstol = TAILOR_ZERO;
-        //prm.solver.tol = TAILOR_BIG_POS_NUM;
+        //prm.solver.M = 100;
+        //prm.solver.maxiter = 10000;
+        //prm.solver.abstol = 1e-15;
+        //prm.solver.tol = 1e-15;
 
         AMGCLSolver amgcl_solver(std::tie(n, ia, ja, a), prm);
         //amgcl::make_solver<
@@ -2150,8 +2180,8 @@ namespace Tailor
             return;
         }
 
-        //auto x = amgcl(n, nz_num, ia, ja, a, rhs);
-        auto x = gmres(n, nz_num, ia, ja, a, rhs);
+        auto x = amgcl(n, nz_num, ia, ja, a, rhs);
+        //auto x = gmres(n, nz_num, ia, ja, a, rhs);
 
         int i = 0;
         for (auto &mc : mesh.cell_)
