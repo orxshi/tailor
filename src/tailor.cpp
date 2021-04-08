@@ -16,8 +16,6 @@ namespace Tailor
         file_name.append(std::to_string(rank));
         file_name.append(".ser");
 
-        std::cout << file_name << std::endl;
-
         std::ofstream ofs(file_name);
         boost::archive::text_oarchive oa(ofs);
         oa << assembler;
@@ -50,8 +48,6 @@ namespace Tailor
         file_name.append("/solver-");
         file_name.append(std::to_string(rank));
         file_name.append(".ser");
-
-        std::cout << file_name << std::endl;
 
         std::ofstream ofs(file_name);
         boost::archive::text_oarchive oa(ofs);

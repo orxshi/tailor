@@ -2197,11 +2197,17 @@ namespace Tailor
 
         if (ttag.size() < 1)
         {
-            if (rank == 8)
+            //if (rank == 8)
             {
                 std::cout << "celltag: " << celltag << std::endl;
                 std::cout << cv(0) << " " << cv(1) << " " << cv(2) << std::endl;
                 std::cout << "ttag size: " << ttag.size() << std::endl;
+                std::cout << "min(0) :" << " " << aabb().min(0) << std::endl;
+                std::cout << "min(1) :" << " " << aabb().min(1) << std::endl;
+                std::cout << "min(2) :" << " " << aabb().min(2) << std::endl;
+                std::cout << "max(0) :" << " " << aabb().max(0) << std::endl;
+                std::cout << "max(1) :" << " " << aabb().max(1) << std::endl;
+                std::cout << "max(2) :" << " " << aabb().max(2) << std::endl;
             }
         }
         assert(ttag.size() >= 1);
