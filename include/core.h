@@ -10,7 +10,7 @@
 
 namespace Tailor
 {
-    const double TAILOR_ZERO = 1e-15;
+    const double TAILOR_ZERO = 1e-12;
     const int TAILOR_N_DIM = 3;
     const double TAILOR_BIG_POS_NUM = 1e9;
     const double TAILOR_BIG_NEG_NUM = -1e9;

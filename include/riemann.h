@@ -24,7 +24,7 @@ namespace Tailor
     {
         public:
 
-            RiemannSolver(RiemannSolverType riemann_solver_type, const State& left_state, const State& right_state, double face_area, double gamma, double& max_eigen, Vector5& flux, SpeedEstimateHLLC sehllc = SpeedEstimateHLLC::pressure);
+            RiemannSolver(RiemannSolverType riemann_solver_type, const State& left_state, const State& right_state, double face_area, double gamma, double& max_eigen, Vector5& flux, Matrix5& Aroe, SpeedEstimateHLLC sehllc = SpeedEstimateHLLC::pressure);
 
             double u;
             double v;

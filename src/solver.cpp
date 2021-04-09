@@ -607,18 +607,19 @@ namespace Tailor
         return std::make_tuple(left, right);
     }
 
-    std::tuple<Vector5, double> compute_flux(RiemannSolverType riemann_solver_type, double face_area, const Matrix5& inverse_rotation_matrix, const State& rotated_left_state, const State& rotated_right_state, double gamma)
+    std::tuple<Vector5, double, Matrix5> compute_flux(RiemannSolverType riemann_solver_type, double face_area, const Matrix5& inverse_rotation_matrix, const State& rotated_left_state, const State& rotated_right_state, double gamma)
     {
         Vector5 flux;
         double max_eigen;
+        Matrix5 Aroe;
 
-        RiemannSolver riemann_solver(riemann_solver_type, rotated_left_state, rotated_right_state, face_area, gamma, max_eigen, flux, SpeedEstimateHLLC::roe);
+        RiemannSolver riemann_solver(riemann_solver_type, rotated_left_state, rotated_right_state, face_area, gamma, max_eigen, flux, Aroe, SpeedEstimateHLLC::roe);
 
         flux = inverse_rotation_matrix * flux;
 
         assert(!flux.isnan());
 
-        return std::make_tuple(flux, max_eigen);
+        return std::make_tuple(flux, max_eigen, Aroe);
     }
 
     void Solver::compute_sum_of_fluxes(Mesh &mesh)
@@ -688,7 +689,7 @@ namespace Tailor
 
                 auto [rotation_matrix, inv_rotation_matrix] = get_rotation_matrix(normal);
                 auto [rotated_left_state, rotated_right_state] = left_and_right_states(left_cell->cons_sp1_, right_cell->cons_sp1_, gamma, rotation_matrix, face_velocity);
-                auto [flux, max_eigen] = compute_flux(riemann_solver_type_, face_area, inv_rotation_matrix, rotated_left_state, rotated_right_state, gamma);
+                auto [flux, max_eigen, Aroe] = compute_flux(riemann_solver_type_, face_area, inv_rotation_matrix, rotated_left_state, rotated_right_state, gamma);
 
                 if (mf.btype() != BouType::empty)
                 {
@@ -705,7 +706,7 @@ namespace Tailor
 
                 if (temporal_discretization_ == "backward_euler")
                 {
-                    update_matrices(&mf, commonface, *left_cell, *right_cell, face_area, face_velocity, gamma);
+                    update_matrices(&mf, commonface, *left_cell, *right_cell, face_area, face_velocity, gamma, rotation_matrix, inv_rotation_matrix, Aroe);
                 }
 
                 if (commonface != nullptr)
@@ -764,6 +765,10 @@ namespace Tailor
                     if (torder_ == 1)
                     {
                         mc.dQ_ *= dt_;
+                        //for (int j = 0; j < NVAR; ++j)
+                        //{
+                            //assert(std::abs(mc.dQ_(j)) > 1e-6);
+                        //}
                     }
                     else if (torder_ == 2)
                     {
@@ -1043,23 +1048,24 @@ namespace Tailor
                 assert(m->tag() != mesh.tag());
                 const auto &donor_cell = m->cell(mc.donor().cell_tag_);
 
-                if (sorder_ == 2)
-                {
-                    auto grad = gradient_.ls_grad(*m, donor_cell);
+                //if (sorder_ == 2)
+                //{
+                //    auto grad = gradient_.ls_grad(*m, donor_cell);
 
-                    Limiter limiter(LimiterType::venka);
-                    limiter.limit(mesh, mc, grad);
+                //    Limiter limiter(LimiterType::venka);
+                //    limiter.limit(mesh, mc, grad);
 
-                    auto d = mc.poly().centroid() - donor_cell.poly().centroid();
+                //    auto d = mc.poly().centroid() - donor_cell.poly().centroid();
 
-                    for (int i = 0; i < NVAR; ++i)
-                    {
-                        mc.prim_(i) = donor_cell.prim(i) + limiter(i) * dot(grad[i], d);
-                    }
-                }
-                else
+                //    for (int i = 0; i < NVAR; ++i)
+                //    {
+                //        mc.prim_(i) = donor_cell.prim(i) + limiter(i) * dot(grad[i], d);
+                //    }
+                //}
+                //else
                 {
                     mc.prim_ = donor_cell.prim();
+                    mc.dQ_ = donor_cell.dQ();
                     //for (int i = 0; i < NVAR; ++i)
                     //{
                         //mc.prim_[i] = donor_cell.prim(i);
@@ -1645,17 +1651,18 @@ namespace Tailor
         }
     }*/
 
-    void Solver::update_matrices(MeshFace *this_face, MeshFace *common_face, MeshCell& left_cell, MeshCell& right_cell, double facearea, const Vector3& face_velocity, double gamma)
+    void Solver::update_matrices(MeshFace *this_face, MeshFace *common_face, MeshCell& left_cell, MeshCell& right_cell, double facearea, const Vector3& face_velocity, double gamma, const Matrix5& rotation_matrix, const Matrix5& inv_rotation_matrix, const Matrix5& Aroe)
     {
-        auto [left_state, right_state] = left_and_right_states(left_cell.cons_sp1(), right_cell.cons_sp1(), gamma, unit_matrix<NVAR, NVAR, double>(), face_velocity);
+        //auto [left_state, right_state] = left_and_right_states(left_cell.cons_sp1(), right_cell.cons_sp1(), gamma, unit_matrix<NVAR, NVAR, double>(), face_velocity);
+        auto [left_state, right_state] = left_and_right_states(left_cell.cons_sp1(), right_cell.cons_sp1(), gamma, rotation_matrix, face_velocity);
 
         Matrix5 JL = Jacobian(left_state , gamma);
         Matrix5 JR = Jacobian(right_state, gamma);
 
-        this_face->M_ = JL * 0.5 * facearea;
+        this_face->M_ = inv_rotation_matrix * (JL + Aroe) * 0.5 * facearea;
         if (common_face != nullptr)
         {
-            common_face->M_ = JR * 0.5 * facearea * -1;
+            common_face->M_ = inv_rotation_matrix * (JR - Aroe) * 0.5 * facearea * -1;
         }
 
         left_cell.D_ += this_face->M_;
@@ -1983,17 +1990,18 @@ namespace Tailor
                     }
                 }
 
+                //sort entries based on column index.
                 //std::sort(order.begin(), order.end(), [&](const auto& a, const auto& b){a.first < b.first;}); // map is instrisicly already ordered.
 
                 for (int i = 0; i < NVAR; ++i)
                 {
-                    for (int j = 0; j < NVAR; ++j)
+                    for (const auto &entry : order)
                     {
-                        for (const auto &entry : order)
+                        for (int j = 0; j < NVAR; ++j)
                         {
                             int cindex = entry.first;
                             double val = entry.second(i, j);
-                            if (std::abs(val) > TAILOR_ZERO)
+                            //if (std::abs(val) > TAILOR_ZERO)
                             {
                                 ia.push_back(rindex * NVAR + i);
                                 ja.push_back(cindex * NVAR + j);
@@ -2007,37 +2015,37 @@ namespace Tailor
         }
 
         rhs.resize(n);
-        int i = 0;
         for (const auto &mc : mesh.cell())
         {
             if (calc_cell(mc))
             {
+                int rindex = cell_index[mc.tag()()];
+
                 for (int j = 0; j < NVAR; ++j)
                 {
-                    rhs[i * NVAR + j] = mc.R(j);
+                    rhs[rindex * NVAR + j] = mc.R(j);
                 }
 
                 for (const auto &mf : mc.face())
                 {
-                    if (mf.btype() == BouType::partition)
+                    if (mf.btype() == BouType::partition || mf.btype() == BouType::interior)
                     {
                         auto [left_cell, right_cell] = left_and_right_cells(mesh, mf, mc.tag());
 
-                        assert(!calc_cell(*right_cell));
-
-                        auto common_face = mesh.common_face(*right_cell, mf.tag());
-                        assert(common_face != nullptr);
-
-                        Vector5 temp = common_face->M() * right_cell->dQ();
-
-                        for (int j = 0; j < NVAR; ++j)
+                        if (!calc_cell(*right_cell))
                         {
-                            rhs[i * NVAR + j] += temp(j);
+                            auto common_face = mesh.common_face(*right_cell, mf.tag());
+                            assert(common_face != nullptr);
+
+                            Vector5 temp = common_face->M() * right_cell->dQ();
+
+                            for (int j = 0; j < NVAR; ++j)
+                            {
+                                rhs[rindex * NVAR + j] += temp(j);
+                            }
                         }
                     }
                 }
-
-                ++i;
             }
         }
 
@@ -2076,6 +2084,14 @@ namespace Tailor
     void make_mat_cr(const Mesh &mesh, int &n, int &nz_num, std::vector<int> &ia, std::vector<int> &ja, std::vector<double> &a, std::vector<double> &rhs, int rank)
     {
         make_mat_st(mesh, n, nz_num, ia, ja, a, rhs, rank);
+        //if (rank == 0)
+        //{
+            //for (int i = 0; i < nz_num; ++i)
+            //{
+                //std::cout << ia[i] << " " << ja[i] << " " << a[i] << " " << rhs[i] << std::endl;
+            //}
+            //assert(false);
+        //}
 
         std::vector<int> rp;
 
@@ -2106,6 +2122,14 @@ namespace Tailor
 
         ia = rp;
         assert(ia.size() == rp.size());
+        //if (rank == 0)
+        //{
+            //for (int i = 0; i < nz_num; ++i)
+            //{
+                //std::cout << rp[i] << " " << ja[i] << " " << a[i] << " " << rhs[i] << std::endl;
+            //}
+            //assert(false);
+        //}
     }
 
     std::vector<double> Solver::amgcl(int n, int nz_num, const std::vector<int>& ia, const std::vector<int>& ja, const std::vector<double>& a, const std::vector<double>& rhs)
@@ -2130,20 +2154,26 @@ namespace Tailor
         //prm.put("precond.relax.type", "ilu0");
 
         typedef amgcl::make_solver<
+            //amgcl::relaxation::as_preconditioner<Backend, amgcl::relaxation::ilu0>,
             //amgcl::relaxation::as_preconditioner<Backend, amgcl::relaxation::chebyshev>,
+            //amgcl::relaxation::as_preconditioner<Backend, amgcl::relaxation::gauss_seidel>,
+            //amgcl::relaxation::as_preconditioner<Backend, amgcl::relaxation::spai0>,
             //amgcl::preconditioner::dummy<Backend>,
             amgcl::amg<
             Backend,
             amgcl::coarsening::smoothed_aggregation,
             //amgcl::relaxation::chebyshev
             amgcl::relaxation::ilu0
+            //amgcl::relaxation::spai0
                 >,
             amgcl::solver::gmres<Backend>
+            //amgcl::solver::preonly<Backend>
+            //amgcl::solver::bicgstab<Backend>
                 > AMGCLSolver;
 
         AMGCLSolver::params prm;
         //prm.solver.M = 100;
-        //prm.solver.maxiter = 10000;
+        //prm.solver.maxiter = 1000;
         //prm.solver.abstol = 1e-15;
         //prm.solver.tol = 1e-15;
 
@@ -2162,6 +2192,7 @@ namespace Tailor
         auto [iters, error] = amgcl_solver(rhs, x);
 
         std::cout << iters << " " << error << std::endl;
+        assert(error < 1e-6);
 
         return x;
     }
@@ -2191,6 +2222,12 @@ namespace Tailor
                 for (int j = 0; j < NVAR; ++j)
                 {
                     mc.dQ_(j) = x[i * NVAR + j];
+                    //if (std::abs(mc.dQ_(j) < 1e-6))
+                    //{
+                        //std::cout << "R: " << mc.R(j) << std::endl;
+                        //std::cout << "rhs: " << rhs[i * NVAR + j] << std::endl;
+                        //assert(false);
+                    //}
                 }
                 ++i;
             }
@@ -2384,11 +2421,14 @@ namespace Tailor
             }
             else if (torder_ == 2)
             {
-                double t = volume * (1. / mc.dtao_ + 1.5 / dt_);
-                mc.D_.add_diag(t);
+                //double t = volume * (1. / mc.dtao_ + 1.5 / dt_);
+                //mc.D_.add_diag(t);
 
                 if (dual_ts_)
                 {
+                    double t = volume / mc.dtao_;
+                    mc.D_.add_diag(t);
+
                     if (nsolve_ > 1)
                     {
                         mc.R_ -= 0.5 * volume * (3. * mc.cons_sp1() - 4. * mc.cons_n() + mc.cons_nm1()) / dt_;
@@ -2400,9 +2440,13 @@ namespace Tailor
                 }
                 else
                 {
+                    double t = 1.5 * volume / dt_;
+                    mc.D_.add_diag(t);
+
                     if (nsolve_ > 1)
                     {
-                        mc.R_ -= 0.5 * volume * (-4. * mc.cons_n() + mc.cons_nm1()) / dt_;
+                        //mc.R_ -= 0.5 * volume * (-4. * mc.cons_n() + mc.cons_nm1()) / dt_;
+                        mc.R_ += 0.5 * volume * (mc.cons_n() - mc.cons_nm1()) / dt_;
                     }
                 }
             }

@@ -2,11 +2,11 @@
 
 namespace Tailor
 {
-    RiemannSolver::RiemannSolver(RiemannSolverType riemann_solver_type, const State& left_state, const State& right_state, double face_area, double gamma, double& max_eigen, Vector5& flux, SpeedEstimateHLLC sehllc): speed_estimate_hllc_(sehllc)
+    RiemannSolver::RiemannSolver(RiemannSolverType riemann_solver_type, const State& left_state, const State& right_state, double face_area, double gamma, double& max_eigen, Vector5& flux, Matrix5& Aroe, SpeedEstimateHLLC sehllc): speed_estimate_hllc_(sehllc)
     {
         if (riemann_solver_type == RiemannSolverType::roe)
         {
-            Matrix5 Aroe;
+            //Matrix5 Aroe;
             roe(left_state, right_state, flux, Aroe, max_eigen, face_area, gamma);
 
             assert(!flux.isnan());
@@ -832,7 +832,7 @@ namespace Tailor
         //calc_roe_ave_vars(leftorig, rightorig, gamma, false);
         //R = right_eigenv(vfn);
         //ws = abs_eigen(vfn, leftorig, rightorig);
-        //Aroe = Jacobian(ws, R, gamma, vfn);
+        //Aroe = Jacobian(ws, R, gamma);
 
         //if (abs(numflux(3)) >= 1e-0)
         //{

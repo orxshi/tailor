@@ -210,7 +210,7 @@ namespace Tailor
             Matrix5 slipwall_M(const Vector3& n);
             void gmres(Mesh& mesh);
             void oga_interpolate(Mesh& mesh);
-            void update_matrices(MeshFace *this_face, MeshFace *common_face, MeshCell& left_cell, MeshCell& right_cell, double facearea, const Vector3& face_velocity, double gamma);
+            void update_matrices(MeshFace *this_face, MeshFace *common_face, MeshCell& left_cell, MeshCell& right_cell, double facearea, const Vector3& face_velocity, double gamma, const Matrix5& rotation_matrix, const Matrix5& inv_rotation_matrix, const Matrix5& Aroe);
             void apply_limiter(Mesh &mesh, MeshCell &mc, const MeshFace &mf);
             void print_residual(const Vector5& residual);
             void print_mesh_vtk();
@@ -228,7 +228,7 @@ namespace Tailor
     };
 
     std::tuple<Matrix5, Matrix5> get_rotation_matrix(const Vector3& normal);
-    std::tuple<Vector5, double> compute_flux(RiemannSolverType riemann_solver_type, double face_area, const Matrix5& inverse_rotation_matrix, const State& rotated_left_state, const State& rotated_right_state, double gamma);
+    std::tuple<Vector5, double, Matrix5> compute_flux(RiemannSolverType riemann_solver_type, double face_area, const Matrix5& inverse_rotation_matrix, const State& rotated_left_state, const State& rotated_right_state, double gamma);
 }
 
 #endif
