@@ -7,7 +7,7 @@
 #SBATCH --ntasks=64
 ##SBATCH --nodes=7
 #SBATCH --hint=nomultithread
-#SBATCH -t 00-00:10:00
+#SBATCH -t 00-04:00:00
 #SBATCH --output=slurm-%j.out
 #SBATCH --error=slurm-%j.err
 ##SBATCH --signal=TERM@300

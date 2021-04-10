@@ -721,9 +721,15 @@ namespace Tailor
     {
         for (MeshCell &mc : mesh.cell_)
         {
-            //mc.cons_sp1_ = mc.cons_s_ + mc.dQ_;
-            mc.cons_sp1_ = mc.cons_n_ + mc.dQ_;
-            mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
+            if (dual_ts_)
+            {
+                mc.cons_sp1_ = mc.cons_s_ + mc.dQ_;
+            }
+            else
+            {
+                mc.cons_sp1_ = mc.cons_n_ + mc.dQ_;
+                mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
+            }
         }   
     }
 
@@ -731,8 +737,11 @@ namespace Tailor
     {
         for (MeshCell &mc : mesh.cell_)
         {
-            //mc.cons_s_ = mc.cons_sp1_;
-            if (steady_)
+            if (dual_ts_)
+            {
+                mc.cons_s_ = mc.cons_sp1_;
+            }
+            else if (steady_)
             {
                 mc.cons_nm1_ = mc.cons_n_;
                 mc.cons_n_ = mc.cons_sp1_;
@@ -990,7 +999,7 @@ namespace Tailor
                 continue;
             }
 
-            if (steady_)
+            if (steady_ || dual_ts_)
             {
                 for (int i = 0; i < mc.R_.nelm(); ++i)
                 {
@@ -1005,11 +1014,11 @@ namespace Tailor
                 }
                 else if (torder_ == 2)
                 {
-                    if (dual_ts_)
-                    {
-                        first_order_residual(res, mc);
-                    }
-                    else
+                    //if (dual_ts_)
+                    //{
+                        //first_order_residual(res, mc);
+                    //}
+                    //else
                     {
                         if (nsolve_ > 1)
                         {
@@ -1211,13 +1220,13 @@ namespace Tailor
 
     void Solver::compute_sum_of_fluxes(Mesh& mesh, int ntimestep)
     {
-        if (ntimestep == 0 || steady_)
+        if (ntimestep == 0 || steady_ || dual_ts_)
         {
             compute_sum_of_fluxes(mesh);
         }
         else
         {
-            mesh.reset_to_mid(); // for dual time stepping.
+            mesh.reset_to_mid();
         }
     }
 
@@ -1265,7 +1274,7 @@ namespace Tailor
             update_partitioned_mesh_exchanger();
             update_overset_mesh_exchanger();
 
-            global_residual = get_global_residual(local_residual);
+            global_residual = get_global_residual(local_residual, ntimestep);
             increase_cfl(global_residual);
             print_sub_solver_residual(ntimestep, global_residual);
 
@@ -1313,7 +1322,7 @@ namespace Tailor
         }
     }
 
-    Vector5 Solver::get_global_residual(const Vector5& local_residual)
+    Vector5 Solver::get_global_residual(const Vector5& local_residual, int ntimestep)
     {
         Vector5 global_residual;
 
@@ -1326,7 +1335,7 @@ namespace Tailor
             //global_residual(i) = d;
         }
 
-        if (nsolve_ ==  0)
+        if (ntimestep ==  0)
         {
             initial_global_residual_ = global_residual;
             last_global_residual_ = global_residual;
@@ -1341,7 +1350,10 @@ namespace Tailor
         {
             for (int i = 0; i < global_residual.nelm(); ++i)
             {
-                if (global_residual(i) / last_global_residual_(i) < cfl_multiplier_)
+                if (comm_->rank() == 0) {
+                    std::cout << global_residual(i) << " " << last_global_residual_(i) << " " << cfl_multiplier_ << " " << last_global_residual_(i) / global_residual(i) << std::endl;
+                }
+                if (last_global_residual_(i) / global_residual(i) < cfl_multiplier_)
                 {
                     return;
                 }
@@ -1362,7 +1374,7 @@ namespace Tailor
             {
                 for (MeshCell &mc : mesh.cell_)
                 {
-                    //mc.cons_s_ = mc.cons_sp1_;
+                    mc.cons_s_ = mc.cons_sp1_;
                     mc.cons_nm1_ = mc.cons_sp1_;
                     mc.cons_n_ = mc.cons_sp1_;
                 }
@@ -1371,7 +1383,7 @@ namespace Tailor
             {
                 for (MeshCell &mc : mesh.cell_)
                 {
-                    //mc.cons_s_ = mc.cons_sp1_;
+                    mc.cons_s_ = mc.cons_sp1_;
                     mc.cons_nm1_ = mc.cons_n_;
                     mc.cons_n_ = mc.cons_sp1_;
                 }
@@ -1659,10 +1671,14 @@ namespace Tailor
         Matrix5 JL = Jacobian(left_state , gamma);
         Matrix5 JR = Jacobian(right_state, gamma);
 
-        this_face->M_ = inv_rotation_matrix * (JL + Aroe) * 0.5 * facearea;
+        this_face->M_ = inv_rotation_matrix * JL * 0.5 * facearea;
+        //this_face->M_ = inv_rotation_matrix * (JL + Aroe) * 0.5 * facearea;
+        //this_face->M_ = (JL + Aroe) * rotation_matrix * 0.5 * facearea;
         if (common_face != nullptr)
         {
-            common_face->M_ = inv_rotation_matrix * (JR - Aroe) * 0.5 * facearea * -1;
+            //common_face->M_ = inv_rotation_matrix * (JR - Aroe) * 0.5 * facearea * -1;
+            //common_face->M_ = (JR - Aroe) * rotation_matrix * 0.5 * facearea * -1;
+            common_face->M_ = inv_rotation_matrix * JR * 0.5 * facearea * -1;
         }
 
         left_cell.D_ += this_face->M_;
@@ -1956,92 +1972,72 @@ namespace Tailor
             }
         }
 
-        n = n * NVAR;
+        n *= NVAR;
+        rhs.resize(n);
 
-        nz_num = 0;
         for (const auto &mc : mesh.cell())
         {
             if (calc_cell(mc))
             {
-                int rindex = cell_index[mc.tag()()];
+                auto block_row_index = cell_index[mc.tag()()];
 
                 std::map<int, Matrix5> order;
-                order.insert(std::make_pair(rindex, mc.D()));
+                order.insert(std::make_pair(block_row_index, mc.D()));
+
+                for (int j = 0; j < NVAR; ++j)
+                {
+                    rhs[block_row_index * NVAR + j] = mc.R(j);
+                }
 
                 for (const auto &mf : mc.face())
                 {
-                    if (mf.btype() == BouType::interior)
+                    if (mf.btype() == BouType::interior || mf.btype() == BouType::partition)
                     {
                         auto [left_cell, right_cell] = left_and_right_cells(mesh, mf, mc.tag());
+                        assert(left_cell != nullptr);
+                        assert(right_cell != nullptr);
 
                         auto common_face = mesh.common_face(*right_cell, mf.tag());
                         assert(common_face != nullptr);
 
-                        //auto nct = std::find_if(mf.parent_cell().begin(), mf.parent_cell().end(), [&](const auto &pc) { return pc != mc.tag(); });
-                        //assert(nct != mf.parent_cell().end());
-                        //auto &nc = mesh.cell(*nct);
-
-                        //if (calc_cell(nc))
                         if (calc_cell(*right_cell))
                         {
-                            //order.insert(std::make_pair(cell_index[nc.tag()()], mf.M() * -1));
-                            order.insert(std::make_pair(cell_index[right_cell->tag()()], common_face->M() * -1));
+                            assert(mf.btype() == BouType::interior);
+                            auto block_column_index = cell_index[right_cell->tag()()];
+                            order.insert(std::make_pair(block_column_index, common_face->M() * -1));
                         }
-                    }
-                }
-
-                //sort entries based on column index.
-                //std::sort(order.begin(), order.end(), [&](const auto& a, const auto& b){a.first < b.first;}); // map is instrisicly already ordered.
-
-                for (int i = 0; i < NVAR; ++i)
-                {
-                    for (const auto &entry : order)
-                    {
-                        for (int j = 0; j < NVAR; ++j)
+                        else
                         {
-                            int cindex = entry.first;
-                            double val = entry.second(i, j);
-                            //if (std::abs(val) > TAILOR_ZERO)
-                            {
-                                ia.push_back(rindex * NVAR + i);
-                                ja.push_back(cindex * NVAR + j);
-                                a.push_back(val);
-                                ++nz_num;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        rhs.resize(n);
-        for (const auto &mc : mesh.cell())
-        {
-            if (calc_cell(mc))
-            {
-                int rindex = cell_index[mc.tag()()];
-
-                for (int j = 0; j < NVAR; ++j)
-                {
-                    rhs[rindex * NVAR + j] = mc.R(j);
-                }
-
-                for (const auto &mf : mc.face())
-                {
-                    if (mf.btype() == BouType::partition || mf.btype() == BouType::interior)
-                    {
-                        auto [left_cell, right_cell] = left_and_right_cells(mesh, mf, mc.tag());
-
-                        if (!calc_cell(*right_cell))
-                        {
-                            auto common_face = mesh.common_face(*right_cell, mf.tag());
-                            assert(common_face != nullptr);
-
+                            assert(mf.btype() == BouType::interior || mf.btype() == BouType::partition);
                             Vector5 temp = common_face->M() * right_cell->dQ();
 
                             for (int j = 0; j < NVAR; ++j)
                             {
-                                rhs[rindex * NVAR + j] += temp(j);
+                                rhs[block_row_index * NVAR + j] += temp(j);
+                            }
+                        }
+                    }
+                }
+
+                //std::sort(order.begin(), order.end(), [&](const auto& a, const auto& b){a.first < b.first;}); // map is instrisicly already ordered.
+
+                for (int i = 0; i < NVAR; ++i)
+                {
+                    auto row_index = block_row_index * NVAR + i;
+                    for (const auto &entry : order)
+                    {
+                        int block_column_index = entry.first;
+
+                        for (int j = 0; j < NVAR; ++j)
+                        {
+                            auto column_index = block_column_index * NVAR + j;
+                            double val = entry.second(i, j);
+
+                            //if (std::abs(val) > TAILOR_ZERO)
+                            {
+                                ia.push_back(row_index);
+                                ja.push_back(column_index);
+                                a.push_back(val);
                             }
                         }
                     }
@@ -2049,36 +2045,7 @@ namespace Tailor
             }
         }
 
-        assert(ia.size() == nz_num);
-        assert(ja.size() == nz_num);
-        assert(a.size() == nz_num);
-
-        //auto max_ia = std::max_element(ia.begin(), ia.end());
-        //if (*max_ia > n)
-        //{
-        //    std::cout << "max_ia: " << *max_ia << std::endl;
-        //    std::cout << "n: " << n << std::endl;
-        //}
-        //assert(*max_ia <= n);
-
-        //if (rank == 1)
-        //{
-        //    auto temp = ia;
-        //    auto it = std::unique(temp.begin(), temp.end());
-        //    temp.erase(it, temp.end());
-        //    if (temp.size() != n)
-        //    {
-        //        std::cout << "temp size: " << temp.size() << std::endl;
-        //        std::cout << "ia size: " << ia.size() << std::endl;
-        //        std::cout << "n: " << n << std::endl;
-
-        //        for (int i: temp)
-        //        {
-        //            std::cout << "temp: " << i << std::endl;
-        //        }
-        //    }
-        //    assert(temp.size() == n);
-        //}
+        nz_num = a.size();
     }
 
     void make_mat_cr(const Mesh &mesh, int &n, int &nz_num, std::vector<int> &ia, std::vector<int> &ja, std::vector<double> &a, std::vector<double> &rhs, int rank)
@@ -2117,6 +2084,7 @@ namespace Tailor
             std::cout << "n: " << n << std::endl;
             std::cout << "rp size: " << rp.size() << std::endl;
             std::cout << "nz_num: " << nz_num << std::endl;
+            std::cout << "ia.size(): " << ia.size() << std::endl;
         }
         assert(rp.size() == (n + 1));
 
