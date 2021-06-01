@@ -141,9 +141,9 @@ namespace Tailor
         //if (profiler_ != nullptr) {profiler_->start("ds-mrecep");}
         //if (!master() || uniproc_)
         //{
-            //for (SpatialPartition& _sp: spc_->sp_) {
-                //donor_search_adt_mreceptor(_sp, holemap);
-            //}
+            for (SpatialPartition& _sp: spc_->sp_) {
+                donor_search_adt_mreceptor(_sp, holemap, hole_aabb);
+            }
         //}
         //if (profiler_ != nullptr) {profiler_->stop("ds-mrecep");}
 
@@ -727,14 +727,12 @@ namespace Tailor
                         for (const auto& ct: mc.pnei())
                         {
                             const MeshCell& nei = active_mesh.cell(ct);
-                            //const MeshCell& nei = *ct.const_addr();
                             auto neitype = nei.oga_cell_type();
                             if (neitype != OGA_cell_type_t::hole && neitype != OGA_cell_type_t::mandat_receptor)
                             {
                                 const Point& target = nei.poly().centroid();
 
                                 ADTPoint targetadt(target.r(), nei.tag()());
-                                //std::cout << target.r(0) << " " << target.r(1) << " " << nei.tag()() << std::endl;
                                 std::vector<int> res = passive_cell_adt.search(targetadt);
 
                                 for (int r: res)
@@ -742,13 +740,10 @@ namespace Tailor
                                     const MeshCell& passive_cell = passive_mesh.cell(Tag(r));
                                     if (passive_cell.poly().do_intersect(target.r()))
                                     {
-                                        if (passive_cell.oga_cell_type() != OGA_cell_type_t::field) {
-                                            continue;
-                                        }
+                                        //if (passive_cell.oga_cell_type() != OGA_cell_type_t::field) {
+                                            //continue;
+                                        //}
 
-                                        //active_mesh.set_as_mreceptor(ct);
-                                        //active_mesh.set_cell_type(ct, &passive_cell); // to add cand donors.
-                                        //mc.set_oga_cell_type(OGA_cell_type_t::mandat_receptor, passive_cell.parent_mesh(), passive_cell.tag(), &passive_cell);
                                         mc.set_oga_cell_type(OGA_cell_type_t::mandat_receptor);
                                         mc.add_cand_donor(passive_cell.parent_mesh(), passive_cell.tag(), &passive_cell);
                                         break;

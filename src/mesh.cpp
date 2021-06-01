@@ -3243,6 +3243,19 @@ const MeshCell* Mesh::query_bou(const Tag& ic, BouType type) const
             {
                 for (MeshCell& c: cell_)
                 {
+                    for (const auto& f: c.pnei())
+                    {
+                        const auto& nei = cell(f);
+                        if (nei.oga_cell_type() == OGA_cell_type_t::field)
+                        {
+
+                            assert(nei.oga_cell_type() != OGA_cell_type_t::hole);
+                        }
+                    }
+                }
+
+                for (MeshCell& c: cell_)
+                {
                     if (c.oga_cell_type() == OGA_cell_type_t::receptor)
                     {
                         bool has_field_pnei = false;
@@ -3257,6 +3270,19 @@ const MeshCell* Mesh::query_bou(const Tag& ic, BouType type) const
                         if (!has_field_pnei)
                         {
                             c.set_oga_cell_type(OGA_cell_type_t::hole);
+                        }
+                    }
+                }
+                
+                for (MeshCell& c: cell_)
+                {
+                    for (const auto& f: c.pnei())
+                    {
+                            const auto& nei = cell(f);
+                        if (nei.oga_cell_type() == OGA_cell_type_t::field)
+                        {
+
+                            assert(nei.oga_cell_type() != OGA_cell_type_t::hole);
                         }
                     }
                 }

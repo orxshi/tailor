@@ -271,38 +271,38 @@ namespace Tailor
                     out << std::endl; 
                     out.close();
 
-                    if (mesh != sp_.front().mesh().end())
-                    {
-                        std::string fn = "pres_coef-";
-                        fn.append(std::to_string(comm_->rank()));
-                        fn.append("-");
-                        fn.append(std::to_string(i));
-                        fn.append("-");
-                        fn.append(std::to_string(iter));
-                        fn.append(".dat");
+                    //if (mesh != sp_.front().mesh().end())
+                    //{
+                    //    std::string fn = "pres_coef-";
+                    //    fn.append(std::to_string(comm_->rank()));
+                    //    fn.append("-");
+                    //    fn.append(std::to_string(i));
+                    //    fn.append("-");
+                    //    fn.append(std::to_string(iter));
+                    //    fn.append(".dat");
 
-                        std::ofstream out;
-                        out.open(fn);
+                    //    std::ofstream out;
+                    //    out.open(fn);
 
-                        assert(wall != nullptr);
+                    //    assert(wall != nullptr);
 
-                        for (auto mc = wall->begin(); mc != wall->end(); ++mc)
-                        {
-                            out << mc->poly().centroid()(0);
-                            out << " "; 
-                            out << mc->poly().centroid()(1);
-                            out << " "; 
-                            out << mc->poly().centroid()(2);
-                            out << " "; 
-                            out << psi;
-                            out << " "; 
-                            int i = std::distance(wall->begin(), mc);
-                            out << -cp[i];
-                            out << std::endl;
-                        }
+                    //    for (auto mc = wall->begin(); mc != wall->end(); ++mc)
+                    //    {
+                    //        out << mc->poly().centroid()(0);
+                    //        out << " "; 
+                    //        out << mc->poly().centroid()(1);
+                    //        out << " "; 
+                    //        out << mc->poly().centroid()(2);
+                    //        out << " "; 
+                    //        out << psi;
+                    //        out << " "; 
+                    //        int i = std::distance(wall->begin(), mc);
+                    //        out << -cp[i];
+                    //        out << std::endl;
+                    //    }
 
-                        out.close();
-                    }
+                    //    out.close();
+                    //}
                 }
             }
         }

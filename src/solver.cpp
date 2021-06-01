@@ -721,6 +721,11 @@ namespace Tailor
     {
         for (MeshCell &mc : mesh.cell_)
         {
+            if (!calc_cell(mc)) {
+                assert(mc.dQ_ == 0.);
+                continue;
+            }
+
             if (dual_ts_)
             {
                 mc.cons_sp1_ = mc.cons_s_ + mc.dQ_;
@@ -728,13 +733,48 @@ namespace Tailor
             else
             {
                 mc.cons_sp1_ = mc.cons_n_ + mc.dQ_;
-                mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
+            }
+
+            mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
+
+            if (mc.cons_sp1_(4) < 0.)
+            {
+                std::cout << "cons[0]: " << mc.cons_sp1_(0) << std::endl;
+                std::cout << "cons[1]: " << mc.cons_sp1_(1) << std::endl;
+                std::cout << "cons[2]: " << mc.cons_sp1_(2) << std::endl;
+                std::cout << "cons[3]: " << mc.cons_sp1_(3) << std::endl;
+                std::cout << "cons[4]: " << mc.cons_sp1_(4) << std::endl;
+
+                std::cout << "oldcons[0]: " << mc.cons_s_(0) << std::endl;
+                std::cout << "oldcons[1]: " << mc.cons_s_(1) << std::endl;
+                std::cout << "oldcons[2]: " << mc.cons_s_(2) << std::endl;
+                std::cout << "oldcons[3]: " << mc.cons_s_(3) << std::endl;
+                std::cout << "oldcons[4]: " << mc.cons_s_(4) << std::endl;
+
+                std::cout << "dQ[0]: " << mc.dQ_(0) << std::endl;
+                std::cout << "dQ[1]: " << mc.dQ_(1) << std::endl;
+                std::cout << "dQ[2]: " << mc.dQ_(2) << std::endl;
+                std::cout << "dQ[3]: " << mc.dQ_(3) << std::endl;
+                std::cout << "dQ[4]: " << mc.dQ_(4) << std::endl;
             }
         }   
     }
 
-    void Solver::evolve_old_solution_in_time(Mesh& mesh)
+    void Solver::evolve_old_solution_in_time(Mesh& mesh, int runge_kutta_stage)
     {
+        if (temporal_discretization_ == "runge_kutta_4")
+        {
+            if (runge_kutta_stage == 3)
+            {
+                for (MeshCell &mc : mesh.cell_)
+                {
+                    mc.cons_s_ = mc.cons_sp1_;
+                }
+            }
+
+            return;
+        }
+
         for (MeshCell &mc : mesh.cell_)
         {
             if (dual_ts_)
@@ -749,8 +789,13 @@ namespace Tailor
         }
     }
 
-    void Solver::calc_change_in_conserved_var(Mesh& mesh)
+    void Solver::calc_change_in_conserved_var(Mesh& mesh, int runge_kutta_stage)
     {
+        for (MeshCell &mc : mesh.cell_)
+        {
+            mc.dQ_ = 0.;
+        }
+
         if (temporal_discretization_ == "backward_euler")
         {
             linear_solver(mesh);
@@ -765,6 +810,13 @@ namespace Tailor
 
                 double volume = mc.poly().volume();
                 mc.dQ_ = mc.R_ / volume;
+                        //std::cout << "R: " << mc.R_(0) << std::endl;
+                        //std::cout << "R after: " << mc.R_(0) << std::endl;
+                        //std::cout << "volume: " << volume << std::endl;
+                        //std::cout << "cons_n(0)" << mc.cons_n(0) << std::endl;
+                        //std::cout << "cons_nm1(0)" << mc.cons_nm1(0) << std::endl;
+                        //assert(false);
+                        //std::cout << "dQ_ before: " << mc.dQ_(0) << std::endl;
 
                 if (dual_ts_ || steady_) {
                     mc.dQ_ *= mc.dtao_;
@@ -774,6 +826,8 @@ namespace Tailor
                     if (torder_ == 1)
                     {
                         mc.dQ_ *= dt_;
+                        //std::cout << "dt: " << dt_ << std::endl;
+                        //std::cout << "dQ_: " << mc.dQ_(0) << std::endl;
                         //for (int j = 0; j < NVAR; ++j)
                         //{
                             //assert(std::abs(mc.dQ_(j)) > 1e-6);
@@ -783,6 +837,33 @@ namespace Tailor
                     {
                         mc.dQ_ *= (2. / 3.) * dt_;
                     }
+                }
+            }
+        }
+        else if (temporal_discretization_ == "runge_kutta_4")
+        {
+            for (MeshCell &mc : mesh.cell_)
+            {
+                if (!calc_cell(mc))
+                {
+                    continue;
+                }
+
+                double volume = mc.poly().volume();
+
+                runge_kutta_coef_[runge_kutta_stage] = mc.dtao_ * mc.R_ / volume;
+
+                if (runge_kutta_stage < 2)
+                {
+                    mc.dQ_ = 0.5 * runge_kutta_coef_[runge_kutta_stage];
+                }
+                else if (runge_kutta_stage == 2)
+                {
+                    mc.dQ_ = runge_kutta_coef_[runge_kutta_stage];
+                }
+                else
+                {
+                    mc.dQ_ = runge_kutta_coef_[0] / 6. + runge_kutta_coef_[1] / 3. + runge_kutta_coef_[2] / 3. + runge_kutta_coef_[3] / 6.;
                 }
             }
         }
@@ -865,6 +946,11 @@ namespace Tailor
             delete var_exc_;
             var_exc_ = nullptr;
         }
+    }
+
+    int Solver::nsolve() const
+    {
+        return nsolve_;
     }
 
     void Solver::solve()
@@ -1057,21 +1143,21 @@ namespace Tailor
                 assert(m->tag() != mesh.tag());
                 const auto &donor_cell = m->cell(mc.donor().cell_tag_);
 
-                //if (sorder_ == 2)
-                //{
-                //    auto grad = gradient_.ls_grad(*m, donor_cell);
+                if (sorder_ == 2)
+                {
+                    auto grad = gradient_.ls_grad(*m, donor_cell);
 
-                //    Limiter limiter(LimiterType::venka);
-                //    limiter.limit(mesh, mc, grad);
+                    Limiter limiter(LimiterType::venka);
+                    limiter.limit(mesh, mc, grad);
 
-                //    auto d = mc.poly().centroid() - donor_cell.poly().centroid();
+                    auto d = mc.poly().centroid() - donor_cell.poly().centroid();
 
-                //    for (int i = 0; i < NVAR; ++i)
-                //    {
-                //        mc.prim_(i) = donor_cell.prim(i) + limiter(i) * dot(grad[i], d);
-                //    }
-                //}
-                //else
+                    for (int i = 0; i < NVAR; ++i)
+                    {
+                        mc.prim_(i) = donor_cell.prim(i) + limiter(i) * dot(grad[i], d);
+                    }
+                }
+                else
                 {
                     mc.prim_ = donor_cell.prim();
                     mc.dQ_ = donor_cell.dQ();
@@ -1245,34 +1331,43 @@ namespace Tailor
             Vector5 local_residual(TAILOR_BIG_NEG_NUM);
             auto &sp = partition_->spc_->sp_.front();
 
-            update_ghosts();
-
-            for (int i = 0; i < global_nmesh; ++i)
-            {
-                Mesh* mesh_ptr = nullptr;
-                auto meshp = std::find_if(sp.mesh_.begin(), sp.mesh_.end(), [i](Mesh& m){return m.tag()() == i;});
-                auto& mesh = *meshp;
-
-                if (meshp != sp.mesh_.end())
-                {
-                    update_donors(mesh);
-
-                    set_boundary_conditions(mesh);
-                    compute_sum_of_fluxes(mesh, ntimestep);
-                    temporal_discretization(mesh);
-
-                    local_residual = compute_residual(mesh);
-
-                    calc_change_in_conserved_var(mesh);
-                    evolve_solution_in_time(mesh);
-                    evolve_old_solution_in_time(mesh);
-
-                    mesh_ptr = &mesh;
-                }
+            int r_max = 1;
+            if (temporal_discretization_ == "runge_kutta_4") {
+                r_max = 4;
             }
 
-            update_partitioned_mesh_exchanger();
-            update_overset_mesh_exchanger();
+            for (int runge_kutta_stage = 0; runge_kutta_stage < r_max; ++runge_kutta_stage)
+            {
+                update_ghosts();
+
+                for (int i = 0; i < global_nmesh; ++i)
+                {
+                    Mesh* mesh_ptr = nullptr;
+                    auto meshp = std::find_if(sp.mesh_.begin(), sp.mesh_.end(), [i](Mesh& m){return m.tag()() == i;});
+                    auto& mesh = *meshp;
+
+                    if (meshp != sp.mesh_.end())
+                    {
+                        update_donors(mesh);
+
+                        set_boundary_conditions(mesh);
+                        compute_sum_of_fluxes(mesh, ntimestep);
+                        temporal_discretization(mesh);
+
+                        local_residual = compute_residual(mesh);
+
+                        calc_change_in_conserved_var(mesh, runge_kutta_stage);
+
+                        evolve_solution_in_time(mesh);
+                        evolve_old_solution_in_time(mesh, runge_kutta_stage);
+
+                        mesh_ptr = &mesh;
+                    }
+                }
+
+                update_partitioned_mesh_exchanger();
+                update_overset_mesh_exchanger();
+            }
 
             global_residual = get_global_residual(local_residual, ntimestep);
             increase_cfl(global_residual);
@@ -1758,6 +1853,13 @@ namespace Tailor
             }
         }
 
+        for (const auto& f: mc.pnei())
+        {
+            const auto& nei = mesh.cell(f);
+
+            assert(nei.oga_cell_type() != hole);
+        }
+
         auto grad = gradient_.ls_grad(mesh, mc);
 
         Limiter limiter(LimiterType::venka);
@@ -1794,6 +1896,20 @@ namespace Tailor
     //        k1 = mc.dtao_ * mc.R_ / vol;
     //        mc.cons_sp1_ = mc.cons_s_ + 0.5 * k1;
     //        mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
+    //    }
+
+    //    for (int i = 0; i < global_nmesh; ++i)
+    //    {
+    //        Mesh* mesh_ptr = nullptr;
+    //        auto meshp = std::find_if(sp.mesh_.begin(), sp.mesh_.end(), [i](Mesh& m){return m.tag()() == i;});
+    //        auto& mesh = *meshp;
+
+    //        if (meshp != sp.mesh_.end())
+    //        {
+    //            set_boundary_conditions(mesh);
+    //            compute_sum_of_fluxes(mesh, ntimestep);
+    //            temporal_discretization(mesh);
+    //        }
     //    }
 
     //    /*bc_.set_bc(mesh, profiler_);
@@ -2414,7 +2530,13 @@ namespace Tailor
                     if (nsolve_ > 1)
                     {
                         //mc.R_ -= 0.5 * volume * (-4. * mc.cons_n() + mc.cons_nm1()) / dt_;
+                        //std::cout << "R before: " << mc.R_(0) << std::endl;
                         mc.R_ += 0.5 * volume * (mc.cons_n() - mc.cons_nm1()) / dt_;
+                        //std::cout << "R after: " << mc.R_(0) << std::endl;
+                        //std::cout << "volume: " << volume << std::endl;
+                        //std::cout << "cons_n(0)" << mc.cons_n(0) << std::endl;
+                        //std::cout << "cons_nm1(0)" << mc.cons_nm1(0) << std::endl;
+                        //assert(false);
                     }
                 }
             }

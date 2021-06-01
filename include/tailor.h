@@ -26,6 +26,7 @@ namespace Tailor
             int max_time_step_;
             int save_interval_;
             bool assembler_on_;
+            bool solver_on_;
             bool profiler_on_;
             bool load_;
             bool save_;
@@ -43,6 +44,8 @@ namespace Tailor
             void post();
             void save(int time_step, int& save_counter);
             void read_settings();
+            void profiler_start(std::string s);
+            void profiler_stop(std::string s);
     };
 
     std::string make_serialization_folder(int time_step, std::string save_folder);

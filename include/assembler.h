@@ -30,6 +30,7 @@ namespace Tailor
             void set_comm(boost::mpi::communicator* comm);
             void set_profiler(Profiler* prof);
             void read_settings();
+            int nassemble() const;
 
             template<class Archive> void serialize(Archive & ar, const unsigned int version)
             {

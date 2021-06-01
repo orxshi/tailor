@@ -73,6 +73,11 @@ namespace Tailor
         assert(!partition_->spc().sp().empty());
     }
 
+    int Assembler::nassemble() const
+    {
+        return nassemble_;
+    }
+
     void Assembler::rotate(const Tag& mesh, double ang, int axis, const Vector3& pivot)
     {
         partition_->rotate(mesh, ang, axis, pivot);

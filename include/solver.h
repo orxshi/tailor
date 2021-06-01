@@ -57,6 +57,7 @@ namespace Tailor
             Solver(boost::mpi::communicator* comm, const std::vector<std::string>& filename, Profiler* profiler, Partition* partition=nullptr); 
             Solver();
 
+            int nsolve() const;
             void print_settings() const;
             void set_partition(Partition* partition);
 
@@ -128,6 +129,7 @@ namespace Tailor
 
         private:    
                 
+            std::array<Vector5, 4> runge_kutta_coef_;
             double cfl_multiplier_;
             bool increase_cfl_;
             bool dual_ts_;
@@ -188,16 +190,16 @@ namespace Tailor
             void reset_partitioned_mesh_exchanger();
             void init_partitioned_mesh_exchanger();
             void linear_solver(Mesh &mesh);
-            void RK4(Mesh& mesh);
+            //void RK4(Mesh& mesh);
             void connect_partition_cells();
             void exchange_ghosts();
             void set_from_settings();
             //void calc_steady(Mesh& mesh, std::function<void(CellExchanger& cell_exchanger)> exchange_ghosts);
             //void update_cons_explicitly(Mesh& mesh);
             //void update_cons_implicitly(Mesh& mesh, int ntimestep);
-            void calc_change_in_conserved_var(Mesh& mesh);
+            void calc_change_in_conserved_var(Mesh& mesh, int runge_kutta_stage);
             void evolve_solution_in_time(Mesh& mesh);
-            void evolve_old_solution_in_time(Mesh& mesh);
+            void evolve_old_solution_in_time(Mesh& mesh, int runge_kutta_stage);
             void compute_sum_of_fluxes(Mesh &mesh);
             void compute_sum_of_fluxes(Mesh& mesh, int ntimestep);
             //void update_matrices(Mesh& mesh, const Vector5& flux, const Matrix<NVAR, NVAR>& Aroe, MeshFace& mf, MeshCell& LC, MeshCell& RC, const Vector3& n, double vgn, double facearea);

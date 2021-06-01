@@ -106,7 +106,7 @@ namespace Tailor
         solver_->rotate(mesh, ang, axis, pivot);
     }
 
-    Tailor::Tailor(): assembler_on_(true)
+    Tailor::Tailor(): assembler_on_(true), solver_on_(true)
     {
         read_settings();
 
@@ -127,29 +127,52 @@ namespace Tailor
         {
             assembler_ = std::make_unique<Assembler>();
             solver_ = std::make_unique<Solver>();
-            deserialize(*assembler_, &comm_, profiler_.get(), load_folder_);
-            deserialize(assembler_.get(), *solver_, &comm_, profiler_.get(), use_shared_partition_, load_folder_);
+            deserialize(*assembler_, &comm_, nullptr, load_folder_);
+            deserialize(assembler_.get(), *solver_, &comm_, nullptr, use_shared_partition_, load_folder_);
         }
         else
         {
             if (assembler_on_)
             {
-                assembler_ = std::make_unique<Assembler>(&comm_, profiler_.get(), mesh_folder_);
+                profiler_start("create_assembler");
+                assembler_ = std::make_unique<Assembler>(&comm_, nullptr, mesh_folder_);
+                profiler_stop("create_assembler");
             }
 
-            if (use_shared_partition_)
+            if (solver_on_)
             {
-                solver_ = std::make_unique<Solver>(&comm_, mesh_folder_, profiler_.get(), assembler_->partition());
-            }
-            else
-            {
-                solver_ = std::make_unique<Solver>(&comm_, mesh_folder_, profiler_.get());
+                profiler_start("create_solver");
+                if (use_shared_partition_)
+                {
+                    solver_ = std::make_unique<Solver>(&comm_, mesh_folder_, nullptr, assembler_->partition());
+                }
+                else
+                {
+                    solver_ = std::make_unique<Solver>(&comm_, mesh_folder_, nullptr);
+                }
+                profiler_stop("create_solver");
             }
         }
 
-        if (!assembler_on_)
+        if (!assembler_on_ && solver_on_)
         {
             solver_->set_oga_cell_type_all_field();
+        }
+    }
+
+    void Tailor::profiler_start(std::string s)
+    {
+        if (profiler_on_) {
+            assert(profiler_ != nullptr);
+            profiler_->start(s);
+        }
+    }
+
+    void Tailor::profiler_stop(std::string s)
+    {
+        if (profiler_on_) {
+            assert(profiler_ != nullptr);
+            profiler_->stop(s);
         }
     }
 
@@ -158,29 +181,48 @@ namespace Tailor
         if (assembler_on_)
         {
             assembler_->assemble();
+            mem_usage(&comm_,  "assemble");
 
-            if (!use_shared_partition_)
+            if (!use_shared_partition_ && solver_on_)
             {
                 DIExchanger di_exc(&comm_, *assembler_, *solver_);
-                di_exc.exchange(false, "asm-di", profiler_.get());
+                di_exc.exchange(false, "asm-di", nullptr);
 
                 solver_->transfer_oga_cell_type(di_exc.arrival());
             }
         }
 
-        solver_->solve();
-        solver_->partition()->spc().get_coef(solver_->fs(), time_step, solver_->dt());
+        if (solver_on_)
+        {
+            profiler_start("solve");
+            solver_->solve();
+            mem_usage(&comm_,  "solve");
+            solver_->partition()->spc().get_coef(solver_->fs(), solver_->nsolve()-1, solver_->dt());
+            mem_usage(&comm_,  "coef");
+            profiler_stop("solve");
+        }
     }
 
     void Tailor::post()
     {
-        solver_->exchange();
-        solver_->reset_oga_status();
-        solver_->reconnectivity();
+        if (solver_on_)
+        {
+            profiler_start("exchange");
+            solver_->exchange();
+            profiler_stop("exchange");
+            mem_usage(&comm_,  "exchange");
+
+            solver_->reset_oga_status();
+
+            profiler_start("reconnect");
+            solver_->reconnectivity();
+            profiler_stop("reconnect");
+            mem_usage(&comm_,  "reconnect");
+        }
 
         if (assembler_on_)
         {
-            if (!use_shared_partition_)
+            if (!use_shared_partition_ || !solver_on_)
             {
                 assembler_->exchange();
                 assembler_->reset_oga_status();
@@ -188,10 +230,17 @@ namespace Tailor
             }
         }
 
-        solver_->repartition();
+        if (solver_on_)
+        {
+            profiler_start("repartition");
+            solver_->repartition();
+            profiler_stop("repartition");
+        }
+        mem_usage(&comm_,  "repartition");
+
         if (assembler_on_)
         {
-            if (!use_shared_partition_)
+            if (!use_shared_partition_ || !solver_on_)
             {
                 assembler_->repartition();
             }
@@ -202,14 +251,14 @@ namespace Tailor
     {
         if (save_)
         {
+            ++save_counter;
+
             if (save_counter == save_interval_)
             {
-                auto save_folder = make_serialization_folder(time_step, save_folder_);
+                auto save_folder = make_serialization_folder(assembler_->nassemble(), save_folder_);
                 serialize(*assembler_, comm_.rank(), save_folder);
                 serialize(*solver_, comm_.rank(), save_folder);
             }
-
-            ++save_counter;
 
             if (save_counter > save_interval_) {
                 save_counter = 0;
@@ -234,6 +283,7 @@ namespace Tailor
             ("tailor.save_folder", po::value<std::string>()->default_value("sv-"), "")
             ("tailor.mesh_folder", po::value<std::vector<std::string>>()->multitoken(), "")
             ("tailor.profiler", po::value<bool>()->default_value(false), "")
+            ("tailor.solver", po::value<bool>()->default_value(true), "")
             ;
 
         all_options.add(desc);
@@ -253,6 +303,7 @@ namespace Tailor
         load_folder_ = vm["tailor.load_folder"].as<std::string>();
         save_folder_ = vm["tailor.save_folder"].as<std::string>();
         profiler_on_ = vm["tailor.profiler"].as<bool>();
+        solver_on_ = vm["tailor.solver"].as<bool>();
     }
 
     void Tailor::make(std::function<void(Tailor&)> callback)
@@ -267,15 +318,21 @@ namespace Tailor
             if (max_time_step_ > 1)
             {
                 callback(*this);
-                post();
             }
+            post();
             save(time_step, save_counter);
+
+            if (profiler_on_)
+            {
+                profiler_->print_iter(time_step);
+                profiler_->clear_iter();
+            }
         }
 
-        //profiler.print_iter(i);
-        //profiler.clear_iter();
-
-        solver_->print_settings();
+        if (solver_on_)
+        {
+            solver_->print_settings();
+        }
     }
 
     const Solver* Tailor::solver() const
