@@ -17,13 +17,10 @@ namespace Tailor
             const auto& nei = mesh.cell(f);
             for (int i=0; i<NVAR; ++i)
             {
-                if (nei.btype() == BouType::partition) {
-                    data_[i] = 0.;
-                    //data_[i].set_x(0.);
-                    //data_[i].set_y(0.);
-                    //data_[i].set_z(0.);
-                    continue;
-                }
+                //if (nei.btype() == BouType::partition) {
+                    //data_[i] = 0.;
+                    //continue;
+                //}
 
                 if (std::isnan(mc.ls_wx_[ff]))
                 {
@@ -50,6 +47,13 @@ namespace Tailor
                 double tempf = nei.prim(i) - mc.prim(i);
                 //double tempf = f.const_addr()->prim(i) - mc.prim(i);
 
+                if (ff >= mc.ls_wx_.size())
+                {
+                    std::cout << "mc oga: " << static_cast<int>(mc.oga_cell_type()) << std::endl;
+                    std::cout << "ff: " << ff << std::endl;
+                    std::cout << "mc.pnei().size(): " << mc.pnei().size() << std::endl;
+                }
+
                 assert(ff < mc.ls_wx_.size());
                 assert(ff < mc.ls_wy_.size());
                 assert(ff < mc.ls_wz_.size());
@@ -59,9 +63,9 @@ namespace Tailor
                 data_[i](2) = data_[i](2) + mc.ls_wz_[ff] * tempf;
             }
 
-            if (nei.btype() == BouType::partition) {
-                break;
-            }
+            //if (nei.btype() == BouType::partition) {
+                //break;
+            //}
 
             ++ff;
         }

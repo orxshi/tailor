@@ -1145,6 +1145,13 @@ namespace Tailor
 
                 if (sorder_ == 2)
                 {
+                    if (donor_cell.oga_cell_type() != OGA_cell_type_t::field || donor_cell.oga_cell_type() != OGA_cell_type_t::non_resident)
+                    {
+                        std::cout << "mc oga: " << static_cast<int>(donor_cell.oga_cell_type()) << std::endl;
+                    }
+
+                    assert(donor_cell.oga_cell_type() == OGA_cell_type_t::field || donor_cell.oga_cell_type() == OGA_cell_type_t::non_resident);
+
                     auto grad = gradient_.ls_grad(*m, donor_cell);
 
                     Limiter limiter(LimiterType::venka);
@@ -1856,8 +1863,10 @@ namespace Tailor
         for (const auto& f: mc.pnei())
         {
             const auto& nei = mesh.cell(f);
-
-            assert(nei.oga_cell_type() != hole);
+            if (mc.oga_cell_type() == OGA_cell_type_t::field)
+            {
+                assert(nei.oga_cell_type() != OGA_cell_type_t::hole);
+            }
         }
 
         auto grad = gradient_.ls_grad(mesh, mc);

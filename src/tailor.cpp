@@ -17,7 +17,8 @@ namespace Tailor
         file_name.append(".ser");
 
         std::ofstream ofs(file_name);
-        boost::archive::text_oarchive oa(ofs);
+        //boost::archive::text_oarchive oa(ofs);
+        boost::archive::binary_oarchive oa(ofs);
         oa << assembler;
     }
 
@@ -30,7 +31,8 @@ namespace Tailor
         file_name.append(".ser");
 
         std::ifstream ifs(file_name);
-        boost::archive::text_iarchive ia(ifs);
+        //boost::archive::text_iarchive ia(ifs);
+        boost::archive::binary_iarchive ia(ifs);
         ia >> assembler;
 
         assembler.set_comm(comm);
@@ -50,7 +52,8 @@ namespace Tailor
         file_name.append(".ser");
 
         std::ofstream ofs(file_name);
-        boost::archive::text_oarchive oa(ofs);
+        //boost::archive::text_oarchive oa(ofs);
+        boost::archive::binary_oarchive oa(ofs);
         oa << solver;
     }
 
@@ -63,7 +66,8 @@ namespace Tailor
         file_name.append(".ser");
 
         std::ifstream ifs(file_name);
-        boost::archive::text_iarchive ia(ifs);
+        //boost::archive::text_iarchive ia(ifs);
+        boost::archive::binary_iarchive ia(ifs);
         ia >> solver;
 
         if (use_shared_partition)

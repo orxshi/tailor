@@ -29,6 +29,7 @@ namespace Tailor
             void receptor_to_field(const ArrCon<DonorInfo2>& nonresi);
             void determine_orphan(const ArrCon<DonorInfo2>& nonresi);
             void convert_receptor_to_hole();
+            void check_donor_validity();
 
         private:
 

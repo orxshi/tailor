@@ -296,6 +296,11 @@ namespace Tailor
         if (!found) {
             set_type_no_overlap(active_mesh, passivehm, mc);
         }
+
+        //if (active_mesh.oga_cell_type() == OGA_cell_type_t::receptor || active_mesh.oga_cell_type() == OGA_cell_type_t::mandat_receptor)
+        //{
+            //assert(passive_cell.oga_cell_type() == OGA_cell_type_t::field);
+        //}
     }
 
     void ds_adt(Mesh& active_mesh, const Mesh& passive_mesh, const ADT& passive_cell_adt, const HoleMap* passivehm, const SpatialPartition& sp, int rank, int& adthit)
@@ -1233,6 +1238,35 @@ namespace Tailor
         }
     }
 
+    void DonorSearcher::check_donor_validity()
+    {
+        for (auto& sp: spc_->sp_)
+        {
+            for (Mesh& m: sp.mesh_)
+            {
+                for (MeshCell& mc: m.cell_)
+                {
+                    auto type = mc.oga_cell_type();
+                    if (type == OGA_cell_type_t::receptor || type == OGA_cell_type_t::mandat_receptor)
+                    {
+                            auto mesh_it = std::find_if(sp.mesh_.begin(), sp.mesh_.end(), [&](const Mesh& m){return m.tag() == mc.donor().mesh_tag_;});
+                            assert(mesh_it != sp.mesh_.end());
+                            assert(mesh_it->tag() != m.tag());
+
+                            auto cit = mesh_it->query(mc.donor().cell_tag_);
+                            assert(cit != nullptr);
+
+                            if (cit->oga_cell_type() != OGA_cell_type_t::field)
+                            {
+                                std::cout << "oga: " << static_cast<int>(cit->oga_cell_type()) << std::endl;
+                            }
+                            assert(cit->oga_cell_type() == OGA_cell_type_t::field);
+                    }
+                }
+            }
+        }
+    }
+
     void DonorSearcher::convert_orphan_to_field(const ArrCon<DonorInfo2>& arrival)
     {
         assert(false);
@@ -1668,6 +1702,11 @@ namespace Tailor
                     {
                         assert(donor_best != nullptr);
                         mc.set_donor(cdm_best, cdc_best, donor_best);
+                        //if (donor_best->oga_cell_type() != OGA_cell_type_t::field)
+                        //{
+                            //std::cout << static_cast<int>(donor_best->oga_cell_type()) << std::endl;
+                        //}
+                        //assert(donor_best->oga_cell_type() == OGA_cell_type_t::field);
                     }
                     else
                     {

@@ -4,19 +4,19 @@ namespace Tailor
 {
     void mem_usage(const boost::mpi::communicator* comm, std::string s)
     {
-        assert(comm != nullptr);
+        //assert(comm != nullptr);
 
-        std::string fn = "mem-";
-        fn.append(std::to_string(comm->rank()));
-        fn.append(".dat");
-        std::ofstream out;
-        out.open(fn, std::ios_base::app);
+        //std::string fn = "mem-";
+        //fn.append(std::to_string(comm->rank()));
+        //fn.append(".dat");
+        //std::ofstream out;
+        //out.open(fn, std::ios_base::app);
 
-        struct rusage usage;
-        int ret = getrusage(RUSAGE_SELF, &usage);
-        out << s << " " << usage.ru_maxrss << std::endl;
+        //struct rusage usage;
+        //int ret = getrusage(RUSAGE_SELF, &usage);
+        //out << s << " " << usage.ru_maxrss << std::endl;
 
-        out.close();
+        //out.close();
     }
     double Profiler::skewness(const std::pair<std::string, int>& func)
     {

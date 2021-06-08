@@ -344,6 +344,8 @@ namespace Tailor
         donor_searcher.handle_donor_conflict(cand_donor_exc.arrival());
         //if (profiler_ != nullptr) {profiler_->stop("asm-ds-handle");}
 
+        //donor_searcher.check_donor_validity();
+
         //if (profiler_ != nullptr) {profiler_->bstart("asm-canddonor-upd");}
         cand_donor_exc.update(profiler_, "asm-canddonor-upd");
         //if (profiler_ != nullptr) {profiler_->bstop("asm-canddonor-upd");}
@@ -351,6 +353,9 @@ namespace Tailor
         if (profiler_ != nullptr) {profiler_->start("asm-ds-best");}
         donor_searcher.determine_best_donor(cand_donor_exc.arrival());
         if (profiler_ != nullptr) {profiler_->stop("asm-ds-best");}
+
+        //donor_searcher.check_donor_validity();
+
         if (profiler_ != nullptr) {profiler_->start("asm-ds-orphan");}
         donor_searcher.determine_orphan(cand_donor_exc.arrival());
         if (profiler_ != nullptr) {profiler_->stop("asm-ds-orphan");}
@@ -358,6 +363,8 @@ namespace Tailor
         if (profiler_ != nullptr) {profiler_->start("asm-con-receptohole");}
         donor_searcher.convert_receptor_to_hole();
         if (profiler_ != nullptr) {profiler_->stop("asm-con-receptohole");}
+
+        //donor_searcher.check_donor_validity();
 
         //for (const auto& m: partition_->spc_->sp().front().mesh())
         //{
