@@ -226,6 +226,14 @@ namespace Tailor
     {
         //assert(!mesh.cell().empty());
 
+        //if (rank == 0)
+        //{
+        //    mesh.print_as_vtk_geometry("zimesh.vtk");
+        //    print("zioctree.vtk");
+        //    assert(false);
+        //}
+        //std::cout << "rankkkk: " << rank << std::endl;
+
         for (const MeshCell& c: mesh.cell())
         {
             assert(c.tag().isvalid());

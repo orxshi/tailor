@@ -28,6 +28,7 @@ namespace Tailor
         rebalance_thres_(0.),
         print_ds_info_(false),
         print_vtk_(false),
+        print_pre_vtk_(false),
         print_repart_info_(false),
         print_imbalance_(false),
         mergebins_(false),
@@ -49,6 +50,7 @@ namespace Tailor
         rebalance_thres_(0.),
         print_ds_info_(false),
         print_vtk_(false),
+        print_pre_vtk_(false),
         print_repart_info_(false),
         print_imbalance_(false),
         mergebins_(false),
@@ -66,6 +68,19 @@ namespace Tailor
 
         partition_ = new Partition(comm_, load_estim_type_, pseudo3D_, "asm", profiler_);
         partition_->read_mesh(filename);
+
+        if (print_pre_vtk_)
+        {
+            for (const auto& m: partition_->mesh())
+            {
+                std::string fn = "asm-pre-";
+                fn.append(std::to_string(comm_->rank()));
+                fn.append("-");
+                fn.append(std::to_string(m.tag()()));
+                fn.append(".vtk");
+                m.print_as_vtk_geometry(fn);
+            }
+        }
 
         partition_->make(mergebins_, make_load_balance_, nassemble_);
 
@@ -102,6 +117,7 @@ namespace Tailor
             ("assembler.merge-bins", po::value<bool>()->default_value(true), "")
             ("assembler.print-ds-info", po::value<bool>()->default_value(false), "")
             ("assembler.print-vtk", po::value<bool>()->default_value(false), "")
+            ("assembler.print-pre-vtk", po::value<bool>()->default_value(false), "")
             ("assembler.print-repart-info", po::value<bool>()->default_value(false), "")
             ("assembler.print-imbalance", po::value<bool>()->default_value(false), "")
             ;
@@ -125,6 +141,7 @@ namespace Tailor
         print_ds_info_ = vm["assembler.print-ds-info"].as<bool>();
         rebalance_thres_ = vm["assembler.rebalance-thres"].as<double>();
         print_vtk_ = vm["assembler.print-vtk"].as<bool>();
+        print_pre_vtk_ = vm["assembler.print-pre-vtk"].as<bool>();
         print_repart_info_ = vm["assembler.print-repart-info"].as<bool>();
         print_imbalance_ = vm["assembler.print-imbalance"].as<bool>();
     }

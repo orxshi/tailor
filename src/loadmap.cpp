@@ -766,6 +766,8 @@ namespace Tailor
         if (profiler_ != nullptr) {profiler_->start(s);}
         graph_.reset();
         if (profiler_ != nullptr) {profiler_->stop(s);}
+
+        print(nmake_map);
     }
 
     Loadmap::~Loadmap()
@@ -937,9 +939,12 @@ namespace Tailor
     void Loadmap::print_lm() const
     {
         if (!printlm_) {return;}
-        
-        LoadCalculator lc(load_estim_type_, comm_);
-        print_rm(*rm_, lc);
+
+        if (comm_->rank() == 0)
+        {
+            LoadCalculator lc(load_estim_type_, comm_);
+            print_rm(*rm_, lc);
+        }
     }
 
     /*void print_rm(const RegularMesh& rm, std::string ss, const std::map<BinRMTag, int>& bintag_proc_map_)
@@ -966,7 +971,7 @@ namespace Tailor
         s.append(".vtk");
         print_regmesh(s, bintag_proc_map_, lc, rm, *mesh_);
 
-        std::cout << "bin sizee: " << rm_->bin().size() << std::endl;
+        //std::cout << "bin sizee: " << rm_->bin().size() << std::endl;
 
         for (const Bin& b: rm.bin())
         {

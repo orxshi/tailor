@@ -85,6 +85,21 @@ namespace Tailor
         }
 
         connect_cells();
+
+            //std::cout << "uuuuuuuuuuuuuuuuuuuu" << std::endl;
+        
+            //for (const auto& m: mesh_)
+            //{
+            //    std::string fn = "sp-";
+            //    fn.append(std::to_string(comm_->rank()));
+            //    fn.append("-");
+            //    fn.append(std::to_string(m.tag()()));
+            //    fn.append(".vtk");
+            //    m.print_as_vtk_geometry(fn);
+            //}
+
+            //comm_->barrier();
+            //assert(false);
     }
 
     SpatialPartitionContainer& Partition::spc()
@@ -463,15 +478,15 @@ namespace Tailor
             //comm_->barrier(); // delete later.
 
             mesh_.push_back(std::move(m));
-            /*for (const auto& m: mesh_)
-            {
-                std::string fn = "readmeshrior-";
-                fn.append(std::to_string(comm_->rank()));
-                fn.append("-");
-                fn.append(std::to_string(m.tag()()));
-                fn.append(".vtk");
-                m.print_as_vtk_geometry(fn);
-            }*/
+            //for (const auto& m: mesh_)
+            //{
+            //    std::string fn = "readmeshrior-";
+            //    fn.append(std::to_string(comm_->rank()));
+            //    fn.append("-");
+            //    fn.append(std::to_string(m.tag()()));
+            //    fn.append(".vtk");
+            //    m.print_as_vtk_geometry(fn);
+            //}
 
 
             //read_mesh_(BouType::wall, fn);

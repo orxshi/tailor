@@ -37,6 +37,7 @@ namespace Tailor
                 ar & rebalance_thres_;
                 ar & print_ds_info_;
                 ar & print_vtk_;
+                ar & print_pre_vtk_;
                 ar & print_repart_info_;
                 ar & print_imbalance_;
                 ar & mergebins_;
@@ -62,6 +63,7 @@ namespace Tailor
             double rebalance_thres_;
             bool print_ds_info_;
             bool print_vtk_;
+            bool print_pre_vtk_;
             bool print_repart_info_;
             bool print_imbalance_;
             bool mergebins_;
