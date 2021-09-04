@@ -65,7 +65,7 @@ namespace Tailor
         auto old = p_.r();
         auto z = p_.r() - rot_point;
         auto newz = rm.rotate(angle, axis, z);
-        p_.set_r(newz + rot_point);
+        p_.set_r(newz + rot_point - 0.1*sin(angle) + 0.2*cos(angle));
 
         if (std::isnan(p_.r(0)) || std::isnan(p_.r(1)) || std::isnan(p_.r(2)))
         {

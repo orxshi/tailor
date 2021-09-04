@@ -7,15 +7,15 @@ void rotate(Tailor::Tailor& tailor)
 
     double rpm = compo.rpm_;
     double om = rpm * 2. * Tailor::PI / 60.; // rad/s
-    double aoa = om * tailor.solver()->dt(); // rad/s * time step
+    double azimuth = om * tailor.solver()->dt(); // rad/s * time step
     int axis = compo.rotaxis_;
     Tailor::Vector3 pivot(compo.pivot_(0), compo.pivot_(1), compo.pivot_(2));
 
-    tailor.rotate(Tailor::Tag(1), aoa, axis, pivot);
-    tailor.rotate(Tailor::Tag(2), aoa, axis, pivot);
-    tailor.rotate(Tailor::Tag(3), aoa, axis, pivot);
-    tailor.rotate(Tailor::Tag(4), aoa, axis, pivot);
-    tailor.rotate(Tailor::Tag(5), aoa, axis, pivot);
+    tailor.rotate(Tailor::Tag(1), azimuth, axis, pivot);
+    tailor.rotate(Tailor::Tag(2), azimuth, axis, pivot);
+    tailor.rotate(Tailor::Tag(3), azimuth, axis, pivot);
+    tailor.rotate(Tailor::Tag(4), azimuth, axis, pivot);
+    tailor.rotate(Tailor::Tag(5), azimuth, axis, pivot);
 }
 
 int main()
