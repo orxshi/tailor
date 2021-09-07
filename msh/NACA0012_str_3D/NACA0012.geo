@@ -2,13 +2,14 @@ c=1; // chord length
 t=12 * c / 100; // thickness -- NACA0012
 nX=1000; // number of 'x' points
 depth=1000; // extrusion length
-transCircleEach=11;
-transVert=20;
-major=500;
-minor=500;
+transCircleEach=80;
+transVert=70;
+major=30;
+minor=30;
 originx=0;
 originy=0;
 nz=1;
+stretchVert=0.50;
 
 cenPx = originx;
 cenPy = originy;
@@ -109,10 +110,10 @@ Transfinite Line{circleQ2} = transCircleEach Using Progression 1.0;
 Transfinite Line{circleQ3} = transCircleEach Using Progression 1.0;
 Transfinite Line{circleQ4} = transCircleEach Using Progression 1.0;
 
-Transfinite Line{lnn} = transVert Using Progression 0.78; // 0.78
-Transfinite Line{lee} = transVert Using Progression 0.78;
-Transfinite Line{lww} = transVert Using Progression 0.78;
-Transfinite Line{lss} = transVert Using Progression 0.78;
+Transfinite Line{lnn} = transVert Using Progression stretchVert; // 0.78
+Transfinite Line{lee} = transVert Using Progression stretchVert;
+Transfinite Line{lww} = transVert Using Progression stretchVert;
+Transfinite Line{lss} = transVert Using Progression stretchVert;
 
 Transfinite Line{liws} = transCircleEach Using Progression 1.0;
 Transfinite Line{lise} = transCircleEach Using Progression 1.0;
