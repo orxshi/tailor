@@ -183,28 +183,28 @@ out[] = Extrude {0,0,depth} { Surface{1,2,3,4}; Layers{nz}; Recombine;};
 //Printf("out[22], skip: %g",out[22]);
 //Printf("out[23], foil: %g",out[23]);
 //
-//outerbc[0] = out[3];
-//outerbc[1] = out[9];
-//outerbc[2] = out[15];
-//outerbc[3] = out[21];
-//
-//wallbc[0] = out[5];
-//wallbc[1] = out[11];
-//wallbc[2] = out[17];
-//wallbc[3] = out[23];
-//
-//outerbc[4] = out[0];
-//outerbc[5] = out[1];
-//outerbc[6] = out[6];
-//outerbc[7] = out[7];
-//outerbc[8] = out[12];
-//outerbc[9] = out[13];
-//outerbc[10] = out[18];
-//outerbc[11] = out[19];
-//
-////Physical Surface(2) = outerbc[];
-////Physical Surface(3) = emptybc[];
-////Physical Surface(9) = outerbc[];
-//Physical Surface(11) = outerbc[];
-//Physical Surface(1) = wallbc[];
-//Physical Volume(4) = {1,2,3,4};
+outerbc[0] = out[3];
+outerbc[1] = out[9];
+outerbc[2] = out[15];
+outerbc[3] = out[21];
+
+wallbc[0] = out[5];
+wallbc[1] = out[11];
+wallbc[2] = out[17];
+wallbc[3] = out[23];
+
+outerbc[4] = out[0];
+outerbc[5] = out[1];
+outerbc[6] = out[6];
+outerbc[7] = out[7];
+outerbc[8] = out[12];
+outerbc[9] = out[13];
+outerbc[10] = out[18];
+outerbc[11] = out[19];
+
+//Physical Surface(2) = outerbc[];
+//Physical Surface(3) = emptybc[];
+//Physical Surface(9) = outerbc[];
+Physical Surface(11) = outerbc[];
+Physical Surface(1) = wallbc[];
+Physical Volume(4) = {1,2,3,4};
