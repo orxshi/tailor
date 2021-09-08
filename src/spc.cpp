@@ -833,6 +833,7 @@ namespace Tailor
     void SpatialPartitionContainer::remap_uniproc(const std::deque<Mesh>& mesh)
     {
         SpatialPartition sp;
+        sp.set_tag(Tag(0));
 
         AABB aabb;
 
@@ -915,7 +916,9 @@ namespace Tailor
                     {
                         sp_.push_back(other_sp);
                         sp_.back().set_comm(comm_); 
-                        sp_.back().set_profiler(profiler_);
+                        if (profiler_ != nullptr) {
+                            sp_.back().set_profiler(profiler_);
+                        }
                         //cond[i] = true;
                         assert(!sp_.back().aabb().faces().empty());
                     } 
@@ -1101,7 +1104,9 @@ namespace Tailor
         {
             sp_.push_back(other_sp);
             sp_.back().set_comm(comm_); 
-            sp_.back().set_profiler(profiler_);
+            if (profiler_ != nullptr) {
+                sp_.back().set_profiler(profiler_);
+            }
         } 
         else
         {

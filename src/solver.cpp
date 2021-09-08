@@ -96,15 +96,17 @@ namespace Tailor
                        last_global_residual_(0.),
                        donor_var_exc_(nullptr),
                        riemann_solver_type_(RiemannSolverType::roe),
-                       dual_ts_(false)
+                       dual_ts_(false),
+                       global_nmesh_(0)
     {
     }
 
-    Solver::Solver(boost::mpi::communicator *comm, const std::vector<std::string> &filename, Profiler *profiler, Partition *partition) : verbose_(true), maxtimestep_(10000), comm_(comm), var_exc_(nullptr), donor_var_exc_(nullptr), nsolve_(0), profiler_(profiler), partition_(partition), 
+    Solver::Solver(boost::mpi::communicator *comm, const std::vector<std::string> &filename, Profiler *profiler, Partition *partition) : verbose_(true), maxtimestep_(10000), comm_(comm), var_exc_(nullptr), donor_var_exc_(nullptr), nsolve_(0), profiler_(profiler), partition_(partition),
     initial_global_residual_(0.),
     last_global_residual_(0.),
     increase_cfl_(true),
-    cfl_multiplier_(100.)
+    cfl_multiplier_(100.),
+    global_nmesh_(0)
     {
         read_settings();
 
@@ -129,6 +131,8 @@ namespace Tailor
                 partition_->spc_->global_rm().print("sol");
             }
         }
+
+        global_nmesh_ = partition_->spc_->mesh_system_size();
 
         if (comm_->size() != 1)
         {
@@ -165,6 +169,11 @@ namespace Tailor
             }
         }
 
+        if (print_vtk_init_)
+        {
+            print_mesh_vtk("solinit");
+        }
+
         //for (const auto& sp: partition_->spc().sp())
         //{
         //    for (const auto& m: sp.mesh())
@@ -183,6 +192,11 @@ namespace Tailor
 
     void Solver::reconnectivity()
     {
+        if (comm_->size() == 1)
+        {
+            return;
+        }
+
         if (profiler_ != nullptr)
         {
             profiler_->start("sol-cae");
@@ -199,6 +213,11 @@ namespace Tailor
 
     void Solver::reset_oga_status()
     {
+        if (global_nmesh_ == 1)
+        {
+            return;
+        }
+
         if (profiler_ != nullptr)
         {
             profiler_->start("sol-reset-oga");
@@ -528,6 +547,7 @@ namespace Tailor
             ("solver.can-rebalance", po::value<bool>()->default_value(true), "Make load rebalance if needed.")
             ("solver.force-rebalance", po::value<bool>()->default_value(false), "Force load rebalance even if relabalance is not needed.")
             ("solver.print-vtk", po::value<bool>()->default_value(false), "")
+            ("solver.print-vtk-init", po::value<bool>()->default_value(false), "")
             ("solver.print-repart-info", po::value<bool>()->default_value(false), "")
             ("solver.print-imbalance", po::value<bool>()->default_value(false), "")
             ("solver.riemann-solver", po::value<int>()->default_value(0), "")
@@ -571,6 +591,7 @@ namespace Tailor
         force_rebalance_ = vm["solver.force-rebalance"].as<bool>();
         rebalance_thres_ = vm["solver.rebalance-thres"].as<double>();
         print_vtk_ = vm["solver.print-vtk"].as<bool>();
+        print_vtk_init_ = vm["solver.print-vtk-init"].as<bool>();
         print_repart_info_ = vm["solver.print-repart-info"].as<bool>();
         print_imbalance_ = vm["solver.print-imbalance"].as<bool>();
         repart_ratio_ = vm["solver.repart-ratio"].as<int>();
@@ -955,6 +976,7 @@ namespace Tailor
 
     void Solver::solve()
     {
+        std::cout << "Solving" << std::endl;
         partition_->print_cell_dist(comm_, nsolve_);
 
         if (nsolve_ == 0)
@@ -968,7 +990,9 @@ namespace Tailor
         init_old_conservative_var();
         auto residual = non_linear_iteration();
         print_residual(residual);
-        print_mesh_vtk();
+        if (print_vtk_) {
+            print_mesh_vtk("sol");
+        }
         reset_overset_mesh_exchanger();
         reset_partitioned_mesh_exchanger();
 
@@ -977,40 +1001,72 @@ namespace Tailor
         }
     }
 
-    void Solver::print_mesh_vtk()
+    void Solver::print_mesh_vtk(std::string fn0)
     {
-        if (print_vtk_)
+        for (const auto &sp : partition_->spc().sp())
         {
-            for (const auto &sp : partition_->spc().sp())
+            for (const auto &m : sp.mesh())
             {
-                for (const auto &m : sp.mesh())
-                {
-                    std::string fn = "sol-";
-                    fn.append(std::to_string(m.tag()()));
-                    fn.append("-");
-                    fn.append(std::to_string(comm_->rank()));
-                    fn.append("-");
-                    fn.append(std::to_string(sp.tag()()));
-                    fn.append(".vtk");
-                    m.print_as_vtk(fn);
-                }
+                std::string fn = fn0.append("-");
+                fn.append(std::to_string(m.tag()()));
+                fn.append("-");
+                fn.append(std::to_string(comm_->rank()));
+                fn.append("-");
+                fn.append(std::to_string(sp.tag()()));
+                fn.append(".vtk");
+                m.print_as_vtk(fn);
             }
-            for (const auto &sp : partition_->spc().sp())
+        }
+        for (const auto &sp : partition_->spc().sp())
+        {
+            for (const auto &m : sp.mesh())
             {
-                for (const auto &m : sp.mesh())
-                {
-                    std::string fn = "solwall-";
-                    fn.append(std::to_string(m.tag()()));
-                    fn.append("-");
-                    fn.append(std::to_string(comm_->rank()));
-                    fn.append("-");
-                    fn.append(std::to_string(sp.tag()()));
-                    fn.append(".vtk");
-                    m.print_wall_as_vtk(fn);
-                }
+                std::string fn = fn0.append("wall-");
+                fn.append(std::to_string(m.tag()()));
+                fn.append("-");
+                fn.append(std::to_string(comm_->rank()));
+                fn.append("-");
+                fn.append(std::to_string(sp.tag()()));
+                fn.append(".vtk");
+                m.print_wall_as_vtk(fn);
             }
         }
     }
+
+    //void Solver::print_mesh_vtk()
+    //{
+    //    if (print_vtk_)
+    //    {
+    //        for (const auto &sp : partition_->spc().sp())
+    //        {
+    //            for (const auto &m : sp.mesh())
+    //            {
+    //                std::string fn = "sol-";
+    //                fn.append(std::to_string(m.tag()()));
+    //                fn.append("-");
+    //                fn.append(std::to_string(comm_->rank()));
+    //                fn.append("-");
+    //                fn.append(std::to_string(sp.tag()()));
+    //                fn.append(".vtk");
+    //                m.print_as_vtk(fn);
+    //            }
+    //        }
+    //        for (const auto &sp : partition_->spc().sp())
+    //        {
+    //            for (const auto &m : sp.mesh())
+    //            {
+    //                std::string fn = "solwall-";
+    //                fn.append(std::to_string(m.tag()()));
+    //                fn.append("-");
+    //                fn.append(std::to_string(comm_->rank()));
+    //                fn.append("-");
+    //                fn.append(std::to_string(sp.tag()()));
+    //                fn.append(".vtk");
+    //                m.print_wall_as_vtk(fn);
+    //            }
+    //        }
+    //    }
+    //}
 
     //void Solver::restore_solution()
     //{
@@ -1265,6 +1321,10 @@ namespace Tailor
     {
         auto &sp = partition_->spc_->sp_.front();
 
+        if (sp.mesh_.size() == 1) {
+            return;
+        }
+
         for (Mesh& mesh: sp.mesh_)
         {
             mesh.update_ghost_primitives(var_exc_->arrival(), comm_->rank(), fs_.gamma_);
@@ -1331,7 +1391,7 @@ namespace Tailor
         // for dual time stepping.
 
         Vector5 global_residual(-1.);
-        auto global_nmesh = partition_->spc_->mesh_system_size();
+        //auto global_nmesh = partition_->spc_->mesh_system_size();
 
         for (int ntimestep = 0; ntimestep < maxtimestep_; ++ntimestep)
         {
@@ -1347,7 +1407,7 @@ namespace Tailor
             {
                 update_ghosts();
 
-                for (int i = 0; i < global_nmesh; ++i)
+                for (int i = 0; i < global_nmesh_; ++i)
                 {
                     Mesh* mesh_ptr = nullptr;
                     auto meshp = std::find_if(sp.mesh_.begin(), sp.mesh_.end(), [i](Mesh& m){return m.tag()() == i;});
@@ -1402,26 +1462,36 @@ namespace Tailor
 
     void Solver::print_sub_solver_residual(int ntimestep, const Vector5& residual)
     {
+        std::streambuf* buf;
+        std::ofstream of;
+
+        if (comm_->size() == 1)
         {
-            if (comm_->rank() == 0)
-            {
-                std::ofstream out;
-                std::string fn = "residual-";
-                fn.append(std::to_string(nsolve_));
-                fn.append(".dat");
-                out.open(fn, std::ios_base::app);
-
-                out << ntimestep << " ";
-                for (int i = 0; i < residual.nelm(); ++i)
-                {
-                    out << std::scientific << residual(i) << std::fixed;
-                    out << " ";
-                }
-                out << std::endl;
-
-                out.close();
-            }
+            buf = std::cout.rdbuf();
         }
+        else
+        {
+            std::string fn = "residual-";
+            fn.append(std::to_string(nsolve_));
+            fn.append(".dat");
+            of.open(fn, std::ios_base::app);
+            buf = of.rdbuf();
+        }
+
+        std::ostream out(buf);
+
+        if (comm_->rank() == 0)
+        {
+            out << ntimestep << " ";
+            for (int i = 0; i < residual.nelm(); ++i)
+            {
+                out << std::scientific << residual(i) << std::fixed;
+                out << " ";
+            }
+            out << std::endl;
+        }
+
+        of.close();
     }
 
     Vector5 Solver::get_global_residual(const Vector5& local_residual, int ntimestep)

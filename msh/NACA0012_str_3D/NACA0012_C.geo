@@ -2,9 +2,9 @@ c=1; // chord length
 t=12 * c / 100; // thickness -- NACA0012
 nX=1000; // number of 'x' points
 depth=1000; // extrusion length
-transX=100;
-transY=100;
-transWake=100;
+transX=30; //100
+transY=30; //100
+transWake=30; //100
 stretchWake=0.95;
 major=30;
 minor=30;
@@ -155,56 +155,71 @@ Recombine Surface{4};
 //
 out[] = Extrude {0,0,depth} { Surface{1,2,3,4}; Layers{nz}; Recombine;};
 //
-//Printf("out[0], empty: %g",out[0]);
-//Printf("out[1], empty: %g",out[1]);
-//Printf("out[2], skip: %g",out[2]);
-//Printf("out[3], outer: %g",out[3]);
-//Printf("out[4], skip: %g",out[4]);
-//Printf("out[5], foil: %g",out[5]);
-//
-//Printf("out[6], empty: %g",out[6]);
-//Printf("out[7], empty: %g",out[7]);
-//Printf("out[8], skip: %g",out[8]);
-//Printf("out[9], outer: %g",out[9]);
-//Printf("out[10], skip: %g",out[10]);
-//Printf("out[11], foil: %g",out[11]);
-//
-//Printf("out[12], empty: %g",out[12]);
-//Printf("out[13], empty: %g",out[13]);
-//Printf("out[14], skip: %g",out[14]);
-//Printf("out[15], outer: %g",out[15]);
-//Printf("out[16], skip: %g",out[16]);
-//Printf("out[17], foil: %g",out[17]);
-//
-//Printf("out[18], empty: %g",out[18]);
-//Printf("out[19], empty: %g",out[19]);
-//Printf("out[20], skip: %g",out[20]);
-//Printf("out[21], outer: %g",out[21]);
-//Printf("out[22], skip: %g",out[22]);
-//Printf("out[23], foil: %g",out[23]);
+Printf("out[0], empty: %g",out[0]);
+Printf("out[1], empty: %g",out[1]);
+Printf("out[2], skip: %g",out[2]);
+Printf("out[3], outer: %g",out[3]);
+Printf("out[4], skip: %g",out[4]);
+Printf("out[5], foil: %g",out[5]);
+
+Printf("out[6], empty: %g",out[6]);
+Printf("out[7], empty: %g",out[7]);
+Printf("out[8], skip: %g",out[8]);
+Printf("out[9], outer: %g",out[9]);
+Printf("out[10], skip: %g",out[10]);
+Printf("out[11], foil: %g",out[11]);
+
+Printf("out[12], empty: %g",out[12]);
+Printf("out[13], empty: %g",out[13]);
+Printf("out[14], skip: %g",out[14]);
+Printf("out[15], outer: %g",out[15]);
+Printf("out[16], skip: %g",out[16]);
+Printf("out[17], foil: %g",out[17]);
+
+Printf("out[18], empty: %g",out[18]);
+Printf("out[19], empty: %g",out[19]);
+Printf("out[20], skip: %g",out[20]);
+Printf("out[21], outer: %g",out[21]);
+Printf("out[22], skip: %g",out[22]);
+Printf("out[23], foil: %g",out[23]);
 //
 outerbc[0] = out[3];
 outerbc[1] = out[9];
-outerbc[2] = out[15];
-outerbc[3] = out[21];
+outerbc[2] = out[10];
+outerbc[3] = out[15];
+outerbc[4] = out[21];
+outerbc[5] = out[22];
 
 wallbc[0] = out[5];
-wallbc[1] = out[11];
 wallbc[2] = out[17];
-wallbc[3] = out[23];
 
-outerbc[4] = out[0];
-outerbc[5] = out[1];
-outerbc[6] = out[6];
-outerbc[7] = out[7];
-outerbc[8] = out[12];
-outerbc[9] = out[13];
-outerbc[10] = out[18];
-outerbc[11] = out[19];
+emptybc[0] = out[0];
+emptybc[1] = out[1];
+emptybc[2] = out[6];
+emptybc[3] = out[7];
+emptybc[4] = out[12];
+emptybc[5] = out[13];
+emptybc[6] = out[18];
+emptybc[7] = out[19];
 
-//Physical Surface(2) = outerbc[];
-//Physical Surface(3) = emptybc[];
-//Physical Surface(9) = outerbc[];
-Physical Surface(11) = outerbc[];
+Printf("outerbc[0]: %g",outerbc[0]);
+Printf("outerbc[1]: %g",outerbc[1]);
+Printf("outerbc[2]: %g",outerbc[2]);
+Printf("outerbc[3]: %g",outerbc[3]);
+Printf("outerbc[4]: %g",outerbc[4]);
+Printf("outerbc[5]: %g",outerbc[5]);
+
+Printf("wallbc[0]: %g",wallbc[0]);
+Printf("wallbc[1]: %g",wallbc[1]);
+
+Printf("emptybc[0]: %g",emptybc[0]);
+Printf("emptybc[1]: %g",emptybc[1]);
+Printf("emptybc[2]: %g",emptybc[2]);
+Printf("emptybc[3]: %g",emptybc[3]);
+Printf("emptybc[4]: %g",emptybc[4]);
+Printf("emptybc[5]: %g",emptybc[5]);
+
 Physical Surface(1) = wallbc[];
+Physical Surface(2) = outerbc[];
+Physical Surface(3) = emptybc[];
 Physical Volume(4) = {1,2,3,4};

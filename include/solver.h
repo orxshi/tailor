@@ -88,6 +88,7 @@ namespace Tailor
                 ar & initratio_;
                 ar & print_imbalance_;
                 ar & print_vtk_;
+                ar & print_vtk_init_;
                 ar & print_repart_info_;
                 ar & rebalance_thres_;
                 ar & can_rebalance_;
@@ -125,10 +126,12 @@ namespace Tailor
                 ar & riemann_solver_type_;
                 ar & increase_cfl_;
                 ar & cfl_multiplier_;
+                ar & global_nmesh_;
             }
 
         private:    
-                
+
+            int global_nmesh_;
             std::array<Vector5, 4> runge_kutta_coef_;
             double cfl_multiplier_;
             bool increase_cfl_;
@@ -138,6 +141,7 @@ namespace Tailor
             double initratio_;
             bool print_imbalance_;
             bool print_vtk_;
+            bool print_vtk_init_;
             bool print_repart_info_;
             double rebalance_thres_;
             bool can_rebalance_;
@@ -215,7 +219,7 @@ namespace Tailor
             void update_matrices(MeshFace *this_face, MeshFace *common_face, MeshCell& left_cell, MeshCell& right_cell, double facearea, const Vector3& face_velocity, double gamma, const Matrix5& rotation_matrix, const Matrix5& inv_rotation_matrix, const Matrix5& Aroe);
             void apply_limiter(Mesh &mesh, MeshCell &mc, const MeshFace &mf);
             void print_residual(const Vector5& residual);
-            void print_mesh_vtk();
+            void print_mesh_vtk(std::string);
             void update_ghosts();
             void update_donors(Mesh& mesh);
             void set_boundary_conditions(Mesh& mesh);

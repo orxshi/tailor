@@ -439,6 +439,7 @@ namespace Tailor
 
             Mesh m;
             m.set_tag(Tag(i));
+            std::cout << "Reading interior mesh of " << fn << std::endl;
             read_msh(m, fn, "interior", comm_->rank(), comm_->size());
             if (m.cell().empty())
             {
@@ -446,6 +447,7 @@ namespace Tailor
             }
             assert(!m.cell().empty());
 
+            std::cout << "Reading boundaries mesh of " << fn << std::endl;
             m.connect_add_bou_to_interior(BouType::wall, comm_->rank());
             m.connect_add_bou_to_interior(BouType::dirichlet, comm_->rank());
             m.connect_add_bou_to_interior(BouType::farfield, comm_->rank());
@@ -529,6 +531,7 @@ namespace Tailor
                 }
             }
         }
+        std::cout << "Read meshes" << std::endl;
     }
 
     Partition::~Partition()
