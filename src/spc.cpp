@@ -204,36 +204,36 @@ namespace Tailor
                 out << global[6]; // cl
                 out << std::endl; 
                 out.close();
+            }
 
-                if (mesh != sp_.front().mesh().end())
+            if (mesh != sp_.front().mesh().end())
+            {
+                std::string fn = "pres_coef-";
+                fn.append(std::to_string(comm_->rank()));
+                fn.append("-");
+                fn.append(std::to_string(i));
+                fn.append("-");
+                fn.append(std::to_string(iter));
+                fn.append(".dat");
+
+                std::ofstream out;
+                out.open(fn);
+
+                for (const auto& P: local_coef.p)
                 {
-                    std::string fn = "pres_coef-";
-                    fn.append(std::to_string(comm_->rank()));
-                    fn.append("-");
-                    fn.append(std::to_string(i));
-                    fn.append("-");
-                    fn.append(std::to_string(iter));
-                    fn.append(".dat");
+                    auto [cnt, p] = P;
 
-                    std::ofstream out;
-                    out.open(fn);
-
-                    for (const auto& P: local_coef.p)
-                    {
-                        auto [cnt, p] = P;
-
-                        out << cnt(0);
-                        out << " "; 
-                        out << cnt(1);
-                        out << " "; 
-                        out << cnt(2);
-                        out << " "; 
-                        out << p;
-                        out << std::endl;
-                    }
-
-                    out.close();
+                    out << cnt(0);
+                    out << " "; 
+                    out << cnt(1);
+                    out << " "; 
+                    out << cnt(2);
+                    out << " "; 
+                    out << p;
+                    out << std::endl;
                 }
+
+                out.close();
             }
         }
     }
