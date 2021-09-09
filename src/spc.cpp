@@ -117,36 +117,16 @@ namespace Tailor
         //}
     }
 
-    void get_coef_(const Mesh& mesh, std::vector<double>& cp, double& local_cN, double& local_cA, double& local_cY, double& local_cT, double& local_cn, double& local_cm, double& local_cl, const SpatialPartitionContainer* spc, const Freestream& fs, double dt)
+    void get_coef_(const Mesh& mesh, AeroCoef& local_coef, const AeroCoefPara& aero_para, const SpatialPartitionContainer* spc)
     {
         const auto& wall = mesh.wall_boundaries();
 
-        double pref = fs.pinf_;
-        double rhoref = fs.rhoinf_;
-        double gamma = fs.gamma_;
-
-        double INCH_TO_M = 0.0254;
-
-        double uncut_wing_length = 33.88 * INCH_TO_M;
-        double root_cut_out = 0.24 * uncut_wing_length;
-        //double R = uncut_wing_length - root_cut_out;
-        double R = uncut_wing_length;
-
-        double rpm = 2000.;
-        double om = rpm * 2. * PI / 60.; // rad/s
-
-        double stip = R * om; // wing tip speed
-        double A = PI * R * R;
-
-        double dpP = rhoref * stip * stip; // no 0.5 in NASA paper.
-        double dpF = dpP * A;
-        double dpM = dpF * R;
-
-        double fuslen = 78.57 * INCH_TO_M / 1.997;
-        Vector3 hub(0.696 * fuslen, 0., 0.322 * fuslen);
+        double moment_length = aero_para.moment_length; 
 
         Vector3 F(0., 0., 0.);
         Vector3 M(0., 0., 0.);
+        std::vector<std::tuple<Vector3, double>> P;
+        P.reserve(wall.size());
 
         for (auto mc = wall.begin(); mc != wall.end(); ++mc)
         {
@@ -162,24 +142,17 @@ namespace Tailor
                 continue;
             }
 
-            int i = std::distance(wall.begin(), mc);
-            cp[i] = (mc->prim(4) - pref) / dpP;
+            P.push_back(std::make_tuple(cnt, (mc->prim(4) - aero_para.p_ref) / aero_para.dpp()));
             F = F + mc->face()[0].face().normal() * mc->prim(4) * std::abs(mc->face()[0].face().signed_area());
-            M = M + cross(cnt - hub, F);
+            M = M + cross(cnt - moment_length, F);
         }
 
-        local_cN = F(2) / dpF;
-        local_cA = F(0) / dpF;
-        local_cY = F(1) / dpF;
-        local_cT = std::sqrt(F(0) * F(0) + F(1) * F(1) + F(2) * F(2)) / dpF; // thrust coef.
-
-        local_cn = M(2) / dpM;
-        local_cm = M(1) / dpM;
-        local_cl = M(0) / dpM;
-
+        local_coef.get_pressure_coef(P);
+        local_coef.get_force_coef(F, aero_para);
+        local_coef.get_moment_coef(M, aero_para);
     }
 
-    void SpatialPartitionContainer::get_coef(const Freestream& fs, int iter, double dt) const
+    void SpatialPartitionContainer::get_coef(const std::vector<AeroCoefPara>& aero_para, int iter) const
     {
         int mss = mesh_system_size();
         for (int i = 0; i < mss; ++i)
@@ -187,122 +160,79 @@ namespace Tailor
             std::vector<double> local, global;
             local.resize(7, 0.);
             global.resize(7, 0.);
-            //double global_cN = 0.;
-            //double global_cA = 0.;
-            //double global_cY = 0.;
-            //double global_cT = 0.;
-            //double global_cn = 0.;
-            //double global_cm = 0.;
-            //double global_cl = 0.;
 
-            //for (const Mesh& mesh: sp_.front().mesh())
+            AeroCoef local_coef;
+
+            auto mesh = std::find_if(sp_.front().mesh().begin(), sp_.front().mesh().end(), [&](const auto& m){return m.tag()() == i;});
+            if (mesh != sp_.front().mesh().end())
             {
-                //if (mesh.tag()() != i) {
-                    //continue;
-                //}
+                get_coef_(*mesh, local_coef, aero_para[i], this);
+            }
 
-                double local_cN = 0.;
-                double local_cA = 0.;
-                double local_cY = 0.;
-                double local_cT = 0.;
-                double local_cn = 0.;
-                double local_cm = 0.;
-                double local_cl = 0.;
-                std::vector<double> cp;
+            local[0] = local_coef.f(0);
+            local[1] = local_coef.f(1);
+            local[2] = local_coef.f(2);
+            local[3] = local_coef.thrust;
+            local[4] = local_coef.m(0);
+            local[5] = local_coef.m(1);
+            local[6] = local_coef.m(2);
 
-                //const std::vector<MeshCell>* wall = nullptr;
-                const mcc* wall = nullptr;
+            boost::mpi::all_reduce(*comm_, local.data(), 7, global.data(), std::plus<double>());
 
-                auto mesh = std::find_if(sp_.front().mesh().begin(), sp_.front().mesh().end(), [&](const auto& m){return m.tag()() == i;});
+            if (comm_->rank() == 0)
+            {
+                std::string fn = "coef-";
+                fn.append(std::to_string(i));
+                fn.append(".dat");
+                std::ofstream out;
+                out.open(fn, std::fstream::app);
+
+                out << iter; // mesh tag
+                out << " ";
+                out << global[0]; // cN
+                out << " "; 
+                out << global[1]; // cA
+                out << " "; 
+                out << global[2]; // cY
+                out << " "; 
+                out << global[3]; // cT
+                out << " "; 
+                out << global[4]; // cn
+                out << " "; 
+                out << global[5]; // cm
+                out << " "; 
+                out << global[6]; // cl
+                out << std::endl; 
+                out.close();
+
                 if (mesh != sp_.front().mesh().end())
                 {
-                    wall = &mesh->wall_boundaries();
-                    cp.resize(wall->size());
-                    get_coef_(*mesh, cp, local_cN, local_cA, local_cY, local_cT, local_cn, local_cm, local_cl, this, fs, dt);
-                }
-
-                local[0] = local_cN;
-                local[1] = local_cA;
-                local[2] = local_cY;
-                local[3] = local_cT;
-                local[4] = local_cn;
-                local[5] = local_cm;
-                local[6] = local_cl;
-
-                //std::cout << "size: " << comm_->rank() << " " << local.size() << " " << global.size() << std::endl;
-                boost::mpi::all_reduce(*comm_, local.data(), 7, global.data(), std::plus<double>());
-                //boost::mpi::all_reduce(*comm_, local_cN, global_cN, std::plus<double>());
-                //boost::mpi::all_reduce(*comm_, local_cA, global_cA, std::plus<double>());
-                //boost::mpi::all_reduce(*comm_, local_cY, global_cY, std::plus<double>());
-                //boost::mpi::all_reduce(*comm_, local_cT, global_cT, std::plus<double>());
-                //boost::mpi::all_reduce(*comm_, local_cn, global_cn, std::plus<double>());
-                //boost::mpi::all_reduce(*comm_, local_cm, global_cm, std::plus<double>());
-                //boost::mpi::all_reduce(*comm_, local_cl, global_cl, std::plus<double>());
-
-                double rpm = 2000.;
-                double om = rpm * 2. * PI / 60.; // rad/s
-                double psi = rad_to_deg(om * dt * iter);
-
-                if (comm_->rank() == 0)
-                {
-                    std::string fn = "coef-";
+                    std::string fn = "pres_coef-";
+                    fn.append(std::to_string(comm_->rank()));
+                    fn.append("-");
                     fn.append(std::to_string(i));
+                    fn.append("-");
+                    fn.append(std::to_string(iter));
                     fn.append(".dat");
+
                     std::ofstream out;
-                    out.open(fn, std::fstream::app);
+                    out.open(fn);
 
-                    out << iter; // mesh tag
-                    out << " "; 
-                    out << psi; // angle
-                    out << " "; 
-                    out << global[0]; // cN
-                    out << " "; 
-                    out << global[1]; // cA
-                    out << " "; 
-                    out << global[2]; // cY
-                    out << " "; 
-                    out << global[3]; // cT
-                    out << " "; 
-                    out << global[4]; // cn
-                    out << " "; 
-                    out << global[5]; // cm
-                    out << " "; 
-                    out << global[6]; // cl
-                    out << std::endl; 
+                    for (const auto& P: local_coef.p)
+                    {
+                        auto [cnt, p] = P;
+
+                        out << cnt(0);
+                        out << " "; 
+                        out << cnt(1);
+                        out << " "; 
+                        out << cnt(2);
+                        out << " "; 
+                        out << p;
+                        out << std::endl;
+                    }
+
                     out.close();
-
-                    //if (mesh != sp_.front().mesh().end())
-                    //{
-                    //    std::string fn = "pres_coef-";
-                    //    fn.append(std::to_string(comm_->rank()));
-                    //    fn.append("-");
-                    //    fn.append(std::to_string(i));
-                    //    fn.append("-");
-                    //    fn.append(std::to_string(iter));
-                    //    fn.append(".dat");
-
-                    //    std::ofstream out;
-                    //    out.open(fn);
-
-                    //    assert(wall != nullptr);
-
-                    //    for (auto mc = wall->begin(); mc != wall->end(); ++mc)
-                    //    {
-                    //        out << mc->poly().centroid()(0);
-                    //        out << " "; 
-                    //        out << mc->poly().centroid()(1);
-                    //        out << " "; 
-                    //        out << mc->poly().centroid()(2);
-                    //        out << " "; 
-                    //        out << psi;
-                    //        out << " "; 
-                    //        int i = std::distance(wall->begin(), mc);
-                    //        out << -cp[i];
-                    //        out << std::endl;
-                    //    }
-
-                    //    out.close();
-                    //}
                 }
             }
         }

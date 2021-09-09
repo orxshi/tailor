@@ -22,6 +22,7 @@ namespace Tailor
             void rotate(const Tag& mesh, double ang, int axis, const Vector3& pivot);
             const Solver* solver() const;
             const Assembler* assembler() const;
+            void get_aero_coef(const std::vector<AeroCoefPara>& aero_para);
 
         private:
 
