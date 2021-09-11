@@ -449,6 +449,8 @@ namespace Tailor
         ws(3,3) = std::abs(vnet);
         ws(4,4) = std::abs(vnet + a);
 
+        //https://perso.ensta-paris.fr/~pelanti/ef_PQV.pdf
+
         double lL[5];
         double lR[5];
         double l[5];
@@ -473,11 +475,17 @@ namespace Tailor
 
         for (int i=0; i<5; ++i)
         {
-            double sigma = std::max(0., l[i] - lL[i]);
-            sigma = std::max(sigma, lR[i] - l[i]);
+            //double sigma = std::max(0., l[i] - lL[i]);
+            //sigma = std::max(sigma, lR[i] - l[i]);
 
-            double akL = l[i] - sigma; 
-            double akR = l[i] + sigma; 
+            double sigmaL = std::max(0., l[i] - lL[i]);
+            double sigmaR = std::max(0., lR[i] - l[i]);
+
+            //double akL = l[i] - sigma; 
+            //double akR = l[i] + sigma; 
+
+            double akL = l[i] - sigmaL; 
+            double akR = l[i] + sigmaR; 
 
             //if (lL[i] < 0. && lR[i] > 0.)
             if (akL < 0. && akR > 0.)
