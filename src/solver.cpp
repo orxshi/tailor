@@ -1321,9 +1321,9 @@ namespace Tailor
     {
         auto &sp = partition_->spc_->sp_.front();
 
-        if (sp.mesh_.size() == 1) {
-            return;
-        }
+        //if (sp.mesh_.size() == 1) {
+            //return;
+        //}
 
         for (Mesh& mesh: sp.mesh_)
         {

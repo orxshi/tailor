@@ -790,6 +790,26 @@ namespace Tailor
         return true;
     }
 
+    //void SpatialPartition::init()
+    //{
+    //    double b = 0.5;
+
+    //    for (auto& mc: cell_)
+    //    {
+    //        const auto& cnt = mc.poly().centroid();
+    //        double r = std::sqrt(std::pow(cnt(0) - vcnt(0), 2.) + std::pow(cnt(1) - vcnt(1), 2.));
+
+    //        double rho = std::pow(1. - (gamma - 1.) * b * b * std::exp(1 - r * r) / (8. * gamma * PI * PI), (1./(gamma - 1.)));
+
+    //        double p = std::pow(rho, gamma);
+
+    //        double a1 = b * std::exp(0.5 * (1. - r * r)) / (2. * PI);
+    //        double u = u_inf - a1 * (cnt(1) - vcnt(1));
+    //        double v = v_inf + a1 * (cnt(0) - vcnt(0));
+
+    //    }
+    //}
+
     void Mesh::init(const Vector3& vinf_air, const Freestream& fs)
     {
         Component compo;
