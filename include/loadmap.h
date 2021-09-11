@@ -13,6 +13,8 @@ namespace Tailor
 
     class Loadmap
     {
+        int forced_n_refine_; // refines exactly forced_n_refine times.
+        int min_forced_n_refine_; // refines minimum min_forced_n_refine times.
         std::string name_;
         RegType reg_type_;
         bool make_load_balance_;
@@ -36,7 +38,7 @@ namespace Tailor
         boost::mpi::communicator* comm_;
         //unsigned int nworker_;
         int refine_limit_;
-        unsigned int nrefine;
+        int nrefine;
         //std::unique_ptr<RegularMesh> rm_;
         RegularMesh* rm_;
         const std::deque<Mesh>* mesh_;

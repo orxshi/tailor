@@ -24,7 +24,7 @@ namespace Tailor
         rm_->clear_cells();
     }
 
-    Loadmap::Loadmap(boost::mpi::communicator* comm, Profiler* profiler, bool verbose, LoadEstim load_estim_type, bool pseudo3D, bool make_load_balance, RegType reg_type, const std::deque<Mesh>* mesh, std::string name): profiler_(profiler), comm_(comm), verbose_(verbose), load_estim_type_(load_estim_type), pseudo3D_(pseudo3D), make_load_balance_(make_load_balance), reg_type_(reg_type), mesh_(mesh), rm_(nullptr), name_(name)
+    Loadmap::Loadmap(boost::mpi::communicator* comm, Profiler* profiler, bool verbose, LoadEstim load_estim_type, bool pseudo3D, bool make_load_balance, RegType reg_type, const std::deque<Mesh>* mesh, std::string name): profiler_(profiler), comm_(comm), verbose_(verbose), load_estim_type_(load_estim_type), pseudo3D_(pseudo3D), make_load_balance_(make_load_balance), reg_type_(reg_type), mesh_(mesh), rm_(nullptr), name_(name), forced_n_refine_(0)
     {
         read_settings();
         nrefine = 0;
@@ -507,6 +507,8 @@ namespace Tailor
             ("loadmap.refine-limit", po::value<int>()->default_value(1200), "Maximum number of refinement")
             ("loadmap.print-dev", po::value<bool>()->default_value(false), "")
             ("loadmap.print-graph-dist", po::value<bool>()->default_value(false), "")
+            ("loadmap.forced-n-refine", po::value<int>()->default_value(-1), "")
+            ("loadmap.min-forced-n-refine", po::value<int>()->default_value(-1), "")
             ;
 
         all_options.add(desc);
@@ -524,6 +526,8 @@ namespace Tailor
         refine_limit_ = vm["loadmap.refine-limit"].as<int>();
         print_dev_ = vm["loadmap.print-dev"].as<bool>();
         print_graph_dist_ = vm["loadmap.print-graph-dist"].as<bool>();
+        forced_n_refine_ = vm["loadmap.forced-n-refine"].as<int>();
+        min_forced_n_refine_ = vm["loadmap.min-forced-n-refine"].as<int>();
     }
 
     AABB Loadmap::max_aabb() const
@@ -677,7 +681,7 @@ namespace Tailor
 
         if (dorefine)
         {
-            while (!ire)
+            while (!ire || nrefine < forced_n_refine_ || nrefine < min_forced_n_refine_)
             {
                 ++nrefine;
                 int new_rmtag;
@@ -707,7 +711,7 @@ namespace Tailor
 
                 ire = resolution_is_enough(heaviest_bt, nmake_map);
 
-                if (nrefine == refine_limit_) {
+                if (nrefine == refine_limit_ || nrefine == forced_n_refine_) {
                     break;
                 }
             }

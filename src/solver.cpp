@@ -1847,14 +1847,16 @@ namespace Tailor
         Matrix5 JL = Jacobian(left_state , gamma);
         Matrix5 JR = Jacobian(right_state, gamma);
 
-        this_face->M_ = inv_rotation_matrix * JL * 0.5 * facearea;
+        //this_face->M_ = inv_rotation_matrix * JL * 0.5 * facearea;
         //this_face->M_ = inv_rotation_matrix * (JL + Aroe) * 0.5 * facearea;
         //this_face->M_ = (JL + Aroe) * rotation_matrix * 0.5 * facearea;
+        this_face->M_ = (JL + Aroe) * 0.5 * facearea;
         if (common_face != nullptr)
         {
             //common_face->M_ = inv_rotation_matrix * (JR - Aroe) * 0.5 * facearea * -1;
             //common_face->M_ = (JR - Aroe) * rotation_matrix * 0.5 * facearea * -1;
-            common_face->M_ = inv_rotation_matrix * JR * 0.5 * facearea * -1;
+            common_face->M_ = (JR - Aroe) * 0.5 * facearea * -1;
+            //common_face->M_ = inv_rotation_matrix * JR * 0.5 * facearea * -1;
         }
 
         left_cell.D_ += this_face->M_;
