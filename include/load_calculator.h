@@ -3,6 +3,7 @@
 
 //#include "spc.h"
 #include "regular_mesh.h"
+#include "graph.h"
 #include <boost/program_options.hpp>
 //#include <CGAL/Polyline_simplification_2/simplify.h>
 //#include <CGAL/convex_hull_2.h>
@@ -74,7 +75,8 @@ namespace Tailor
     };
 
     //void print_regmesh(std::string file_name, const std::map<BinRMTag, int>& bintag_proc_map, const LoadCalculator& lc, const RegularMesh& rm, const std::deque<Mesh>& mesh);
-    void print_regmesh(std::string file_name, const std::map<int, int>& bintag_proc_map, const LoadCalculator& lc, const RegularMesh& rm, const std::deque<Mesh>& mesh);
+    //void print_regmesh(std::string file_name, const std::map<int, int>& bintag_proc_map, const LoadCalculator& lc, const RegularMesh& rm, const std::deque<Mesh>& mesh);
+    void print_regmesh(std::string file_name, const std::map<int, int>& bintag_proc_map, const Graph& graph, const RegularMesh& rm, const std::deque<Mesh>& mesh);
 }
 
 #endif

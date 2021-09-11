@@ -241,6 +241,9 @@ namespace Tailor
                         //sender_[i].add(dest_rank, desttag, Cell(comm_->rank(), sp.tag()(), mc, std::move(wall), std::move(dirichlet), std::move(farfield), std::move(empty), std::move(interog)));
                         assert(cll != nullptr);
                         //sender_[i].add(dest_rank, desttag, *cll);
+                        //std::cout << "merge_bins_: " << merge_bins_ << std::endl;
+                        //std::cout << "dest_rank: " << dest_rank << std::endl;
+                        //std::cout << "comm rank: " << comm_->rank() << std::endl;
                         add(dest_rank, desttag, *cll);
                         //++nconstruct;
 

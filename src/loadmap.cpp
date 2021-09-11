@@ -763,11 +763,11 @@ namespace Tailor
             }
         }
 
+        print(nmake_map);
+
         if (profiler_ != nullptr) {profiler_->start(s);}
         graph_.reset();
         if (profiler_ != nullptr) {profiler_->stop(s);}
-
-        print(nmake_map);
     }
 
     Loadmap::~Loadmap()
@@ -969,7 +969,8 @@ namespace Tailor
         s.append("-lm-");
         s.append(std::to_string(rm.tag()()));
         s.append(".vtk");
-        print_regmesh(s, bintag_proc_map_, lc, rm, *mesh_);
+        //print_regmesh(s, bintag_proc_map_, lc, rm, *mesh_);
+        print_regmesh(s, bintag_proc_map_, *graph_, rm, *mesh_);
 
         //std::cout << "bin sizee: " << rm_->bin().size() << std::endl;
 

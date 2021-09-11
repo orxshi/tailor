@@ -1324,6 +1324,10 @@ namespace Tailor
         //if (sp.mesh_.size() == 1) {
             //return;
         //}
+        
+        if (comm_->size() == 1) {
+            return;
+        }
 
         for (Mesh& mesh: sp.mesh_)
         {

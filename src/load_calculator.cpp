@@ -1208,7 +1208,8 @@ namespace Tailor
     }
 
     //void print_regmesh(std::string file_name, const std::map<BinRMTag, int>& bintag_proc_map, const LoadCalculator& lc, const RegularMesh& rm, const std::deque<Mesh>& mesh)
-    void print_regmesh(std::string file_name, const std::map<int, int>& bintag_proc_map, const LoadCalculator& lc, const RegularMesh& rm, const std::deque<Mesh>& mesh)
+    //void print_regmesh(std::string file_name, const std::map<int, int>& bintag_proc_map, const LoadCalculator& lc, const RegularMesh& rm, const std::deque<Mesh>& mesh)
+    void print_regmesh(std::string file_name, const std::map<int, int>& bintag_proc_map, const Graph& graph, const RegularMesh& rm, const std::deque<Mesh>& mesh)
     {    
         const Vector3Int& nstripe = rm.nstripe();
         const AABB& aabb = rm.aabb();
@@ -1262,7 +1263,16 @@ namespace Tailor
                             //{
                                 //out << b.load(mesh);
                                 //out << b.load_without_calc();
-                                out << lc.load(b, mesh);
+                            const auto mapp = graph.id_to_hex();
+                            const auto hex = graph.id_to_hex().at(rm.tag()());
+                            for (const auto& gvtx: hex->vertex_)
+                            {
+                                if (gvtx.id_ == b.tag()())
+                                {
+                                    out << gvtx.weight_;
+                                }
+                            }
+                                //out << lc.load(b, mesh);
                                 out << std::endl;
                                 //found = true;
                                 //break;
