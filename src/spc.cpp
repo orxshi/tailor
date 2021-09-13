@@ -121,11 +121,7 @@ namespace Tailor
     {
         const auto& wall = mesh.wall_boundaries();
 
-        double moment_length = aero_para.moment_length; 
-
-        Vector3 F(0., 0., 0.);
-        Vector3 M(0., 0., 0.);
-        std::vector<std::tuple<Vector3, double>> P;
+        std::vector<std::tuple<Vector3, Vector3, double, double>> P; // cnt, normal, absarea, p
         P.reserve(wall.size());
 
         for (auto mc = wall.begin(); mc != wall.end(); ++mc)
@@ -142,14 +138,10 @@ namespace Tailor
                 continue;
             }
 
-            P.push_back(std::make_tuple(cnt, (mc->prim(4) - aero_para.p_ref) / aero_para.dpp()));
-            F = F + mc->face()[0].face().normal() * mc->prim(4) * std::abs(mc->face()[0].face().signed_area());
-            M = M + cross(cnt - moment_length, F);
+            P.push_back(std::make_tuple(cnt, mc->face()[0].face().normal(), std::abs(mc->face()[0].face().signed_area()), mc->prim(4)));
         }
 
-        local_coef.get_pressure_coef(P);
-        local_coef.get_force_coef(F, aero_para);
-        local_coef.get_moment_coef(M, aero_para);
+        local_coef.compute_coef(P, aero_para);
     }
 
     void SpatialPartitionContainer::get_coef(const std::vector<AeroCoefPara>& aero_para, int iter) const
@@ -169,13 +161,13 @@ namespace Tailor
                 get_coef_(*mesh, local_coef, aero_para[i], this);
             }
 
-            local[0] = local_coef.f(0);
-            local[1] = local_coef.f(1);
-            local[2] = local_coef.f(2);
+            local[0] = local_coef.F(0);
+            local[1] = local_coef.F(1);
+            local[2] = local_coef.F(2);
             local[3] = local_coef.thrust;
-            local[4] = local_coef.m(0);
-            local[5] = local_coef.m(1);
-            local[6] = local_coef.m(2);
+            local[4] = local_coef.M(0);
+            local[5] = local_coef.M(1);
+            local[6] = local_coef.M(2);
 
             boost::mpi::all_reduce(*comm_, local.data(), 7, global.data(), std::plus<double>());
 
