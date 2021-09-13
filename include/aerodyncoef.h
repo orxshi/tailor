@@ -16,7 +16,7 @@ namespace Tailor
 
         double dpp() const
         {
-            return rho_ref * u_ref * u_ref;
+            return 0.5 * rho_ref * u_ref * u_ref;
         }
         double dpf() const
         {
