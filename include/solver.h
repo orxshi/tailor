@@ -127,10 +127,12 @@ namespace Tailor
                 ar & increase_cfl_;
                 ar & cfl_multiplier_;
                 ar & global_nmesh_;
+                ar & flow_init_type_;
             }
 
         private:    
 
+            FlowInitType flow_init_type_;
             int global_nmesh_;
             std::array<Vector5, 4> runge_kutta_coef_;
             double cfl_multiplier_;

@@ -224,7 +224,7 @@ namespace Tailor
         }
     }
 
-    void SpatialPartition::init()
+    void SpatialPartition::init_flow(FlowInitType flow_init_type)
     {
         //namespace po = boost::program_options;
         //po::options_description op;
@@ -260,27 +260,27 @@ namespace Tailor
 
 
 
-        Freestream fs;
-        fs.read();
-        
+        //Freestream fs;
+        //fs.read();
+        //
 
-        double cinf = std::sqrt(fs.gamma_ * fs.pinf_ / fs.rhoinf_);
-        Vector3 vinf_air;
+        //double cinf = std::sqrt(fs.gamma_ * fs.pinf_ / fs.rhoinf_);
+        //Vector3 vinf_air;
 
-        if (fs.velair_ != 0.)
-        {
-            vinf_air = Vector3(
-                    fs.velair_ * std::cos(deg_to_rad(fs.aoa_air_x_)),
-                    fs.velair_ * std::cos(deg_to_rad(90. - fs.aoa_air_x_)),
-                    fs.velair_ * std::cos(deg_to_rad(fs.aoa_air_z_)));
-        }
-        else
-        {
-            vinf_air = Vector3(
-                    fs.machair_ * cinf * std::cos(deg_to_rad(fs.aoa_air_x_)),
-                    fs.machair_ * cinf * std::cos(deg_to_rad(90. - fs.aoa_air_x_)),
-                    fs.machair_ * cinf * std::cos(deg_to_rad(fs.aoa_air_z_)));
-        }
+        //if (fs.velair_ != 0.)
+        //{
+        //    vinf_air = Vector3(
+        //            fs.velair_ * std::cos(deg_to_rad(fs.aoa_air_x_)),
+        //            fs.velair_ * std::cos(deg_to_rad(90. - fs.aoa_air_x_)),
+        //            fs.velair_ * std::cos(deg_to_rad(fs.aoa_air_z_)));
+        //}
+        //else
+        //{
+        //    vinf_air = Vector3(
+        //            fs.machair_ * cinf * std::cos(deg_to_rad(fs.aoa_air_x_)),
+        //            fs.machair_ * cinf * std::cos(deg_to_rad(90. - fs.aoa_air_x_)),
+        //            fs.machair_ * cinf * std::cos(deg_to_rad(fs.aoa_air_z_)));
+        //}
 
         //Vector3 vinf_foil(
                 //fs.machfoil_ * cinf * std::cos(deg_to_rad(fs.aoa_foil_x_)),
@@ -292,7 +292,8 @@ namespace Tailor
         for (int i=0; i<mesh_.size(); ++i)
         {
             //vinf_air.set(0.);
-            mesh_[i].init(vinf_air, fs);
+            //mesh_[i].init(vinf_air, fs);
+            mesh_[i].init_flow(flow_init_type);
 
             //if (std::abs(prim[3]) > TAILOR_ZERO)
             //{

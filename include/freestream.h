@@ -32,6 +32,21 @@ namespace Tailor
         }
     };
 
+    struct GaussianInit
+    {
+        double cnt_x;
+        double cnt_y;
+        double cnt_z;
+        double strength;
+        double p;
+        double u;
+        double v;
+        double w;
+        double rho;
+
+        void read();
+    };
+
     struct Component
     {
         bool rotation_;

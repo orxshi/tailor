@@ -73,4 +73,40 @@ namespace Tailor
         dirz_ = vm["dirz"].as<double>();
         pivot_ = Vector3(pivotx, pivoty, pivotz);
     }
+
+    void GaussianInit::read()
+    {
+        namespace po = boost::program_options;
+        po::options_description op;
+
+        po::options_description desc{"ginit"};
+        desc.add_options()
+            ("ginit.cnt_x", po::value<double>()->required(), "")
+            ("ginit.cnt_y", po::value<double>()->required(), "")
+            ("ginit.cnt_z", po::value<double>()->required(), "")
+            ("ginit.strength", po::value<double>()->required(), "")
+            //("ginit.p", po::value<double>(), "")
+            //("ginit.u", po::value<double>(), "")
+            //("ginit.v", po::value<double>(), "")
+            //("ginit.w", po::value<double>(), "")
+            //("ginit.rho", po::value<double>(), "")
+            ;
+
+        op.add(desc);
+        std::ifstream settings_file("gaussian_init.ini");
+
+        boost::program_options::variables_map vm;
+        po::store(po::parse_config_file(settings_file, op, true), vm);
+        po::notify(vm);
+
+        cnt_x = vm["ginit.cnt_x"].as<double>();
+        cnt_y = vm["ginit.cnt_y"].as<double>();
+        cnt_z = vm["ginit.cnt_z"].as<double>();
+        strength = vm["ginit.strength"].as<double>();
+        //p = vm["freestream.rho"].as<double>();
+        //u = vm["freestream.rho"].as<double>();
+        //v = vm["freestream.rho"].as<double>();
+        //w = vm["freestream.rho"].as<double>();
+        //rho = vm["freestream.p"].as<double>();
+    }
 }

@@ -790,39 +790,120 @@ namespace Tailor
         return true;
     }
 
-    //void SpatialPartition::init()
-    //{
-    //    double b = 0.5;
-
-    //    for (auto& mc: cell_)
-    //    {
-    //        const auto& cnt = mc.poly().centroid();
-    //        double r = std::sqrt(std::pow(cnt(0) - vcnt(0), 2.) + std::pow(cnt(1) - vcnt(1), 2.));
-
-    //        double rho = std::pow(1. - (gamma - 1.) * b * b * std::exp(1 - r * r) / (8. * gamma * PI * PI), (1./(gamma - 1.)));
-
-    //        double p = std::pow(rho, gamma);
-
-    //        double a1 = b * std::exp(0.5 * (1. - r * r)) / (2. * PI);
-    //        double u = u_inf - a1 * (cnt(1) - vcnt(1));
-    //        double v = v_inf + a1 * (cnt(0) - vcnt(0));
-
-    //    }
-    //}
-
-    void Mesh::init(const Vector3& vinf_air, const Freestream& fs)
+    // init - uniform / Gaussian
+    
+    void Mesh::init_flow(FlowInitType flow_init_type)
     {
-        Component compo;
-        compo.read(tag_);
+        if (flow_init_type == FlowInitType::uniform)
+        {
+             init_uniform();
+        }
+        else if (flow_init_type == FlowInitType::gaussian)
+        {
+            init_gaussian();
+        }
+        else
+        {
+            assert(false);
+        }
+    }
+
+    void Mesh::init_gaussian()
+    {
+        GaussianInit ginit;
+        ginit.read();
+
+        Freestream fs;
+        fs.read();
+
+        auto uni_prim = uniform_prim(fs);
+
+        double b = ginit.strength;
+        Vector3 vcnt;
+        vcnt(0) = ginit.cnt_x;
+        vcnt(1) = ginit.cnt_y;
+        vcnt(2) = ginit.cnt_z;
+
+        double rhoinf = uni_prim(0);
+        double uinf = uni_prim(1);
+        double vinf = uni_prim(2);
+        double winf = uni_prim(3);
+        double pinf = uni_prim(4);
 
         for (auto& mc: cell_)
         {
-            mc.init(vinf_air, fs, compo);
+            const auto& cnt = mc.poly().centroid();
+            double rsq = std::pow(cnt(0) - vcnt(0), 2.) + std::pow(cnt(1) - vcnt(1), 2.);
+
+            double rho = std::pow(rhoinf - (fs.gamma_ - 1.) * b * b * std::exp(1 - rsq) / (8. * fs.gamma_ * PI * PI), (1./(fs.gamma_ - 1.)));
+            double p = std::pow(rho, fs.gamma_);
+
+            double a1 = b * std::exp(0.5 * (1. - rsq)) / (2. * PI);
+            double u = uinf - a1 * (cnt(1) - vcnt(1));
+            double v = vinf + a1 * (cnt(0) - vcnt(0));
+
+            Vector5 prim;
+            prim(0) = rho;
+            prim(1) = u;
+            prim(2) = v;
+            prim(3) = 0.;
+            prim(4) = p;
+
+            mc.set_prim_cons(prim, fs.gamma_);
         }
 
         for (auto& mc: dirichlet_boundaries_)
         {
-            mc.init(vinf_air, fs, compo);
+            mc.set_prim_cons(uni_prim, fs.gamma_);
+        }
+    }
+
+    Vector5 Mesh::uniform_prim(const Freestream& fs)
+    {
+        double cinf = std::sqrt(fs.gamma_ * fs.pinf_ / fs.rhoinf_);
+        Vector3 vinf_air;
+
+        if (fs.velair_ != 0.)
+        {
+            vinf_air = Vector3(
+                    fs.velair_ * std::cos(deg_to_rad(fs.aoa_air_x_)),
+                    fs.velair_ * std::cos(deg_to_rad(90. - fs.aoa_air_x_)),
+                    fs.velair_ * std::cos(deg_to_rad(fs.aoa_air_z_)));
+        }
+        else
+        {
+            vinf_air = Vector3(
+                    fs.machair_ * cinf * std::cos(deg_to_rad(fs.aoa_air_x_)),
+                    fs.machair_ * cinf * std::cos(deg_to_rad(90. - fs.aoa_air_x_)),
+                    fs.machair_ * cinf * std::cos(deg_to_rad(fs.aoa_air_z_)));
+        }
+
+        Vector5 prim;
+        prim(0) = fs.rhoinf_;
+        prim(1) = vinf_air(0);
+        prim(2) = vinf_air(1);
+        prim(3) = vinf_air(2);
+        prim(4) = fs.pinf_;
+
+        return prim;
+    }
+
+    void Mesh::init_uniform()
+    {
+        Freestream fs;
+        fs.read();
+        auto prim = uniform_prim(fs);
+
+        for (auto& mc: cell_)
+        {
+            //mc.init(vinf_air, fs, compo);
+            mc.set_prim_cons(prim, fs.gamma_);
+        }
+
+        for (auto& mc: dirichlet_boundaries_)
+        {
+            //mc.init(vinf_air, fs, compo);
+            mc.set_prim_cons(prim, fs.gamma_);
         }
     }
 

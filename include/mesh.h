@@ -25,6 +25,12 @@
 
 namespace Tailor
 {
+    enum class FlowInitType
+    {
+        uniform = 0,
+        gaussian = 1,
+    };
+
     typedef std::vector<MeshPoint> mpc;
     //typedef std::list<MeshFace> mfc;
     typedef std::vector<int> intvector;
@@ -92,6 +98,7 @@ namespace Tailor
         Mesh(const Tag& tag);
         //Mesh(const Tag& tag): Mesh(tag, tag) {};
 
+        Vector5 uniform_prim(const Freestream& fs);
         //void update_cell_pnei_addresses();
         //void update_face_parent_addresses();
         //void update_cell_vertex_addresses();
@@ -106,8 +113,11 @@ namespace Tailor
         void oga_interpolate(const std::deque<Mesh>& mesh, int rank);
         void equate_RD_to_RDmid();
 
+        void init_flow(FlowInitType flow_init_type);
         void init_sod(const Vector5& L, const Vector5& R, const Freestream& fs);
-        void init(const Vector3& vinf_air, const Freestream& fs);
+        //void init(const Vector3& vinf_air, const Freestream& fs);
+        void init_uniform();
+        void init_gaussian();
 
         void connect_add_bou_to_interior(BouType boutype, int rank);
         void reset_R_checked();

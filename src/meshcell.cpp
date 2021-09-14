@@ -180,6 +180,12 @@ namespace Tailor
         }
     }
 
+    void MeshCell::set_prim_cons(const Vector5& prim, double gamma)
+    {
+        prim_ = prim;
+        cons_sp1_ = prim_to_cons(prim_, gamma);
+    }
+
     void MeshCell::set_prim(const Vector5& other)
     {
         prim_ = other;
