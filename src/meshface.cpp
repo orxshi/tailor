@@ -310,7 +310,7 @@ namespace Tailor
                 vel = Vector3(
                         compo.u,
                         compo.v,
-                        compo.w,
+                        compo.w
                         );
             }
         }

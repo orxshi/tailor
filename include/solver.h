@@ -72,6 +72,7 @@ namespace Tailor
             void transfer_oga_cell_type(const ArrCon<DonorInfo2>& di);
             void set_oga_cell_type_all_field();
             void rotate(const Tag& mesh, double ang, int axis, const Vector3& pivot);
+            void move(const Tag& mesh, const Vector3& v);
             void exchange();
             void reset_oga_status();
             void reconnectivity();

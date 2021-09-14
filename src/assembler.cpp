@@ -2,6 +2,11 @@
 
 namespace Tailor
 {
+    void Assembler::move(const Tag& mesh, const Vector3& v)
+    {
+        partition_->move(mesh, v);
+    }
+
     void Assembler::set_comm(boost::mpi::communicator* comm)
     {
         assert(comm != nullptr);

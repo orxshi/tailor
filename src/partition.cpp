@@ -50,6 +50,11 @@ namespace Tailor
         spc_->rotate_meshblocks(mesh, ang, axis, pivot);
     }
 
+    void Partition::move(const Tag& mesh, const Vector3& v)
+    {
+        spc_->move_meshblocks(mesh, v);
+    }
+
     void Partition::make(bool merge_bins, bool make_load_balance, int iter)
     {
         if (comm_->size() == 1)

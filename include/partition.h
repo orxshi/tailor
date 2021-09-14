@@ -37,6 +37,7 @@ namespace Tailor
             //const std::deque<Mesh> interog() const;
             //const std::deque<Mesh> empty() const;
             void rotate(const Tag& mesh, double ang, int axis, const Vector3& pivot);
+            void move(const Tag& mesh, const Vector3& v);
             void clear_mesh();
             void set_mesh(std::deque<Mesh>&& mesh);
             std::string name() const;

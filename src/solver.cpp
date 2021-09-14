@@ -434,6 +434,11 @@ namespace Tailor
         partition_->rotate(mesh, ang, axis, pivot);
     }
 
+    void Solver::move(const Tag& mesh, const Vector3& v)
+    {
+        partition_->move(mesh, v);
+    }
+
     void Solver::set_oga_cell_type_all_field()
     {
         for (Mesh &m : partition_->spc_->sp_.front().mesh_)

@@ -20,6 +20,7 @@ namespace Tailor
 
             void make(std::function<void(Tailor&)> callback);
             void rotate(const Tag& mesh, double ang, int axis, const Vector3& pivot);
+            void move(const Tag& mesh, const Vector3& v);
             const Solver* solver() const;
             const Assembler* assembler() const;
             void get_aero_coef(const std::vector<AeroCoefPara>& aero_para);

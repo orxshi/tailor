@@ -97,17 +97,19 @@ namespace Tailor
         if (!use_shared_partition_)
         {
             assembler_->rotate(mesh, ang, axis, pivot);
-            assembler_->rotate(mesh, ang, axis, pivot);
-            assembler_->rotate(mesh, ang, axis, pivot);
-            assembler_->rotate(mesh, ang, axis, pivot);
-            assembler_->rotate(mesh, ang, axis, pivot);
         }
 
         solver_->rotate(mesh, ang, axis, pivot);
-        solver_->rotate(mesh, ang, axis, pivot);
-        solver_->rotate(mesh, ang, axis, pivot);
-        solver_->rotate(mesh, ang, axis, pivot);
-        solver_->rotate(mesh, ang, axis, pivot);
+    }
+
+    void Tailor::move(const Tag& mesh, const Vector3& v)
+    {
+        if (!use_shared_partition_)
+        {
+            assembler_->move(mesh, v);
+        }
+
+        solver_->move(mesh, v);
     }
 
     Tailor::Tailor(): assembler_on_(true), solver_on_(true)
