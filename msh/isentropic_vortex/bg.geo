@@ -1,10 +1,10 @@
 //=INPUTS=====================================================
 
-W=70;
-H=25;
+W=20;
+H=5;
 D=1;
-mx=6;
-my=6;
+mx=500;
+my=100;
 mz=1;
 bump=1;
 radius = H/2;
@@ -24,6 +24,8 @@ lT = newl; Line(lT) = {pUL,pUR};
 Line Loop(1) = {lL, lT, lR, lB};
 sBase = news; Plane Surface(sBase) = {1};
 
+Transfinite Line{lL,lR} = my Using Progression 1.0;
+Transfinite Line{lB,lT} = mx Using Progression 1.0;
 Transfinite Surface{sBase}; Recombine Surface{sBase};
 
 out[] = Extrude {0,0,D} {Surface{sBase}; Layers{mz}; Recombine;};
