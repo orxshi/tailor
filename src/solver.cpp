@@ -1023,9 +1023,9 @@ namespace Tailor
                 std::string fn = fn0.append("-");
                 fn.append(std::to_string(m.tag()()));
                 fn.append("-");
-                fn.append(std::to_string(comm_->rank()));
+                fn.append(std::to_string(nsolve_));
                 fn.append("-");
-                fn.append(std::to_string(sp.tag()()));
+                fn.append(std::to_string(comm_->rank()));
                 fn.append(".vtk");
                 m.print_as_vtk(fn);
             }
@@ -1037,9 +1037,9 @@ namespace Tailor
                 std::string fn = fn0.append("wall-");
                 fn.append(std::to_string(m.tag()()));
                 fn.append("-");
-                fn.append(std::to_string(comm_->rank()));
+                fn.append(std::to_string(nsolve_));
                 fn.append("-");
-                fn.append(std::to_string(sp.tag()()));
+                fn.append(std::to_string(comm_->rank()));
                 fn.append(".vtk");
                 m.print_wall_as_vtk(fn);
             }
