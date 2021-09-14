@@ -56,6 +56,9 @@ namespace Tailor
         double dirx_;
         double dirz_;
         Vector3 pivot_;
+        double u;
+        double v;
+        double w;
 
         void read(const Tag& mtag);
     };

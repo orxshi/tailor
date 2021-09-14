@@ -297,11 +297,22 @@ namespace Tailor
                     //machfoil * cinf * std::cos(deg_to_rad(90. - aoa_foil_x)),
                     //machfoil * cinf * std::cos(deg_to_rad(aoa_foil_z)));
 
-            vel = Vector3(
-                    mach * cinf * std::cos(deg_to_rad(dirx)),
-                    mach * cinf * std::cos(deg_to_rad(90. - dirx)),
-                    mach * cinf * std::cos(deg_to_rad(dirz))
-                    );
+            if (compo.mach_ != 0.)
+            {
+                vel = Vector3(
+                        mach * cinf * std::cos(deg_to_rad(dirx)),
+                        mach * cinf * std::cos(deg_to_rad(90. - dirx)),
+                        mach * cinf * std::cos(deg_to_rad(dirz))
+                        );
+            }
+            else
+            {
+                vel = Vector3(
+                        compo.u,
+                        compo.v,
+                        compo.w,
+                        );
+            }
         }
 
         //https://core.ac.uk/download/pdf/81977729.pdf

@@ -50,6 +50,9 @@ namespace Tailor
             ("mach", po::value<double>()->default_value(0), "")
             ("dirx", po::value<double>()->default_value(0), "")
             ("dirz", po::value<double>()->default_value(0), "")
+            ("u", po::value<double>()->default_value(0), "")
+            ("v", po::value<double>()->default_value(0), "")
+            ("w", po::value<double>()->default_value(0), "")
             ;
 
         op.add(desc);
@@ -72,6 +75,9 @@ namespace Tailor
         dirx_ = vm["dirx"].as<double>();
         dirz_ = vm["dirz"].as<double>();
         pivot_ = Vector3(pivotx, pivoty, pivotz);
+        u = vm["u"].as<double>();
+        v = vm["v"].as<double>();
+        w = vm["w"].as<double>();
     }
 
     void GaussianInit::read()
