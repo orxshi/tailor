@@ -1025,7 +1025,8 @@ namespace Tailor
         {
             for (const auto &m : sp.mesh())
             {
-                std::string fn = fn0.append("-");
+                std::string fn = fn0;
+                fn.append("-");
                 fn.append(std::to_string(m.tag()()));
                 fn.append("-");
                 fn.append(std::to_string(comm_->rank()));
@@ -1039,7 +1040,9 @@ namespace Tailor
         {
             for (const auto &m : sp.mesh())
             {
-                std::string fn = fn0.append("wall-");
+                std::string fn = fn0;
+                fn.append("-");
+                fn.append("wall-");
                 fn.append(std::to_string(m.tag()()));
                 fn.append("-");
                 fn.append(std::to_string(comm_->rank()));
