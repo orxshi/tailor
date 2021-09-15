@@ -670,6 +670,7 @@ namespace Tailor
                     for (MeshCell& mc: activemesh.cell_)
                     {
                         activemesh.set_as_hole(mc.tag());
+                        assert(false);
                     }
                 }
             }
@@ -808,6 +809,7 @@ namespace Tailor
                     continue;
                 }
                 active_mesh.set_as_hole(mc.tag());
+                assert(false);
             }
 
             return true;
