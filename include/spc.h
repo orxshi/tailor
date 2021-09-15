@@ -49,7 +49,7 @@ namespace Tailor
         void init_sod();
         //void init_interior();
         //void init_dirichlet();
-        void init_flow(FlowInitType flow_init_type);
+        void init_flow();
         void connect_after_exchange(Profiler* profiler, std::string proc);
         void update_prev_cand_donor();
             //void make_outline(std::vector<std::vector<Vector3>> allpts);

@@ -631,11 +631,11 @@ namespace Tailor
         }
     }*/
 
-    void SpatialPartitionContainer::init_flow(FlowInitType flow_init_type)
+    void SpatialPartitionContainer::init_flow()
     {
         for (SpatialPartition& sp: sp_)
         {
-            sp.init_flow(flow_init_type);
+            sp.init_flow();
         }
     }
 

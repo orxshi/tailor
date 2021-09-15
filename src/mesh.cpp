@@ -792,15 +792,24 @@ namespace Tailor
 
     // init - uniform / Gaussian
     
-    void Mesh::init_flow(FlowInitType flow_init_type)
+    void Mesh::init_flow()
     {
-        if (flow_init_type == FlowInitType::uniform)
+        // Read init file for this mesh.
+        // init accordingly.
+        
+        FlowInit finit;
+        finit.read(tag_);
+
+        Freestream fs;
+        fs.read();
+
+        if (finit.type == "uniform")
         {
-             init_uniform();
+             init_uniform(finit, fs.gamma_);
         }
-        else if (flow_init_type == FlowInitType::gaussian)
+        else if (finit.type == "gaussian")
         {
-            init_gaussian();
+            init_gaussian(finit, fs.gamma_);
         }
         else
         {
@@ -808,21 +817,18 @@ namespace Tailor
         }
     }
 
-    void Mesh::init_gaussian()
+    void Mesh::init_gaussian(const FlowInit& finit, double gamma)
     {
-        GaussianInit ginit;
-        ginit.read();
+        //GaussianInit ginit;
+        //ginit.read();
 
-        Freestream fs;
-        fs.read();
+        auto uni_prim = uniform_prim(finit);
 
-        auto uni_prim = uniform_prim(fs);
-
-        double b = ginit.strength;
+        double b = finit.strength;
         Vector3 vcnt;
-        vcnt(0) = ginit.cnt_x;
-        vcnt(1) = ginit.cnt_y;
-        vcnt(2) = ginit.cnt_z;
+        vcnt(0) = finit.cnt_x;
+        vcnt(1) = finit.cnt_y;
+        vcnt(2) = finit.cnt_z;
 
         double rhoinf = uni_prim(0);
         double uinf = uni_prim(1);
@@ -835,8 +841,8 @@ namespace Tailor
             const auto& cnt = mc.poly().centroid();
             double rsq = std::pow(cnt(0) - vcnt(0), 2.) + std::pow(cnt(1) - vcnt(1), 2.);
 
-            double rho = std::pow(rhoinf - (fs.gamma_ - 1.) * b * b * std::exp(1 - rsq) / (8. * fs.gamma_ * PI * PI), (1./(fs.gamma_ - 1.)));
-            double p = std::pow(rho, fs.gamma_);
+            double rho = std::pow(rhoinf - (gamma - 1.) * b * b * std::exp(1 - rsq) / (8. * gamma * PI * PI), (1./(gamma - 1.)));
+            double p = std::pow(rho, gamma);
 
             double a1 = b * std::exp(0.5 * (1. - rsq)) / (2. * PI);
             double u = uinf - a1 * (cnt(1) - vcnt(1));
@@ -849,61 +855,71 @@ namespace Tailor
             prim(3) = 0.;
             prim(4) = p;
 
-            mc.set_prim_cons(prim, fs.gamma_);
+            mc.set_prim_cons(prim, gamma);
         }
 
         for (auto& mc: dirichlet_boundaries_)
         {
-            mc.set_prim_cons(uni_prim, fs.gamma_);
+            mc.set_prim_cons(uni_prim, gamma);
         }
     }
 
-    Vector5 Mesh::uniform_prim(const Freestream& fs)
+    //Vector5 Mesh::uniform_prim(const Freestream& fs)
+    //{
+    //    double cinf = std::sqrt(fs.gamma_ * fs.pinf_ / fs.rhoinf_);
+    //    Vector3 vinf_air;
+
+    //    if (fs.velair_ != 0.)
+    //    {
+    //        vinf_air = Vector3(
+    //                fs.velair_ * std::cos(deg_to_rad(fs.aoa_air_x_)),
+    //                fs.velair_ * std::cos(deg_to_rad(90. - fs.aoa_air_x_)),
+    //                fs.velair_ * std::cos(deg_to_rad(fs.aoa_air_z_)));
+    //    }
+    //    else
+    //    {
+    //        vinf_air = Vector3(
+    //                fs.machair_ * cinf * std::cos(deg_to_rad(fs.aoa_air_x_)),
+    //                fs.machair_ * cinf * std::cos(deg_to_rad(90. - fs.aoa_air_x_)),
+    //                fs.machair_ * cinf * std::cos(deg_to_rad(fs.aoa_air_z_)));
+    //    }
+
+    //    Vector5 prim;
+    //    prim(0) = fs.rhoinf_;
+    //    prim(1) = vinf_air(0);
+    //    prim(2) = vinf_air(1);
+    //    prim(3) = vinf_air(2);
+    //    prim(4) = fs.pinf_;
+
+    //    return prim;
+    //}
+
+    Vector5 Mesh::uniform_prim(const FlowInit& finit)
     {
-        double cinf = std::sqrt(fs.gamma_ * fs.pinf_ / fs.rhoinf_);
-        Vector3 vinf_air;
-
-        if (fs.velair_ != 0.)
-        {
-            vinf_air = Vector3(
-                    fs.velair_ * std::cos(deg_to_rad(fs.aoa_air_x_)),
-                    fs.velair_ * std::cos(deg_to_rad(90. - fs.aoa_air_x_)),
-                    fs.velair_ * std::cos(deg_to_rad(fs.aoa_air_z_)));
-        }
-        else
-        {
-            vinf_air = Vector3(
-                    fs.machair_ * cinf * std::cos(deg_to_rad(fs.aoa_air_x_)),
-                    fs.machair_ * cinf * std::cos(deg_to_rad(90. - fs.aoa_air_x_)),
-                    fs.machair_ * cinf * std::cos(deg_to_rad(fs.aoa_air_z_)));
-        }
-
         Vector5 prim;
-        prim(0) = fs.rhoinf_;
-        prim(1) = vinf_air(0);
-        prim(2) = vinf_air(1);
-        prim(3) = vinf_air(2);
-        prim(4) = fs.pinf_;
+        prim(0) = finit.rho;
+        prim(1) = finit.u;
+        prim(2) = finit.v;
+        prim(3) = finit.w;
+        prim(4) = finit.p;
 
         return prim;
     }
 
-    void Mesh::init_uniform()
+    void Mesh::init_uniform(const FlowInit& finit, double gamma)
     {
-        Freestream fs;
-        fs.read();
-        auto prim = uniform_prim(fs);
+        auto prim = uniform_prim(finit);
 
         for (auto& mc: cell_)
         {
             //mc.init(vinf_air, fs, compo);
-            mc.set_prim_cons(prim, fs.gamma_);
+            mc.set_prim_cons(prim, gamma);
         }
 
         for (auto& mc: dirichlet_boundaries_)
         {
             //mc.init(vinf_air, fs, compo);
-            mc.set_prim_cons(prim, fs.gamma_);
+            mc.set_prim_cons(prim, gamma);
         }
     }
 

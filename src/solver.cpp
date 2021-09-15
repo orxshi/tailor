@@ -97,8 +97,7 @@ namespace Tailor
                        donor_var_exc_(nullptr),
                        riemann_solver_type_(RiemannSolverType::roe),
                        dual_ts_(false),
-                       global_nmesh_(0),
-                       flow_init_type_(FlowInitType::uniform)
+                       global_nmesh_(0)
     {
     }
 
@@ -107,8 +106,7 @@ namespace Tailor
     last_global_residual_(0.),
     increase_cfl_(true),
     cfl_multiplier_(100.),
-    global_nmesh_(0),
-    flow_init_type_(FlowInitType::uniform)
+    global_nmesh_(0)
     {
         read_settings();
 
@@ -145,7 +143,7 @@ namespace Tailor
         {
             profiler_->start("sol-init");
         }
-        partition_->spc_->init_flow(flow_init_type_);
+        partition_->spc_->init_flow();
         //partition_->spc_->init_sod();
         if (profiler_ != nullptr)
         {
@@ -614,15 +612,6 @@ namespace Tailor
             assert(false);
         }
         dual_ts_ = vm["solver.dual-ts"].as<bool>();
-        if (vm["solver.flow-init-type"].as<int>() == 0) {
-            flow_init_type_ = FlowInitType::uniform;
-        }
-        else if (vm["solver.flow-init-type"].as<int>() == 1) {
-            flow_init_type_ = FlowInitType::gaussian;
-        }
-        else {
-            assert(false);
-        }
     }
 
     double Solver::dt() const

@@ -224,7 +224,7 @@ namespace Tailor
         }
     }
 
-    void SpatialPartition::init_flow(FlowInitType flow_init_type)
+    void SpatialPartition::init_flow()
     {
         //namespace po = boost::program_options;
         //po::options_description op;
@@ -293,7 +293,7 @@ namespace Tailor
         {
             //vinf_air.set(0.);
             //mesh_[i].init(vinf_air, fs);
-            mesh_[i].init_flow(flow_init_type);
+            mesh_[i].init_flow();
 
             //if (std::abs(prim[3]) > TAILOR_ZERO)
             //{

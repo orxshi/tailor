@@ -32,19 +32,20 @@ namespace Tailor
         }
     };
 
-    struct GaussianInit
+    struct FlowInit
     {
+        std::string type;
         double cnt_x;
         double cnt_y;
         double cnt_z;
         double strength;
+        double rho;
         double p;
         double u;
         double v;
         double w;
-        double rho;
 
-        void read();
+        void read(const Tag& meshtag);
     };
 
     struct Component

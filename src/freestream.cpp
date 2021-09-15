@@ -80,39 +80,80 @@ namespace Tailor
         w = vm["w"].as<double>();
     }
 
-    void GaussianInit::read()
+    void FlowInit::read(const Tag& meshtag)
     {
         namespace po = boost::program_options;
         po::options_description op;
 
         po::options_description desc{"ginit"};
         desc.add_options()
-            ("ginit.cnt_x", po::value<double>()->required(), "")
-            ("ginit.cnt_y", po::value<double>()->required(), "")
-            ("ginit.cnt_z", po::value<double>()->required(), "")
-            ("ginit.strength", po::value<double>()->required(), "")
-            //("ginit.p", po::value<double>(), "")
-            //("ginit.u", po::value<double>(), "")
-            //("ginit.v", po::value<double>(), "")
-            //("ginit.w", po::value<double>(), "")
-            //("ginit.rho", po::value<double>(), "")
+            ("finit.type", po::value<std::string>()->required(), "")
+            ("finit.cnt_x", po::value<double>(), "")
+            ("finit.cnt_y", po::value<double>(), "")
+            ("finit.cnt_z", po::value<double>(), "")
+            ("finit.strength", po::value<double>(), "")
+            ("finit.rho", po::value<double>(), "")
+            ("finit.p", po::value<double>(), "")
+            ("finit.u", po::value<double>(), "")
+            ("finit.v", po::value<double>(), "")
+            ("finit.w", po::value<double>(), "")
             ;
 
         op.add(desc);
-        std::ifstream settings_file("gaussian_init.ini");
+        std::string fn = "flow_init";
+        fn.append(std::to_string(meshtag()));
+        fn.append(".ini");
+        std::ifstream settings_file(fn);
 
         boost::program_options::variables_map vm;
         po::store(po::parse_config_file(settings_file, op, true), vm);
         po::notify(vm);
 
+        type = vm["ginit.type"].as<std::string>();
         cnt_x = vm["ginit.cnt_x"].as<double>();
         cnt_y = vm["ginit.cnt_y"].as<double>();
         cnt_z = vm["ginit.cnt_z"].as<double>();
         strength = vm["ginit.strength"].as<double>();
-        //p = vm["freestream.rho"].as<double>();
-        //u = vm["freestream.rho"].as<double>();
-        //v = vm["freestream.rho"].as<double>();
-        //w = vm["freestream.rho"].as<double>();
-        //rho = vm["freestream.p"].as<double>();
+        rho = vm["ginit.rho"].as<double>();
+        p = vm["ginit.p"].as<double>();
+        u = vm["ginit.u"].as<double>();
+        v = vm["ginit.v"].as<double>();
+        w = vm["ginit.w"].as<double>();
     }
+
+    //void GaussianInit::read()
+    //{
+    //    namespace po = boost::program_options;
+    //    po::options_description op;
+
+    //    po::options_description desc{"ginit"};
+    //    desc.add_options()
+    //        ("ginit.cnt_x", po::value<double>()->required(), "")
+    //        ("ginit.cnt_y", po::value<double>()->required(), "")
+    //        ("ginit.cnt_z", po::value<double>()->required(), "")
+    //        ("ginit.strength", po::value<double>()->required(), "")
+    //        //("ginit.p", po::value<double>(), "")
+    //        //("ginit.u", po::value<double>(), "")
+    //        //("ginit.v", po::value<double>(), "")
+    //        //("ginit.w", po::value<double>(), "")
+    //        //("ginit.rho", po::value<double>(), "")
+    //        ;
+
+    //    op.add(desc);
+    //    std::ifstream settings_file("gaussian_init.ini");
+
+    //    boost::program_options::variables_map vm;
+    //    po::store(po::parse_config_file(settings_file, op, true), vm);
+    //    po::notify(vm);
+
+    //    cnt_x = vm["ginit.cnt_x"].as<double>();
+    //    cnt_y = vm["ginit.cnt_y"].as<double>();
+    //    cnt_z = vm["ginit.cnt_z"].as<double>();
+    //    strength = vm["ginit.strength"].as<double>();
+    //    //p = vm["freestream.rho"].as<double>();
+    //    //u = vm["freestream.rho"].as<double>();
+    //    //v = vm["freestream.rho"].as<double>();
+    //    //w = vm["freestream.rho"].as<double>();
+    //    //rho = vm["freestream.p"].as<double>();
+    //}
 }
