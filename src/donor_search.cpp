@@ -250,7 +250,6 @@ namespace Tailor
         if (passivehm != nullptr && passivehm->is_inside_holebin(target))
         {
             active_mesh.set_as_hole(ct);
-            assert(false);
         }
         else
         {
@@ -670,7 +669,6 @@ namespace Tailor
                     for (MeshCell& mc: activemesh.cell_)
                     {
                         activemesh.set_as_hole(mc.tag());
-                        assert(false);
                     }
                 }
             }
@@ -809,7 +807,6 @@ namespace Tailor
                     continue;
                 }
                 active_mesh.set_as_hole(mc.tag());
-                assert(false);
             }
 
             return true;
@@ -859,7 +856,6 @@ namespace Tailor
                 if (passivehm != nullptr)
                 {
                     if (mesh_contained_by_hole(passivehm, active_aabb, active_mesh, hole_aabb)) {
-                        assert(false);
                         continue;
                     }
                 }

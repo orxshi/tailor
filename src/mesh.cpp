@@ -3371,7 +3371,6 @@ const MeshCell* Mesh::query_bou(const Tag& ic, BouType type) const
                         if (!has_field_pnei)
                         {
                             c.set_oga_cell_type(OGA_cell_type_t::hole);
-                            assert(false);
                         }
                     }
                 }
@@ -5617,6 +5616,7 @@ int Mesh::priority() const
 
                     if (priority_ > other_mesh.priority())
                     {
+                        std::cout << tag_() << " " << priority_ << std::endl;
                         my_cell.set_oga_cell_type(OGA_cell_type_t::field);
                     }
                     else if (priority_ < other_mesh.priority())
