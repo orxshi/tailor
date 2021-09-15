@@ -365,24 +365,31 @@ namespace Tailor
 
     std::map<Tag, int> SpatialPartitionContainer::search_rm(const AABB& aabb, const Vector3& cnt, std::pair<Tag, int>& resbin, bool verbose) const
     {
-        auto adtpoint = ADTPoint(aabb.vertices().begin(), aabb.vertices().end());
-        auto res = global_adt_.search(adtpoint, verbose);
-
         std::map<Tag, int> map;
 
-        for (int r: res)
+        if (comm_->size() > 1)
         {
-            auto it = bintag_proc_map_.find(r);
-            if (it != bintag_proc_map_.end())
+            auto adtpoint = ADTPoint(aabb.vertices().begin(), aabb.vertices().end());
+            auto res = global_adt_.search(adtpoint, verbose);
+
+            for (int r: res)
             {
-                auto pair = std::make_pair(Tag(it->first), it->second);
-                map.insert(pair);
-                assert(!global_rm_.bin().empty());
-                if (global_rm_.bin(Tag(it->first)).aabb().do_intersect(cnt)) {
-                    resbin = pair;
+                auto it = bintag_proc_map_.find(r);
+                if (it != bintag_proc_map_.end())
+                {
+                    auto pair = std::make_pair(Tag(it->first), it->second);
+                    map.insert(pair);
+                    assert(!global_rm_.bin().empty());
+                    if (global_rm_.bin(Tag(it->first)).aabb().do_intersect(cnt)) {
+                        resbin = pair;
+                    }
                 }
             }
-
+        }
+        else
+        {
+            auto pair = std::make_pair(0, 0);
+            map.insert(pair);
         }
 
         return map;
@@ -421,28 +428,37 @@ namespace Tailor
 
     bool SpatialPartitionContainer::search_rm(const Vector3& cnt, Tag& bintag, int& rank, bool verbose) const
     {
-        auto adtpoint = ADTPoint(cnt);
-        std::vector<int> res = global_adt_.search(adtpoint, verbose);
+        if (comm_->size() > 1)
+        {
+            auto adtpoint = ADTPoint(cnt);
+            std::vector<int> res = global_adt_.search(adtpoint, verbose);
 
-        if (verbose) {
-            std::cout << "res size: " << res.size() << std::endl;
-        }
+            if (verbose) {
+                std::cout << "res size: " << res.size() << std::endl;
+            }
 
-        if (res.empty()) {
-            return false;
-        }
+            if (res.empty()) {
+                return false;
+            }
 
-        //assert(res.size() == 1);
-        auto t = res[0];
+            //assert(res.size() == 1);
+            auto t = res[0];
 
-        auto it = bintag_proc_map_.find(t);
-        assert(it != bintag_proc_map_.end());
-        //if (it != bintag_proc_map_.end()) {
+            auto it = bintag_proc_map_.find(t);
+            assert(it != bintag_proc_map_.end());
+            //if (it != bintag_proc_map_.end()) {
             bintag = Tag(it->first);
             rank = it->second;
             assert(bintag.isvalid());
             return true;
-        //}
+            //}
+        }
+        else
+        {
+            bintag = Tag(0);
+            rank = 0;
+            return true;
+        }
 
         //return false;
 

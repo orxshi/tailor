@@ -359,12 +359,8 @@ namespace Tailor
         cand_donor_exc.exchange(false, "asm-canddonor-exc", profiler_);
         //cand_donor_exc.exchange();
 
-        if (profiler_ != nullptr) {profiler_->start("asm-ds-rtof");}
         donor_searcher.receptor_to_field(cand_donor_exc.arrival());
-        if (profiler_ != nullptr) {profiler_->stop("asm-ds-rtof");}
-        //if (profiler_ != nullptr) {profiler_->start("asm-ds-handle");}
         donor_searcher.handle_donor_conflict(cand_donor_exc.arrival());
-        //if (profiler_ != nullptr) {profiler_->stop("asm-ds-handle");}
 
         //donor_searcher.check_donor_validity();
 
