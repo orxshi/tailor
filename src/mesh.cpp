@@ -5457,7 +5457,6 @@ int Mesh::priority() const
                 out << "LOOKUP_TABLE default" << std::endl;    
                 for (auto mc = cell_.begin(); mc != cell_.end(); ++mc)
                 {
-                    assert(mc->oga_cell_type() != OGA_cell_type_t::hole);
                     out << mc->oga_cell_type() << std::endl;
                 } 
                 out << "SCALARS " << "cell_tag " << "int " << "1" << std::endl;
@@ -5616,7 +5615,6 @@ int Mesh::priority() const
 
                     if (priority_ > other_mesh.priority())
                     {
-                        std::cout << tag_() << " " << priority_ << std::endl;
                         my_cell.set_oga_cell_type(OGA_cell_type_t::field);
                     }
                     else if (priority_ < other_mesh.priority())
