@@ -1222,10 +1222,10 @@ namespace Tailor
 
                 if (sorder_ == 2)
                 {
-                    if (donor_cell.oga_cell_type() != OGA_cell_type_t::field || donor_cell.oga_cell_type() != OGA_cell_type_t::non_resident)
-                    {
-                        std::cout << "mc oga: " << static_cast<int>(donor_cell.oga_cell_type()) << std::endl;
-                    }
+                    //if (donor_cell.oga_cell_type() != OGA_cell_type_t::field || donor_cell.oga_cell_type() != OGA_cell_type_t::non_resident)
+                    //{
+                        //std::cout << "mc oga: " << static_cast<int>(donor_cell.oga_cell_type()) << std::endl;
+                    //}
 
                     assert(donor_cell.oga_cell_type() == OGA_cell_type_t::field || donor_cell.oga_cell_type() == OGA_cell_type_t::non_resident);
 
@@ -1487,33 +1487,22 @@ namespace Tailor
 
     void Solver::print_sub_solver_residual(int ntimestep, const Vector5& residual)
     {
-        std::streambuf* buf;
         std::ofstream of;
 
-        if (comm_->size() == 1)
-        {
-            buf = std::cout.rdbuf();
-        }
-        else
-        {
-            std::string fn = "residual-";
-            fn.append(std::to_string(nsolve_));
-            fn.append(".dat");
-            of.open(fn, std::ios_base::app);
-            buf = of.rdbuf();
-        }
-
-        std::ostream out(buf);
+        std::string fn = "residual-";
+        fn.append(std::to_string(nsolve_));
+        fn.append(".dat");
+        of.open(fn, std::ios_base::app);
 
         if (comm_->rank() == 0)
         {
-            out << ntimestep << " ";
+            of << ntimestep << " ";
             for (int i = 0; i < residual.nelm(); ++i)
             {
-                out << std::scientific << residual(i) << std::fixed;
-                out << " ";
+                of << std::scientific << residual(i) << std::fixed;
+                of << " ";
             }
-            out << std::endl;
+            of << std::endl;
         }
 
         of.close();
