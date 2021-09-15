@@ -91,10 +91,10 @@ namespace Tailor
                 }
                 //holemap.push_back(HoleMap(*comm_, m, pseudo3D, hole_aabb));
                 holemap.push_back(HoleMap(*comm_, msh, pseudo3D, hole_aabb));
-                std::cout << "min(0): " << i << " " << hole_aabb[i].min(0) << std::endl;
-                std::cout << "min(1): " << i << " " << hole_aabb[i].min(1) << std::endl;
-                std::cout << "max(0): " << i << " " << hole_aabb[i].max(0) << std::endl;
-                std::cout << "max(1): " << i << " " << hole_aabb[i].max(1) << std::endl;
+                //std::cout << "min(0): " << i << " " << hole_aabb[i].min(0) << std::endl;
+                //std::cout << "min(1): " << i << " " << hole_aabb[i].min(1) << std::endl;
+                //std::cout << "max(0): " << i << " " << hole_aabb[i].max(0) << std::endl;
+                //std::cout << "max(1): " << i << " " << hole_aabb[i].max(1) << std::endl;
             }
         }
         //std::cout << comm_->rank() << " after holemap" << std::endl;
@@ -250,6 +250,7 @@ namespace Tailor
         if (passivehm != nullptr && passivehm->is_inside_holebin(target))
         {
             active_mesh.set_as_hole(ct);
+            assert(false);
         }
         else
         {
@@ -856,6 +857,7 @@ namespace Tailor
                 if (passivehm != nullptr)
                 {
                     if (mesh_contained_by_hole(passivehm, active_aabb, active_mesh, hole_aabb)) {
+                        assert(false);
                         continue;
                     }
                 }
