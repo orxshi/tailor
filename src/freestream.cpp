@@ -2,20 +2,14 @@
 
 namespace Tailor
 {
-    auto copt(std::string sdesc, std::string sub)
+    auto cstr(std::string sdesc, std::string sub)
     {
         std::string full = sdesc;
         full.append(".");
         full.append(sub);
-        return full.c_str();
-    }
-
-    auto sopt(std::string sdesc, std::string sub)
-    {
-        std::string full = sdesc;
-        full.append(".");
-        full.append(sub);
-        return full;
+        char* str = new char [full.length() + 1];
+        str = std::strcpy(str, full.c_str());
+        return str;
     }
 
     void Freestream::read()
@@ -58,22 +52,20 @@ namespace Tailor
         std::string sdesc = "component ";
         sdesc.append(std::to_string(mtag()));
 
-        std::string tt = "rotation";
-
         po::options_description desc{sdesc};
         desc.add_options()
-            ("rotation", po::value<bool>()->required(), "")
-            ("rotaxis", po::value<int>()->default_value(0), "")
-            ("rpm", po::value<int>()->default_value(0), "")
-            ("pivotx", po::value<double>()->default_value(0), "")
-            ("pivoty", po::value<double>()->default_value(0), "")
-            ("pivotz", po::value<double>()->default_value(0), "")
-            ("mach", po::value<double>()->default_value(0), "")
-            ("dirx", po::value<double>()->default_value(0), "")
-            ("dirz", po::value<double>()->default_value(0), "")
-            ("u", po::value<double>()->default_value(0), "")
-            ("v", po::value<double>()->default_value(0), "")
-            ("w", po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "rotation"), po::value<bool>()->required(), "")
+            (cstr(sdesc, "rotaxis"), po::value<int>()->default_value(0), "")
+            (cstr(sdesc, "rpm"), po::value<int>()->default_value(0), "")
+            (cstr(sdesc, "pivotx"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "pivoty"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "pivotz"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "mach"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "dirx"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "dirz"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "u"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "v"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "w"), po::value<double>()->default_value(0), "")
             ;
 
         op.add(desc);
@@ -84,19 +76,19 @@ namespace Tailor
         po::store(po::parse_config_file(settings_file, op, true), vm);
         po::notify(vm);
 
-        rotation_ = vm["rotation"].as<bool>();
-        rotaxis_ = vm["rotaxis"].as<int>();
-        rpm_ = vm["rpm"].as<int>();
-        double pivotx = vm["pivotx"].as<double>();
-        double pivoty = vm["pivoty"].as<double>();
-        double pivotz = vm["pivotz"].as<double>();
-        mach_ = vm["mach"].as<double>();
-        dirx_ = vm["dirx"].as<double>();
-        dirz_ = vm["dirz"].as<double>();
+        rotation_ = vm[cstr(sdesc, "rotation")].as<bool>();
+        rotaxis_ = vm[cstr(sdesc, "rotaxis")].as<int>();
+        rpm_ = vm[cstr(sdesc, "rpm")].as<int>();
+        double pivotx = vm[cstr(sdesc, "pivotx")].as<double>();
+        double pivoty = vm[cstr(sdesc, "pivoty")].as<double>();
+        double pivotz = vm[cstr(sdesc, "pivotz")].as<double>();
+        mach_ = vm[cstr(sdesc, "mach")].as<double>();
+        dirx_ = vm[cstr(sdesc, "dirx")].as<double>();
+        dirz_ = vm[cstr(sdesc, "dirz")].as<double>();
         pivot_ = Vector3(pivotx, pivoty, pivotz);
-        u = vm["u"].as<double>();
-        v = vm["v"].as<double>();
-        w = vm["w"].as<double>();
+        u = vm[cstr(sdesc, "u")].as<double>();
+        v = vm[cstr(sdesc, "v")].as<double>();
+        w = vm[cstr(sdesc, "w")].as<double>();
     }
 
     void FlowInit::read(const Tag& meshtag)
@@ -104,23 +96,21 @@ namespace Tailor
         namespace po = boost::program_options;
         po::options_description op;
 
-        std::string sdesc = "mesh";
+        std::string sdesc = "mesh ";
         sdesc.append(std::to_string(meshtag()));
 
-        std::cout << "sdesc: " << sdesc << std::endl;
-        
         po::options_description desc{sdesc};
         desc.add_options()
-            ("type", po::value<std::string>()->required(), "")
-            ("cnt_x", po::value<double>()->default_value(0), "")
-            ("cnt_y", po::value<double>()->default_value(0), "")
-            ("cnt_z", po::value<double>()->default_value(0), "")
-            ("strength", po::value<double>()->default_value(0), "")
-            ("rho", po::value<double>()->required(), "")
-            ("p", po::value<double>()->required(), "")
-            ("u", po::value<double>()->required(), "")
-            ("v", po::value<double>()->required(), "")
-            ("w", po::value<double>()->required(), "")
+            (cstr(sdesc, "type"), po::value<std::string>()->required(), "")
+            (cstr(sdesc, "cnt_x"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "cnt_y"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "cnt_z"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "strength"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "rho"), po::value<double>()->required(), "")
+            (cstr(sdesc, "p"), po::value<double>()->required(), "")
+            (cstr(sdesc, "u"), po::value<double>()->required(), "")
+            (cstr(sdesc, "v"), po::value<double>()->required(), "")
+            (cstr(sdesc, "w"), po::value<double>()->required(), "")
             ;
 
         op.add(desc);
@@ -131,16 +121,16 @@ namespace Tailor
         po::store(po::parse_config_file(settings_file, op, true), vm);
         po::notify(vm);
 
-        type = vm["type"].as<std::string>();
-        cnt_x = vm["cnt_x"].as<double>();
-        cnt_y = vm["cnt_y"].as<double>();
-        cnt_z = vm["cnt_z"].as<double>();
-        strength = vm["strength"].as<double>();
-        rho = vm["rho"].as<double>();
-        p = vm["p"].as<double>();
-        u = vm["u"].as<double>();
-        v = vm["v"].as<double>();
-        w = vm["w"].as<double>();
+        type = vm[cstr(sdesc, "type")].as<std::string>();
+        cnt_x = vm[cstr(sdesc, "cnt_x")].as<double>();
+        cnt_y = vm[cstr(sdesc, "cnt_y")].as<double>();
+        cnt_z = vm[cstr(sdesc, "cnt_z")].as<double>();
+        strength = vm[cstr(sdesc, "strength")].as<double>();
+        rho = vm[cstr(sdesc, "rho")].as<double>();
+        p = vm[cstr(sdesc, "p")].as<double>();
+        u = vm[cstr(sdesc, "u")].as<double>();
+        v = vm[cstr(sdesc, "v")].as<double>();
+        w = vm[cstr(sdesc, "w")].as<double>();
     }
 
     //void GaussianInit::read()
