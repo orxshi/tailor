@@ -2,6 +2,22 @@
 
 namespace Tailor
 {
+    auto copt(std::string sdesc, std::string sub)
+    {
+        std::string full = sdesc;
+        full.append(".");
+        full.append(sub);
+        return full.c_str();
+    }
+
+    auto sopt(std::string sdesc, std::string sub)
+    {
+        std::string full = sdesc;
+        full.append(".");
+        full.append(sub);
+        return full;
+    }
+
     void Freestream::read()
     {
         namespace po = boost::program_options;
@@ -39,109 +55,88 @@ namespace Tailor
         namespace po = boost::program_options;
         po::options_description op;
 
-        po::options_description desc{"compo"};
+        std::string sdesc = "component ";
+        sdesc.append(std::to_string(mtag()));
+
+        po::options_description desc{sdesc};
         desc.add_options()
-            ("rotation", po::value<bool>()->default_value(false), "")
-            ("rotaxis", po::value<int>()->default_value(0), "")
-            ("rpm", po::value<int>()->default_value(0), "")
-            ("pivotx", po::value<double>()->default_value(0), "")
-            ("pivoty", po::value<double>()->default_value(0), "")
-            ("pivotz", po::value<double>()->default_value(0), "")
-            ("mach", po::value<double>()->default_value(0), "")
-            ("dirx", po::value<double>()->default_value(0), "")
-            ("dirz", po::value<double>()->default_value(0), "")
-            ("u", po::value<double>()->default_value(0), "")
-            ("v", po::value<double>()->default_value(0), "")
-            ("w", po::value<double>()->default_value(0), "")
+            (copt(sdesc, "rotation"), po::value<bool>()->required(), "")
+            (copt(sdesc, "rotaxis"), po::value<int>()->default_value(0), "")
+            (copt(sdesc, "rpm"), po::value<int>()->default_value(0), "")
+            (copt(sdesc, "pivotx"), po::value<double>()->default_value(0), "")
+            (copt(sdesc, "pivoty"), po::value<double>()->default_value(0), "")
+            (copt(sdesc, "pivotz"), po::value<double>()->default_value(0), "")
+            (copt(sdesc, "mach"), po::value<double>()->default_value(0), "")
+            (copt(sdesc, "dirx"), po::value<double>()->default_value(0), "")
+            (copt(sdesc, "dirz"), po::value<double>()->default_value(0), "")
+            (copt(sdesc, "u"), po::value<double>()->default_value(0), "")
+            (copt(sdesc, "v"), po::value<double>()->default_value(0), "")
+            (copt(sdesc, "w"), po::value<double>()->default_value(0), "")
             ;
 
         op.add(desc);
-        std::string s = "compo_";
-        s.append(std::to_string(mtag()));
-        s.append(".ini");
+        std::string s = "component.ini";
         std::ifstream settings_file(s);
 
         boost::program_options::variables_map vm;
         po::store(po::parse_config_file(settings_file, op, true), vm);
         po::notify(vm);
 
-        rotation_ = vm["rotation"].as<bool>();
-        rotaxis_ = vm["rotaxis"].as<int>();
-        rpm_ = vm["rpm"].as<int>();
-        double pivotx = vm["pivotx"].as<double>();
-        double pivoty = vm["pivoty"].as<double>();
-        double pivotz = vm["pivotz"].as<double>();
-        mach_ = vm["mach"].as<double>();
-        dirx_ = vm["dirx"].as<double>();
-        dirz_ = vm["dirz"].as<double>();
+        rotation_ = vm[sopt(sdesc, "rotation")].as<bool>();
+        rotaxis_ = vm[sopt(sdesc, "rotaxis")].as<int>();
+        rpm_ = vm[sopt(sdesc, "rpm")].as<int>();
+        double pivotx = vm[sopt(sdesc, "pivotx")].as<double>();
+        double pivoty = vm[sopt(sdesc, "pivoty")].as<double>();
+        double pivotz = vm[sopt(sdesc, "pivotz")].as<double>();
+        mach_ = vm[sopt(sdesc, "mach")].as<double>();
+        dirx_ = vm[sopt(sdesc, "dirx")].as<double>();
+        dirz_ = vm[sopt(sdesc, "dirz")].as<double>();
         pivot_ = Vector3(pivotx, pivoty, pivotz);
-        u = vm["u"].as<double>();
-        v = vm["v"].as<double>();
-        w = vm["w"].as<double>();
+        u = vm[sopt(sdesc, "u")].as<double>();
+        v = vm[sopt(sdesc, "v")].as<double>();
+        w = vm[sopt(sdesc, "w")].as<double>();
     }
 
     void FlowInit::read(const Tag& meshtag)
     {
-        auto copt = [](std::string sdesc, std::string sub)
-        {
-            std::string full = sdesc;
-            full.append(".");
-            full.append(sub);
-            return full.c_str();
-        };
-
-        auto sopt = [](std::string sdesc, std::string sub)
-        {
-            std::string full = sdesc;
-            full.append(".");
-            full.append(sub);
-            return full;
-        };
-
         namespace po = boost::program_options;
         po::options_description op;
 
         std::string sdesc = "mesh ";
         sdesc.append(std::to_string(meshtag()));
-        //auto cdesc = sdesc.c_str();
         
         po::options_description desc{sdesc};
         desc.add_options()
-            //(copt(sdesc, "type"), po::value<std::string>()->required(), "")
-            (copt(sdesc, "cnt_x"), po::value<double>(), "")
-            //(copt(sdesc, "cnt_y"), po::value<double>(), "")
-            //(copt(sdesc, "cnt_z"), po::value<double>(), "")
-            //(copt(sdesc, "strength"), po::value<double>(), "")
-            //(copt(sdesc, "rho"), po::value<double>(), "")
-            //(copt(sdesc, "p"), po::value<double>(), "")
-            //(copt(sdesc, "u"), po::value<double>(), "")
-            //(copt(sdesc, "v"), po::value<double>(), "")
-            //(copt(sdesc, "w"), po::value<double>(), "")
+            (copt(sdesc, "type"), po::value<std::string>()->required(), "")
+            (copt(sdesc, "cnt_x"), po::value<double>()->default_value(0), "")
+            (copt(sdesc, "cnt_y"), po::value<double>()->default_value(0), "")
+            (copt(sdesc, "cnt_z"), po::value<double>()->default_value(0), "")
+            (copt(sdesc, "strength"), po::value<double>()->default_value(0), "")
+            (copt(sdesc, "rho"), po::value<double>()->required(), "")
+            (copt(sdesc, "p"), po::value<double>()->required(), "")
+            (copt(sdesc, "u"), po::value<double>()->required(), "")
+            (copt(sdesc, "v"), po::value<double>()->required(), "")
+            (copt(sdesc, "w"), po::value<double>()->required(), "")
             ;
 
         op.add(desc);
         std::string fn = "flow_init.ini";
-        //fn.append(std::to_string(meshtag()));
-        //fn.append(".ini");
         std::ifstream settings_file(fn);
-
 
         boost::program_options::variables_map vm;
         po::store(po::parse_config_file(settings_file, op, true), vm);
         po::notify(vm);
 
-        //type = vm[sopt(sdesc, "type")].as<std::string>();
+        type = vm[sopt(sdesc, "type")].as<std::string>();
         cnt_x = vm[sopt(sdesc, "cnt_x")].as<double>();
-        //cnt_y = vm[sopt(sdesc, "cnt_y")].as<double>();
-        //cnt_z = vm[sopt(sdesc, "cnt_z")].as<double>();
-        //strength = vm[sopt(sdesc, "strength")].as<double>();
-        //rho = vm[sopt(sdesc, "rho")].as<double>();
-        //p = vm[sopt(sdesc, "p")].as<double>();
-        //u = vm[sopt(sdesc, "u")].as<double>();
-        //v = vm[sopt(sdesc, "v")].as<double>();
-        //w = vm[sopt(sdesc, "w")].as<double>();
-
-        std::cout << "cnt_x: " << cnt_x << std::endl;
+        cnt_y = vm[sopt(sdesc, "cnt_y")].as<double>();
+        cnt_z = vm[sopt(sdesc, "cnt_z")].as<double>();
+        strength = vm[sopt(sdesc, "strength")].as<double>();
+        rho = vm[sopt(sdesc, "rho")].as<double>();
+        p = vm[sopt(sdesc, "p")].as<double>();
+        u = vm[sopt(sdesc, "u")].as<double>();
+        v = vm[sopt(sdesc, "v")].as<double>();
+        w = vm[sopt(sdesc, "w")].as<double>();
     }
 
     //void GaussianInit::read()
