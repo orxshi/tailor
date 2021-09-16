@@ -91,7 +91,7 @@ namespace Tailor
 
         po::options_description desc{sdesc};
         desc.add_options()
-            ("type", po::value<std::string>()->required(), "")
+            ("mesh 0.type", po::value<std::string>()->required(), "")
             ("cnt_x", po::value<double>(), "")
             ("cnt_y", po::value<double>(), "")
             ("cnt_z", po::value<double>(), "")
