@@ -76,16 +76,16 @@ namespace Tailor
 
         if (print_pre_vtk_)
         {
-            print_mesh_vtk("asm-init");
-            //for (const auto& m: partition_->mesh())
-            //{
-            //    std::string fn = "asm-pre-";
-            //    fn.append(std::to_string(comm_->rank()));
-            //    fn.append("-");
-            //    fn.append(std::to_string(m.tag()()));
-            //    fn.append(".vtk");
-            //    m.print_as_vtk_geometry(fn);
-            //}
+            //print_mesh_vtk("asm-init");
+            for (const auto& m: partition_->mesh())
+            {
+                std::string fn = "asm-pre-";
+                fn.append(std::to_string(comm_->rank()));
+                fn.append("-");
+                fn.append(std::to_string(m.tag()()));
+                fn.append(".vtk");
+                m.print_as_vtk_geometry(fn);
+            }
         }
 
         partition_->make(mergebins_, make_load_balance_, nassemble_);
