@@ -106,6 +106,8 @@ namespace Tailor
 
         std::string sdesc = "mesh ";
         sdesc.append(std::to_string(meshtag()));
+
+        std::cout << "sdesc: " << sdesc << std::endl;
         
         po::options_description desc{sdesc};
         desc.add_options()
