@@ -61,17 +61,17 @@ namespace Tailor
         po::options_description desc{sdesc};
         desc.add_options()
             (copt(sdesc, "rotation"), po::value<bool>()->required(), "")
-            (copt(sdesc, "rotaxis"), po::value<int>()->default_value(0), "")
-            (copt(sdesc, "rpm"), po::value<int>()->default_value(0), "")
-            (copt(sdesc, "pivotx"), po::value<double>()->default_value(0), "")
-            (copt(sdesc, "pivoty"), po::value<double>()->default_value(0), "")
-            (copt(sdesc, "pivotz"), po::value<double>()->default_value(0), "")
-            (copt(sdesc, "mach"), po::value<double>()->default_value(0), "")
-            (copt(sdesc, "dirx"), po::value<double>()->default_value(0), "")
-            (copt(sdesc, "dirz"), po::value<double>()->default_value(0), "")
-            (copt(sdesc, "u"), po::value<double>()->default_value(0), "")
-            (copt(sdesc, "v"), po::value<double>()->default_value(0), "")
-            (copt(sdesc, "w"), po::value<double>()->default_value(0), "")
+            //(copt(sdesc, "rotaxis"), po::value<int>()->default_value(0), "")
+            //(copt(sdesc, "rpm"), po::value<int>()->default_value(0), "")
+            //(copt(sdesc, "pivotx"), po::value<double>()->default_value(0), "")
+            //(copt(sdesc, "pivoty"), po::value<double>()->default_value(0), "")
+            //(copt(sdesc, "pivotz"), po::value<double>()->default_value(0), "")
+            //(copt(sdesc, "mach"), po::value<double>()->default_value(0), "")
+            //(copt(sdesc, "dirx"), po::value<double>()->default_value(0), "")
+            //(copt(sdesc, "dirz"), po::value<double>()->default_value(0), "")
+            //(copt(sdesc, "u"), po::value<double>()->default_value(0), "")
+            //(copt(sdesc, "v"), po::value<double>()->default_value(0), "")
+            //(copt(sdesc, "w"), po::value<double>()->default_value(0), "")
             ;
 
         op.add(desc);
@@ -83,18 +83,18 @@ namespace Tailor
         po::notify(vm);
 
         rotation_ = vm[sopt(sdesc, "rotation")].as<bool>();
-        rotaxis_ = vm[sopt(sdesc, "rotaxis")].as<int>();
-        rpm_ = vm[sopt(sdesc, "rpm")].as<int>();
-        double pivotx = vm[sopt(sdesc, "pivotx")].as<double>();
-        double pivoty = vm[sopt(sdesc, "pivoty")].as<double>();
-        double pivotz = vm[sopt(sdesc, "pivotz")].as<double>();
-        mach_ = vm[sopt(sdesc, "mach")].as<double>();
-        dirx_ = vm[sopt(sdesc, "dirx")].as<double>();
-        dirz_ = vm[sopt(sdesc, "dirz")].as<double>();
-        pivot_ = Vector3(pivotx, pivoty, pivotz);
-        u = vm[sopt(sdesc, "u")].as<double>();
-        v = vm[sopt(sdesc, "v")].as<double>();
-        w = vm[sopt(sdesc, "w")].as<double>();
+        //rotaxis_ = vm[sopt(sdesc, "rotaxis")].as<int>();
+        //rpm_ = vm[sopt(sdesc, "rpm")].as<int>();
+        //double pivotx = vm[sopt(sdesc, "pivotx")].as<double>();
+        //double pivoty = vm[sopt(sdesc, "pivoty")].as<double>();
+        //double pivotz = vm[sopt(sdesc, "pivotz")].as<double>();
+        //mach_ = vm[sopt(sdesc, "mach")].as<double>();
+        //dirx_ = vm[sopt(sdesc, "dirx")].as<double>();
+        //dirz_ = vm[sopt(sdesc, "dirz")].as<double>();
+        //pivot_ = Vector3(pivotx, pivoty, pivotz);
+        //u = vm[sopt(sdesc, "u")].as<double>();
+        //v = vm[sopt(sdesc, "v")].as<double>();
+        //w = vm[sopt(sdesc, "w")].as<double>();
     }
 
     void FlowInit::read(const Tag& meshtag)
