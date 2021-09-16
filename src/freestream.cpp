@@ -54,7 +54,7 @@ namespace Tailor
 
         po::options_description desc{sdesc};
         desc.add_options()
-            (cstr(sdesc, "rotation"), po::value<bool>()->required(), "")
+            (cstr(sdesc, "rotation"), po::value<bool>()->default_value(false), "")
             (cstr(sdesc, "rotaxis"), po::value<int>()->default_value(0), "")
             (cstr(sdesc, "rpm"), po::value<int>()->default_value(0), "")
             (cstr(sdesc, "pivotx"), po::value<double>()->default_value(0), "")
