@@ -2,7 +2,7 @@
 
 namespace Tailor
 {
-    auto copt(std::string sdesc, std::string sub)
+    const char* copt(std::string sdesc, std::string sub)
     {
         std::string full = sdesc;
         full.append(".");
@@ -58,10 +58,11 @@ namespace Tailor
         std::string sdesc = "component ";
         sdesc.append(std::to_string(mtag()));
 
-        std::cout << copt(sdesc, "rotation") << std::endl;
+        std::string tt = "rotation";
+
         po::options_description desc{sdesc};
         desc.add_options()
-            (copt(sdesc, "rotation"), po::value<bool>()->required(), "")
+            (copt(sdesc, "rotaxis"), po::value<bool>()->required(), "")
             //(copt(sdesc, "rotaxis"), po::value<int>()->default_value(0), "")
             //(copt(sdesc, "rpm"), po::value<int>()->default_value(0), "")
             //(copt(sdesc, "pivotx"), po::value<double>()->default_value(0), "")
