@@ -927,6 +927,9 @@ namespace Tailor
         Component compo;
         compo.read(tag_);
 
+
+        std::cout << "aaaaaaaaaaaaaaaa" << std::endl;
+
         for (auto& mc: cell_)
         {
             //mc.mesh_velocity(dt, fs, compo);
@@ -936,6 +939,8 @@ namespace Tailor
                 mf.face_velocity(fs, compo);
             }
         }
+
+        std::cout << "bbbbbbbbbbbbbbb" << std::endl;
 
         assert(is_gcl_satisfied(rank));
     }
