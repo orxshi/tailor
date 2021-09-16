@@ -100,7 +100,7 @@ namespace Tailor
             ;
 
         op.add(desc);
-        std::string fn = "flow_init";
+        std::string fn = "flow_init_";
         fn.append(std::to_string(meshtag()));
         fn.append(".ini");
         std::ifstream settings_file(fn);

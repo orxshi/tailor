@@ -790,8 +790,6 @@ namespace Tailor
         return true;
     }
 
-    // init - uniform / Gaussian
-    
     void Mesh::init_flow()
     {
         // Read init file for this mesh.
