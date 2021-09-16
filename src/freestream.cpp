@@ -104,7 +104,7 @@ namespace Tailor
         namespace po = boost::program_options;
         po::options_description op;
 
-        std::string sdesc = "mesh ";
+        std::string sdesc = "mesh";
         sdesc.append(std::to_string(meshtag()));
 
         std::cout << "sdesc: " << sdesc << std::endl;
