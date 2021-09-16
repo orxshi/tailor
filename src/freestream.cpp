@@ -85,18 +85,22 @@ namespace Tailor
         namespace po = boost::program_options;
         po::options_description op;
 
-        po::options_description desc{"ginit"};
+        std::string sdesc = "mesh ";
+        sdesc.append(std::to_string(meshtag()));
+        //auto cdesc = sdesc.c_str();
+
+        po::options_description desc{sdesc};
         desc.add_options()
-            ("finit.type", po::value<std::string>()->required(), "")
-            ("finit.cnt_x", po::value<double>(), "")
-            ("finit.cnt_y", po::value<double>(), "")
-            ("finit.cnt_z", po::value<double>(), "")
-            ("finit.strength", po::value<double>(), "")
-            ("finit.rho", po::value<double>(), "")
-            ("finit.p", po::value<double>(), "")
-            ("finit.u", po::value<double>(), "")
-            ("finit.v", po::value<double>(), "")
-            ("finit.w", po::value<double>(), "")
+            ("type", po::value<std::string>()->required(), "")
+            ("cnt_x", po::value<double>(), "")
+            ("cnt_y", po::value<double>(), "")
+            ("cnt_z", po::value<double>(), "")
+            ("strength", po::value<double>(), "")
+            ("rho", po::value<double>(), "")
+            ("p", po::value<double>(), "")
+            ("u", po::value<double>(), "")
+            ("v", po::value<double>(), "")
+            ("w", po::value<double>(), "")
             ;
 
         op.add(desc);
@@ -109,16 +113,16 @@ namespace Tailor
         po::store(po::parse_config_file(settings_file, op, true), vm);
         po::notify(vm);
 
-        type = vm["ginit.type"].as<std::string>();
-        cnt_x = vm["ginit.cnt_x"].as<double>();
-        cnt_y = vm["ginit.cnt_y"].as<double>();
-        cnt_z = vm["ginit.cnt_z"].as<double>();
-        strength = vm["ginit.strength"].as<double>();
-        rho = vm["ginit.rho"].as<double>();
-        p = vm["ginit.p"].as<double>();
-        u = vm["ginit.u"].as<double>();
-        v = vm["ginit.v"].as<double>();
-        w = vm["ginit.w"].as<double>();
+        type = vm["type"].as<std::string>();
+        cnt_x = vm["cnt_x"].as<double>();
+        cnt_y = vm["cnt_y"].as<double>();
+        cnt_z = vm["cnt_z"].as<double>();
+        strength = vm["strength"].as<double>();
+        rho = vm["rho"].as<double>();
+        p = vm["p"].as<double>();
+        u = vm["u"].as<double>();
+        v = vm["v"].as<double>();
+        w = vm["w"].as<double>();
     }
 
     //void GaussianInit::read()
