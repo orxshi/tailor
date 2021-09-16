@@ -82,12 +82,20 @@ namespace Tailor
 
     void FlowInit::read(const Tag& meshtag)
     {
-        auto opt = [](std::string sdesc, std::string sub)
+        auto copt = [](std::string sdesc, std::string sub)
         {
             std::string full = sdesc;
             full.append(".");
             full.append(sub);
             return full.c_str();
+        };
+
+        auto sopt = [](std::string sdesc, std::string sub)
+        {
+            std::string full = sdesc;
+            full.append(".");
+            full.append(sub);
+            return full;
         };
 
         namespace po = boost::program_options;
@@ -99,16 +107,16 @@ namespace Tailor
         
         po::options_description desc{sdesc};
         desc.add_options()
-            (opt(sdesc, "type"), po::value<std::string>()->required(), "")
-            //(opt(sdesc, "cnt_x"), po::value<double>(), "")
-            //(opt(sdesc, "cnt_y"), po::value<double>(), "")
-            //(opt(sdesc, "cnt_z"), po::value<double>(), "")
-            //(opt(sdesc, "strength"), po::value<double>(), "")
-            //(opt(sdesc, "rho"), po::value<double>(), "")
-            //(opt(sdesc, "p"), po::value<double>(), "")
-            //(opt(sdesc, "u"), po::value<double>(), "")
-            //(opt(sdesc, "v"), po::value<double>(), "")
-            //(opt(sdesc, "w"), po::value<double>(), "")
+            (copt(sdesc, "type"), po::value<std::string>()->required(), "")
+            (copt(sdesc, "cnt_x"), po::value<double>(), "")
+            (copt(sdesc, "cnt_y"), po::value<double>(), "")
+            (copt(sdesc, "cnt_z"), po::value<double>(), "")
+            (copt(sdesc, "strength"), po::value<double>(), "")
+            (copt(sdesc, "rho"), po::value<double>(), "")
+            (copt(sdesc, "p"), po::value<double>(), "")
+            (copt(sdesc, "u"), po::value<double>(), "")
+            (copt(sdesc, "v"), po::value<double>(), "")
+            (copt(sdesc, "w"), po::value<double>(), "")
             ;
 
         op.add(desc);
@@ -121,16 +129,16 @@ namespace Tailor
         po::store(po::parse_config_file(settings_file, op, true), vm);
         po::notify(vm);
 
-        type = vm[opt(sdesc, "type")].as<std::string>();
-        //cnt_x = vm[opt(sdesc, "cnt_x")].as<double>();
-        //cnt_y = vm[opt(sdesc, "cnt_y")].as<double>();
-        //cnt_z = vm[opt(sdesc, "cnt_z")].as<double>();
-        //strength = vm[opt(sdesc, "strength")].as<double>();
-        //rho = vm[opt(sdesc, "rho")].as<double>();
-        //p = vm[opt(sdesc, "p")].as<double>();
-        //u = vm[opt(sdesc, "u")].as<double>();
-        //v = vm[opt(sdesc, "v")].as<double>();
-        //w = vm[opt(sdesc, "w")].as<double>();
+        type = vm[sopt(sdesc, "type")].as<std::string>();
+        cnt_x = vm[sopt(sdesc, "cnt_x")].as<double>();
+        cnt_y = vm[sopt(sdesc, "cnt_y")].as<double>();
+        cnt_z = vm[sopt(sdesc, "cnt_z")].as<double>();
+        strength = vm[sopt(sdesc, "strength")].as<double>();
+        rho = vm[sopt(sdesc, "rho")].as<double>();
+        p = vm[sopt(sdesc, "p")].as<double>();
+        u = vm[sopt(sdesc, "u")].as<double>();
+        v = vm[sopt(sdesc, "v")].as<double>();
+        w = vm[sopt(sdesc, "w")].as<double>();
     }
 
     //void GaussianInit::read()
