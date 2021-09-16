@@ -81,6 +81,7 @@ namespace Tailor
             bool print_map_;
 
             void donor_search();
+            void print_mesh_vtk(std::string fn0);
     };
 }
 

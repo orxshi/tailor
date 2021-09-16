@@ -76,15 +76,16 @@ namespace Tailor
 
         if (print_pre_vtk_)
         {
-            for (const auto& m: partition_->mesh())
-            {
-                std::string fn = "asm-pre-";
-                fn.append(std::to_string(comm_->rank()));
-                fn.append("-");
-                fn.append(std::to_string(m.tag()()));
-                fn.append(".vtk");
-                m.print_as_vtk_geometry(fn);
-            }
+            print_mesh_vtk("asm-init");
+            //for (const auto& m: partition_->mesh())
+            //{
+            //    std::string fn = "asm-pre-";
+            //    fn.append(std::to_string(comm_->rank()));
+            //    fn.append("-");
+            //    fn.append(std::to_string(m.tag()()));
+            //    fn.append(".vtk");
+            //    m.print_as_vtk_geometry(fn);
+            //}
         }
 
         partition_->make(mergebins_, make_load_balance_, nassemble_);
@@ -241,6 +242,41 @@ namespace Tailor
         delete partition_;
     }
 
+    void Assembler::print_mesh_vtk(std::string fn0)
+    {
+        for (const auto &sp : partition_->spc().sp())
+        {
+            for (const auto &m : sp.mesh())
+            {
+                std::string fn = fn0;
+                fn.append("-");
+                fn.append(std::to_string(m.tag()()));
+                fn.append("-");
+                fn.append(std::to_string(comm_->rank()));
+                fn.append("-");
+                fn.append(std::to_string(nassemble_));
+                fn.append(".vtk");
+                m.print_as_vtk(fn);
+            }
+        }
+        for (const auto &sp : partition_->spc().sp())
+        {
+            for (const auto &m : sp.mesh())
+            {
+                std::string fn = fn0;
+                fn.append("-");
+                fn.append("wall-");
+                fn.append(std::to_string(m.tag()()));
+                fn.append("-");
+                fn.append(std::to_string(comm_->rank()));
+                fn.append("-");
+                fn.append(std::to_string(nassemble_));
+                fn.append(".vtk");
+                m.print_wall_as_vtk(fn);
+            }
+        }
+    }
+
     void Assembler::assemble()
     {
         assert(!partition_->spc().sp().empty());
@@ -257,35 +293,7 @@ namespace Tailor
 
         if (print_vtk_)
         {
-            for (const auto& sp: partition_->spc().sp())
-            {
-                for (const auto& m: sp.mesh())
-                {
-                    std::string fn = "asm-";
-                    fn.append(std::to_string(m.tag()()));
-                    fn.append("-");
-                    fn.append(std::to_string(comm_->rank()));
-                    fn.append("-");
-                    fn.append(std::to_string(sp.tag()()));
-                    fn.append(".vtk");
-                    m.print_as_vtk_geometry(fn);
-                }
-            }
-
-            for (const auto& sp: partition_->spc().sp())
-            {
-                for (const auto& m: sp.mesh())
-                {
-                    std::string fn = "asmwall-";
-                    fn.append(std::to_string(m.tag()()));
-                    fn.append("-");
-                    fn.append(std::to_string(comm_->rank()));
-                    fn.append("-");
-                    fn.append(std::to_string(sp.tag()()));
-                    fn.append(".vtk");
-                    m.print_wall_as_vtk(fn);
-                }
-            }
+            print_mesh_vtk("asm");
         }
     }
 

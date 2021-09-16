@@ -171,7 +171,7 @@ namespace Tailor
 
         if (print_vtk_init_)
         {
-            print_mesh_vtk("solinit");
+            print_mesh_vtk("sol-init");
         }
 
         //for (const auto& sp: partition_->spc().sp())
