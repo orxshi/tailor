@@ -125,6 +125,7 @@ namespace Tailor
         //fn.append(".ini");
         std::ifstream settings_file(fn);
 
+
         boost::program_options::variables_map vm;
         po::store(po::parse_config_file(settings_file, op, true), vm);
         po::notify(vm);
@@ -139,6 +140,8 @@ namespace Tailor
         //u = vm[sopt(sdesc, "u")].as<double>();
         //v = vm[sopt(sdesc, "v")].as<double>();
         //w = vm[sopt(sdesc, "w")].as<double>();
+
+        std::cout << "cnt_x: " << cnt_x << std::endl;
     }
 
     //void GaussianInit::read()
