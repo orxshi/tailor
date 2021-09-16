@@ -3,8 +3,8 @@
 W=20;
 H=5;
 D=1;
-mc=50;
-mr=50;
+mc=30;
+mr=30;
 mz=1;
 bump=1;
 radius = H/2;
