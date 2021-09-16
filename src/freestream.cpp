@@ -108,18 +108,16 @@ namespace Tailor
         po::options_description desc{sdesc};
         desc.add_options()
             (copt(sdesc, "type"), po::value<std::string>()->required(), "")
-            //(copt(sdesc, "cnt_x"), po::value<double>(), "")
-            //(copt(sdesc, "cnt_y"), po::value<double>(), "")
-            //(copt(sdesc, "cnt_z"), po::value<double>(), "")
-            //(copt(sdesc, "strength"), po::value<double>(), "")
-            //(copt(sdesc, "rho"), po::value<double>(), "")
-            //(copt(sdesc, "p"), po::value<double>(), "")
-            //(copt(sdesc, "u"), po::value<double>(), "")
-            //(copt(sdesc, "v"), po::value<double>(), "")
-            //(copt(sdesc, "w"), po::value<double>(), "")
+            (copt(sdesc, "cnt_x"), po::value<double>(), "")
+            (copt(sdesc, "cnt_y"), po::value<double>(), "")
+            (copt(sdesc, "cnt_z"), po::value<double>(), "")
+            (copt(sdesc, "strength"), po::value<double>(), "")
+            (copt(sdesc, "rho"), po::value<double>(), "")
+            (copt(sdesc, "p"), po::value<double>(), "")
+            (copt(sdesc, "u"), po::value<double>(), "")
+            (copt(sdesc, "v"), po::value<double>(), "")
+            (copt(sdesc, "w"), po::value<double>(), "")
             ;
-
-        std::cout << "aaaaaaaaaaaaaaaaA" << std::endl;
 
         op.add(desc);
         std::string fn = "flow_init.ini";
@@ -132,15 +130,15 @@ namespace Tailor
         po::notify(vm);
 
         type = vm[sopt(sdesc, "type")].as<std::string>();
-        //cnt_x = vm[sopt(sdesc, "cnt_x")].as<double>();
-        //cnt_y = vm[sopt(sdesc, "cnt_y")].as<double>();
-        //cnt_z = vm[sopt(sdesc, "cnt_z")].as<double>();
-        //strength = vm[sopt(sdesc, "strength")].as<double>();
-        //rho = vm[sopt(sdesc, "rho")].as<double>();
-        //p = vm[sopt(sdesc, "p")].as<double>();
-        //u = vm[sopt(sdesc, "u")].as<double>();
-        //v = vm[sopt(sdesc, "v")].as<double>();
-        //w = vm[sopt(sdesc, "w")].as<double>();
+        cnt_x = vm[sopt(sdesc, "cnt_x")].as<double>();
+        cnt_y = vm[sopt(sdesc, "cnt_y")].as<double>();
+        cnt_z = vm[sopt(sdesc, "cnt_z")].as<double>();
+        strength = vm[sopt(sdesc, "strength")].as<double>();
+        rho = vm[sopt(sdesc, "rho")].as<double>();
+        p = vm[sopt(sdesc, "p")].as<double>();
+        u = vm[sopt(sdesc, "u")].as<double>();
+        v = vm[sopt(sdesc, "v")].as<double>();
+        w = vm[sopt(sdesc, "w")].as<double>();
     }
 
     //void GaussianInit::read()
