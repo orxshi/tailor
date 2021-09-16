@@ -25,12 +25,12 @@ namespace Tailor
 
         po::options_description desc{"freestream"};
         desc.add_options()
-            ("freestream.mach-air", po::value<double>()->default_value(0), "Mach air")
-            ("freestream.vel-air", po::value<double>()->default_value(0), "Vel air")
-            ("freestream.aoa-air-x", po::value<double>(), "Angle of attack")
-            ("freestream.aoa-air-z", po::value<double>(), "Angle of attack")
-            ("freestream.p", po::value<double>(), "Reference pressure")
-            ("freestream.rho", po::value<double>(), "Reference density")
+            //("freestream.mach-air", po::value<double>()->default_value(0), "Mach air")
+            //("freestream.vel-air", po::value<double>()->default_value(0), "Vel air")
+            //("freestream.aoa-air-x", po::value<double>(), "Angle of attack")
+            //("freestream.aoa-air-z", po::value<double>(), "Angle of attack")
+            //("freestream.p", po::value<double>(), "Reference pressure")
+            //("freestream.rho", po::value<double>(), "Reference density")
             ("freestream.gamma", po::value<double>(), "Reference density")
             ;
 
@@ -41,12 +41,12 @@ namespace Tailor
         po::store(po::parse_config_file(settings_file, op, true), vm);
         po::notify(vm);
 
-        rhoinf_ = vm["freestream.rho"].as<double>();
-        pinf_ = vm["freestream.p"].as<double>();
-        machair_ = vm["freestream.mach-air"].as<double>();
-        velair_ = vm["freestream.vel-air"].as<double>();
-        aoa_air_x_ = vm["freestream.aoa-air-x"].as<double>();
-        aoa_air_z_ = vm["freestream.aoa-air-z"].as<double>();
+        //rhoinf_ = vm["freestream.rho"].as<double>();
+        //pinf_ = vm["freestream.p"].as<double>();
+        //machair_ = vm["freestream.mach-air"].as<double>();
+        //velair_ = vm["freestream.vel-air"].as<double>();
+        //aoa_air_x_ = vm["freestream.aoa-air-x"].as<double>();
+        //aoa_air_z_ = vm["freestream.aoa-air-z"].as<double>();
         gamma_ = vm["freestream.gamma"].as<double>();
     }
 
