@@ -234,8 +234,8 @@ namespace Tailor
 
         assert(!std::isnan(vgn_));*/
 
-        double pinf = fs.pinf_;
-        double rhoinf = fs.rhoinf_;
+        //double pinf = fs.pinf_;
+        //double rhoinf = fs.rhoinf_;
         //double machfoil = fs.machfoil_;
         //double aoa_foil_x = fs.aoa_foil_x_;
         //double aoa_foil_z = fs.aoa_foil_z_;
@@ -243,11 +243,11 @@ namespace Tailor
         double rotaxis = compo.rotaxis_;
         double rpm = compo.rpm_;
         auto pivot = compo.pivot_;
-        double mach = compo.mach_;
+        //double mach = compo.mach_;
         double dirx = compo.dirx_;
         double dirz = compo.dirz_;
 
-        double cinf = std::sqrt(fs.gamma_ * pinf / rhoinf);
+        //double cinf = std::sqrt(fs.gamma_ * pinf / rhoinf);
 
         Vector3 vel;
         double omega, alpha, thetax, thetay, r;
@@ -297,15 +297,15 @@ namespace Tailor
                     //machfoil * cinf * std::cos(deg_to_rad(90. - aoa_foil_x)),
                     //machfoil * cinf * std::cos(deg_to_rad(aoa_foil_z)));
 
-            if (compo.mach_ != 0.)
-            {
-                vel = Vector3(
-                        mach * cinf * std::cos(deg_to_rad(dirx)),
-                        mach * cinf * std::cos(deg_to_rad(90. - dirx)),
-                        mach * cinf * std::cos(deg_to_rad(dirz))
-                        );
-            }
-            else
+            //if (compo.mach_ != 0.)
+            //{
+            //    vel = Vector3(
+            //            mach * cinf * std::cos(deg_to_rad(dirx)),
+            //            mach * cinf * std::cos(deg_to_rad(90. - dirx)),
+            //            mach * cinf * std::cos(deg_to_rad(dirz))
+            //            );
+            //}
+            //else
             {
                 vel = Vector3(
                         compo.u,
