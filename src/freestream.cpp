@@ -100,15 +100,15 @@ namespace Tailor
         po::options_description desc{sdesc};
         desc.add_options()
             (opt(sdesc, "type"), po::value<std::string>()->required(), "")
-            (opt(sdesc, "cnt_x"), po::value<double>(), "")
-            (opt(sdesc, "cnt_y"), po::value<double>(), "")
-            (opt(sdesc, "cnt_z"), po::value<double>(), "")
-            (opt(sdesc, "strength"), po::value<double>(), "")
-            (opt(sdesc, "rho"), po::value<double>(), "")
-            (opt(sdesc, "p"), po::value<double>(), "")
-            (opt(sdesc, "u"), po::value<double>(), "")
-            (opt(sdesc, "v"), po::value<double>(), "")
-            (opt(sdesc, "w"), po::value<double>(), "")
+            //(opt(sdesc, "cnt_x"), po::value<double>(), "")
+            //(opt(sdesc, "cnt_y"), po::value<double>(), "")
+            //(opt(sdesc, "cnt_z"), po::value<double>(), "")
+            //(opt(sdesc, "strength"), po::value<double>(), "")
+            //(opt(sdesc, "rho"), po::value<double>(), "")
+            //(opt(sdesc, "p"), po::value<double>(), "")
+            //(opt(sdesc, "u"), po::value<double>(), "")
+            //(opt(sdesc, "v"), po::value<double>(), "")
+            //(opt(sdesc, "w"), po::value<double>(), "")
             ;
 
         op.add(desc);
@@ -122,15 +122,15 @@ namespace Tailor
         po::notify(vm);
 
         type = vm[opt(sdesc, "type")].as<std::string>();
-        cnt_x = vm[opt(sdesc, "cnt_x")].as<double>();
-        cnt_y = vm[opt(sdesc, "cnt_y")].as<double>();
-        cnt_z = vm[opt(sdesc, "cnt_z")].as<double>();
-        strength = vm[opt(sdesc, "strength")].as<double>();
-        rho = vm[opt(sdesc, "rho")].as<double>();
-        p = vm[opt(sdesc, "p")].as<double>();
-        u = vm[opt(sdesc, "u")].as<double>();
-        v = vm[opt(sdesc, "v")].as<double>();
-        w = vm[opt(sdesc, "w")].as<double>();
+        //cnt_x = vm[opt(sdesc, "cnt_x")].as<double>();
+        //cnt_y = vm[opt(sdesc, "cnt_y")].as<double>();
+        //cnt_z = vm[opt(sdesc, "cnt_z")].as<double>();
+        //strength = vm[opt(sdesc, "strength")].as<double>();
+        //rho = vm[opt(sdesc, "rho")].as<double>();
+        //p = vm[opt(sdesc, "p")].as<double>();
+        //u = vm[opt(sdesc, "u")].as<double>();
+        //v = vm[opt(sdesc, "v")].as<double>();
+        //w = vm[opt(sdesc, "w")].as<double>();
     }
 
     //void GaussianInit::read()
