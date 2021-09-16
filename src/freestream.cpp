@@ -82,16 +82,24 @@ namespace Tailor
 
     void FlowInit::read(const Tag& meshtag)
     {
+        auto opt = [](std::string sdesc, std::string sub)
+        {
+            std::string full = sdesc;
+            full.append(".");
+            full.append(sub);
+            return full.c_str();
+        };
+
         namespace po = boost::program_options;
         po::options_description op;
 
         std::string sdesc = "mesh ";
         sdesc.append(std::to_string(meshtag()));
         //auto cdesc = sdesc.c_str();
-
+        
         po::options_description desc{sdesc};
         desc.add_options()
-            ("type", po::value<std::string>()->required(), "")
+            (opt(sdesc, "type"), po::value<std::string>()->required(), "")
             ("cnt_x", po::value<double>(), "")
             ("cnt_y", po::value<double>(), "")
             ("cnt_z", po::value<double>(), "")
