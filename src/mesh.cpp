@@ -924,11 +924,12 @@ namespace Tailor
     //void Mesh::calc_face_velocities(double dt, const Freestream& fs, int rank)
     void Mesh::calc_mesh_velocities(const Freestream& fs, int rank)
     {
+        std::cout << "aaaaaaaaaaaaaaaa" << std::endl;
         Component compo;
         compo.read(tag_);
 
 
-        std::cout << "aaaaaaaaaaaaaaaa" << std::endl;
+        std::cout << "bbbbbbbbbbbbb" << std::endl;
 
         for (auto& mc: cell_)
         {
@@ -940,7 +941,7 @@ namespace Tailor
             }
         }
 
-        std::cout << "bbbbbbbbbbbbbbb" << std::endl;
+        std::cout << "cccccccccccccccc" << std::endl;
 
         assert(is_gcl_satisfied(rank));
     }
