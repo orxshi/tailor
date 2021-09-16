@@ -58,6 +58,7 @@ namespace Tailor
         std::string sdesc = "component ";
         sdesc.append(std::to_string(mtag()));
 
+        std::cout << copt(sdesc, "rotation") << std::endl;
         po::options_description desc{sdesc};
         desc.add_options()
             (copt(sdesc, "rotation"), po::value<bool>()->required(), "")
