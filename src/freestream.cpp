@@ -91,7 +91,7 @@ namespace Tailor
 
         po::options_description desc{sdesc};
         desc.add_options()
-            ("mesh 0.type", po::value<std::string>()->required(), "")
+            ("type", po::value<std::string>()->required(), "")
             ("cnt_x", po::value<double>(), "")
             ("cnt_y", po::value<double>(), "")
             ("cnt_z", po::value<double>(), "")
@@ -104,9 +104,9 @@ namespace Tailor
             ;
 
         op.add(desc);
-        std::string fn = "flow_init_";
-        fn.append(std::to_string(meshtag()));
-        fn.append(".ini");
+        std::string fn = "flow_init.ini";
+        //fn.append(std::to_string(meshtag()));
+        //fn.append(".ini");
         std::ifstream settings_file(fn);
 
         boost::program_options::variables_map vm;
