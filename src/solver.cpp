@@ -1219,7 +1219,8 @@ namespace Tailor
                         //std::cout << "mc oga: " << static_cast<int>(donor_cell.oga_cell_type()) << std::endl;
                     //}
 
-                    assert(donor_cell.oga_cell_type() == OGA_cell_type_t::field || donor_cell.oga_cell_type() == OGA_cell_type_t::non_resident);
+                    //assert(donor_cell.oga_cell_type() == OGA_cell_type_t::field || donor_cell.oga_cell_type() == OGA_cell_type_t::non_resident);
+                    assert(donor_cell.oga_cell_type() == OGA_cell_type_t::field);
 
                     auto grad = gradient_.ls_grad(*m, donor_cell);
 
@@ -1446,7 +1447,7 @@ namespace Tailor
 
                     if (meshp != sp.mesh_.end())
                     {
-                        //update_donors(mesh);
+                        update_donors(mesh);
 
                         set_boundary_conditions(mesh);
                         compute_sum_of_fluxes(mesh, ntimestep);
