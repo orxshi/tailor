@@ -1426,6 +1426,18 @@ namespace Tailor
             for (int runge_kutta_stage = 0; runge_kutta_stage < r_max; ++runge_kutta_stage)
             {
                 update_ghosts();
+                //for (int i = 0; i < global_nmesh_; ++i)
+                //{
+                //    Mesh* mesh_ptr = nullptr;
+                //    auto meshp = std::find_if(sp.mesh_.begin(), sp.mesh_.end(), [i](Mesh& m){return m.tag()() == i;});
+                //    auto& mesh = *meshp;
+
+                //    if (meshp != sp.mesh_.end())
+                //    {
+                //        update_donors(mesh);
+                //    }
+                //}
+
                 for (int i = 0; i < global_nmesh_; ++i)
                 {
                     Mesh* mesh_ptr = nullptr;
@@ -1435,18 +1447,6 @@ namespace Tailor
                     if (meshp != sp.mesh_.end())
                     {
                         update_donors(mesh);
-                    }
-                }
-
-                for (int i = 0; i < global_nmesh_; ++i)
-                {
-                    Mesh* mesh_ptr = nullptr;
-                    auto meshp = std::find_if(sp.mesh_.begin(), sp.mesh_.end(), [i](Mesh& m){return m.tag()() == i;});
-                    auto& mesh = *meshp;
-
-                    if (meshp != sp.mesh_.end())
-                    {
-                        //update_donors(mesh);
 
                         set_boundary_conditions(mesh);
                         compute_sum_of_fluxes(mesh, ntimestep);
