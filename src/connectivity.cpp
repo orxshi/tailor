@@ -342,6 +342,9 @@ namespace Tailor
         if (btype == BouType::wall) {
             container = &mc.wall_boundary();
         }
+        else if (btype == BouType::symmetry) {
+            container = &mc.symmetry_boundary();
+        }
         else if (btype == BouType::dirichlet) {
             container = &mc.dirichlet_boundary();
         }

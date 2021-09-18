@@ -345,6 +345,14 @@ namespace Tailor
         mesh.print_as_vtk(aaa);
     }
 
+    void read_symmetry_bou(Mesh& mesh, std::string file_name)
+    {
+        assert(file_name != "");
+
+        file_name.append("_symmetry.msh");
+        read_mesh_GMSH(mesh, file_name);
+    }
+
     void read_dirichlet_bou(Mesh& mesh, std::string file_name)
     {
         assert(file_name != "");

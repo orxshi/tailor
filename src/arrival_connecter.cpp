@@ -46,6 +46,8 @@ namespace Tailor
             determine_added_bou(sp, *arrival_, BouType::dirichlet);
             if (profiler_ != nullptr) {profiler_->stop("asm-arr-det-dir");}
 
+            determine_added_bou(sp, *arrival_, BouType::symmetry);
+
             if (profiler_ != nullptr) {profiler_->start("asm-arr-add-dir");}
             add_arrival_bou(sp, BouType::dirichlet);
             if (profiler_ != nullptr) {profiler_->stop("asm-arr-add-dir");}
@@ -167,6 +169,9 @@ namespace Tailor
         if (bou == BouType::wall) {
             container = &arr_wall_;
         }
+        else if (bou == BouType::symmetry) {
+            container = &arr_symmetry_;
+        }
         else if (bou == BouType::dirichlet) {
             container = &arr_dirichlet_;
         }
@@ -193,6 +198,26 @@ namespace Tailor
             {
                 for (MeshCell& mc: c.wall_)
                 {
+                    auto m = std::find_if(sp.mesh_.begin(), sp.mesh_.end(), [&](const Mesh& _m){return _m.tag() == mc.parent_mesh();});
+                    assert(m != sp.mesh_.end());
+                    if (m->query_bou(mc.tag(), bou) == nullptr) {
+                        //for (auto& mf: mc.face_p())
+                        //{
+                        //    mf.set_faceaddr(nullptr);
+                        //}
+                        //(*container)[std::distance(sp.mesh_.begin(), m)].push_back(mc);
+                        (*container)[std::distance(sp.mesh_.begin(), m)].push_back(mc);
+                    }
+                }
+            }
+        }
+        else if (bou == BouType::symmetry)
+        {
+            for (Cell& c: arrival)
+            {
+                for (MeshCell& mc: c.symmetry_)
+                {
+                    //auto m = std::find_if(sp.mesh_.begin(), sp.mesh_.end(), [&](const Mesh& _m){return _m.parent_mesh() == mc.parent_mesh();});
                     auto m = std::find_if(sp.mesh_.begin(), sp.mesh_.end(), [&](const Mesh& _m){return _m.tag() == mc.parent_mesh();});
                     assert(m != sp.mesh_.end());
                     if (m->query_bou(mc.tag(), bou) == nullptr) {
@@ -363,6 +388,13 @@ namespace Tailor
             for (int i=0; i<arr_wall_.size(); ++i)
             {
                 sp.mesh_[i].add_bous(arr_wall_[i], bou);
+            }
+        }
+        else if (bou == BouType::symmetry)
+        {
+            for (int i=0; i<arr_symmetry_.size(); ++i)
+            {
+                sp.mesh_[i].add_bous(arr_symmetry_[i], bou);
             }
         }
         else if (bou == BouType::dirichlet)

@@ -814,6 +814,12 @@ namespace Tailor
         mc.cons_sp1_ = prim_to_cons(mc.prim_, fs_.gamma_);
     }
 
+    void BoundaryCondition::symmetry(Mesh& mesh, MeshCell& mc)
+    {
+        // Implement as slip wall.
+        slipwall(mesh, mc);
+    }
+
     void BoundaryCondition::slipwall(Mesh& mesh, MeshCell& mc)
     {
         const MeshCell& nei = mesh.cell(mc.interior_boundary());
@@ -983,6 +989,10 @@ namespace Tailor
         {   
             slipwall(mesh, mc);
             //assert(mc.prim(0) > 0.);
+        }
+        for (MeshCell& mc: mesh.symmetry_boundaries_)
+        {   
+            symmetry(mesh, mc);
         }
         //if (profiler != nullptr) {profiler->stop("bc-wall");}
 

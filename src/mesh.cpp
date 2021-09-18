@@ -413,6 +413,10 @@ namespace Tailor
         {
             return wall_boundary(t);
         }
+        else if (btype == BouType::symmetry)
+        {
+            return symmetry_boundary(t);
+        }
         else if (btype == BouType::dirichlet)
         {
             return dirichlet_boundary(t);
@@ -440,6 +444,10 @@ namespace Tailor
         if (btype == BouType::wall)
         {
             return wall_boundary_p(t);
+        }
+        else if (btype == BouType::symmetry)
+        {
+            return symmetry_boundary_p(t);
         }
         else if (btype == BouType::dirichlet)
         {
@@ -1382,6 +1390,11 @@ namespace Tailor
         return wall_boundaries_;
     }
 
+    const mcc& Mesh::symmetry_boundaries() const
+    {
+        return symmetry_boundaries_;
+    }
+
     const mcc& Mesh::dirichlet_boundaries() const
     {
         return dirichlet_boundaries_;
@@ -1413,6 +1426,18 @@ namespace Tailor
             //std::cout << "mesh tag: " << tag_() << std::endl;
         //}
         if (it != wall_boundaries_.end())
+        {
+            return &(*it);
+        }
+
+        return nullptr;
+    }
+
+    const MeshCell* Mesh::symmetry_boundary(const Tag& t) const
+    {
+        assert(t.isvalid());
+        auto it = std::find_if(symmetry_boundaries_.begin(), symmetry_boundaries_.end(), [&](const MeshCell& tmc){return tmc.tag() == t;});
+        if (it != symmetry_boundaries_.end())
         {
             return &(*it);
         }
@@ -1468,6 +1493,17 @@ namespace Tailor
     {
         auto it = std::find_if(wall_boundaries_.begin(), wall_boundaries_.end(), [&](const MeshCell& tmc){return tmc.tag() == t;});
         if (it != wall_boundaries_.end())
+        {
+            return &(*it);
+        }
+
+        return nullptr;
+    }
+
+    MeshCell* Mesh::symmetry_boundary_p(const Tag& t)
+    {
+        auto it = std::find_if(symmetry_boundaries_.begin(), symmetry_boundaries_.end(), [&](const MeshCell& tmc){return tmc.tag() == t;});
+        if (it != symmetry_boundaries_.end())
         {
             return &(*it);
         }
@@ -1567,6 +1603,10 @@ namespace Tailor
         if (boutype == BouType::wall)
         {
             container = &wall_boundaries_;
+        }
+        else if (boutype == BouType::symmetry)
+        {
+            container = &symmetry_boundaries_;
         }
         else if (boutype == BouType::dirichlet)
         {
@@ -1706,6 +1746,10 @@ namespace Tailor
         if (boutype == BouType::wall)
         {
             container = &wall_boundaries_;
+        }
+        else if (boutype == BouType::symmetry)
+        {
+            container = &symmetry_boundaries_;
         }
         else if (boutype == BouType::dirichlet)
         {
@@ -1985,6 +2029,10 @@ namespace Tailor
         {
             add_wall_boundary(std::move(mc));
         }
+        else if (mc.btype() == BouType::symmetry)
+        {
+            add_symmetry_boundary(std::move(mc));
+        }
         else if (mc.btype() == BouType::dirichlet)
         {
             add_dirichlet_boundary(std::move(mc));
@@ -2017,6 +2065,10 @@ namespace Tailor
         {
             add_wall_boundary(std::move(mc));
         }
+        else if (mc.btype() == BouType::symmetry)
+        {
+            add_symmetry_boundary(std::move(mc));
+        }
         else if (mc.btype() == BouType::dirichlet)
         {
             add_dirichlet_boundary(std::move(mc));
@@ -2048,6 +2100,10 @@ namespace Tailor
         if (mc.btype() == BouType::wall)
         {
             add_wall_boundary(mc);
+        }
+        else if (mc.btype() == BouType::symmetry)
+        {
+            add_symmetry_boundary(mc);
         }
         else if (mc.btype() == BouType::dirichlet)
         {
@@ -2086,6 +2142,10 @@ namespace Tailor
         {
             add_wall_boundary(mc);
         }
+        else if (mc.btype() == BouType::symmetry)
+        {
+            add_symmetry_boundary(mc);
+        }
         else if (mc.btype() == BouType::dirichlet)
         {
             add_dirichlet_boundary(mc);
@@ -2119,6 +2179,9 @@ namespace Tailor
         if (type == BouType::wall) {
             container = &wall_boundaries_;
             //bimap = &wall_tag_index_map_;
+        }
+        else if (type == BouType::symmetry) {
+            container = &symmetry_boundaries_;
         }
         else if (type == BouType::dirichlet) {
             container = &dirichlet_boundaries_;
@@ -2270,6 +2333,27 @@ namespace Tailor
 
         wall_boundaries_.push_back(mc);
         //wall_tag_index_map_.insert(boost::bimap<int, int>::value_type(mc.tag()(), wall_boundaries_.size() - 1));
+    }
+
+    void Mesh::add_symmetry_boundary(MeshCell&& mc)
+    {
+        if (std::find_if(symmetry_boundaries_.begin(), symmetry_boundaries_.end(), [&](const MeshCell& c){return c.tag() == mc.tag();}) != symmetry_boundaries_.end()) {
+            return;
+        }
+
+        symmetry_boundaries_.push_back(mc);
+        //symmetry_tag_index_map_.insert(boost::bimap<int, int>::value_type(mc.tag()(), symmetry_boundaries_.size() - 1));
+    }
+
+    void Mesh::add_symmetry_boundary(const MeshCell& mc)
+    {
+        // no points are added because interiors, therefore, points are added already.
+        if (std::find_if(symmetry_boundaries_.begin(), symmetry_boundaries_.end(), [&](const MeshCell& c){return c.tag() == mc.tag();}) != symmetry_boundaries_.end()) {
+            return;
+        }
+
+        symmetry_boundaries_.push_back(mc);
+        //symmetry_tag_index_map_.insert(boost::bimap<int, int>::value_type(mc.tag()(), symmetry_boundaries_.size() - 1));
     }
 
     void Mesh::add_dirichlet_boundary(MeshCell&& mc)
@@ -2733,6 +2817,13 @@ namespace Tailor
             if (count != 0) continue;
             add_wall_boundary(mc);
         }
+        for (const MeshCell& mc: other_mesh.symmetry_boundaries_)
+        {
+            int count = std::count_if(symmetry_boundaries_.begin(), symmetry_boundaries_.end(), [&](const MeshCell& wb){return wb.tag() == mc.tag();});
+            //assert(count == 0);
+            if (count != 0) continue;
+            add_symmetry_boundary(mc);
+        }
         for (const MeshCell& mc: other_mesh.dirichlet_boundaries_)
         {
             int count = std::count_if(dirichlet_boundaries_.begin(), dirichlet_boundaries_.end(), [&](const MeshCell& wb){return wb.tag() == mc.tag();});
@@ -2780,6 +2871,13 @@ namespace Tailor
             //assert(count == 0);
             if (count != 0) continue;
             add_wall_boundary(mc);
+        }
+        for (const MeshCell& mc: other_mesh.symmetry_boundaries_)
+        {
+            int count = std::count_if(symmetry_boundaries_.begin(), symmetry_boundaries_.end(), [&](const MeshCell& wb){return wb.tag() == mc.tag();});
+            //assert(count == 0);
+            if (count != 0) continue;
+            add_symmetry_boundary(mc);
         }
         for (const MeshCell& mc: other_mesh.dirichlet_boundaries_)
         {
@@ -2835,6 +2933,13 @@ namespace Tailor
             //assert(count == 0);
             if (count != 0) continue;
             add_wall_boundary(mc);
+        }
+        for (const MeshCell& mc: other_mesh.symmetry_boundaries_)
+        {
+            int count = std::count_if(symmetry_boundaries_.begin(), symmetry_boundaries_.end(), [&](const MeshCell& wb){return wb.tag() == mc.tag();});
+            //assert(count == 0);
+            if (count != 0) continue;
+            add_symmetry_boundary(mc);
         }
         for (const MeshCell& mc: other_mesh.dirichlet_boundaries_)
         {
@@ -3055,6 +3160,13 @@ const MeshCell* Mesh::query_bou(const Tag& ic, BouType type) const
             return wall_boundary(ic);
         //}
     }
+    else if (type == BouType::symmetry)
+    {
+        //int count = wall_tag_index_map_.left.count(ic());
+        //if (count != 0) {
+            return symmetry_boundary(ic);
+        //}
+    }
     else if (type == BouType::dirichlet)
     {
         //int count = dirichlet_tag_index_map_.left.count(ic());
@@ -3271,6 +3383,10 @@ const MeshCell* Mesh::query_bou(const Tag& ic, BouType type) const
                 {
                     cell.rotate_points(angle, axis, rot_point);
                 }
+                for (MeshCell& cell: symmetry_boundaries_)
+                {
+                    cell.rotate_points(angle, axis, rot_point);
+                }
                 for (MeshCell& cell: dirichlet_boundaries_)
                 {
                     cell.rotate_points(angle, axis, rot_point);
@@ -3313,6 +3429,11 @@ const MeshCell* Mesh::query_bou(const Tag& ic, BouType type) const
 
                     // move wall points.
                     for (MeshCell& cell: wall_boundaries_)
+                    {
+                        cell.move_points(v);
+                    }
+
+                    for (MeshCell& cell: symmetry_boundaries_)
                     {
                         cell.move_points(v);
                     }
@@ -4301,6 +4422,7 @@ const MeshCell* Mesh::query_bou(const Tag& ic, BouType type) const
                     //mark(wall_boundaries_, t);
                 //}
                 erase(wall_boundaries_);
+                erase(symmetry_boundaries_);
 
                 //for (const Tag& t: mc.dirichlet_boundary()) {
                     //mark(dirichlet_boundaries_, t);
@@ -4524,6 +4646,11 @@ const MeshCell* Mesh::query_bou(const Tag& ic, BouType type) const
                     mc.unmark_to_be_erased();
                 }
 
+                for (MeshCell& mc: symmetry_boundaries_)
+                {
+                    mc.unmark_to_be_erased();
+                }
+
                 for (MeshCell& mc: dirichlet_boundaries_)
                 {
                     mc.unmark_to_be_erased();
@@ -4567,6 +4694,9 @@ const MeshCell* Mesh::query_bou(const Tag& ic, BouType type) const
                 }
                 auto it = std::remove_if(wall_boundaries_.begin(), wall_boundaries_.end(), [&](const MeshCell& mc){return mc.erase() == true;});
                 wall_boundaries_.erase(it, wall_boundaries_.end());
+
+                it = std::remove_if(symmetry_boundaries_.begin(), symmetry_boundaries_.end(), [&](const MeshCell& mc){return mc.erase() == true;});
+                symmetry_boundaries_.erase(it, symmetry_boundaries_.end());
 
                 it = std::remove_if(dirichlet_boundaries_.begin(), dirichlet_boundaries_.end(), [&](const MeshCell& mc){return mc.erase() == true;});
                 dirichlet_boundaries_.erase(it, dirichlet_boundaries_.end());

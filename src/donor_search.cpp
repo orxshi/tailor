@@ -112,6 +112,7 @@ namespace Tailor
         int nmesh = 0;
         int nsp = 0;
         int nwall = 0;
+        int nsymmetry = 0;
         int ndirichlet = 0;
         int nfarfield = 0;
         int nempty = 0;
@@ -181,6 +182,7 @@ namespace Tailor
                 //}
                 //}
                 nwall += m.wall_boundaries().size();
+                nsymmetry += m.symmetry_boundaries().size();
                 ndirichlet += m.dirichlet_boundaries().size();
                 nfarfield += m.farfield_boundaries().size();
                 nempty += m.empty_boundaries().size();
@@ -201,8 +203,8 @@ namespace Tailor
             out << "nmesh: " << nmesh << std::endl;
             out << "ncell: " << ncell << std::endl;
             out << "nwall: " << nwall << std::endl;
+            out << "nsymmetry: " << nsymmetry << std::endl;
             out << "ndirichlet: " << ndirichlet << std::endl;
-            out << "nwall: " << nwall << std::endl;
             out << "nfarfield: " << nfarfield << std::endl;
             out << "nempty: " << nempty << std::endl;
             out << "ninterog: " << ninterog << std::endl;
@@ -357,6 +359,28 @@ namespace Tailor
         std::deque<ADTPoint> adt_pts;
         //adt_pts.reserve(mesh.wall_boundaries().size());
         for (const MeshCell& mc: mesh.wall_boundaries())
+        {
+            //adt_pts.push_back(ADTPoint(mc.point().raw_points(), mc.tag()()));
+            std::vector<Point> pts;
+            pts.reserve(mc.point().size());
+            for (auto& p: mc.point()) {
+                pts.push_back(p.p());
+            }
+            adt_pts.push_back(ADTPoint(pts.begin(), pts.end(), mc.tag()()));
+        }
+        if (adt_pts.empty())
+        {
+            return ADT();
+        }
+        return ADT(adt_pts);
+    }
+
+    ADT make_symmetry_adt(const Mesh& mesh)
+    {
+        //std::vector<ADTPoint> adt_pts;
+        std::deque<ADTPoint> adt_pts;
+        //adt_pts.reserve(mesh.symmetry_boundaries().size());
+        for (const MeshCell& mc: mesh.symmetry_boundaries())
         {
             //adt_pts.push_back(ADTPoint(mc.point().raw_points(), mc.tag()()));
             std::vector<Point> pts;

@@ -332,6 +332,21 @@ namespace Tailor
                     return StencilWalkResult::inside_hole;
                 }
             }
+            else if (btype == BouType::symmetry)
+            {
+                bool found = false;
+                check_boundary(donor_mesh.symmetry_boundaries(), donor_mesh, current_cell, target, closest_cell, found, prev_nei/*, outer_adt*/, starting_cell);
+
+                if (verbose) {
+                    std::cout << "btype is symmetry. found=" << found << std::endl;
+                }
+
+                if (!found)
+                {
+                    //assert(!current_cell->poly().do_intersect(target.r()));
+                    return StencilWalkResult::outside_mesh;
+                }
+            }
             else if (btype == BouType::dirichlet)
             {
                 bool found = false;

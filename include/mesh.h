@@ -51,6 +51,7 @@ namespace Tailor
         friend class TCRExchanger;
 
         mcc wall_boundaries_;
+        mcc symmetry_boundaries_;
         mcc dirichlet_boundaries_;
         mcc empty_boundaries_;
         mcc farfield_boundaries_;
@@ -79,6 +80,7 @@ namespace Tailor
         void remove_cell_from_cellhood(const Tag& ic);
         void deparent_cell_from_vertices(const Tag& ic);
         void merge_wall_to_interior(const Mesh& wall_mesh);
+        void merge_symmetry_to_interior(const Mesh& symmetry_mesh);
         void merge_dirichlet_to_interior(const Mesh& dirichlet_mesh);
         void merge_farfield_to_interior(const Mesh& farfield_mesh);
         void merge_empty_to_interior(const Mesh& empty_mesh);
@@ -158,6 +160,8 @@ namespace Tailor
 
         void add_wall_boundary(const MeshCell& mc);
         void add_wall_boundary(MeshCell&& mc);
+        void add_symmetry_boundary(const MeshCell& mc);
+        void add_symmetry_boundary(MeshCell&& mc);
         void add_dirichlet_boundary(const MeshCell& mc);
         void add_dirichlet_boundary(MeshCell&& mc);
         void add_farfield_boundary(const MeshCell& mc);
@@ -181,12 +185,14 @@ namespace Tailor
         //const AABB& hole_aabb() const;
         const bimap_int& dirichlet_tag_index_map() const;
         const mcc& wall_boundaries() const;
+        const mcc& symmetry_boundaries() const;
         const mcc& dirichlet_boundaries() const;
         const mcc& farfield_boundaries() const;
         const mcc& empty_boundaries() const;
         const mcc& interog_boundaries() const;
         size_t npartition() const;
         MeshCell* wall_boundary_p(const Tag& t);
+        MeshCell* symmetry_boundary_p(const Tag& t);
         MeshCell* dirichlet_boundary_p(const Tag& t);
         MeshCell* farfield_boundary_p(const Tag& t);
         MeshCell* empty_boundary_p(const Tag& t);
@@ -218,6 +224,7 @@ namespace Tailor
         const mcc& cell() const;
         mcc& cell_p();
         const MeshCell* wall_boundary(const Tag& t) const;
+        const MeshCell* symmetry_boundary(const Tag& t) const;
         const MeshCell* dirichlet_boundary(const Tag& t) const;
         const MeshCell* farfield_boundary(const Tag& t) const;
         const MeshCell* interog_boundary(const Tag& t) const;
@@ -344,6 +351,7 @@ namespace Tailor
             //ar & empty_tag_index_map_;
             //ar & interog_tag_index_map_;
             ar & wall_boundaries_;
+            ar & symmetry_boundaries_;
             ar & dirichlet_boundaries_;
             ar & farfield_boundaries_;
             ar & interog_boundaries_;

@@ -504,6 +504,14 @@ namespace Tailor
                         mit->add_element(mc);
                     }
                 }
+                for (const MeshCell& mc: m.symmetry_boundaries())
+                {
+                    int count = std::count_if(mit->symmetry_boundaries().begin(), mit->symmetry_boundaries().end(), [&](const MeshCell& tmc){return tmc.tag() == mc.tag();});
+                    if (count == 0)
+                    {
+                        mit->add_element(mc);
+                    }
+                }
                 for (const MeshCell& mc: m.dirichlet_boundaries())
                 {
                     int count = std::count_if(mit->dirichlet_boundaries().begin(), mit->dirichlet_boundaries().end(), [&](const MeshCell& tmc){return tmc.tag() == mc.tag();});
@@ -564,6 +572,14 @@ namespace Tailor
                 for (const MeshCell& mc: m.wall_boundaries())
                 {
                     int count = std::count_if(mit->wall_boundaries().begin(), mit->wall_boundaries().end(), [&](const MeshCell& tmc){return tmc.tag() == mc.tag();});
+                    if (count == 0)
+                    {
+                        mit->add_element_nonsorted(mc);
+                    }
+                }
+                for (const MeshCell& mc: m.symmetry_boundaries())
+                {
+                    int count = std::count_if(mit->symmetry_boundaries().begin(), mit->symmetry_boundaries().end(), [&](const MeshCell& tmc){return tmc.tag() == mc.tag();});
                     if (count == 0)
                     {
                         mit->add_element_nonsorted(mc);

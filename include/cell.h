@@ -11,13 +11,14 @@ namespace Tailor
         int source_tag_;
         MeshCell cell_;
         std::list<MeshCell> wall_;
+        std::list<MeshCell> symmetry_;
         std::list<MeshCell> dirichlet_;
         std::list<MeshCell> farfield_;
         std::list<MeshCell> empty_;
         std::list<MeshCell> interog_;
         bool overlap_;
 
-        Cell(int source_rank, int source_tag, const MeshCell& cell, std::list<MeshCell>&& wall, std::list<MeshCell>&& dirichlet, std::list<MeshCell>&& farfield, std::list<MeshCell>&& empty, std::list<MeshCell>&& interog);
+        Cell(int source_rank, int source_tag, const MeshCell& cell, std::list<MeshCell>&& wall, std::list<MeshCell>&& dirichlet, std::list<MeshCell>&& farfield, std::list<MeshCell>&& empty, std::list<MeshCell>&& interog, std::list<MeshCell>&& symmetry);
         Cell(): source_rank_(-1), source_tag_(-1), overlap_(false) {}
 
         const MeshCell& cell() const;
@@ -29,6 +30,7 @@ namespace Tailor
             ar & cell_;
             ar & wall_;
             ar & farfield_;
+            ar & symmetry_;
             ar & dirichlet_;
             ar & interog_;
             ar & empty_;

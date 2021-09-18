@@ -30,6 +30,7 @@ namespace Tailor
             //std::vector<std::vector<MeshCell>> arr_interog_;
             std::vector<mcc> arr_interior_;
             std::vector<mcc> arr_wall_;
+            std::vector<mcc> arr_symmetry_;
             std::vector<mcc> arr_dirichlet_;
             std::vector<mcc> arr_farfield_;
             std::vector<mcc> arr_empty_;

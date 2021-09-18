@@ -13,6 +13,7 @@ namespace Tailor
         farfield = 9,
         partition = 10,
         interog = 11,
+        symmetry = 12,
     };
 }
 

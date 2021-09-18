@@ -40,6 +40,7 @@ namespace Tailor
         //std::vector<Tag> wall_boundary_; // dynamic
         //std::vector<Tag> dirichlet_boundary_; // dynamic
         Boundaries wall_boundary_;
+        Boundaries symmetry_boundary_;
         Boundaries dirichlet_boundary_;
         Boundaries farfield_boundary_;
         Boundaries empty_boundary_;
@@ -204,14 +205,17 @@ namespace Tailor
         bool near_boundary() const;
         bool near_wall() const;
         bool near_interog() const;
+        bool near_symmetry() const;
         bool near_dirichlet() const;
         bool near_farfield() const;
         bool near_empty() const;
         void add_wall_boundary(const Tag& t);
+        void add_symmetry_boundary(const Tag& t);
         void add_dirichlet_boundary(const Tag& t);
         void add_farfield_boundary(const Tag& t);
         void add_empty_boundary(const Tag& t);
         const Boundaries& wall_boundary() const;
+        const Boundaries& symmetry_boundary() const;
         const Boundaries& dirichlet_boundary() const;
         const Boundaries& farfield_boundary() const;
         const Boundaries& interog_boundary() const;
@@ -238,6 +242,7 @@ namespace Tailor
             ar & poly_;
             ar & OGA_cell_type_;
             ar & wall_boundary_;
+            ar & symmetry_boundary_;
             ar & dirichlet_boundary_;
             ar & farfield_boundary_;
             ar & empty_boundary_;

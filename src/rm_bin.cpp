@@ -534,6 +534,11 @@ namespace Tailor
                         assert(bb != nullptr);
                         mb[j].add_wall_boundary(*bb);
                     }
+                    for (const Tag& t: mc.symmetry_boundary()) {
+                        auto bb = it->symmetry_boundary(t);
+                        assert(bb != nullptr);
+                        mb[j].add_symmetry_boundary(*bb);
+                    }
                     for (const Tag& t: mc.dirichlet_boundary()) {
                         auto bb = it->dirichlet_boundary(t);
                         assert(bb != nullptr);
@@ -645,6 +650,11 @@ namespace Tailor
                         }
                         assert(bb != nullptr);
                         mb[j].add_wall_boundary(*bb);
+                    }
+                    for (const Tag& t: mc.symmetry_boundary()) {
+                        auto bb = it->symmetry_boundary(t);
+                        assert(bb != nullptr);
+                        mb[j].add_symmetry_boundary(*bb);
                     }
                     for (const Tag& t: mc.dirichlet_boundary()) {
                         auto bb = it->dirichlet_boundary(t);

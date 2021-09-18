@@ -31,6 +31,10 @@ namespace Tailor
             assert(false);
             return true;
         }
+        if (do_wallaabb_intersect_outer_(mesh.symmetry_boundaries())) {
+            assert(false);
+            return true;
+        }
         if (do_wallaabb_intersect_outer_(mesh.farfield_boundaries())) {
             std::cout << "mesh: " << mesh.tag()() << std::endl;
             std::cout << "wall min(0): " << wall_aabb_.min(0) << std::endl;
@@ -212,6 +216,9 @@ namespace Tailor
             {
                 for (const MeshCell& mc: mesh->wall_boundaries()) {
                     wallrm_->register_resident_cell(mc, mc.tag(), mesh->tag(), world_.rank());
+                }
+                for (const MeshCell& mc: mesh->symmetry_boundaries()) {
+                    outerrm_->register_resident_cell(mc, mc.tag(), mesh->tag(), world_.rank());
                 }
                 for (const MeshCell& mc: mesh->dirichlet_boundaries()) {
                     outerrm_->register_resident_cell(mc, mc.tag(), mesh->tag(), world_.rank());

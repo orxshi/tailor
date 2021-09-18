@@ -366,6 +366,11 @@ namespace Tailor
             //bcontainer = &wall_;
             s = "wall";
         }
+        else if (btype == BouType::symmetry)
+        {
+            //bcontainer = &wall_;
+            s = "symmetry";
+        }
         else if (btype == BouType::dirichlet)
         {
             //bcontainer = &dirichlet_;
@@ -408,6 +413,13 @@ namespace Tailor
             //mesh_.back().connect_add_bou_to_interior(bm, btype, comm_->rank());
         //}
 
+        for (const auto& mc: mesh_.back().cell())
+        {
+            for (const Tag& bc: mc.symmetry_boundary())
+            {
+                assert(mesh_.back().query_bou(bc, BouType::symmetry) != nullptr);
+            }
+        }
         for (const auto& mc: mesh_.back().cell())
         {
             for (const Tag& bc: mc.dirichlet_boundary())
@@ -454,6 +466,7 @@ namespace Tailor
 
             std::cout << "Reading boundaries mesh of " << fn << std::endl;
             m.connect_add_bou_to_interior(BouType::wall, comm_->rank());
+            m.connect_add_bou_to_interior(BouType::symmetry, comm_->rank());
             m.connect_add_bou_to_interior(BouType::dirichlet, comm_->rank());
             m.connect_add_bou_to_interior(BouType::farfield, comm_->rank());
             m.connect_add_bou_to_interior(BouType::interog, comm_->rank());

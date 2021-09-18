@@ -97,7 +97,7 @@ namespace Tailor
 
                     //for (const auto& brmt: tag)
                     std::unique_ptr<Cell> cll;
-                    std::list<MeshCell*> wallp, dirichletp, farfieldp, emptyp, interogp;
+                    std::list<MeshCell*> wallp, dirichletp, farfieldp, emptyp, interogp, symmetryp;
 
                     for (auto& pair: map)
                     {
@@ -139,7 +139,7 @@ namespace Tailor
 
                         if (cll == nullptr)
                         {
-                            std::list<MeshCell> wall, dirichlet, farfield, empty, interog;
+                            std::list<MeshCell> wall, dirichlet, farfield, empty, interog, symmetry;
 
                             //for (const auto& bc: mc.wall_boundary())
                             for (auto bc = mc.wall_boundary().begin(); bc != mc.wall_boundary().end(); ++bc)
@@ -151,6 +151,17 @@ namespace Tailor
                                 assert(bb != nullptr);
                                 wall.push_back(*bb);
                                 wallp.push_back(bb);
+                            }
+                            //for (const auto& bc: mc.symmetry_boundary())
+                            for (auto bc = mc.symmetry_boundary().begin(); bc != mc.symmetry_boundary().end(); ++bc)
+                            {
+                                auto bb = m.symmetry_boundary_p(*bc);
+                                //if (!overlap) {
+                                //bb->mark_to_be_erased();
+                                //}
+                                assert(bb != nullptr);
+                                symmetry.push_back(*bb);
+                                symmetryp.push_back(bb);
                             }
                             //for (const auto& bc: mc.dirichlet_boundary())
                             for (auto bc = mc.dirichlet_boundary().begin(); bc != mc.dirichlet_boundary().end(); ++bc)
@@ -207,7 +218,7 @@ namespace Tailor
                             }
 
                             //cll = new Cell(comm_->rank(), sp.tag()(), mc, std::move(wall), std::move(dirichlet), std::move(farfield), std::move(empty), std::move(interog));
-                            cll = std::unique_ptr<Cell>(new Cell(comm_->rank(), sp.tag()(), mc, std::move(wall), std::move(dirichlet), std::move(farfield), std::move(empty), std::move(interog)));
+                            cll = std::unique_ptr<Cell>(new Cell(comm_->rank(), sp.tag()(), mc, std::move(wall), std::move(dirichlet), std::move(farfield), std::move(empty), std::move(interog), std::move(symmetry)));
                             //if (!overlap) {
                             //mc.mark_to_be_erased();
                             //}
@@ -257,6 +268,9 @@ namespace Tailor
                         for (auto& ptr: wallp) {
                             ptr->mark_to_be_erased();
                         }
+                        for (auto& ptr: symmetryp) {
+                            ptr->mark_to_be_erased();
+                        }
                         for (auto& ptr: dirichletp) {
                             ptr->mark_to_be_erased();
                         }
@@ -292,7 +306,7 @@ namespace Tailor
         }
     }
 
-    Cell::Cell(int source_rank, int source_tag, const MeshCell& cell, std::list<MeshCell>&& wall, std::list<MeshCell>&& dirichlet, std::list<MeshCell>&& farfield, std::list<MeshCell>&& empty, std::list<MeshCell>&& interog): source_rank_(source_rank), source_tag_(source_tag), cell_(cell), wall_(wall), dirichlet_(dirichlet), farfield_(farfield), empty_(empty), interog_(interog)
+    Cell::Cell(int source_rank, int source_tag, const MeshCell& cell, std::list<MeshCell>&& wall, std::list<MeshCell>&& dirichlet, std::list<MeshCell>&& farfield, std::list<MeshCell>&& empty, std::list<MeshCell>&& interog, std::list<MeshCell>&& symmetry): source_rank_(source_rank), source_tag_(source_tag), cell_(cell), wall_(wall), dirichlet_(dirichlet), farfield_(farfield), empty_(empty), interog_(interog), symmetry_(symmetry)
     {
         if (!cell_.farfield_boundary().empty())
         {

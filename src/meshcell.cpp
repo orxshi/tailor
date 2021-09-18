@@ -286,6 +286,9 @@ namespace Tailor
         if (boutype == BouType::wall) {
             wall_boundary_.push_back(t);
         }
+        else if (boutype == BouType::symmetry) {
+            symmetry_boundary_.push_back(t);
+        }
         else if (boutype == BouType::dirichlet) {
             dirichlet_boundary_.push_back(t);
         }
@@ -358,7 +361,7 @@ namespace Tailor
 
     bool MeshCell::near_boundary() const
     {
-        if (near_wall() || near_dirichlet() || near_farfield() || near_interog())
+        if (near_wall() || near_dirichlet() || near_farfield() || near_interog() || near_symmetry())
         {
             return true;
         }
@@ -396,6 +399,16 @@ namespace Tailor
         return false;
     }
 
+    bool MeshCell::near_symmetry() const
+    {
+        if (!symmetry_boundary_.empty())
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     bool MeshCell::near_dirichlet() const
     {
         if (!dirichlet_boundary_.empty())
@@ -422,6 +435,11 @@ namespace Tailor
         return wall_boundary_;
     }
 
+    const MeshCell::Boundaries& MeshCell::symmetry_boundary() const
+    {
+        return symmetry_boundary_;
+    }
+
     //const std::vector<Tag>& MeshCell::dirichlet_boundary() const
     const MeshCell::Boundaries& MeshCell::dirichlet_boundary() const
     {
@@ -446,6 +464,11 @@ namespace Tailor
     void MeshCell::add_wall_boundary(const Tag& t)
     {
         wall_boundary_.push_back(t);
+    }
+
+    void MeshCell::add_symmetry_boundary(const Tag& t)
+    {
+        symmetry_boundary_.push_back(t);
     }
 
     void MeshCell::add_dirichlet_boundary(const Tag& t)
