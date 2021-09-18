@@ -197,6 +197,7 @@ namespace Tailor
 
     void Mesh::oga_interpolate(const ArrCon<Var>& arrival, int rank)
     {
+                assert(false);
         if (arrival.empty())
         {
             for (MeshCell& mc: cell_)
@@ -214,8 +215,6 @@ namespace Tailor
             {
                 assert(mc.donor().mesh_tag_.isvalid());
                 assert(mc.donor().cell_tag_.isvalid());
-
-                assert(false);
 
                 auto iter = std::find_if(arrival.begin(), arrival.end(), [&](const auto& arr){return (arr.mesh_cell_.first == mc.donor().mesh_tag_() && arr.mesh_cell_.second == mc.donor().cell_tag_());});
                 if (iter == arrival.end())
