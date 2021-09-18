@@ -1227,6 +1227,7 @@ namespace Tailor
 
                     for (int i = 0; i < NVAR; ++i)
                     {
+                        assert(false);
                         mc.prim_(i) = donor_cell.prim(i) + limiter(i) * dot(grad[i], d);
                     }
                 }
@@ -1371,12 +1372,10 @@ namespace Tailor
         {
             if (donor_var_exc_ == nullptr)
             {
-                assert(false);
                 oga_interpolate(mesh);
             }
             else
             {
-                assert(false);
                 mesh.oga_interpolate(donor_var_exc_->arrival(), comm_->rank());
             }
         }
