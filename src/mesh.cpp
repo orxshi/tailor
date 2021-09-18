@@ -171,6 +171,7 @@ namespace Tailor
 
     void Mesh::oga_interpolate(const std::deque<Mesh>& mesh, int rank)
     {
+        assert(false);
         assert(!mesh.empty());
 
         for (MeshCell& mc: cell_)
