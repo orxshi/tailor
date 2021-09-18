@@ -197,7 +197,6 @@ namespace Tailor
 
     void Mesh::oga_interpolate(const ArrCon<Var>& arrival, int rank)
     {
-                assert(false);
         if (arrival.empty())
         {
             for (MeshCell& mc: cell_)

@@ -1371,10 +1371,12 @@ namespace Tailor
         {
             if (donor_var_exc_ == nullptr)
             {
+                assert(false);
                 oga_interpolate(mesh);
             }
             else
             {
+                assert(false);
                 mesh.oga_interpolate(donor_var_exc_->arrival(), comm_->rank());
             }
         }
