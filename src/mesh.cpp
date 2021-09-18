@@ -5630,6 +5630,26 @@ int Mesh::priority() const
                     out << mc.prim(1) << " " << mc.prim(2) << " " << mc.prim(3) << std::endl;
                 }
 
+                out << "SCALARS " << "donor_mesh " << "int " << "1" << std::endl;
+                out << "LOOKUP_TABLE default" << std::endl;    
+                for (auto mc = cell_.begin(); mc != cell_.end(); ++mc)
+                {
+                    if (mc->oga_cell_type() == OGA_cell_type_t::receptor || mc->oga_cell_type() == OGA_cell_type_t::mandat_receptor)
+                    {
+                        out << mc->donor().mesh_tag_() << std::endl;
+                    }
+                } 
+
+                out << "SCALARS " << "donor_cell " << "int " << "1" << std::endl;
+                out << "LOOKUP_TABLE default" << std::endl;    
+                for (auto mc = cell_.begin(); mc != cell_.end(); ++mc)
+                {
+                    if (mc->oga_cell_type() == OGA_cell_type_t::receptor || mc->oga_cell_type() == OGA_cell_type_t::mandat_receptor)
+                    {
+                        out << mc->donor().cell_tag_() << std::endl;
+                    }
+                } 
+
                 //out << "SCALARS " << "u " << "float " << "1" << std::endl;
                 //out << "LOOKUP_TABLE default" << std::endl;
                 //assert(!cell().empty());
