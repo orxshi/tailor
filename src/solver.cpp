@@ -1446,7 +1446,7 @@ namespace Tailor
 
                     if (meshp != sp.mesh_.end())
                     {
-                        update_donors(mesh);
+                        //update_donors(mesh);
 
                         set_boundary_conditions(mesh);
                         compute_sum_of_fluxes(mesh, ntimestep);
