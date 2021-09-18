@@ -1193,6 +1193,9 @@ namespace Tailor
 
     void Solver::oga_interpolate(Mesh& mesh)
     {
+        Freestream fs;
+        fs.read();
+
         auto &meshes = partition_->spc_->sp_.front().mesh_;
 
         assert(!meshes.empty());
@@ -1227,14 +1230,16 @@ namespace Tailor
 
                     for (int i = 0; i < NVAR; ++i)
                     {
-                        assert(false);
                         mc.prim_(i) = donor_cell.prim(i) + limiter(i) * dot(grad[i], d);
                     }
+
+                    mc.cons_sp1_ = prim_to_cons(mc.prim_, fs.gamma_);
                 }
                 else
                 {
                     mc.prim_ = donor_cell.prim();
-                    mc.dQ_ = donor_cell.dQ();
+                    mc.dQ_ = donor_cell.dQ(); // ?
+                    mc.cons_sp1_ = prim_to_cons(mc.prim_, fs.gamma_);
                     //for (int i = 0; i < NVAR; ++i)
                     //{
                         //mc.prim_[i] = donor_cell.prim(i);
