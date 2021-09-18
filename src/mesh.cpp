@@ -5638,6 +5638,10 @@ int Mesh::priority() const
                     {
                         out << mc->donor().mesh_tag_() << std::endl;
                     }
+                    else
+                    {
+                        out << -1 << std::endl;
+                    }
                 } 
 
                 out << "SCALARS " << "donor_cell " << "int " << "1" << std::endl;
@@ -5647,6 +5651,10 @@ int Mesh::priority() const
                     if (mc->oga_cell_type() == OGA_cell_type_t::receptor || mc->oga_cell_type() == OGA_cell_type_t::mandat_receptor)
                     {
                         out << mc->donor().cell_tag_() << std::endl;
+                    }
+                    else
+                    {
+                        out << -1 << std::endl;
                     }
                 } 
 
