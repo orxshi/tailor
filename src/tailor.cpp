@@ -186,7 +186,6 @@ namespace Tailor
     {
         if (assembler_on_)
         {
-            assert(false);
             assembler_->assemble();
             mem_usage(&comm_, "assemble");
 
