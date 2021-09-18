@@ -215,6 +215,8 @@ namespace Tailor
                 assert(mc.donor().mesh_tag_.isvalid());
                 assert(mc.donor().cell_tag_.isvalid());
 
+                assert(false);
+
                 auto iter = std::find_if(arrival.begin(), arrival.end(), [&](const auto& arr){return (arr.mesh_cell_.first == mc.donor().mesh_tag_() && arr.mesh_cell_.second == mc.donor().cell_tag_());});
                 if (iter == arrival.end())
                 {
@@ -233,7 +235,6 @@ namespace Tailor
 
                 assert(!iter->var_.isnan());
 
-        assert(false);
                 mc.prim_ = iter->var_;
 
                 //assert(mc.prim(0) > 0.);
