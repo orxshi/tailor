@@ -49,11 +49,11 @@ namespace Tailor
         for (auto& mc: cell_)
         {
             if (mc.oga_cell_type() != OGA_cell_type_t::mandat_receptor) {
-                return;
+                continue;
             }
 
             if (!mc.near_interog()) {
-                return;
+                continue;
             }
 
             int count = 0;
