@@ -38,7 +38,9 @@ namespace Tailor
 
                 active_mesh.increase_overlap_thickness(nlayer, passive_cell_adt, passive_mesh);
 
-                active_mesh.print_as_vtk("aa");
+                if (active_mesh.tag()() == 1) {
+                    active_mesh.print_as_vtk("aa.vtk");
+                }
             }
         }
     }
