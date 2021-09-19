@@ -31,8 +31,6 @@ namespace Tailor
 
                     if (passive_cell.poly().do_intersect(target))
                     {
-                        assert(passive_cell.oga_cell_type() == OGA_cell_type_t::receptor);
-
                         nei.set_oga_cell_type(OGA_cell_type_t::mandat_receptor);
                         passive_cell.set_oga_cell_type(OGA_cell_type_t::field);
                         nei.add_cand_donor(passive_cell.parent_mesh(), passive_cell.tag(), &passive_cell);
