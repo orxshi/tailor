@@ -17,7 +17,7 @@ namespace Tailor
         {
             auto& nei = cell_p(inei);
 
-            if (nei.oga_cell_type() == OGA_cell_type_t::field)
+            if (nei.oga_cell_type() == OGA_cell_type_t::field || nei.oga_cell_type() == OGA_cell_type_t::receptor)
             {
                 const Vector3& target = nei.poly().centroid();
                 ADTPoint targetadt(target, nei.tag()());
