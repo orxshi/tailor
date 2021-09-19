@@ -21,11 +21,22 @@ namespace Tailor
             return;
         }
 
-        for (auto& sp: spc_->sp_)
+        assert(spc_->sp_.size() == 1);
+        auto& sp = spc_->sp_.front();
+
+        for (int i=0; i<sp.mesh_.size(); ++i)
         {
-            for (Mesh& m: sp.mesh_)
+            for (int j=0; j<sp.mesh_.size(); ++j)
             {
-                m.increase_overlap_thickness(nlayer);
+                if (i == j) {
+                    continue;
+                }
+
+                Mesh& active_mesh = sp.mesh_[i];
+                Mesh& passive_mesh = sp.mesh_[j];
+                const ADT& passive_cell_adt = sp.cell_adt(j);
+
+                active_mesh.increase_overlap_thickness(nlayer, passive_cell_adt, passive_mesh);
             }
         }
     }

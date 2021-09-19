@@ -2,7 +2,7 @@
 
 namespace Tailor
 {
-    void Mesh::increase_overlap_thickness_(MeshCell& mc, int& count, int nlayer)
+    void Mesh::increase_overlap_thickness_(MeshCell& mc, int& count, int nlayer, const ADT& passive_cell_adt, Mesh& passive_mesh)
     {
         assert(mc.oga_cell_type() == OGA_cell_type_t::mandat_receptor);
 
@@ -19,24 +19,46 @@ namespace Tailor
 
             if (nei.oga_cell_type() == OGA_cell_type_t::field)
             {
-                nei.set_oga_cell_type(OGA_cell_type_t::mandat_receptor);
-                increase_overlap_thickness_(nei, count, nlayer);
+                const Vector3& target = nei.poly().centroid();
+                ADTPoint targetadt(target, nei.tag()());
+                std::vector<int> res = passive_cell_adt.search(targetadt);
+
+                assert(!res.empty());
+
+                for (int r: res)
+                {
+                    MeshCell& passive_cell = passive_mesh.cell_p(Tag(r));
+
+                    if (passive_cell.poly().do_intersect(target))
+                    {
+                        assert(passive_cell.oga_cell_type() == OGA_cell_type_t::receptor);
+
+                        nei.set_oga_cell_type(OGA_cell_type_t::mandat_receptor);
+                        passive_cell.set_oga_cell_type(OGA_cell_type_t::field);
+                        nei.add_cand_donor(passive_cell.parent_mesh(), passive_cell.tag(), &passive_cell);
+                    }
+                }
+
+                increase_overlap_thickness_(nei, count, nlayer, passive_cell_adt, passive_mesh);
             }
         }
     }
 
-    void Mesh::increase_overlap_thickness(int nlayer)
+    void Mesh::increase_overlap_thickness(int nlayer, const ADT& passive_cell_adt, Mesh& passive_mesh)
     {
         for (auto& mc: cell_)
         {
-            int count = 0;
-            if (mc.oga_cell_type() == OGA_cell_type_t::mandat_receptor)
-            {
-                if (mc.near_interog())
-                {
-                    increase_overlap_thickness_(mc, count, nlayer);
-                }
+            if (mc.oga_cell_type() != OGA_cell_type_t::mandat_receptor) {
+                return;
             }
+
+            if (!mc.near_interog()) {
+                return;
+            }
+
+            int count = 0;
+
+            increase_overlap_thickness_(mc, count, nlayer, passive_cell_adt, passive_mesh);
         }
     }
 

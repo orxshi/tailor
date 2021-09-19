@@ -22,6 +22,7 @@
 #include "profiler.h"
 #include <boost/serialization/list.hpp>
 #include "exchanger.h"
+#include "adt.h"
 
 namespace Tailor
 {
@@ -84,7 +85,7 @@ namespace Tailor
         void merge_dirichlet_to_interior(const Mesh& dirichlet_mesh);
         void merge_farfield_to_interior(const Mesh& farfield_mesh);
         void merge_empty_to_interior(const Mesh& empty_mesh);
-        void increase_overlap_thickness_(MeshCell& mc, int& count, int nlayer);
+        void increase_overlap_thickness_(MeshCell& mc, int& count, int nlayer, const ADT& passive_cell_adt, Mesh& passive_mesh);
 
         //std::set<Point> bou_raw_point_(const std::vector<MeshCell>* container) const;
 
@@ -95,7 +96,7 @@ namespace Tailor
         Mesh(const Tag& tag);
         //Mesh(const Tag& tag): Mesh(tag, tag) {};
 
-        void increase_overlap_thickness(int nlayer);
+        void increase_overlap_thickness(int nlayer, const ADT& passive_cell_adt, Mesh& passive_mesh);
         Vector5 uniform_prim(const FlowInit& fs);
         //void update_cell_pnei_addresses();
         //void update_face_parent_addresses();
