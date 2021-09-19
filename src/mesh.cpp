@@ -11,7 +11,6 @@ namespace Tailor
             return;
         }
 
-        assert(false);
         ++count;
 
         for (const auto& inei: mc.pnei())

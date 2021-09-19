@@ -21,6 +21,8 @@ namespace Tailor
             return;
         }
 
+        assert(false);
+
         assert(spc_->sp_.size() == 1);
         auto& sp = spc_->sp_.front();
 
