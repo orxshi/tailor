@@ -4,7 +4,7 @@ namespace Tailor
 {
     void Mesh::increase_overlap_thickness_(MeshCell& mc, int& count, int nlayer, const ADT& passive_cell_adt, Mesh& passive_mesh)
     {
-        assert(mc.oga_cell_type() == OGA_cell_type_t::mandat_receptor);
+        assert(mc.oga_cell_type() == OGA_cell_type_t::mandat_receptor || mc.oga_cell_type() == OGA_cell_type_t::undefined);
 
         if (count >= nlayer)
         {
