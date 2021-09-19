@@ -50,9 +50,9 @@ namespace Tailor
                 continue;
             }
 
-            if (!mc.near_interog()) {
-                continue;
-            }
+            //if (!mc.near_interog()) {
+                //continue;
+            //}
 
             int count = 0;
 
