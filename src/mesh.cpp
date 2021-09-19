@@ -56,8 +56,6 @@ namespace Tailor
                 return;
             }
 
-            assert(false);
-
             int count = 0;
 
             increase_overlap_thickness_(mc, count, nlayer, passive_cell_adt, passive_mesh);
