@@ -48,7 +48,6 @@ namespace Tailor
     {
         for (auto& mc: cell_)
         {
-            assert(false);
             if (mc.oga_cell_type() != OGA_cell_type_t::mandat_receptor) {
                 return;
             }
@@ -56,6 +55,8 @@ namespace Tailor
             if (!mc.near_interog()) {
                 return;
             }
+
+            assert(false);
 
             int count = 0;
 

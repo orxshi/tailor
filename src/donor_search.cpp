@@ -37,6 +37,8 @@ namespace Tailor
                 const ADT& passive_cell_adt = sp.cell_adt(j);
 
                 active_mesh.increase_overlap_thickness(nlayer, passive_cell_adt, passive_mesh);
+
+                assert(active_mesh.tag()() != 1);
             }
         }
     }
