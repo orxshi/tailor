@@ -17,6 +17,10 @@ namespace Tailor
         // Increase volume of region of mandatory receptors.
         // Only applicable to mreceptors near interog boundary.
 
+        if (nlayer == 1) {
+            return;
+        }
+
         for (auto& sp: spc_->sp_)
         {
             for (Mesh& m: sp.mesh_)
