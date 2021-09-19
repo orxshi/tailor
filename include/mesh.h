@@ -84,6 +84,7 @@ namespace Tailor
         void merge_dirichlet_to_interior(const Mesh& dirichlet_mesh);
         void merge_farfield_to_interior(const Mesh& farfield_mesh);
         void merge_empty_to_interior(const Mesh& empty_mesh);
+        void increase_overlap_thickness_(MeshCell& mc, int& count, int nlayer);
 
         //std::set<Point> bou_raw_point_(const std::vector<MeshCell>* container) const;
 
@@ -94,6 +95,7 @@ namespace Tailor
         Mesh(const Tag& tag);
         //Mesh(const Tag& tag): Mesh(tag, tag) {};
 
+        void increase_overlap_thickness(int nlayer);
         Vector5 uniform_prim(const FlowInit& fs);
         //void update_cell_pnei_addresses();
         //void update_face_parent_addresses();

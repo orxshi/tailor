@@ -30,6 +30,7 @@ namespace Tailor
             void determine_orphan(const ArrCon<DonorInfo2>& nonresi);
             void convert_receptor_to_hole();
             void check_donor_validity();
+            void increase_overlap_thickness(int nlayer);
 
         private:
 

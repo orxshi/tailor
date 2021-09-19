@@ -126,6 +126,7 @@ namespace Tailor
             ("assembler.print-pre-vtk", po::value<bool>()->default_value(false), "")
             ("assembler.print-repart-info", po::value<bool>()->default_value(false), "")
             ("assembler.print-imbalance", po::value<bool>()->default_value(false), "")
+            ("assembler.nlayer-of-overlap", po::value<int>()->default_value(1), "")
             ;
 
         all_options.add(desc);
@@ -150,6 +151,7 @@ namespace Tailor
         print_pre_vtk_ = vm["assembler.print-pre-vtk"].as<bool>();
         print_repart_info_ = vm["assembler.print-repart-info"].as<bool>();
         print_imbalance_ = vm["assembler.print-imbalance"].as<bool>();
+        nlayer_of_overlap_ = vm["assembler.nlayer-of-overlap"].as<int>();
     }
 
     bool Assembler::repartition()
@@ -366,6 +368,8 @@ namespace Tailor
         CandDonorExchanger cand_donor_exc(&(partition_->spc()), &cand_req_exc.arrival(), comm_);
         cand_donor_exc.exchange(false, "asm-canddonor-exc", profiler_);
         //cand_donor_exc.exchange();
+
+        donor_searcher.increase_overlap_thickness(nlayer_of_overlap_);
 
         donor_searcher.receptor_to_field(cand_donor_exc.arrival());
         donor_searcher.handle_donor_conflict(cand_donor_exc.arrival());

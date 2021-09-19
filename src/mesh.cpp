@@ -2,6 +2,44 @@
 
 namespace Tailor
 {
+    void Mesh::increase_overlap_thickness_(MeshCell& mc, int& count, int nlayer)
+    {
+        assert(mc.oga_cell_type() == OGA_cell_type_t::mandat_receptor);
+
+        if (count >= nlayer)
+        {
+            return;
+        }
+
+        ++count;
+
+        for (const auto& inei: mc.pnei())
+        {
+            auto& nei = cell_p(inei);
+
+            if (nei.oga_cell_type() == OGA_cell_type_t::field)
+            {
+                nei.set_oga_cell_type(OGA_cell_type_t::mandat_receptor);
+                increase_overlap_thickness_(nei, count, nlayer);
+            }
+        }
+    }
+
+    void Mesh::increase_overlap_thickness(int nlayer)
+    {
+        for (auto& mc: cell_)
+        {
+            int count = 0;
+            if (mc.oga_cell_type() == OGA_cell_type_t::mandat_receptor)
+            {
+                if (mc.near_interog())
+                {
+                    increase_overlap_thickness_(mc, count, nlayer);
+                }
+            }
+        }
+    }
+
     void Mesh::reset_to_mid()
     {
         for (auto& mc: cell_)

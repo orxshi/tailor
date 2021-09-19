@@ -12,6 +12,20 @@ namespace Tailor
         read_priority();
     }
 
+    void DonorSearcher::increase_overlap_thickness(int nlayer)
+    {
+        // Increase volume of region of mandatory receptors.
+        // Only applicable to mreceptors near interog boundary.
+
+        for (auto& sp: spc_->sp_)
+        {
+            for (Mesh& m: sp.mesh_)
+            {
+                m.increase_overlap_thickness(nlayer);
+            }
+        }
+    }
+
     void DonorSearcher::convert_receptor_to_hole()
     {
         for (auto& sp: spc_->sp_)
