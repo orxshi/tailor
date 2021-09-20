@@ -24,8 +24,6 @@ namespace Tailor
         assert(spc_->sp_.size() == 1);
         auto& sp = spc_->sp_.front();
 
-        sp.mesh_[1].print_as_vtk("bbb.vtk");
-
         for (int i=0; i<sp.mesh_.size(); ++i)
         {
             for (int j=0; j<sp.mesh_.size(); ++j)
