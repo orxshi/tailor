@@ -4,13 +4,6 @@ namespace Tailor
 {
     void Mesh::increase_overlap_thickness_(MeshCell& mc, int& count, int nlayer, const ADT& passive_cell_adt, Mesh& passive_mesh)
     {
-        if (tag_() == 1)
-        {
-            if (mc.tag()() == 12918)
-            {
-                std::cout << "count: " << count << std::endl;
-            }
-        }
         assert(mc.oga_cell_type() == OGA_cell_type_t::mandat_receptor || mc.oga_cell_type() == OGA_cell_type_t::undefined);
 
         if (count >= nlayer)
@@ -23,15 +16,8 @@ namespace Tailor
         for (const auto& inei: mc.pnei())
         {
             auto& nei = cell_p(inei);
-        if (tag_() == 1)
-        {
-            if (nei.tag()() == 12918)
-            {
-                std::cout << "count: " << count << std::endl;
-            }
-        }
 
-            if (nei.oga_cell_type() == OGA_cell_type_t::field)
+            if (nei.oga_cell_type() == OGA_cell_type_t::field || nei.oga_cell_type() == OGA_cell_type_t::undefined)
             {
                 const Vector3& target = nei.poly().centroid();
                 ADTPoint targetadt(target, nei.tag()());
@@ -52,6 +38,15 @@ namespace Tailor
                     }
                 }
 
+            }
+        }
+
+        for (const auto& inei: mc.pnei())
+        {
+            auto& nei = cell_p(inei);
+
+            if (nei.oga_cell_type() == OGA_cell_type_t::undefined)
+            {
                 increase_overlap_thickness_(nei, count, nlayer, passive_cell_adt, passive_mesh);
             }
         }
@@ -61,14 +56,6 @@ namespace Tailor
     {
         for (auto& mc: cell_)
         {
-            if (tag_() == 1) {
-            if (mc.tag()() == 12918)
-            {
-                std::cout << static_cast<int>(mc.oga_cell_type()) << std::endl;
-            }
-            assert(mc.tag()() != 12918);
-                    }
-
             if (mc.oga_cell_type() != OGA_cell_type_t::mandat_receptor) {
                 continue;
             }
