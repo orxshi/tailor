@@ -327,7 +327,6 @@ namespace Tailor
             pre(time_step);
             if (max_time_step_ > 1)
             {
-                assert(false);
                 callback(*this);
             }
             post();
