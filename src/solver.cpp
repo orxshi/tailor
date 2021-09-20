@@ -434,6 +434,7 @@ namespace Tailor
 
     void Solver::move(const Tag& mesh, const Vector3& v)
     {
+        assert(false);
         partition_->move(mesh, v);
     }
 
