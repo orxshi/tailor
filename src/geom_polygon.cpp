@@ -542,6 +542,12 @@ namespace Tailor
         {
             if ((max_(i) - cnt(i)) < 0.)
             {
+                if (std::abs((max_(i) - cnt(i))) > TAILOR_ZERO)
+                {
+                    std::cout << "cnt: " << cnt(i) << std::endl;
+                    std::cout << "min: " << min_(i) << std::endl;
+                    std::cout << "max: " << max_(i) << std::endl;
+                }
                 assert(std::abs((max_(i) - cnt(i))) <= TAILOR_ZERO);
                 cnt(i) = max_(i);
             }
