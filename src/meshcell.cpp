@@ -7,21 +7,19 @@ namespace Tailor
         return vgn_;
     }
 
-    void MeshCell::mesh_velocity(double dt, const Freestream& fs, const Component& compo)
+    void MeshCell::mesh_velocity(const Freestream& fs, const Component& compo)
     {
         // https://www.lehman.edu/faculty/anchordoqui/chapter06.pdf
 
-        double pinf = fs.pinf_;
-        double rhoinf = fs.rhoinf_;
         double rotation = compo.rotation_;
         double rotaxis = compo.rotaxis_;
         double rpm = compo.rpm_;
         auto pivot = compo.pivot_;
-        double mach = compo.mach_;
+        //double mach = compo.mach_;
         double dirx = compo.dirx_;
         double dirz = compo.dirz_;
 
-        double cinf = std::sqrt(fs.gamma_ * pinf / rhoinf);
+
 
         Vector3 vel;
         double omega, alpha, thetax, thetay, r;
@@ -43,18 +41,62 @@ namespace Tailor
             {
                 auto cnt = poly_.centroid();
                 auto r = cnt - pivot;
+                r(2) = 0.;
 
                 vel = cross(omega, r);
+                if (vel(2) != 0.)
+                {
+                    std::cout << "vel(2): " << vel(2) << std::endl;
+                }
+                assert(vel(2) == 0.);
+
+                //auto rvec = Vector3(cnt(0), cnt(1), pivot(2));
+                //r = (rvec - pivot).len();
+                //alpha = std::atan2(cnt(0), cnt(1));
+                //thetax = -std::sin(alpha);
+                //thetay = std::cos(alpha);
+                //vel = Vector3(
+                //        omega * r * thetax,
+                //        omega * r * thetay,
+                //        0.);
             }
         }
         else
         {
-            vel = Vector3(
-                    mach * cinf * std::cos(deg_to_rad(dirx)),
-                    mach * cinf * std::cos(deg_to_rad(90. - dirx)),
-                    mach * cinf * std::cos(deg_to_rad(dirz))
-                    );
+            //vel = Vector3(0., 0., 0.);
+            //vel = Vector3(
+                    //machfoil * cinf * std::cos(deg_to_rad(aoa_foil_x)),
+                    //machfoil * cinf * std::cos(deg_to_rad(90. - aoa_foil_x)),
+                    //machfoil * cinf * std::cos(deg_to_rad(aoa_foil_z)));
+
+            //if (compo.mach_ != 0.)
+            //{
+            //    vel = Vector3(
+            //            mach * cinf * std::cos(deg_to_rad(dirx)),
+            //            mach * cinf * std::cos(deg_to_rad(90. - dirx)),
+            //            mach * cinf * std::cos(deg_to_rad(dirz))
+            //            );
+            //}
+            //else
+            {
+                vel = Vector3(
+                        compo.u,
+                        compo.v,
+                        compo.w
+                        );
+            }
         }
+
+
+
+
+
+
+
+
+
+
+
 
         vgn_ = vel;
     }

@@ -22,8 +22,10 @@ namespace Tailor
         void slipwall(Mesh& mesh, MeshCell& mc);
         void symmetry(Mesh& mesh, MeshCell& mc);
         void init_farfield(Mesh& mesh, const Vector5& prim);
-        void set_dirichlet(Mesh& mesh, const Vector5& prim);
+        //void set_dirichlet(Mesh& mesh, const Vector5& prim);
+        void set_dirichlet(Mesh& mesh);
         void update_fs(const Freestream& fs);
+        Vector5 read_dirichlet(const Tag& meshtag);
 
         BoundaryCondition();
 

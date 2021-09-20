@@ -103,7 +103,7 @@ namespace Tailor
 
         void set_prim_cons(const Vector5& prim, double gamma);
         Vector3 vgn() const;
-        void mesh_velocity(double dt, const Freestream& fs, const Component& compo);
+        void mesh_velocity(const Freestream& fs, const Component& compo);
         void init(const Vector3& vinf_air, const Freestream& fs, const Component& compo);
         std::vector<Tag> boundaries() const;
         //const MeshCell* donor_addr() const;

@@ -63,6 +63,8 @@ namespace Tailor
 
         void read(const Tag& mtag);
     };
+
+    char* cstr(std::string sdesc, std::string sub);
 }
 
 #endif

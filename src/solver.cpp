@@ -1234,11 +1234,20 @@ namespace Tailor
                         mc.prim_(i) = donor_cell.prim(i) + limiter(i) * dot(grad[i], d);
                     }
 
+                    //mc.prim_(1) += mc.vgn(0);
+                    //mc.prim_(2) += mc.vgn(1);
+                    //mc.prim_(3) += mc.vgn(2);
+
                     mc.cons_sp1_ = prim_to_cons(mc.prim_, fs.gamma_);
                 }
                 else
                 {
                     mc.prim_ = donor_cell.prim();
+
+                    //mc.prim_(1) += mc.vgn(0);
+                    //mc.prim_(2) += mc.vgn(1);
+                    //mc.prim_(3) += mc.vgn(2);
+
                     mc.dQ_ = donor_cell.dQ(); // ?
                     mc.cons_sp1_ = prim_to_cons(mc.prim_, fs.gamma_);
                     //for (int i = 0; i < NVAR; ++i)
@@ -1378,7 +1387,7 @@ namespace Tailor
         {
             if (donor_var_exc_ == nullptr)
             {
-                //oga_interpolate(mesh);
+                oga_interpolate(mesh);
             }
             else
             {

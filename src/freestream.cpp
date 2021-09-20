@@ -2,7 +2,7 @@
 
 namespace Tailor
 {
-    auto cstr(std::string sdesc, std::string sub)
+    char* cstr(std::string sdesc, std::string sub)
     {
         std::string full = sdesc;
         full.append(".");

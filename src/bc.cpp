@@ -939,14 +939,25 @@ namespace Tailor
         }
     }
 
-    void BoundaryCondition::set_dirichlet(Mesh& mesh, const Vector5& prim)
+    void BoundaryCondition::set_dirichlet(Mesh& mesh)
     {
+        auto prim = read_dirichlet(mesh.tag());
+
         for (MeshCell& mc: mesh.dirichlet_boundaries_)
         {
             mc.prim_ = prim;
             mc.cons_sp1_ = prim_to_cons(prim, fs_.gamma_);
         }
     }
+
+    //void BoundaryCondition::set_dirichlet(Mesh& mesh, const Vector5& prim)
+    //{
+        //for (MeshCell& mc: mesh.dirichlet_boundaries_)
+        //{
+            //mc.prim_ = prim;
+            //mc.cons_sp1_ = prim_to_cons(prim, fs_.gamma_);
+        //}
+    //}
 
     void BoundaryCondition::interog(Mesh& mesh)
     {
@@ -979,6 +990,8 @@ namespace Tailor
         {
             fs_.read();
             first_ = false;
+
+            set_dirichlet(mesh);
         }
         //if (profiler != nullptr) {profiler->stop("bc-read");}
 
@@ -1008,5 +1021,46 @@ namespace Tailor
         //farfield5(mesh);
         farfield4(mesh); // TODO try this
         //if (profiler != nullptr) {profiler->stop("bc-far");}
+    }
+
+    Vector5 BoundaryCondition::read_dirichlet(const Tag& meshtag)
+    {
+        namespace po = boost::program_options;
+        po::options_description op;
+
+        std::string sdesc = "mesh ";
+        sdesc.append(std::to_string(meshtag()));
+
+        po::options_description desc{sdesc};
+        desc.add_options()
+            (cstr(sdesc, "rho"), po::value<double>()->required(), "")
+            (cstr(sdesc, "p"), po::value<double>()->required(), "")
+            (cstr(sdesc, "u"), po::value<double>()->required(), "")
+            (cstr(sdesc, "v"), po::value<double>()->required(), "")
+            (cstr(sdesc, "w"), po::value<double>()->required(), "")
+            ;
+
+        op.add(desc);
+        std::string fn = "dirichlet.ini";
+        std::ifstream settings_file(fn);
+
+        boost::program_options::variables_map vm;
+        po::store(po::parse_config_file(settings_file, op, true), vm);
+        po::notify(vm);
+
+        double rho = vm[cstr(sdesc, "rho")].as<double>();
+        double p = vm[cstr(sdesc, "p")].as<double>();
+        double u = vm[cstr(sdesc, "u")].as<double>();
+        double v = vm[cstr(sdesc, "v")].as<double>();
+        double w = vm[cstr(sdesc, "w")].as<double>();
+
+        Vector5 prim;
+        prim(0) = rho;
+        prim(1) = u;
+        prim(2) = v;
+        prim(3) = w;
+        prim(4) = p;
+
+        return prim;
     }
 }
