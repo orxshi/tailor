@@ -140,6 +140,8 @@ namespace Tailor
             _p.set_r(_p.r(0) + v(0), _p.r(1) + v(1), _p.r(2) + v(2));
         }
 
+        set_bbox();
+
         for (Segment& e: edge_)
         {
             e.move_points(v);
