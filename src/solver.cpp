@@ -1378,7 +1378,7 @@ namespace Tailor
         {
             if (donor_var_exc_ == nullptr)
             {
-                oga_interpolate(mesh);
+                //oga_interpolate(mesh);
             }
             else
             {
