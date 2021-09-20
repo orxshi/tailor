@@ -43,6 +43,11 @@ namespace Tailor
 
         for (const auto& inei: mc.pnei())
         {
+            if (mc.oga_cell_type() == OGA_cell_type_t::mandat_receptor)
+            {
+                count = 0;
+            }
+
             auto& nei = cell_p(inei);
 
             if (nei.oga_cell_type() == OGA_cell_type_t::undefined)
