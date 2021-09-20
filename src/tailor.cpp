@@ -104,6 +104,7 @@ namespace Tailor
 
     void Tailor::move(const Tag& mesh, const Vector3& v)
     {
+        assert(false);
         if (!use_shared_partition_)
         {
             assembler_->move(mesh, v);
