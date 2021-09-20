@@ -104,7 +104,6 @@ namespace Tailor
 
     void Tailor::move(const Tag& mesh, const Vector3& v)
     {
-        assert(false);
         if (!use_shared_partition_)
         {
             assembler_->move(mesh, v);
@@ -316,7 +315,8 @@ namespace Tailor
         solver_on_ = vm["tailor.solver"].as<bool>();
     }
 
-    void Tailor::make(std::function<void(Tailor&)> callback)
+    //void Tailor::make(std::function<void(Tailor&)> callback)
+    void Tailor::make(void (*callback)(Tailor&))
     {
         int save_counter = 0;
 

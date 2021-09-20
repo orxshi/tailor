@@ -18,7 +18,8 @@ namespace Tailor
 
             Tailor();
 
-            void make(std::function<void(Tailor&)> callback);
+            //void make(std::function<void(Tailor&)> callback);
+            void make(void (*callback)(Tailor&));
             void rotate(const Tag& mesh, double ang, int axis, const Vector3& pivot);
             void move(const Tag& mesh, const Vector3& v);
             const Solver* solver() const;
