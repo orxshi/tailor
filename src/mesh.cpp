@@ -16,8 +16,11 @@ namespace Tailor
         for (const auto& inei: mc.pnei())
         {
             auto& nei = cell_p(inei);
+            if (tag_() == 1) {
+            assert(mc.tag()() != 12918);
+                    }
 
-            if (nei.oga_cell_type() == OGA_cell_type_t::field || nei.oga_cell_type() == OGA_cell_type_t::receptor)
+            if (nei.oga_cell_type() == OGA_cell_type_t::field)
             {
                 const Vector3& target = nei.poly().centroid();
                 ADTPoint targetadt(target, nei.tag()());
@@ -32,6 +35,7 @@ namespace Tailor
                     if (passive_cell.poly().do_intersect(target))
                     {
                         nei.set_oga_cell_type(OGA_cell_type_t::undefined); // works if convert_undefined_to_field() is called before increase_overlap_thickness.
+                        assert(passive_cell.oga_cell_type() != OGA_cell_type_t::hole);
                         passive_cell.set_oga_cell_type(OGA_cell_type_t::field);
                         nei.add_cand_donor(passive_cell.parent_mesh(), passive_cell.tag(), &passive_cell);
                     }
