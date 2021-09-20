@@ -50,9 +50,6 @@ namespace Tailor
     {
         for (auto& mc: cell_)
         {
-            if (tag_() == 1) {
-            assert(mc.tag()() != 12918);
-                    }
             if (mc.oga_cell_type() != OGA_cell_type_t::mandat_receptor) {
                 continue;
             }
