@@ -945,7 +945,14 @@ namespace Tailor
 
         for (MeshCell& mc: mesh.dirichlet_boundaries_)
         {
+            const MeshCell& nei = mesh.cell(mc.interior_boundary());
+            auto mf = std::find_if(nei.face().begin(), nei.face().end(), [&](const MeshFace& f){return f.tag() == mc.face()[0].tag();});
+
             mc.prim_ = prim;
+            auto vf = mf->vf();
+            mc.prim_(1) -= vf(0);
+            mc.prim_(2) -= vf(1);
+            mc.prim_(3) -= vf(2);
             mc.cons_sp1_ = prim_to_cons(prim, fs_.gamma_);
         }
     }
