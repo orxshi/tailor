@@ -127,6 +127,7 @@ namespace Tailor
             ("assembler.print-repart-info", po::value<bool>()->default_value(false), "")
             ("assembler.print-imbalance", po::value<bool>()->default_value(false), "")
             ("assembler.nlayer-of-overlap", po::value<int>()->default_value(1), "")
+            ("assembler.overlap-minimization", po::value<bool>()->default_value(false), "")
             ;
 
         all_options.add(desc);
@@ -152,6 +153,7 @@ namespace Tailor
         print_repart_info_ = vm["assembler.print-repart-info"].as<bool>();
         print_imbalance_ = vm["assembler.print-imbalance"].as<bool>();
         nlayer_of_overlap_ = vm["assembler.nlayer-of-overlap"].as<int>();
+        overlap_minimization_ = vm["assembler.overlap-minimization"].as<bool>();
     }
 
     bool Assembler::repartition()
@@ -390,9 +392,12 @@ namespace Tailor
         donor_searcher.determine_orphan(cand_donor_exc.arrival());
         if (profiler_ != nullptr) {profiler_->stop("asm-ds-orphan");}
 
-        if (profiler_ != nullptr) {profiler_->start("asm-con-receptohole");}
-        donor_searcher.convert_receptor_to_hole();
-        if (profiler_ != nullptr) {profiler_->stop("asm-con-receptohole");}
+        if (overlap_minimization_)
+        {
+            if (profiler_ != nullptr) {profiler_->start("asm-con-receptohole");}
+            donor_searcher.convert_receptor_to_hole();
+            if (profiler_ != nullptr) {profiler_->stop("asm-con-receptohole");}
+        }
 
         //donor_searcher.check_donor_validity();
 

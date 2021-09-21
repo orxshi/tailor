@@ -52,6 +52,7 @@ namespace Tailor
                 ar & print_map_;
                 ar & partition_;
                 ar & nlayer_of_overlap_;
+                ar & overlap_minimization_;
             }
 
         private:
@@ -81,6 +82,7 @@ namespace Tailor
             bool pseudo3D_;
             bool print_map_;
             int nlayer_of_overlap_;
+            bool overlap_minimization_;
 
             void donor_search();
             void print_mesh_vtk(std::string fn0);
