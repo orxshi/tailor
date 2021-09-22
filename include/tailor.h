@@ -23,7 +23,6 @@ namespace Tailor
             void move(const Tag& mesh, const Vector3& v);
             const Solver* solver() const;
             const Assembler* assembler() const;
-            void get_aero_coef(const std::vector<AeroCoefPara>& aero_para);
 
         private:
 

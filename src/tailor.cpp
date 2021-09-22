@@ -220,11 +220,6 @@ namespace Tailor
         }
     }
 
-    void Tailor::get_aero_coef(const std::vector<AeroCoefPara>& aero_para)
-    {
-        solver_->partition()->spc().get_coef(aero_para, solver_->nsolve());
-    }
-
     void Tailor::post()
     {
         if (solver_on_)
