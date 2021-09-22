@@ -182,7 +182,19 @@ namespace Tailor
         }
     }
 
-    void Tailor::pre(int time_step)
+    void Tailor::compute_aerodyn_coef(const std::vector<AeroCoefPara>& (*compute_para)())
+    {
+        if (!compute_aerodyn_coef_) {
+            return;
+        }
+
+        assert(compute_para != nullptr);
+
+        auto aero_para = compute_para();
+        solver_->partition()->spc().get_coef(aero_para, solver_->nsolve());
+    }
+
+    void Tailor::pre(int time_step, const std::vector<AeroCoefPara>& (*compute_para)())
     {
         if (assembler_on_)
         {
@@ -202,6 +214,7 @@ namespace Tailor
         {
             profiler_start("solve");
             solver_->solve();
+            compute_aerodyn_coef(compute_para);
             mem_usage(&comm_,  "solve");
             profiler_stop("solve");
         }
@@ -293,6 +306,7 @@ namespace Tailor
             ("tailor.mesh_folder", po::value<std::vector<std::string>>()->multitoken(), "")
             ("tailor.profiler", po::value<bool>()->default_value(false), "")
             ("tailor.solver", po::value<bool>()->default_value(true), "")
+            ("tailor.compute_aerodyn_coef", po::value<bool>()->default_value(true), "")
             ;
 
         all_options.add(desc);
@@ -313,10 +327,10 @@ namespace Tailor
         save_folder_ = vm["tailor.save_folder"].as<std::string>();
         profiler_on_ = vm["tailor.profiler"].as<bool>();
         solver_on_ = vm["tailor.solver"].as<bool>();
+        compute_aerodyn_coef_ = vm["tailor.compute_aerodyn_coef"].as<bool>();
     }
 
-    //void Tailor::make(std::function<void(Tailor&)> callback)
-    void Tailor::make(void (*callback)(Tailor&))
+    void Tailor::make(void (*callback)(Tailor&), const std::vector<AeroCoefPara>& (*compute_para)())
     {
         int save_counter = 0;
 
@@ -324,7 +338,7 @@ namespace Tailor
 
         for (int time_step = 0; time_step < max_time_step_; ++time_step)
         {
-            pre(time_step);
+            pre(time_step, compute_para);
             if (max_time_step_ > 1)
             {
                 callback(*this);

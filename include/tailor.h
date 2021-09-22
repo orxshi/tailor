@@ -18,8 +18,7 @@ namespace Tailor
 
             Tailor();
 
-            //void make(std::function<void(Tailor&)> callback);
-            void make(void (*callback)(Tailor&));
+            void make(void (*callback)(Tailor&) = nullptr, const std::vector<AeroCoefPara>& (*compute_para)() = nullptr);
             void rotate(const Tag& mesh, double ang, int axis, const Vector3& pivot);
             void move(const Tag& mesh, const Vector3& v);
             const Solver* solver() const;
@@ -36,6 +35,7 @@ namespace Tailor
             bool load_;
             bool save_;
             bool use_shared_partition_;
+            bool compute_aerodyn_coef_;
             std::vector<std::string> mesh_folder_;
             std::string load_folder_;
             std::string save_folder_;
@@ -45,12 +45,13 @@ namespace Tailor
             std::unique_ptr<Profiler> profiler_;
             boost::mpi::environment env_;
 
-            void pre(int time_step);
+            void pre(int time_step, const std::vector<AeroCoefPara>& (*compute_para)());
             void post();
             void save(int time_step, int& save_counter);
             void read_settings();
             void profiler_start(std::string s);
             void profiler_stop(std::string s);
+            void compute_aerodyn_coef(const std::vector<AeroCoefPara>& (*compute_para)() = nullptr);
     };
 
     std::string make_serialization_folder(int time_step, std::string save_folder);
