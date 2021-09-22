@@ -335,6 +335,15 @@ namespace Tailor
                 double rhob = std::pow(cb, 2.) / gamma / sb;
                 double pb = rhob * std::pow(cb, 2.) / gamma; 
 
+                if (pb < 0.)
+                {
+                    std::cout << "rhoinf: " << rhoinf << std::endl;
+                    std::cout << "gamma: " << gamma << std::endl;
+                    std::cout << "cinf: " << cinf << std::endl;
+                    std::cout << "sb: " << sb << std::endl;
+                    std::cout << "rhob: " << sb << std::endl;
+                    std::cout << "pb: " << pb << std::endl;
+                }
                 assert(pb >= 0.);
                 assert(rhob > 0.);
 
