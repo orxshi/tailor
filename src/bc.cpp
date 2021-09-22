@@ -941,6 +941,11 @@ namespace Tailor
 
     void BoundaryCondition::set_dirichlet(Mesh& mesh)
     {
+        if (mesh.dirichlet_boundaries_.empty())
+        {
+            return;
+        }
+
         auto prim = read_dirichlet(mesh.tag());
 
         for (MeshCell& mc: mesh.dirichlet_boundaries_)
