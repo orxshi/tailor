@@ -195,33 +195,40 @@ namespace Tailor
     {
         // https://www.researchgate.net/publication/264044118_A_Guide_to_the_Implementation_of_Boundary_Conditions_in_Compact_High-Order_Methods_for_Compressible_Aerodynamics
 
-        double pinf = fs_.pinf_;
-        double rhoinf = fs_.rhoinf_;
-        double aoa_air_x = fs_.aoa_air_x_;
-        double aoa_air_z = fs_.aoa_air_z_;
+        double pinf = fs_.p_;
+        double rhoinf = fs_.rho_;
+        //double aoa_air_x = fs_.aoa_air_x_;
+        //double aoa_air_z = fs_.aoa_air_z_;
         //double aoa_foil_x = fs_.aoa_foil_x_;
         //double aoa_foil_z = fs_.aoa_foil_z_;
-        double machair = fs_.machair_;
+        //double machair = fs_.machair_;
         double gamma = fs_.gamma_;
         //double machfoil = fs_.machfoil_;
+        double u = fs_.u_;
+        double v = fs_.v_;
+        double w = fs_.w_;
 
         double cinf = std::sqrt(gamma * pinf / rhoinf);
 
         Vector3 vinf_air;
         Vector3 compo;
 
-        compo(0) = std::cos(deg_to_rad(fs_.aoa_air_x_));
-        compo(1) = std::cos(deg_to_rad(90. - fs_.aoa_air_x_));
-        compo(2) = std::cos(deg_to_rad(fs_.aoa_air_z_));
+        //compo(0) = std::cos(deg_to_rad(fs_.aoa_air_x_));
+        //compo(1) = std::cos(deg_to_rad(90. - fs_.aoa_air_x_));
+        //compo(2) = std::cos(deg_to_rad(fs_.aoa_air_z_));
 
-        if (fs_.velair_ != 0.)
+        vinf_air(0) = u;
+        vinf_air(1) = v;
+        vinf_air(2) = w;
+
+        //if (fs_.velair_ != 0.)
         {
-            vinf_air = compo * fs_.velair_;
+            //vinf_air = compo * fs_.velair_;
         }
-        else
-        {
-            vinf_air = compo * fs_.machair_ * cinf;
-        }
+        //else
+        //{
+            //vinf_air = compo * fs_.machair_ * cinf;
+        //}
 
         for (MeshCell& mc: mesh.farfield_boundaries_)
         {

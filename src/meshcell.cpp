@@ -110,7 +110,7 @@ namespace Tailor
         double dirx = compo.dirx_;
         double dirz = compo.dirz_;
 
-        double cinf = std::sqrt(fs.gamma_ * fs.pinf_ / fs.rhoinf_);
+        //double cinf = std::sqrt(fs.gamma_ * fs.pinf_ / fs.rhoinf_);
 
         Vector3 vel(0.,0.,0.);
 
@@ -158,11 +158,11 @@ namespace Tailor
         Vector3 vinf = vinf_air - vel;
 
         Vector5 prim;
-        prim_(0) = fs.rhoinf_;
+        prim_(0) = fs.rho_;
         prim_(1) = vinf(0);
         prim_(2) = vinf(1);
         prim_(3) = vinf(2);
-        prim_(4) = fs.pinf_;
+        prim_(4) = fs.p_;
 
         assert(!prim_.isnan());
 

@@ -10,25 +10,33 @@ namespace Tailor
 {
     struct Freestream
     {
-        double aoa_air_x_;
-        double aoa_air_z_;
-        double rhoinf_;
-        double pinf_;
-        double machair_;
-        double velair_;
+        //double aoa_air_x_;
+        //double aoa_air_z_;
+        //double rhoinf_;
+        //double pinf_;
+        //double machair_;
+        //double velair_;
         double gamma_;
+        double rho_;
+        double p_;
+        double u_;
+        double v_;
+        double w_;
 
         void read();
 
         template<class Archive> void serialize(Archive & ar, const unsigned int version)
         {
-            ar & aoa_air_x_;
-            ar & aoa_air_z_;
-            ar & rhoinf_;
-            ar & pinf_;
-            ar & machair_;
-            ar & velair_;
+            //ar & aoa_air_x_;
+            //ar & aoa_air_z_;
+            ar & rho_;
+            ar & p_;
+            //ar & machair_;
+            //ar & velair_;
             ar & gamma_;
+            ar & u_;
+            ar & v_;
+            ar & w_;
         }
     };
 
