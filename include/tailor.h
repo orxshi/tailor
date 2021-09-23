@@ -18,7 +18,7 @@ namespace Tailor
 
             Tailor();
 
-            void make(void (*callback)(Tailor&) = nullptr, const std::vector<AeroCoefPara>& (*compute_para)() = nullptr);
+            void make(void (*callback)(Tailor&) = nullptr, std::vector<AeroCoefPara> (*compute_para)() = nullptr);
             void rotate(const Tag& mesh, double ang, int axis, const Vector3& pivot);
             void move(const Tag& mesh, const Vector3& v);
             const Solver* solver() const;
@@ -44,13 +44,13 @@ namespace Tailor
             std::unique_ptr<Profiler> profiler_;
             boost::mpi::environment env_;
 
-            void pre(int time_step, const std::vector<AeroCoefPara>& (*compute_para)());
+            void pre(int time_step, std::vector<AeroCoefPara> (*compute_para)());
             void post();
             void save(int time_step, int& save_counter);
             void read_settings();
             void profiler_start(std::string s);
             void profiler_stop(std::string s);
-            void compute_aerodyn_coef(const std::vector<AeroCoefPara>& (*compute_para)() = nullptr);
+            void compute_aerodyn_coef(std::vector<AeroCoefPara> (*compute_para)() = nullptr);
     };
 
     std::string make_serialization_folder(int time_step, std::string save_folder);

@@ -182,7 +182,7 @@ namespace Tailor
         }
     }
 
-    void Tailor::compute_aerodyn_coef(const std::vector<AeroCoefPara>& (*compute_para)())
+    void Tailor::compute_aerodyn_coef(std::vector<AeroCoefPara> (*compute_para)())
     {
         if (!compute_aerodyn_coef_) {
             return;
@@ -191,12 +191,10 @@ namespace Tailor
         assert(compute_para != nullptr);
 
         auto aero_para = compute_para();
-        std::cout << "get_coef" << std::endl;
         solver_->partition()->spc().get_coef(aero_para, solver_->nsolve());
-        std::cout << "got_coef" << std::endl;
     }
 
-    void Tailor::pre(int time_step, const std::vector<AeroCoefPara>& (*compute_para)())
+    void Tailor::pre(int time_step, std::vector<AeroCoefPara> (*compute_para)())
     {
         if (assembler_on_)
         {
@@ -327,7 +325,7 @@ namespace Tailor
         compute_aerodyn_coef_ = vm["tailor.compute_aerodyn_coef"].as<bool>();
     }
 
-    void Tailor::make(void (*callback)(Tailor&), const std::vector<AeroCoefPara>& (*compute_para)())
+    void Tailor::make(void (*callback)(Tailor&), std::vector<AeroCoefPara> (*compute_para)())
     {
         int save_counter = 0;
 

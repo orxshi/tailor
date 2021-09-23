@@ -30,10 +30,7 @@ Transfinite Surface{sBase}; Recombine Surface{sBase};
 
 out[] = Extrude {0,0,D} {Surface{sBase}; Layers{mz}; Recombine;};
 
-//Periodic Surface {out[4]} = {out[2]} Translate {1, 0, 0};
-//Periodic Curve {3} = {1} Translate {1, 0, 0};
-Periodic Curve {3} = {-1};
-//Periodic Curve {9} = {7} Translate {1, 0, 0};
+//Periodic Curve {3} = {-1} Translate {1, 0, 0};
 
 Printf("out[0]: %g", out[0]);
 Printf("out[1]: %g", out[1]);
@@ -54,7 +51,11 @@ Physical Surface(2) = outerbc[];
 Physical Surface(3) = emptybc[];
 Physical Volume(4) = {1};
 
-Mesh.HighOrderSavePeriodic = 1;
+Mesh 3;
+//Periodic Surface {out[4]} = {out[2]} Translate {1, 0, 0};
+Periodic Surface {22} = {14} Translate {1, 0, 0};
+//Periodic Surface out[4] {3,17,9,21} = out[2] {1,13,7,12};
+//Periodic Surface 22 {3,17,9,21} = 14 {1,13,7,12};
 
 //============================================================
 
