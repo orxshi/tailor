@@ -16,14 +16,26 @@ namespace Tailor
 
         double dpp() const
         {
+            double d = 0.5 * rho_ref * u_ref * u_ref;
+            assert(d != 0.);
+            assert(!isnan(d));
+
             return 0.5 * rho_ref * u_ref * u_ref;
         }
         double dpf() const
         {
+            double d = dpp() * area_ref;
+            assert(d != 0.);
+            assert(!isnan(d));
+
             return dpp() * area_ref;
         }
         double dpm() const
         {
+            double d = dpf() * moment_length;
+            assert(d != 0.);
+            assert(!isnan(d));
+
             return dpf() * moment_length;
         }
     };
@@ -54,6 +66,9 @@ namespace Tailor
 
                 p.push_back(std::make_tuple(cnt, (pres - p_ref) / dpp));
                 Vector3 f = normal * pres * abs_area;
+                assert(!isnan(f(0)));
+                assert(!isnan(f(1)));
+                assert(!isnan(f(2)));
                 F = F + f;
                 M = M + cross(moment_center - moment_length, f);
             }
