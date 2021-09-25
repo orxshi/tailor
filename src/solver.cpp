@@ -1277,6 +1277,10 @@ namespace Tailor
 
     void Solver::print_settings() const
     {
+        if (comm_->rank() != 0) {
+            return;
+        }
+
         std::ofstream out;
         out.open("solver_settings.log");
 
@@ -1316,7 +1320,6 @@ namespace Tailor
         out << "dual_ts = " << dual_ts_ << std::endl;
 
         out.close();
-        assert(false);
     }
 
     void Solver::update_partitioned_mesh_exchanger()
