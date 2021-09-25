@@ -223,7 +223,6 @@ namespace Tailor
             {
                 if (mesh != sp_.front().mesh().end())
                 {
-                    assert(false);
                     std::string fn = "pres-coef-";
                     fn.append(std::to_string(comm_->rank()));
                     fn.append("-");
