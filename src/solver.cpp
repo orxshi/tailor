@@ -1871,21 +1871,21 @@ namespace Tailor
 
     void Solver::update_matrices(MeshFace *this_face, MeshFace *common_face, MeshCell& left_cell, MeshCell& right_cell, double facearea, const Vector3& face_velocity, double gamma, const Matrix5& rotation_matrix, const Matrix5& inv_rotation_matrix, const Matrix5& Aroe)
     {
-        auto [left_state, right_state] = left_and_right_states(left_cell.cons_sp1(), right_cell.cons_sp1(), gamma, unit_matrix<NVAR, NVAR, double>(), face_velocity);
-        //auto [left_state, right_state] = left_and_right_states(left_cell.cons_sp1(), right_cell.cons_sp1(), gamma, rotation_matrix, face_velocity);
+        //auto [left_state, right_state] = left_and_right_states(left_cell.cons_sp1(), right_cell.cons_sp1(), gamma, unit_matrix<NVAR, NVAR, double>(), face_velocity);
+        auto [left_state, right_state] = left_and_right_states(left_cell.cons_sp1(), right_cell.cons_sp1(), gamma, rotation_matrix, face_velocity);
 
         Matrix5 JL = Jacobian(left_state , gamma);
         Matrix5 JR = Jacobian(right_state, gamma);
 
         //this_face->M_ = inv_rotation_matrix * JL * 0.5 * facearea;
-        //this_face->M_ = inv_rotation_matrix * (JL + Aroe) * 0.5 * facearea;
+        this_face->M_ = inv_rotation_matrix * (JL + Aroe) * 0.5 * facearea;
         //this_face->M_ = (JL + Aroe) * rotation_matrix * 0.5 * facearea;
-        this_face->M_ = (JL + Aroe) * 0.5 * facearea;
+        //this_face->M_ = (JL + Aroe) * 0.5 * facearea;
         if (common_face != nullptr)
         {
-            //common_face->M_ = inv_rotation_matrix * (JR - Aroe) * 0.5 * facearea * -1;
+            common_face->M_ = inv_rotation_matrix * (JR - Aroe) * 0.5 * facearea * -1;
             //common_face->M_ = (JR - Aroe) * rotation_matrix * 0.5 * facearea * -1;
-            common_face->M_ = (JR - Aroe) * 0.5 * facearea * -1;
+            //common_face->M_ = (JR - Aroe) * 0.5 * facearea * -1;
             //common_face->M_ = inv_rotation_matrix * JR * 0.5 * facearea * -1;
         }
 
