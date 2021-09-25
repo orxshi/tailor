@@ -34,7 +34,9 @@ namespace Tailor
             bool load_;
             bool save_;
             bool use_shared_partition_;
-            bool compute_aerodyn_coef_;
+            bool compute_pres_coef_;
+            bool compute_force_coef_;
+            bool compute_moment_coef_;
             std::vector<std::string> mesh_folder_;
             std::string load_folder_;
             std::string save_folder_;

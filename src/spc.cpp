@@ -117,7 +117,7 @@ namespace Tailor
         //}
     }
 
-    void get_coef_(const Mesh& mesh, AeroCoef& local_coef, const AeroCoefPara& aero_para, const SpatialPartitionContainer* spc)
+    void get_coef_(const Mesh& mesh, AeroCoef& local_coef, const AeroCoefPara& aero_para, const SpatialPartitionContainer* spc, bool compute_pres_coef, bool compute_force_coef, bool compute_moment_coef)
     {
         const auto& wall = mesh.wall_boundaries();
 
@@ -141,11 +141,13 @@ namespace Tailor
             P.push_back(std::make_tuple(cnt, mc->face()[0].face().normal(), std::abs(mc->face()[0].face().signed_area()), mc->prim(4)));
         }
 
-        local_coef.compute_coef(P, aero_para);
+        local_coef.compute_coef(P, aero_para, compute_pres_coef, compute_force_coef, compute_moment_coef);
     }
 
-    void SpatialPartitionContainer::get_coef(const std::vector<AeroCoefPara>& aero_para, int iter) const
+    void SpatialPartitionContainer::get_coef(const std::vector<AeroCoefPara>& aero_para, int iter, bool compute_pres_coef, bool compute_force_coef, bool compute_moment_coef) const
     {
+        assert(compute_pres_coef || compute_force_coef || compute_moment_coef); 
+
         int mss = mesh_system_size();
         for (int i = 0; i < mss; ++i)
         {
@@ -158,7 +160,7 @@ namespace Tailor
             auto mesh = std::find_if(sp_.front().mesh().begin(), sp_.front().mesh().end(), [&](const auto& m){return m.tag()() == i;});
             if (mesh != sp_.front().mesh().end())
             {
-                get_coef_(*mesh, local_coef, aero_para[i], this);
+                get_coef_(*mesh, local_coef, aero_para[i], this, compute_pres_coef, compute_force_coef, compute_moment_coef);
             }
 
             local[0] = local_coef.F(0);
@@ -171,62 +173,84 @@ namespace Tailor
 
             boost::mpi::all_reduce(*comm_, local.data(), 7, global.data(), std::plus<double>());
 
-            if (comm_->rank() == 0)
+            if (compute_force_coef)
             {
-                std::string fn = "coef-";
-                fn.append(std::to_string(i));
-                fn.append(".dat");
-                std::ofstream out;
-                out.open(fn, std::fstream::app);
+                if (comm_->rank() == 0)
+                {
+                    std::string fn = "force-coef-";
+                    fn.append(std::to_string(i));
+                    fn.append(".dat");
+                    std::ofstream out;
+                    out.open(fn, std::fstream::app);
 
-                out << iter; // mesh tag
-                out << " ";
-                out << global[0]; // cN
-                out << " "; 
-                out << global[1]; // cA
-                out << " "; 
-                out << global[2]; // cY
-                out << " "; 
-                out << global[3]; // cT
-                out << " "; 
-                out << global[4]; // cn
-                out << " "; 
-                out << global[5]; // cm
-                out << " "; 
-                out << global[6]; // cl
-                out << std::endl; 
-                out.close();
+                    out << iter; // mesh tag
+                    out << " ";
+                    out << global[0]; // cN
+                    out << " "; 
+                    out << global[1]; // cA
+                    out << " "; 
+                    out << global[2]; // cY
+                    out << " "; 
+                    out << global[3]; // cT
+                    out << std::endl; 
+                    out.close();
+                }
             }
 
-            if (mesh != sp_.front().mesh().end())
+            if (compute_moment_coef)
             {
-                assert(false);
-                std::string fn = "pres_coef-";
-                fn.append(std::to_string(comm_->rank()));
-                fn.append("-");
-                fn.append(std::to_string(i));
-                fn.append("-");
-                fn.append(std::to_string(iter));
-                fn.append(".dat");
-
-                std::ofstream out;
-                out.open(fn);
-
-                for (const auto& P: local_coef.p)
+                if (comm_->rank() == 0)
                 {
-                    auto [cnt, p] = P;
+                    std::string fn = "moment-coef-";
+                    fn.append(std::to_string(i));
+                    fn.append(".dat");
+                    std::ofstream out;
+                    out.open(fn, std::fstream::app);
 
-                    out << cnt(0);
+                    out << iter; // mesh tag
+                    out << " ";
+                    out << global[4]; // cn
                     out << " "; 
-                    out << cnt(1);
+                    out << global[5]; // cm
                     out << " "; 
-                    out << cnt(2);
-                    out << " "; 
-                    out << p;
-                    out << std::endl;
+                    out << global[6]; // cl
+                    out << std::endl; 
+                    out.close();
                 }
+            }
 
-                out.close();
+            if (compute_pres_coef)
+            {
+                if (mesh != sp_.front().mesh().end())
+                {
+                    assert(false);
+                    std::string fn = "pres-coef-";
+                    fn.append(std::to_string(comm_->rank()));
+                    fn.append("-");
+                    fn.append(std::to_string(i));
+                    fn.append("-");
+                    fn.append(std::to_string(iter));
+                    fn.append(".dat");
+
+                    std::ofstream out;
+                    out.open(fn);
+
+                    for (const auto& P: local_coef.p)
+                    {
+                        auto [cnt, p] = P;
+
+                        out << cnt(0);
+                        out << " "; 
+                        out << cnt(1);
+                        out << " "; 
+                        out << cnt(2);
+                        out << " "; 
+                        out << p;
+                        out << std::endl;
+                    }
+
+                    out.close();
+                }
             }
         }
     }

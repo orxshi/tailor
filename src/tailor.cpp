@@ -184,14 +184,14 @@ namespace Tailor
 
     void Tailor::compute_aerodyn_coef(std::vector<AeroCoefPara> (*compute_para)())
     {
-        if (!compute_aerodyn_coef_) {
+        if (!compute_pres_coef_ && !compute_force_coef_ && !compute_moment_coef_) {
             return;
         }
 
         assert(compute_para != nullptr);
 
         auto aero_para = compute_para();
-        solver_->partition()->spc().get_coef(aero_para, solver_->nsolve());
+        solver_->partition()->spc().get_coef(aero_para, solver_->nsolve(), compute_pres_coef_, compute_force_coef_, compute_moment_coef_);
     }
 
     void Tailor::pre(int time_step, std::vector<AeroCoefPara> (*compute_para)())
@@ -301,7 +301,10 @@ namespace Tailor
             ("tailor.mesh_folder", po::value<std::vector<std::string>>()->multitoken(), "")
             ("tailor.profiler", po::value<bool>()->default_value(false), "")
             ("tailor.solver", po::value<bool>()->default_value(true), "")
-            ("tailor.compute_aerodyn_coef", po::value<bool>()->default_value(true), "")
+            ("tailor.compute-pres-coef", po::value<bool>()->default_value(false), "")
+            ("tailor.compute-force-coef", po::value<bool>()->default_value(false), "")
+            ("tailor.compute-moment-coef", po::value<bool>()->default_value(false), "")
+            ("tailor.compute-all-aero-coef", po::value<bool>()->default_value(false), "")
             ;
 
         all_options.add(desc);
@@ -322,7 +325,17 @@ namespace Tailor
         save_folder_ = vm["tailor.save_folder"].as<std::string>();
         profiler_on_ = vm["tailor.profiler"].as<bool>();
         solver_on_ = vm["tailor.solver"].as<bool>();
-        compute_aerodyn_coef_ = vm["tailor.compute_aerodyn_coef"].as<bool>();
+        compute_pres_coef_ = vm["tailor.compute-pres-coef"].as<bool>();
+        compute_force_coef_ = vm["tailor.compute-force-coef"].as<bool>();
+        compute_moment_coef_ = vm["tailor.compute-moment-coef"].as<bool>();
+        double compute_all_aero_coef = vm["tailor.compute-all-aero-coef"].as<bool>();
+
+        if (compute_all_aero_coef)
+        {
+            compute_pres_coef_ = true;
+            compute_force_coef_ = true;
+            compute_moment_coef_ = true;
+        }
     }
 
     void Tailor::make(void (*callback)(Tailor&), std::vector<AeroCoefPara> (*compute_para)())

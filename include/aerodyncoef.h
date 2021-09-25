@@ -38,6 +38,16 @@ namespace Tailor
 
             return dpf() * moment_length;
         }
+
+        AeroCoefPara():
+            rho_ref(-1.),
+            p_ref(-1.),
+            u_ref(-1.),
+            area_ref(-1.),
+            moment_length(-1.),
+            moment_center(-1., -1., -1.)
+        {
+        }
     };
 
     struct AeroCoef
@@ -47,36 +57,86 @@ namespace Tailor
         Vector3 M;
         double thrust;
 
-        void compute_coef(const std::vector<std::tuple<Vector3, Vector3, double, double>>& P, const AeroCoefPara& para)
+        void check(const AeroCoefPara& para, bool compute_pres_coef, bool compute_force_coef, bool compute_moment_coef) const
+        {
+            if (compute_pres_coef)
+            {
+                assert(para.rho_ref != -1.);
+                assert(para.p_ref != -1.);
+                assert(para.u_ref != -1.);
+            }
+
+            if (compute_force_coef)
+            {
+                assert(para.area_ref != -1.);
+            }
+
+            if (compute_moment_coef)
+            {
+                assert(para.moment_length != -1.);
+
+                if (para.moment_center(0) == -1.)
+                {
+                    if (para.moment_center(1) == -1.)
+                    {
+                        if (para.moment_center(2) == -1.)
+                        {
+                            assert(false);
+                        }
+                    }
+
+                }
+            }
+        }
+
+        void compute_coef(const std::vector<std::tuple<Vector3, Vector3, double, double>>& P, const AeroCoefPara& para, bool compute_pres_coef, bool compute_force_coef, bool compute_moment_coef)
         {
             F = Vector3(0., 0., 0.);
             M = Vector3(0., 0., 0.);
             p.reserve(P.size());
 
+            check(para, compute_pres_coef, compute_force_coef, compute_moment_coef);
+
             double p_ref = para.p_ref;
-            double dpp = para.dpp();
-            double dpf = para.dpf();
-            double dpm = para.dpm();
             double moment_length = para.moment_length; 
             Vector3 moment_center = para.moment_center;
 
-            for (int i=0; i<P.size(); ++i)
+            if (compute_pres_coef)
             {
-                auto [cnt, normal, abs_area, pres] = P[i];
+                double dpp = para.dpp();
 
-                p.push_back(std::make_tuple(cnt, (pres - p_ref) / dpp));
-                Vector3 f = normal * pres * abs_area;
-                assert(!isnan(f(0)));
-                assert(!isnan(f(1)));
-                assert(!isnan(f(2)));
-                F = F + f;
-                M = M + cross(moment_center - moment_length, f);
+                for (int i=0; i<P.size(); ++i)
+                {
+                    auto [cnt, normal, abs_area, pres] = P[i];
+
+                    p.push_back(std::make_tuple(cnt, (pres - p_ref) / dpp));
+                }
             }
 
-            F = F / dpf;
-            M = M / dpm;
+            if (compute_force_coef)
+            {
+                for (int i=0; i<P.size(); ++i)
+                {
+                    auto [cnt, normal, abs_area, pres] = P[i];
 
-            thrust = std::sqrt(F(0) * F(0) + F(1) * F(1) + F(2) * F(2)) / dpf;
+                    Vector3 f = normal * pres * abs_area;
+                    F = F + f;
+
+                    if (compute_moment_coef) 
+                    {
+                        M = M + cross(moment_center - moment_length, f);
+                    }
+                }
+
+                double dpf = para.dpf();
+                F = F / dpf;
+                thrust = std::sqrt(F(0) * F(0) + F(1) * F(1) + F(2) * F(2)) / dpf;
+
+                if (compute_moment_coef) 
+                {
+                    M = M / para.dpm();
+                }
+            }
         }
     };
 }
