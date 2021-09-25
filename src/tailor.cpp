@@ -189,6 +189,7 @@ namespace Tailor
         }
 
         assert(compute_para != nullptr);
+        assert(false);
 
         auto aero_para = compute_para();
         solver_->partition()->spc().get_coef(aero_para, solver_->nsolve(), compute_pres_coef_, compute_force_coef_, compute_moment_coef_);
