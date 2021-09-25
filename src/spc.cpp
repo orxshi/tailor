@@ -146,6 +146,7 @@ namespace Tailor
 
     void SpatialPartitionContainer::get_coef(const std::vector<AeroCoefPara>& aero_para, int iter) const
     {
+                assert(false);
         int mss = mesh_system_size();
         for (int i = 0; i < mss; ++i)
         {
@@ -200,6 +201,7 @@ namespace Tailor
 
             if (mesh != sp_.front().mesh().end())
             {
+                assert(false);
                 std::string fn = "pres_coef-";
                 fn.append(std::to_string(comm_->rank()));
                 fn.append("-");
