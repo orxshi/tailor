@@ -1316,6 +1316,7 @@ namespace Tailor
         out << "dual_ts = " << dual_ts_ << std::endl;
 
         out.close();
+        assert(false);
     }
 
     void Solver::update_partitioned_mesh_exchanger()
