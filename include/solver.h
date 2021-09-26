@@ -127,6 +127,7 @@ namespace Tailor
                 ar & riemann_solver_type_;
                 ar & increase_cfl_;
                 ar & cfl_multiplier_;
+                ar & cfl_ratio_;
                 ar & global_nmesh_;
             }
 
@@ -135,6 +136,7 @@ namespace Tailor
             int global_nmesh_;
             std::array<Vector5, 4> runge_kutta_coef_;
             double cfl_multiplier_;
+            double cfl_ratio_;
             bool increase_cfl_;
             bool dual_ts_;
             RiemannSolverType riemann_solver_type_;

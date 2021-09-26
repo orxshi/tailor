@@ -521,9 +521,10 @@ namespace Tailor
 
         po::options_description desc{"Solver options"};
         desc.add_options()
-            ("solver.increase_cfl", po::value<bool>()->default_value(true), "")
+            ("solver.increase_cfl", po::value<bool>()->default_value(false), "")
             ("solver.repart-ratio", po::value<int>()->default_value(100), "")
-            ("solver.cfl_multiplier", po::value<double>()->default_value(100.), "")
+            ("solver.cfl_multiplier", po::value<double>()->default_value(10.), "")
+            ("solver.cfl_ratio", po::value<double>()->default_value(10.), "")
             ("solver.rebalance-thres", po::value<double>()->default_value(40.), "")
             ("solver.show_inner_res", po::value<bool>()->default_value(true), "Show inner loop residual")
             ("solver.show_inner_norm", po::value<bool>()->default_value(true), "Show inner loop norm")
@@ -578,6 +579,7 @@ namespace Tailor
         dt_ = vm["solver.dt"].as<double>();
         nsweep_ = vm["solver.nsweep"].as<int>();
         cfl_multiplier_ = vm["solver.cfl_multiplier"].as<double>();
+        cfl_ratio_ = vm["solver.cfl_ratio"].as<double>();
         omega_ = vm["solver.omega"].as<double>();
         tol_ = vm["solver.tol"].as<double>();
         sorder_ = vm["solver.sorder"].as<int>();
@@ -607,6 +609,7 @@ namespace Tailor
         }
         else if (vm["solver.riemann-solver"].as<int>() == 1) {
             riemann_solver_type_ = RiemannSolverType::hllc;
+            assert(temporal_discretization_ != "backward_euler");
         }
         else {
             assert(false);
@@ -1243,6 +1246,7 @@ namespace Tailor
         out.open("solver_settings.log");
 
         out << "cfl_multiplier = " << cfl_multiplier_ << std::endl;
+        out << "cfl_ratio = " << cfl_ratio_ << std::endl;
         out << "increase_cfl = " << increase_cfl_ << std::endl;
         out << "print_residual = " << print_residual_ << std::endl;
         out << "show_inner_res = " << show_inner_res_ << std::endl;
@@ -1517,13 +1521,13 @@ namespace Tailor
                 if (comm_->rank() == 0) {
                     std::cout << global_residual(i) << " " << last_global_residual_(i) << " " << cfl_multiplier_ << " " << last_global_residual_(i) / global_residual(i) << std::endl;
                 }
-                if (last_global_residual_(i) / global_residual(i) < cfl_multiplier_)
+                if (last_global_residual_(i) / global_residual(i) < cfl_ratio_)
                 {
                     return;
                 }
             }
 
-            cfl_ *= 10.;
+            cfl_ *= cfl_multiplier_;
             last_global_residual_ = global_residual;
         }
     }
