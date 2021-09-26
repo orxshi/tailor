@@ -1,0 +1,144 @@
+\documentclass{article}
+
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+
+\begin{document}
+
+\newcommand{\NL}{\mathbf{N_L}}
+\newcommand{\NR}{\mathbf{N_R}}
+\newcommand{\ML}{\mathbf{M_L}}
+\newcommand{\MR}{\mathbf{M_R}}
+\newcommand{\AL}{\mathbf{A_L}}
+\newcommand{\AR}{\mathbf{A_R}}
+\newcommand{\Aroe}{\lvert\mathbf{A}\rvert}
+\newcommand{\rotmat}{\mathbf{T}}
+\newcommand{\flux}{\mathbf{F}}
+\newcommand{\cons}{\mathbf{U}}
+\newcommand{\invrotmat}{\mathbf{T}^{-1}}
+
+\begin{equation}
+    \mathcal{H} \cdot \mathbf{n}
+    =
+    \invrotmat\flux(\rotmat\cons)
+\end{equation}
+
+\begin{equation}
+    \invrotmat\flux(\rotmat\cons^{n+1})
+    =
+    \invrotmat\flux(\rotmat\cons^{n})
+    +
+    \invrotmat\frac{\partial\flux(\rotmat\cons)}{\partial(\rotmat\cons)}\Delta(\rotmat\cons)
+\end{equation}
+
+\begin{equation}
+    \invrotmat\frac{\partial\flux(\rotmat\cons)}{\partial(\rotmat\cons)}\Delta(\rotmat\cons)
+    =
+    \invrotmat
+    \left[
+        \frac{\partial\flux(\rotmat\cons_L)}{\partial(\rotmat\cons_L)}\Delta(\rotmat\cons_L)
+        +
+        \frac{\partial\flux(\rotmat\cons_R)}{\partial(\rotmat\cons_R)}\Delta(\rotmat\cons_R)
+    \right]
+\end{equation}
+
+\begin{equation}
+    \invrotmat\frac{\partial\flux(\rotmat\cons)}{\partial(\rotmat\cons)}\Delta(\rotmat\cons)
+    =
+    \invrotmat
+    \left[
+        \frac{\AL + \Aroe}{2}\Delta(\rotmat\cons_L)
+        +
+        \frac{\AR - \Aroe}{2}\Delta(\rotmat\cons_R)
+    \right]
+\end{equation}
+
+\begin{equation}
+    \invrotmat\frac{\partial\flux(\rotmat\cons)}{\partial(\rotmat\cons)}\Delta(\rotmat\cons)
+    =
+    \invrotmat
+    \left[
+        \frac{\AL + \Aroe}{2}\rotmat\Delta\cons_L
+        +
+        \frac{\AR - \Aroe}{2}\rotmat\Delta\cons_R
+    \right]
+\end{equation}
+
+\begin{equation}
+    \invrotmat\frac{\partial\flux(\rotmat\cons)}{\partial(\rotmat\cons)}\Delta(\rotmat\cons)
+    =
+    \NL\Delta\cons_L
+    -
+    \NR\Delta\cons_R
+\end{equation}
+
+where, 
+
+\begin{equation}
+    \NL
+    =
+    (\invrotmat\frac{\AL + \Aroe}{2}\rotmat)\Delta\cons_L
+\end{equation}
+
+\begin{equation}
+    \NR
+    =
+    -(\invrotmat\frac{\AR - \Aroe}{2}\rotmat)\Delta\cons_R
+\end{equation}
+
+\begin{equation}
+    V\frac{\cons^{n+1} - \cons^{n}}{\Delta t}
+    =
+    -\sum\invrotmat\flux(\rotmat\cons)S
+\end{equation}
+
+\begin{equation}
+    V\frac{\Delta\cons}{\Delta t}
+    =
+    -\sum\invrotmat\flux(\rotmat\cons)S
+\end{equation}
+
+A cell can be either on the left or on the right of a face. If a cell is on the left of a face,
+
+\begin{equation}
+    V\frac{\Delta\cons_L}{\Delta t}
+    =
+    -\NL\Delta\cons_LS
+    +
+    \NR\Delta\cons_RS
+\end{equation}
+
+Define $\ML_K = \NL_K S$.
+
+\begin{equation}
+    \left(
+        \frac{V}{\Delta t} + \ML
+    \right)
+    \Delta\cons_L
+    =
+    \MR\Delta\cons_R
+\end{equation}
+
+If a cell is on the right of a face, flux through a face is opposite to that for the left cell, that is, $-\invrotmat\flux(\rotmat\cons) \rightarrow \invrotmat\flux(\rotmat\cons)$.
+
+\begin{equation}
+    V\frac{\Delta\cons_R}{\Delta t}
+    =
+    \NL\Delta\cons_LS
+    -
+    \NR\Delta\cons_RS
+\end{equation}
+
+\begin{equation}
+    \left(
+        \frac{V}{\Delta t} + \MR
+    \right)
+    \Delta\cons_R
+    =
+    \ML\Delta\cons_L
+\end{equation}
+
+
+
+
+
+\end{document}
