@@ -207,9 +207,6 @@ namespace Tailor
             void evolve_old_solution_in_time(Mesh& mesh, int runge_kutta_stage);
             void compute_sum_of_fluxes(Mesh &mesh);
             void compute_sum_of_fluxes(Mesh& mesh, int ntimestep);
-            //void update_matrices(Mesh& mesh, const Vector5& flux, const Matrix<NVAR, NVAR>& Aroe, MeshFace& mf, MeshCell& LC, MeshCell& RC, const Vector3& n, double vgn, double facearea);
-            //void rhhl_update_matrices(const Matrix<NVAR, NVAR>& Aroe, MeshFace* myface, MeshFace* commonface, MeshCell& LC, MeshCell& RC, const Vector3& n, double vgn, double facearea, double SLm, double SRp, double vfn);
-            //void hhl_update_matrices(MeshFace* myface, MeshFace* commonface, MeshCell& LC, MeshCell& RC, double facearea, double SLm, double SRp, const Matrix5& T, double vfn);
             bool sor(Mesh& mesh, int ntimestep);
             void temporal_discretization(Mesh& mesh);
             Vector5 compute_residual(Mesh& mesh);
@@ -217,7 +214,7 @@ namespace Tailor
             Matrix5 slipwall_M(const Vector3& n);
             void gmres(Mesh& mesh);
             void oga_interpolate(Mesh& mesh);
-            void update_matrices(MeshFace *this_face, MeshFace *common_face, MeshCell& left_cell, MeshCell& right_cell, double facearea, const Vector3& face_velocity, double gamma, const Matrix5& rotation_matrix, const Matrix5& inv_rotation_matrix, const Matrix5& Aroe);
+            void update_matrices(MeshFace *this_face, MeshFace *common_face, MeshCell& left_cell, MeshCell& right_cell, double facearea, const Vector3& face_velocity, double gamma, const Matrix5& rotation_matrix, const Matrix5& inv_rotation_matrix, const Matrix5& Aroe, const State& left_state, const State& right_state);
             void apply_limiter(Mesh &mesh, MeshCell &mc, const MeshFace &mf);
             void print_residual(const Vector5& residual);
             void print_mesh_vtk(std::string);
@@ -235,7 +232,7 @@ namespace Tailor
     };
 
     std::tuple<Matrix5, Matrix5> get_rotation_matrix(const Vector3& normal);
-    std::tuple<Vector5, double, Matrix5> compute_flux(RiemannSolverType riemann_solver_type, double face_area, const Matrix5& inverse_rotation_matrix, const State& rotated_left_state, const State& rotated_right_state, double gamma);
+    std::tuple<Vector5, double, Matrix5> compute_flux(RiemannSolverType riemann_solver_type, double face_area, const Matrix5& inverse_rotation_matrix, const State& rotated_left_state, const State& rotated_right_state, const State& left_state, const State& right_state, double gamma);
 }
 
 #endif

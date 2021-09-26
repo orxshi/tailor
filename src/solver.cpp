@@ -635,13 +635,13 @@ namespace Tailor
         return std::make_tuple(left, right);
     }
 
-    std::tuple<Vector5, double, Matrix5> compute_flux(RiemannSolverType riemann_solver_type, double face_area, const Matrix5& inverse_rotation_matrix, const State& rotated_left_state, const State& rotated_right_state, double gamma)
+    std::tuple<Vector5, double, Matrix5> compute_flux(RiemannSolverType riemann_solver_type, double face_area, const Matrix5& inverse_rotation_matrix, const State& rotated_left_state, const State& rotated_right_state, const State& left_state, const State& right_state, double gamma)
     {
         Vector5 flux;
         double max_eigen;
         Matrix5 Aroe;
 
-        RiemannSolver riemann_solver(riemann_solver_type, rotated_left_state, rotated_right_state, face_area, gamma, max_eigen, flux, Aroe, SpeedEstimateHLLC::roe);
+        RiemannSolver riemann_solver(riemann_solver_type, rotated_left_state, rotated_right_state, face_area, gamma, max_eigen, flux, Aroe, left_state, right_state, SpeedEstimateHLLC::roe);
 
         flux = inverse_rotation_matrix * flux;
 
@@ -717,7 +717,8 @@ namespace Tailor
 
                 auto [rotation_matrix, inv_rotation_matrix] = get_rotation_matrix(normal);
                 auto [rotated_left_state, rotated_right_state] = left_and_right_states(left_cell->cons_sp1_, right_cell->cons_sp1_, gamma, rotation_matrix, face_velocity);
-                auto [flux, max_eigen, Aroe] = compute_flux(riemann_solver_type_, face_area, inv_rotation_matrix, rotated_left_state, rotated_right_state, gamma);
+                auto [left_state, right_state] = left_and_right_states(left_cell->cons_sp1(), right_cell->cons_sp1(), gamma, unit_matrix<NVAR, NVAR, double>(), face_velocity);
+                auto [flux, max_eigen, Aroe] = compute_flux(riemann_solver_type_, face_area, inv_rotation_matrix, rotated_left_state, rotated_right_state, left_state, right_state, gamma);
 
                 if (mf.btype() != BouType::empty)
                 {
@@ -734,7 +735,7 @@ namespace Tailor
 
                 if (temporal_discretization_ == "backward_euler")
                 {
-                    update_matrices(&mf, commonface, *left_cell, *right_cell, face_area, face_velocity, gamma, rotation_matrix, inv_rotation_matrix, Aroe);
+                    update_matrices(&mf, commonface, *left_cell, *right_cell, face_area, face_velocity, gamma, rotation_matrix, inv_rotation_matrix, Aroe, left_state, right_state);
                 }
 
                 if (commonface != nullptr)
@@ -896,49 +897,6 @@ namespace Tailor
             }
         }
     }
-
-    //void Solver::update_cons_implicitly(Mesh &mesh, int ntimestep)
-    //{
-    //    //tempo_discre(mesh);
-    //    gmres(mesh);
-    //    //sor(mesh, ntimestep);
-    //    /*bool converged = false;
-    //    double orig_cfl = cfl_;
-    //    while(!converged)
-    //    {
-    //        //std::string fn = "inner-norm-";
-    //        //fn.append(std::to_string(comm_->rank()));
-    //        //fn.append(".dat");
-    //        //std::ofstream out;
-    //        //out.open(fn, std::ios_base::app);
-    //        //out << "cfl = " << cfl_ << std::endl;
-    //        //out.close();
-    //        tempo_discre(mesh);
-    //        converged = sor(mesh, ntimestep);
-    //        if (!half_cfl_) {
-    //            break;
-    //        }
-    //        if (!converged)
-    //        {
-    //            // actually whole calc_R isn't needed. just need to revert R and D after calc_R, before update_matrices state.
-    //            //calc_R(mesh);
-    //            mesh.equate_RD_to_RDmid();
-    //            cfl_ = cfl_ / 2;
-    //        }
-    //    }
-    //    cfl_ = orig_cfl;*/
-
-    //    for (MeshCell &mc : mesh.cell_)
-    //    {
-    //        if (!calc_cell(mc))
-    //        {
-    //            continue;
-    //        }
-
-    //        update_solution(mc, gamma);
-    //    }
-    //}
-
 
     void Solver::init_partitioned_mesh_exchanger()
     {
@@ -1869,23 +1827,23 @@ namespace Tailor
         }
     }*/
 
-    void Solver::update_matrices(MeshFace *this_face, MeshFace *common_face, MeshCell& left_cell, MeshCell& right_cell, double facearea, const Vector3& face_velocity, double gamma, const Matrix5& rotation_matrix, const Matrix5& inv_rotation_matrix, const Matrix5& Aroe)
+    void Solver::update_matrices(MeshFace *this_face, MeshFace *common_face, MeshCell& left_cell, MeshCell& right_cell, double facearea, const Vector3& face_velocity, double gamma, const Matrix5& rotation_matrix, const Matrix5& inv_rotation_matrix, const Matrix5& Aroe, const State& left_state, const State& right_state)
     {
         //auto [left_state, right_state] = left_and_right_states(left_cell.cons_sp1(), right_cell.cons_sp1(), gamma, unit_matrix<NVAR, NVAR, double>(), face_velocity);
-        auto [left_state, right_state] = left_and_right_states(left_cell.cons_sp1(), right_cell.cons_sp1(), gamma, rotation_matrix, face_velocity);
+        //auto [left_state, right_state] = left_and_right_states(left_cell.cons_sp1(), right_cell.cons_sp1(), gamma, rotation_matrix, face_velocity);
 
         Matrix5 JL = Jacobian(left_state , gamma);
         Matrix5 JR = Jacobian(right_state, gamma);
 
         //this_face->M_ = inv_rotation_matrix * JL * 0.5 * facearea;
-        this_face->M_ = inv_rotation_matrix * (JL + Aroe) * 0.5 * facearea;
+        //this_face->M_ = inv_rotation_matrix * (JL + Aroe) * 0.5 * facearea;
         //this_face->M_ = (JL + Aroe) * rotation_matrix * 0.5 * facearea;
-        //this_face->M_ = (JL + Aroe) * 0.5 * facearea;
+        this_face->M_ = (JL + Aroe) * 0.5 * facearea;
         if (common_face != nullptr)
         {
-            common_face->M_ = inv_rotation_matrix * (JR - Aroe) * 0.5 * facearea * -1;
+            //common_face->M_ = inv_rotation_matrix * (JR - Aroe) * 0.5 * facearea * -1;
             //common_face->M_ = (JR - Aroe) * rotation_matrix * 0.5 * facearea * -1;
-            //common_face->M_ = (JR - Aroe) * 0.5 * facearea * -1;
+            common_face->M_ = (JR - Aroe) * 0.5 * facearea * -1;
             //common_face->M_ = inv_rotation_matrix * JR * 0.5 * facearea * -1;
         }
 

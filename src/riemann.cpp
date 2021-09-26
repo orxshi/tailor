@@ -2,12 +2,13 @@
 
 namespace Tailor
 {
-    RiemannSolver::RiemannSolver(RiemannSolverType riemann_solver_type, const State& left_state, const State& right_state, double face_area, double gamma, double& max_eigen, Vector5& flux, Matrix5& Aroe, SpeedEstimateHLLC sehllc): speed_estimate_hllc_(sehllc)
+    RiemannSolver::RiemannSolver(RiemannSolverType riemann_solver_type, const State& left_state, const State& right_state, double face_area, double gamma, double& max_eigen, Vector5& flux, Matrix5& Aroe, const State& left_state_unrotated, const State& right_state_unrotated, SpeedEstimateHLLC sehllc): speed_estimate_hllc_(sehllc)
     {
         if (riemann_solver_type == RiemannSolverType::roe)
         {
             //Matrix5 Aroe;
-            roe(left_state, right_state, flux, Aroe, max_eigen, face_area, gamma);
+            roe(left_state, right_state, flux, max_eigen, face_area, gamma);
+            Aroe = roe_jacobian(left_state_unrotated, right_state_unrotated, gamma);
 
             assert(!flux.isnan());
             assert(max_eigen > 0.);
@@ -826,32 +827,26 @@ namespace Tailor
         return ((R * ws) * left_eigenv(gamma));
     }
 
-    void RiemannSolver::roe(const State& left, const State& right, Vector5& numflux, Matrix5& Aroe, double& max_eigen, double signed_area, double gamma)
+    Matrix5 RiemannSolver::roe_jacobian(const State& left, const State& right, double gamma)
+    {
+        // This function changes roe variables.
+
+        calc_roe_ave_vars(left, right, gamma);
+        auto R = right_eigenv();
+        auto ws = abs_eigen(left, right);
+
+        return Jacobian(ws, R, gamma);
+    }
+
+    void RiemannSolver::roe(const State& left, const State& right, Vector5& numflux, double& max_eigen, double signed_area, double gamma)
     {
         calc_roe_ave_vars(left, right, gamma);
 
         Matrix5 R = right_eigenv();
         Matrix5 ws = abs_eigen(left, right);
         numflux = numerical_flux(left, right, ws, R, signed_area, gamma);
-        Aroe = Jacobian(ws, R, gamma);
         max_eigen = max(ws);
         assert(max_eigen > 0.);
-
-        //calc_roe_ave_vars(leftorig, rightorig, gamma, false);
-        //R = right_eigenv(vfn);
-        //ws = abs_eigen(vfn, leftorig, rightorig);
-        //Aroe = Jacobian(ws, R, gamma);
-
-        //if (abs(numflux(3)) >= 1e-0)
-        //{
-            //std::cout << numflux << std::endl;
-            //std::cout << "LEFT VALUES" << std::endl;
-            //left.print();
-            //std::cout << "RIGHT VALUES" << std::endl;
-            //right.print();
-        //}
-        
-        //assert(abs(numflux(3)) < 1e-0);
     }
 
     std::tuple<double, double> RiemannSolver::speed_estimate_hllc(const State& left, const State& right, double gamma)
