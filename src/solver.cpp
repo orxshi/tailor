@@ -2129,10 +2129,11 @@ namespace Tailor
                 > AMGCLSolver;
 
         AMGCLSolver::params prm;
-        prm.solver.M = linear_solver_max_restart_;
-        prm.solver.maxiter = linear_solver_max_iteration_;
-        prm.solver.abstol = linear_solver_abs_error_;
-        prm.solver.tol = linear_solver_rel_error_;
+        //prm.solver.M = linear_solver_max_restart_;
+        prm.solver.M = 100;
+        //prm.solver.maxiter = linear_solver_max_iteration_;
+        //prm.solver.abstol = linear_solver_abs_error_;
+        //prm.solver.tol = linear_solver_rel_error_;
 
         AMGCLSolver amgcl_solver(std::tie(n, ia, ja, a), prm);
         //amgcl::make_solver<
