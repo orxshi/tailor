@@ -224,7 +224,7 @@ namespace Tailor
             void update_donors(Mesh& mesh);
             void set_boundary_conditions(Mesh& mesh);
             Vector5 get_global_residual(const Vector5& local_residual, int ntimestep);
-            void increase_cfl(const Vector5& global_residual);
+            void increase_cfl(const Vector5& global_residual, int timestep);
             void print_sub_solver_residual(int ntimestep, const Vector5& residual);
             std::vector<double> amgcl(int n, int nz_num, const std::vector<int>& ia, const std::vector<int>& ja, const std::vector<double>& a, const std::vector<double>& rhs);
             std::vector<double> gmres(int n, int nz_num, std::vector<int>& ia, std::vector<int>& ja, std::vector<double>& a, std::vector<double>& rhs);

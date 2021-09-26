@@ -1444,7 +1444,7 @@ namespace Tailor
             }
 
             global_residual = get_global_residual(local_residual, ntimestep);
-            increase_cfl(global_residual);
+            increase_cfl(global_residual, ntimestep);
             print_sub_solver_residual(ntimestep, global_residual);
 
             if (ntimestep != 0)
@@ -1512,19 +1512,29 @@ namespace Tailor
         return global_residual;
     }
 
-    void Solver::increase_cfl(const Vector5& global_residual)
+    void Solver::increase_cfl(const Vector5& global_residual, int timestep)
     {
         if (increase_cfl_)
         {
             for (int i = 0; i < global_residual.nelm(); ++i)
             {
-                if (comm_->rank() == 0) {
-                    std::cout << global_residual(i) << " " << last_global_residual_(i) << " " << cfl_multiplier_ << " " << last_global_residual_(i) / global_residual(i) << std::endl;
-                }
                 if (last_global_residual_(i) / global_residual(i) < cfl_ratio_)
                 {
                     return;
                 }
+            }
+
+            if (comm_->rank() == 0)
+            {
+                std::ofstream out;
+                out.open("cfl.dat", std::ios_base::app);
+
+                out << timestep << " "; 
+                out << cfl_ << " "; 
+                out << cfl_ * cfl_multiplier_; 
+                out << std::endl;
+
+                out.close();
             }
 
             cfl_ *= cfl_multiplier_;
