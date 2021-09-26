@@ -2334,12 +2334,18 @@ namespace Tailor
             if (torder_ == 1)
             {
                 //if (dual_ts_ || steady_)
-                if (dual_ts_ || use_local_time_step_)
+                if (dual_ts_)
                 {
+                    assert(false);
                     double t = volume / mc.dtao_;
                     mc.D_.add_diag(t);
 
                     mc.R_ -= volume * (mc.cons_sp1() - mc.cons_n()) / dt_;
+                }
+                else if (use_local_time_step_)
+                {
+                    double t = volume / mc.dtao_;
+                    mc.D_.add_diag(t);
                 }
                 else
                 {
