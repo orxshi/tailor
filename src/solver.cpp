@@ -2352,9 +2352,10 @@ namespace Tailor
                 //double t = volume * (1. / mc.dtao_ + 1.5 / dt_);
                 //mc.D_.add_diag(t);
 
-                //if (dual_ts_)
-                if (dual_ts_ || use_local_time_step_)
+                if (dual_ts_)
                 {
+                    assert(false);
+                    //double t = volume / mc.dtao_;
                     double t = volume / mc.dtao_;
                     mc.D_.add_diag(t);
 
@@ -2367,6 +2368,11 @@ namespace Tailor
                         mc.R_ -= volume * (mc.cons_sp1() - mc.cons_n()) / dt_;
                     }
                 }
+                else if (use_local_time_step_)
+                {
+                    double t = 1.5 * volume / mc.dtao_;
+                    mc.R_ += 0.5 * volume * (mc.cons_n() - mc.cons_nm1()) / mc.dtao_;
+                }
                 else
                 {
                     double t = 1.5 * volume / dt_;
@@ -2374,14 +2380,7 @@ namespace Tailor
 
                     if (nsolve_ > 1)
                     {
-                        //mc.R_ -= 0.5 * volume * (-4. * mc.cons_n() + mc.cons_nm1()) / dt_;
-                        //std::cout << "R before: " << mc.R_(0) << std::endl;
                         mc.R_ += 0.5 * volume * (mc.cons_n() - mc.cons_nm1()) / dt_;
-                        //std::cout << "R after: " << mc.R_(0) << std::endl;
-                        //std::cout << "volume: " << volume << std::endl;
-                        //std::cout << "cons_n(0)" << mc.cons_n(0) << std::endl;
-                        //std::cout << "cons_nm1(0)" << mc.cons_nm1(0) << std::endl;
-                        //assert(false);
                     }
                 }
             }
