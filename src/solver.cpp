@@ -636,7 +636,7 @@ namespace Tailor
         //linear_solver_max_restart_ = vm["linear-solver.max-restart"].as<double>();
         //linear_solver_abs_error_ = vm["linear-solver.abs-error"].as<double>();
         //linear_solver_rel_error_ = vm["linear-solver.rel-error"].as<double>();
-        print_linear_solver_error_ = vm["linear-solver.print-error"].as<bool>();
+        //print_linear_solver_error_ = vm["linear-solver.print-error"].as<bool>();
         print_vtk_only_last_step_ = vm["solver.print-vtk-only-last-step"].as<bool>();
         print_vtk_every_step_ = vm["solver.print-vtk-every-step"].as<bool>();
 
