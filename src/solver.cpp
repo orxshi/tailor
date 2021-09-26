@@ -839,6 +839,22 @@ namespace Tailor
         if (temporal_discretization_ == "backward_euler")
         {
             linear_solver(mesh);
+
+            for (MeshCell &mc : mesh.cell_)
+            {
+                if (!calc_cell(mc)) {
+                    continue;
+                }
+            }
+
+            if (dual_ts_ || use_local_time_step_)
+            {
+                mc.dQ_ *= mc.dtao_;
+            }
+            else
+            {
+                mc.dQ_ *= dt_;
+            }
         }
         else if (temporal_discretization_ == "forward_euler")
         {
