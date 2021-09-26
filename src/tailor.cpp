@@ -213,7 +213,7 @@ namespace Tailor
         if (solver_on_)
         {
             profiler_start("solve");
-            solver_->solve();
+            solver_->solve(max_time_step_);
             compute_aerodyn_coef(compute_para);
             mem_usage(&comm_,  "solve");
             profiler_stop("solve");
@@ -329,7 +329,7 @@ namespace Tailor
         compute_force_coef_ = vm["tailor.compute-force-coef"].as<bool>();
         compute_moment_coef_ = vm["tailor.compute-moment-coef"].as<bool>();
         double compute_all_aero_coef = vm["tailor.compute-all-aero-coef"].as<bool>();
-
+        
         if (compute_all_aero_coef)
         {
             compute_pres_coef_ = true;

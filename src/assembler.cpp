@@ -32,7 +32,6 @@ namespace Tailor
         profiler_(nullptr),
         rebalance_thres_(0.),
         print_ds_info_(false),
-        print_vtk_(false),
         print_pre_vtk_(false),
         print_repart_info_(false),
         print_imbalance_(false),
@@ -54,7 +53,6 @@ namespace Tailor
         profiler_(profiler),
         rebalance_thres_(0.),
         print_ds_info_(false),
-        print_vtk_(false),
         print_pre_vtk_(false),
         print_repart_info_(false),
         print_imbalance_(false),
@@ -148,7 +146,6 @@ namespace Tailor
         mergebins_ = vm["assembler.merge-bins"].as<bool>();
         print_ds_info_ = vm["assembler.print-ds-info"].as<bool>();
         rebalance_thres_ = vm["assembler.rebalance-thres"].as<double>();
-        print_vtk_ = vm["assembler.print-vtk"].as<bool>();
         print_pre_vtk_ = vm["assembler.print-pre-vtk"].as<bool>();
         print_repart_info_ = vm["assembler.print-repart-info"].as<bool>();
         print_imbalance_ = vm["assembler.print-imbalance"].as<bool>();
@@ -293,11 +290,6 @@ namespace Tailor
         if (print_map_)
         {
             partition_->spc().global_rm().print("asm");
-        }
-
-        if (print_vtk_)
-        {
-            print_mesh_vtk("asm");
         }
     }
 

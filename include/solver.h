@@ -64,7 +64,7 @@ namespace Tailor
             void set_comm(boost::mpi::communicator* comm);
             void set_profiler(Profiler* prof);
                     
-            void solve();
+            void solve(int max_time_step);
             double dt() const;
             void read_mesh(const std::vector<std::string>& file_name);
             const Partition* partition() const;
@@ -88,7 +88,6 @@ namespace Tailor
                 ar & repart_ratio_;
                 ar & initratio_;
                 ar & print_imbalance_;
-                ar & print_vtk_;
                 ar & print_vtk_init_;
                 ar & print_repart_info_;
                 ar & rebalance_thres_;
@@ -129,10 +128,20 @@ namespace Tailor
                 ar & cfl_multiplier_;
                 ar & cfl_ratio_;
                 ar & global_nmesh_;
+                ar & print_linear_solver_error_;
+                ar & linear_solver_max_iteration_;
+                ar & linear_solver_min_error_;
+                ar & print_vtk_only_last_step_;
+                ar & print_vtk_every_step_;
             }
 
         private:    
 
+            bool print_vtk_only_last_step_;
+            bool print_vtk_every_step_;
+            bool print_linear_solver_error_;
+            double linear_solver_max_iteration_;
+            double linear_solver_min_error_;
             int global_nmesh_;
             std::array<Vector5, 4> runge_kutta_coef_;
             double cfl_multiplier_;
@@ -143,7 +152,6 @@ namespace Tailor
             int repart_ratio_;
             double initratio_;
             bool print_imbalance_;
-            bool print_vtk_;
             bool print_vtk_init_;
             bool print_repart_info_;
             double rebalance_thres_;

@@ -55,7 +55,6 @@ namespace Tailor
                        repart_ratio_(0),
                        initratio_(0.),
                        print_imbalance_(false),
-                       print_vtk_(false),
                        print_repart_info_(false),
                        rebalance_thres_(0.),
                        can_rebalance_(false),
@@ -558,7 +557,6 @@ namespace Tailor
             //("solver.restore-solution", po::value<bool>()->default_value(false), "")
             ("solver.can-rebalance", po::value<bool>()->default_value(true), "Make load rebalance if needed.")
             ("solver.force-rebalance", po::value<bool>()->default_value(false), "Force load rebalance even if relabalance is not needed.")
-            ("solver.print-vtk", po::value<bool>()->default_value(false), "")
             ("solver.print-vtk-init", po::value<bool>()->default_value(false), "")
             ("solver.print-repart-info", po::value<bool>()->default_value(false), "")
             ("solver.print-imbalance", po::value<bool>()->default_value(false), "")
@@ -566,9 +564,19 @@ namespace Tailor
             ("solver.dual-ts", po::value<bool>()->default_value(false), "")
             ("solver.flow-init-type", po::value<int>()->default_value(0), "")
             ("solver.use-local-time-step", po::value<bool>()->default_value(false), "")
+            ("solver.print-vtk-only-last-step", po::value<bool>()->default_value(true), "")
+            ("solver.print-vtk-every-step", po::value<bool>()->default_value(false), "")
+            ;
+
+        po::options_description linear_solver{"Linear solver options"};
+        linear_solver.add_options()
+            ("linear-solver.max-iteration", po::value<double>()->default_value(100), "")
+            ("linear-solver.min-error", po::value<double>()->default_value(1e-15), "")
+            ("linear-solver.print-error", po::value<bool>()->default_value(false), "")
             ;
 
         all_options.add(desc);
+        all_options.add(linear_solver);
 
         std::ifstream settings_file("settings.ini");
 
@@ -606,7 +614,6 @@ namespace Tailor
         can_rebalance_ = vm["solver.can-rebalance"].as<bool>();
         force_rebalance_ = vm["solver.force-rebalance"].as<bool>();
         rebalance_thres_ = vm["solver.rebalance-thres"].as<double>();
-        print_vtk_ = vm["solver.print-vtk"].as<bool>();
         print_vtk_init_ = vm["solver.print-vtk-init"].as<bool>();
         print_repart_info_ = vm["solver.print-repart-info"].as<bool>();
         print_imbalance_ = vm["solver.print-imbalance"].as<bool>();
@@ -623,6 +630,16 @@ namespace Tailor
         }
         dual_ts_ = vm["solver.dual-ts"].as<bool>();
         use_local_time_step_ = vm["solver.use-local-time-step"].as<bool>();
+        linear_solver_max_iteration_ = vm["linear-solver.max-iteration"].as<double>();
+        linear_solver_min_error_ = vm["linear-solver.min-error"].as<double>();
+        print_linear_solver_error_ = vm["linear-solver.print-error"].as<bool>();
+        print_vtk_only_last_step_ = vm["solver.print-vtk-only-last-step"].as<bool>();
+        print_vtk_every_step_ = vm["solver.print-vtk-every-step"].as<bool>();
+
+        if (print_vtk_only_last_step_)
+        {
+            assert(!print_vtk_every_step_);
+        }
     }
 
     double Solver::dt() const
@@ -951,7 +968,7 @@ namespace Tailor
         return nsolve_;
     }
 
-    void Solver::solve()
+    void Solver::solve(int max_time_step)
     {
         std::cout << "Solving" << std::endl;
         partition_->print_cell_dist(comm_, nsolve_);
@@ -967,7 +984,15 @@ namespace Tailor
         init_old_conservative_var();
         auto residual = non_linear_iteration();
         print_residual(residual);
-        if (print_vtk_) {
+        if (print_vtk_only_last_step_)
+        {
+            if (nsolve_ == max_time_step)
+            {
+                print_mesh_vtk("sol");
+            }
+        }
+        if (print_vtk_every_step_)
+        {
             print_mesh_vtk("sol");
         }
         reset_overset_mesh_exchanger();
@@ -1283,7 +1308,6 @@ namespace Tailor
         out << "can_rebalance = " << can_rebalance_ << std::endl;
         out << "force_rebalance = " << force_rebalance_ << std::endl;
         out << "rebalance_thres = " << rebalance_thres_ << std::endl;
-        out << "print_vtk = " << print_vtk_ << std::endl;
         out << "print_repart_info = " << print_repart_info_ << std::endl;
         out << "print_imbalance = " << print_imbalance_ << std::endl;
         out << "repart_ratio = " << repart_ratio_ << std::endl;
@@ -2101,10 +2125,10 @@ namespace Tailor
                 > AMGCLSolver;
 
         AMGCLSolver::params prm;
-        prm.solver.M = 100;
+        prm.solver.M = linear_solver_max_iteration_;
         //prm.solver.maxiter = 1000;
         //prm.solver.abstol = 1e-15;
-        prm.solver.tol = 1e-15;
+        prm.solver.tol = linear_solver_min_error_;
 
         AMGCLSolver amgcl_solver(std::tie(n, ia, ja, a), prm);
         //amgcl::make_solver<
@@ -2120,7 +2144,17 @@ namespace Tailor
         //        prm);
         auto [iters, error] = amgcl_solver(rhs, x);
 
-        std::cout << iters << " " << error << std::endl;
+        if (print_linear_solver_error_)
+        {
+            std::ofstream out;
+            std::string s = "linear-error-";
+            s.append(std::to_string(comm_->rank()));
+            s.append(".dat");
+            out.open(s, std::ios_base::app);
+            std::cout << iters << " " << error << std::endl;
+            out.close();
+        }
+
         //assert(error < 1e-6);
 
         return x;
