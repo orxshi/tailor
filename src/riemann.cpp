@@ -8,7 +8,7 @@ namespace Tailor
         {
             //Matrix5 Aroe;
             roe(left_state, right_state, flux, max_eigen, face_area, gamma);
-            Aroe = roe_jacobian(left_state_unrotated, right_state_unrotated, gamma);
+            Aroe = roe_jacobian(left_state, right_state, gamma);
 
             assert(!flux.isnan());
             assert(max_eigen > 0.);
