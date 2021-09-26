@@ -142,8 +142,8 @@ namespace Tailor
             bool print_vtk_only_last_step_;
             bool print_vtk_every_step_;
             bool print_linear_solver_error_;
-            double linear_solver_max_iteration_;
-            double linear_solver_max_restart_;
+            int linear_solver_max_iteration_;
+            int linear_solver_max_restart_;
             double linear_solver_abs_error_;
             double linear_solver_rel_error_;
             int global_nmesh_;
