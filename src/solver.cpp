@@ -2379,6 +2379,7 @@ namespace Tailor
                 else if (use_local_time_step_)
                 {
                     double t = 1.5 * volume / mc.dtao_;
+                    mc.D_.add_diag(t);
                     mc.R_ += 0.5 * volume * (mc.cons_n() - mc.cons_nm1()) / mc.dtao_;
                 }
                 else

@@ -85,6 +85,8 @@ where,
     -(\invrotmat\frac{\AR - \Aroe}{2}\rotmat)\Delta\cons_R
 \end{equation}
 
+Consider first order forward Euler temporal discretization,
+
 \begin{equation}
     V\frac{\cons^{n+1} - \cons^{n}}{\Delta t}
     =
@@ -135,6 +137,14 @@ If a cell is on the right of a face, flux through a face is opposite to that for
     \Delta\cons_R
     =
     \ML\Delta\cons_L
+\end{equation}
+
+Now consider second order three-time level backward Euler discretization.
+
+\begin{equation}
+    V\frac{3q^{n+1}-4q^n+q^{n-1}}{2\Delta t}
+    =
+    -\sum\invrotmat\flux(\rotmat\cons)S
 \end{equation}
 
 
