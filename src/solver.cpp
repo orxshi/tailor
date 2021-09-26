@@ -110,10 +110,16 @@ namespace Tailor
     {
         read_settings();
 
-        if (steady_)
+        //if (steady_)
+        if (use_local_time_step_)
         {
             dt_ = TAILOR_BIG_POS_NUM;
         } 
+
+        if (!steady_)
+        {
+            assert(!use_local_time_step_);
+        }
 
         ncfl_increase_ = 0;
 
@@ -559,6 +565,7 @@ namespace Tailor
             ("solver.riemann-solver", po::value<int>()->default_value(0), "")
             ("solver.dual-ts", po::value<bool>()->default_value(false), "")
             ("solver.flow-init-type", po::value<int>()->default_value(0), "")
+            ("solver.use-local-time-step", po::value<bool>()->default_value(false), "")
             ;
 
         all_options.add(desc);
@@ -615,6 +622,7 @@ namespace Tailor
             assert(false);
         }
         dual_ts_ = vm["solver.dual-ts"].as<bool>();
+        use_local_time_step_ = vm["solver.use-local-time-step"].as<bool>();
     }
 
     double Solver::dt() const
@@ -850,7 +858,8 @@ namespace Tailor
                         //assert(false);
                         //std::cout << "dQ_ before: " << mc.dQ_(0) << std::endl;
 
-                if (dual_ts_ || steady_) {
+                //if (dual_ts_ || steady_) {
+                if (dual_ts_ || use_local_time_step_) {
                     mc.dQ_ *= mc.dtao_;
                 }
                 else
@@ -1812,104 +1821,6 @@ namespace Tailor
         mc.cons_sp1_ = prim_to_cons(mc.prim(), fs_.gamma_);
     }
 
-    //void Solver::RK4(Mesh &mesh)
-    //{
-    //    Vector5 k1, k2, k3, k4;
-
-    //    for (MeshCell &mc : mesh.cell_)
-    //    {
-    //        if (!calc_cell(mc))
-    //        {
-    //            continue;
-    //        }
-
-    //        double vol = mc.poly().volume();
-
-    //        k1 = mc.dtao_ * mc.R_ / vol;
-    //        mc.cons_sp1_ = mc.cons_s_ + 0.5 * k1;
-    //        mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
-    //    }
-
-    //    for (int i = 0; i < global_nmesh; ++i)
-    //    {
-    //        Mesh* mesh_ptr = nullptr;
-    //        auto meshp = std::find_if(sp.mesh_.begin(), sp.mesh_.end(), [i](Mesh& m){return m.tag()() == i;});
-    //        auto& mesh = *meshp;
-
-    //        if (meshp != sp.mesh_.end())
-    //        {
-    //            set_boundary_conditions(mesh);
-    //            compute_sum_of_fluxes(mesh, ntimestep);
-    //            temporal_discretization(mesh);
-    //        }
-    //    }
-
-    //    /*bc_.set_bc(mesh, profiler_);
-    //    if (comm_->size() != 1)
-    //    {
-    //        mesh.update_ghost_primitives(var_exc_->receiver().front().arrival(), comm_->rank(), fs_.gamma_);
-    //    }
-    //    calc_R(mesh);
-    //    tempo_discre(mesh, false);
-
-    //    for (MeshCell& mc: mesh.cell_)
-    //    {
-    //        if (mc.oga_cell_type() != OGA_cell_type_t::field) {
-    //            continue;
-    //        }
-
-    //        double vol = mc.poly().volume();
-
-    //        k2 = mc.dtao_ * mc.R_ / vol;
-    //        mc.cons_sp1_ = mc.cons_s_ + 0.5 * k2;
-    //        mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
-    //    }
-
-    //    bc_.set_bc(mesh, profiler_);
-    //    if (comm_->size() != 1)
-    //    {
-    //        mesh.update_ghost_primitives(var_exc_->receiver().front().arrival(), comm_->rank(), fs_.gamma_);
-    //    }
-    //    calc_R(mesh);
-    //    tempo_discre(mesh, false);
-
-    //    for (MeshCell& mc: mesh.cell_)
-    //    {
-    //        if (mc.oga_cell_type() != OGA_cell_type_t::field) {
-    //            continue;
-    //        }
-
-    //        double vol = mc.poly().volume();
-
-    //        k3 = mc.dtao_ * mc.R_ / vol;
-    //        mc.cons_sp1_ = mc.cons_s_ + k3;
-    //        mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
-    //    }
-
-    //    bc_.set_bc(mesh, profiler_);
-    //    if (comm_->size() != 1)
-    //    {
-    //        mesh.update_ghost_primitives(var_exc_->receiver().front().arrival(), comm_->rank(), fs_.gamma_);
-    //    }
-    //    calc_R(mesh);
-    //    tempo_discre(mesh, false);*/
-
-    //    for (MeshCell &mc : mesh.cell_)
-    //    {
-    //        if (!calc_cell(mc))
-    //        {
-    //            continue;
-    //        }
-
-    //        double vol = mc.poly().volume();
-
-    //        k4 = mc.dtao_ * mc.R_ / vol;
-    //        //mc.cons_sp1_ = mc.cons_s_ + (k1 + 2. * k2 + 2. * k3 + k4) / 6.;
-    //        mc.cons_sp1_ = mc.cons_s_ + k1;
-    //        mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
-    //    }
-    //}
-
     void Solver::sweep(Mesh &mesh, MeshCell &mc, Vector5 &r1, Vector5 &r2, Vector5 &r3, int &maxcell)
     {
         mc.dQ_ = (1. - omega_) * mc.old_dQ_ + omega_ * mc.R() / mc.D();
@@ -2422,7 +2333,8 @@ namespace Tailor
 
             if (torder_ == 1)
             {
-                if (dual_ts_ || steady_)
+                //if (dual_ts_ || steady_)
+                if (dual_ts_ || use_local_time_step_)
                 {
                     double t = volume / mc.dtao_;
                     mc.D_.add_diag(t);
@@ -2440,7 +2352,8 @@ namespace Tailor
                 //double t = volume * (1. / mc.dtao_ + 1.5 / dt_);
                 //mc.D_.add_diag(t);
 
-                if (dual_ts_)
+                //if (dual_ts_)
+                if (dual_ts_ || use_local_time_step_)
                 {
                     double t = volume / mc.dtao_;
                     mc.D_.add_diag(t);

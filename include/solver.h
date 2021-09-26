@@ -181,6 +181,7 @@ namespace Tailor
             BoundaryCondition bc_;
             Vector5 initial_global_residual_;
             Vector5 last_global_residual_;
+            bool use_local_time_step_;
 
             Partition* partition_;
             boost::mpi::communicator* comm_;
