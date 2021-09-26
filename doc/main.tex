@@ -1,6 +1,7 @@
 \documentclass{article}
 
 \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\usepackage{amsmath,amssymb}
 
 \begin{document}
 
@@ -142,9 +143,25 @@ If a cell is on the right of a face, flux through a face is opposite to that for
 Now consider second order three-time level backward Euler discretization.
 
 \begin{equation}
-    V\frac{3q^{n+1}-4q^n+q^{n-1}}{2\Delta t}
+    V\frac{3\cons^{n+1}-4\cons^n+\cons^{n-1}}{2\Delta t}
     =
     -\sum\invrotmat\flux(\rotmat\cons)S
+\end{equation}
+
+\begin{equation}
+    \begin{aligned}
+        V\frac{3\cons^{n+1}-4\cons^n+\cons^{n-1}}{2\Delta t}
+        &=
+        \frac{V}{\Delta t}
+        \left(
+            \frac{3}{2}\cons^{n+1}-2\cons^n+\frac{1}{2}\cons^{n-1}
+        \right)
+        \\
+        &=
+        \frac{3}{2}\frac{V}{\Delta t}(\cons^{n+1}-\cons^n)
+        -
+        \frac{1}{2}\frac{V}{\Delta t}(\cons^{n} - \cons^{n-1})
+    \end{aligned}
 \end{equation}
 
 
