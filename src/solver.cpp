@@ -2155,7 +2155,7 @@ namespace Tailor
             s.append(std::to_string(comm_->rank()));
             s.append(".dat");
             out.open(s, std::ios_base::app);
-            std::cout << iters << " " << error << std::endl;
+            out << iters << " " << error << std::endl;
             out.close();
         }
 
