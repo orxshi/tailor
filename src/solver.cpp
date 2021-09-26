@@ -571,7 +571,9 @@ namespace Tailor
         po::options_description linear_solver{"Linear solver options"};
         linear_solver.add_options()
             ("linear-solver.max-iteration", po::value<double>()->default_value(100), "")
-            ("linear-solver.min-error", po::value<double>()->default_value(1e-15), "")
+            ("linear-solver.max-restart", po::value<double>()->default_value(30), "")
+            ("linear-solver.abs-error", po::value<double>()->default_value(1e-8), "")
+            ("linear-solver.rel-error", po::value<double>()->default_value(1e-8), "")
             ("linear-solver.print-error", po::value<bool>()->default_value(false), "")
             ;
 
@@ -631,7 +633,9 @@ namespace Tailor
         dual_ts_ = vm["solver.dual-ts"].as<bool>();
         use_local_time_step_ = vm["solver.use-local-time-step"].as<bool>();
         linear_solver_max_iteration_ = vm["linear-solver.max-iteration"].as<double>();
-        linear_solver_min_error_ = vm["linear-solver.min-error"].as<double>();
+        linear_solver_max_restart_ = vm["linear-solver.max-restart"].as<double>();
+        linear_solver_abs_error_ = vm["linear-solver.abs-error"].as<double>();
+        linear_solver_rel_error_ = vm["linear-solver.rel-error"].as<double>();
         print_linear_solver_error_ = vm["linear-solver.print-error"].as<bool>();
         print_vtk_only_last_step_ = vm["solver.print-vtk-only-last-step"].as<bool>();
         print_vtk_every_step_ = vm["solver.print-vtk-every-step"].as<bool>();
@@ -2125,10 +2129,10 @@ namespace Tailor
                 > AMGCLSolver;
 
         AMGCLSolver::params prm;
-        prm.solver.M = linear_solver_max_iteration_;
-        //prm.solver.maxiter = 1000;
-        //prm.solver.abstol = 1e-15;
-        prm.solver.tol = linear_solver_min_error_;
+        prm.solver.M = linear_solver_max_restart_;
+        prm.solver.maxiter = linear_solver_max_iteration_;
+        prm.solver.abstol = linear_solver_abs_error_;
+        prm.solver.tol = linear_solver_rel_error_;
 
         AMGCLSolver amgcl_solver(std::tie(n, ia, ja, a), prm);
         //amgcl::make_solver<

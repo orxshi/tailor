@@ -130,7 +130,9 @@ namespace Tailor
                 ar & global_nmesh_;
                 ar & print_linear_solver_error_;
                 ar & linear_solver_max_iteration_;
-                ar & linear_solver_min_error_;
+                ar & linear_solver_max_restart_;
+                ar & linear_solver_abs_error_;
+                ar & linear_solver_rel_error_;
                 ar & print_vtk_only_last_step_;
                 ar & print_vtk_every_step_;
             }
@@ -141,7 +143,9 @@ namespace Tailor
             bool print_vtk_every_step_;
             bool print_linear_solver_error_;
             double linear_solver_max_iteration_;
-            double linear_solver_min_error_;
+            double linear_solver_max_restart_;
+            double linear_solver_abs_error_;
+            double linear_solver_rel_error_;
             int global_nmesh_;
             std::array<Vector5, 4> runge_kutta_coef_;
             double cfl_multiplier_;
