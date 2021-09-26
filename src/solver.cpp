@@ -2101,7 +2101,7 @@ namespace Tailor
                 > AMGCLSolver;
 
         AMGCLSolver::params prm;
-        //prm.solver.M = 100;
+        prm.solver.M = 10;
         //prm.solver.maxiter = 1000;
         //prm.solver.abstol = 1e-15;
         prm.solver.tol = 1e-15;

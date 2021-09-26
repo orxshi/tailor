@@ -5,12 +5,14 @@
 
 \begin{document}
 
-\newcommand{\NL}{\mathbf{N_L}}
-\newcommand{\NR}{\mathbf{N_R}}
-\newcommand{\ML}{\mathbf{M_L}}
-\newcommand{\MR}{\mathbf{M_R}}
-\newcommand{\AL}{\mathbf{A_L}}
-\newcommand{\AR}{\mathbf{A_R}}
+\newcommand{\Mi}{\mathbf{M}_i}
+\newcommand{\Mj}{\mathbf{M}_j}
+\newcommand{\NL}{\mathbf{N}_L}
+\newcommand{\NR}{\mathbf{N}_R}
+\newcommand{\ML}{\mathbf{M}_L}
+\newcommand{\MR}{\mathbf{M}_R}
+\newcommand{\AL}{\mathbf{A}_L}
+\newcommand{\AR}{\mathbf{A}_R}
 \newcommand{\Aroe}{\lvert\mathbf{A}\rvert}
 \newcommand{\rotmat}{\mathbf{T}}
 \newcommand{\flux}{\mathbf{F}}
@@ -140,6 +142,17 @@ If a cell is on the right of a face, flux through a face is opposite to that for
     \ML\Delta\cons_L
 \end{equation}
 
+In general,
+
+\begin{equation}
+    \left(
+        \frac{V}{\Delta t} + \Mi
+    \right)
+    \Delta\cons_i
+    =
+    \sum\Mj\Delta\cons_j
+\end{equation}
+
 Now consider second order three-time level backward Euler discretization.
 
 \begin{equation}
@@ -173,6 +186,17 @@ Now consider second order three-time level backward Euler discretization.
     \frac{3}{2}\frac{V}{\Delta t}\Delta\cons
     =
     -\sum\invrotmat\flux(\rotmat\cons)S + \frac{1}{2}\frac{V}{\Delta t}(\cons^{n} - \cons^{n-1})
+\end{equation}
+
+In general,
+
+\begin{equation}
+    \left(
+        \frac{3}{2}\frac{V}{\Delta t} + \Mi
+    \right)
+    \Delta\cons_i
+    =
+    \sum\Mj\Delta\cons_j + \frac{1}{2}\frac{V}{\Delta t}(\cons^{n} - \cons^{n-1})
 \end{equation}
 
 
