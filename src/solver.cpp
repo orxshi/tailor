@@ -2176,8 +2176,8 @@ namespace Tailor
         AMGCLSolver::params prm;
         //prm.solver.M = 100;
         //prm.solver.maxiter = 1000;
-        prm.solver.abstol = 1e-15;
-        //prm.solver.tol = 1e-15;
+        //prm.solver.abstol = 1e-15;
+        prm.solver.tol = 1e-15;
 
         AMGCLSolver amgcl_solver(std::tie(n, ia, ja, a), prm);
         //amgcl::make_solver<
