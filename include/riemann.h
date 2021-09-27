@@ -24,7 +24,7 @@ namespace Tailor
     {
         public:
 
-            RiemannSolver(RiemannSolverType riemann_solver_type, const State& left_state, const State& right_state, double face_area, double gamma, double& max_eigen, Vector5& flux, Matrix5& Aroe, const State& left_state_unrotated, const State& right_state_unrotated, SpeedEstimateHLLC sehllc = SpeedEstimateHLLC::pressure);
+            RiemannSolver(RiemannSolverType riemann_solver_type, const State& left_state, const State& right_state, double face_area, double gamma, double& max_eigen, Vector5& flux, Matrix5& Aroe, bool calculate_roe_jacobian, SpeedEstimateHLLC sehllc = SpeedEstimateHLLC::pressure);
 
             double u;
             double v;
@@ -55,7 +55,7 @@ namespace Tailor
             Matrix5 Jacobian(const Matrix5& ws, const Matrix5& R, double gamma);
             Vector5 numerical_flux(const State& left, const State& right, const Matrix5& ws, const Matrix5& R, double facearea, double gamma);
             Vector5 rhll_numerical_flux(double SLm, double SRp, const State& left, const State& right, const State& leftn2, const State& rightn2, const Matrix5& ws, const Matrix5& R, double facearea, const Vector3& n, double gamma);
-            void roe(const State& left, const State& right, Vector5& numflux, double& max_eigen, double signed_area, double gamma);
+            void roe(const State& left, const State& right, Vector5& numflux, double& max_eigen, double signed_area, double gamma, Matrix5& Aroe, bool calculate_roe_jacobian);
             std::tuple<Vector5, double, double, double> hllc(const State& left, const State& right, double signed_area, double gamma);
             std::tuple<double, double> speed_estimate_hllc(const State& left, const State& right, double gamma);
 

@@ -2,13 +2,12 @@
 
 namespace Tailor
 {
-    RiemannSolver::RiemannSolver(RiemannSolverType riemann_solver_type, const State& left_state, const State& right_state, double face_area, double gamma, double& max_eigen, Vector5& flux, Matrix5& Aroe, const State& left_state_unrotated, const State& right_state_unrotated, SpeedEstimateHLLC sehllc): speed_estimate_hllc_(sehllc)
+    RiemannSolver::RiemannSolver(RiemannSolverType riemann_solver_type, const State& left_state, const State& right_state, double face_area, double gamma, double& max_eigen, Vector5& flux, Matrix5& Aroe, bool calculate_roe_jacobian, SpeedEstimateHLLC sehllc): speed_estimate_hllc_(sehllc)
     {
         if (riemann_solver_type == RiemannSolverType::roe)
         {
             //Matrix5 Aroe;
-            roe(left_state, right_state, flux, max_eigen, face_area, gamma);
-            Aroe = roe_jacobian(left_state, right_state, gamma);
+            roe(left_state, right_state, flux, max_eigen, face_area, gamma, Aroe, calculate_roe_jacobian);
 
             assert(!flux.isnan());
             assert(max_eigen > 0.);
@@ -838,7 +837,7 @@ namespace Tailor
         return Jacobian(ws, R, gamma);
     }
 
-    void RiemannSolver::roe(const State& left, const State& right, Vector5& numflux, double& max_eigen, double signed_area, double gamma)
+    void RiemannSolver::roe(const State& left, const State& right, Vector5& numflux, double& max_eigen, double signed_area, double gamma, Matrix5& Aroe, bool calculate_roe_jacobian)
     {
         calc_roe_ave_vars(left, right, gamma);
 
@@ -847,6 +846,10 @@ namespace Tailor
         numflux = numerical_flux(left, right, ws, R, signed_area, gamma);
         max_eigen = max(ws);
         assert(max_eigen > 0.);
+
+        if (calculate_roe_jacobian) {
+            Aroe = Jacobian(ws, R, gamma);
+        }
     }
 
     std::tuple<double, double> RiemannSolver::speed_estimate_hllc(const State& left, const State& right, double gamma)

@@ -667,13 +667,13 @@ namespace Tailor
         return std::make_tuple(left, right);
     }
 
-    std::tuple<Vector5, double, Matrix5> compute_flux(RiemannSolverType riemann_solver_type, double face_area, const Matrix5& inverse_rotation_matrix, const State& rotated_left_state, const State& rotated_right_state, const State& left_state, const State& right_state, double gamma)
+    std::tuple<Vector5, double, Matrix5> compute_flux(RiemannSolverType riemann_solver_type, double face_area, const Matrix5& inverse_rotation_matrix, const State& rotated_left_state, const State& rotated_right_state, double gamma, bool calculate_roe_jacobian)
     {
         Vector5 flux;
         double max_eigen;
         Matrix5 Aroe;
 
-        RiemannSolver riemann_solver(riemann_solver_type, rotated_left_state, rotated_right_state, face_area, gamma, max_eigen, flux, Aroe, left_state, right_state, SpeedEstimateHLLC::roe);
+        RiemannSolver riemann_solver(riemann_solver_type, rotated_left_state, rotated_right_state, face_area, gamma, max_eigen, flux, Aroe, calculate_roe_jacobian, SpeedEstimateHLLC::roe);
 
         flux = inverse_rotation_matrix * flux;
 
@@ -734,10 +734,16 @@ namespace Tailor
 
                 auto [left_cell, right_cell] = left_and_right_cells(mesh, mf, mc.tag());
 
+                Vector5 left_cons;
+                Vector5 right_cons;
+
                 if (sorder_ == 2)
                 {
-                    apply_limiter(mesh, *left_cell , mf);
-                    apply_limiter(mesh, *right_cell, mf);
+                    //apply_limiter(mesh, *left_cell , mf);
+                    //apply_limiter(mesh, *right_cell, mf);
+
+                    left_cons = apply_limiter(mesh, *left_cell, mf);
+                    right_cons = apply_limiter(mesh, *right_cell, mf);
                 }
 
                 MeshFace *commonface = nullptr;
@@ -748,9 +754,14 @@ namespace Tailor
                 }
 
                 auto [rotation_matrix, inv_rotation_matrix] = get_rotation_matrix(normal);
-                auto [rotated_left_state, rotated_right_state] = left_and_right_states(left_cell->cons_sp1_, right_cell->cons_sp1_, gamma, rotation_matrix, face_velocity);
-                auto [left_state, right_state] = left_and_right_states(left_cell->cons_sp1(), right_cell->cons_sp1(), gamma, unit_matrix<NVAR, NVAR, double>(), face_velocity);
-                auto [flux, max_eigen, Aroe] = compute_flux(riemann_solver_type_, face_area, inv_rotation_matrix, rotated_left_state, rotated_right_state, left_state, right_state, gamma);
+                //auto [rotated_left_state, rotated_right_state] = left_and_right_states(left_cell->cons_sp1_, right_cell->cons_sp1_, gamma, rotation_matrix, face_velocity);
+                auto [rotated_left_state, rotated_right_state] = left_and_right_states(left_cons, right_cons, gamma, rotation_matrix, face_velocity);
+                bool calculate_roe_jacobian = false;
+                if (temporal_discretization_ == "backward_euler")
+                {
+                    calculate_roe_jacobian = true;
+                }
+                auto [flux, max_eigen, Aroe] = compute_flux(riemann_solver_type_, face_area, inv_rotation_matrix, rotated_left_state, rotated_right_state, calculate_roe_jacobian, gamma);
 
                 if (mf.btype() != BouType::empty)
                 {
@@ -1801,12 +1812,15 @@ namespace Tailor
         return M;
     }
 
-    void Solver::apply_limiter(Mesh &mesh, MeshCell &mc, const MeshFace &mf)
+    Vector5 Solver::apply_limiter(const Mesh &mesh, const MeshCell &mc, const MeshFace &mf)
     {
+        auto prim = mc.prim();
+        auto cons = prim_to_cons(prim, fs_.gamma_);
+
         if (mc.oga_cell_type() == OGA_cell_type_t::non_resident || mc.oga_cell_type() == OGA_cell_type_t::ghost)
         {
             //prim = mc.prim();
-            return;
+            return cons;
         }
 
         for (const auto &mff : mc.face())
@@ -1814,7 +1828,7 @@ namespace Tailor
             if (mff.btype() != BouType::interior)
             {
                 //prim = mc.prim();
-                return;
+                return cons;
             }
             else
             {
@@ -1848,12 +1862,15 @@ namespace Tailor
         for (int i = 0; i < NVAR; ++i)
         {
             assert(!std::isnan(dot(grad[i], d)));
-            mc.prim_(i) = mc.prim(i) + limiter(i) * dot(grad[i], d);
+            prim(i) = mc.prim(i) + limiter(i) * dot(grad[i], d);
+            std::cout << "grad: " << limiter(i) << " " << dot(grad[i], d) << std::endl;
         }
 
         assert(!mc.prim().isnan());
 
-        mc.cons_sp1_ = prim_to_cons(mc.prim(), fs_.gamma_);
+        cons = prim_to_cons(prim, fs_.gamma_);
+
+        return cons;
     }
 
     void Solver::sweep(Mesh &mesh, MeshCell &mc, Vector5 &r1, Vector5 &r2, Vector5 &r3, int &maxcell)
