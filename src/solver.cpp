@@ -1820,6 +1820,8 @@ namespace Tailor
         if (mc.oga_cell_type() == OGA_cell_type_t::non_resident || mc.oga_cell_type() == OGA_cell_type_t::ghost)
         {
             //prim = mc.prim();
+            std::cout << "cons(0): " << cons(0) << std::endl;
+            assert(false);
             return cons;
         }
 
@@ -1828,6 +1830,8 @@ namespace Tailor
             if (mff.btype() != BouType::interior)
             {
                 //prim = mc.prim();
+                std::cout << "cons(0): " << cons(0) << std::endl;
+                assert(false);
                 return cons;
             }
             else
