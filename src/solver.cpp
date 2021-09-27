@@ -737,7 +737,12 @@ namespace Tailor
                 Vector5 left_cons;
                 Vector5 right_cons;
 
-                if (sorder_ == 2)
+                if (sorder_ == 1)
+                {
+                    left_cons = left_cell->cons_sp1();
+                    right_cons = right_cell->cons_sp1();
+                }
+                else if (sorder_ == 2)
                 {
                     //apply_limiter(mesh, *left_cell , mf);
                     //apply_limiter(mesh, *right_cell, mf);
@@ -1821,6 +1826,10 @@ namespace Tailor
         {
             //prim = mc.prim();
             std::cout << "cons(0): " << cons(0) << std::endl;
+            std::cout << "cons(1): " << cons(1) << std::endl;
+            std::cout << "cons(2): " << cons(2) << std::endl;
+            std::cout << "cons(3): " << cons(3) << std::endl;
+            std::cout << "cons(4): " << cons(4) << std::endl;
             assert(false);
             return cons;
         }
@@ -1831,7 +1840,10 @@ namespace Tailor
             {
                 //prim = mc.prim();
                 std::cout << "cons(0): " << cons(0) << std::endl;
-                assert(false);
+                std::cout << "cons(1): " << cons(1) << std::endl;
+                std::cout << "cons(2): " << cons(2) << std::endl;
+                std::cout << "cons(3): " << cons(3) << std::endl;
+                std::cout << "cons(4): " << cons(4) << std::endl;
                 return cons;
             }
             else
