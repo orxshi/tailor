@@ -1830,7 +1830,7 @@ namespace Tailor
 
         for (const auto &mff : mc.face())
         {
-            if (mff.btype() != BouType::interior)
+            if (mff.btype() != BouType::interior) // TODO
             {
                 //prim = mc.prim();
                 return cons;
@@ -1868,7 +1868,7 @@ namespace Tailor
         {
             assert(!std::isnan(dot(grad[i], d)));
             prim(i) = mc.prim(i) + limiter(i) * dot(grad[i], d);
-            //std::cout << "grad: " << limiter(i) << " " << dot(grad[i], d) << std::endl;
+            std::cout << "grad: " << limiter(i) << " " << dot(grad[i], d) << std::endl;
         }
 
         assert(!mc.prim().isnan());
