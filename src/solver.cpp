@@ -744,7 +744,6 @@ namespace Tailor
 
                     left_cons = apply_limiter(mesh, *left_cell, mf);
                     right_cons = apply_limiter(mesh, *right_cell, mf);
-                    assert(false);
                 }
 
                 MeshFace *commonface = nullptr;
