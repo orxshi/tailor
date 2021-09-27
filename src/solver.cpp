@@ -1864,6 +1864,7 @@ namespace Tailor
             assert(!std::isnan(dot(grad[i], d)));
             prim(i) = mc.prim(i) + limiter(i) * dot(grad[i], d);
             std::cout << "grad: " << limiter(i) << " " << dot(grad[i], d) << std::endl;
+            assert(false);
         }
 
         assert(!mc.prim().isnan());
