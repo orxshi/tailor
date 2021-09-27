@@ -1317,6 +1317,11 @@ namespace Tailor
         out << "repart_ratio = " << repart_ratio_ << std::endl;
         out << "riemann_solver = " << static_cast<int>(riemann_solver_type_) << std::endl;
         out << "dual_ts = " << dual_ts_ << std::endl;
+        out << "linear_solver_max_restart_ = " << linear_solver_max_restart_ << std::endl;
+        out << "linear_solver_max_iteration_ = " << linear_solver_max_iteration_ << std::endl;
+        out << "linear_solver_abs_error_ = " << linear_solver_abs_error_ << std::endl;
+        out << "linear_solver_rel_error_ = " << linear_solver_rel_error_ << std::endl;
+        out << "use_local_time_step_ = " << use_local_time_step_ << std::endl;
 
         out.close();
     }
