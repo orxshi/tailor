@@ -89,9 +89,9 @@ namespace Tailor
     {
         for (MeshCell& mc: mesh.cell_)
         {
-            mc.ls_wx_.reserve(mc.pnei().size());
-            mc.ls_wy_.reserve(mc.pnei().size());
-            mc.ls_wz_.reserve(mc.pnei().size());
+            mc.ls_wx_.reserve(mc.face().size());
+            mc.ls_wy_.reserve(mc.face().size());
+            mc.ls_wz_.reserve(mc.face().size());
 
             double dx, dy, dz, a1, a2, a3, psi;
             double r_11 = 0.;
@@ -166,9 +166,13 @@ namespace Tailor
             }
             assert(r_22 != 0.);
 
-            for (const auto& f: mc.pnei())
+            for (MeshFace& f: mc.face_p())
+            //for (const auto& f: mc.pnei())
             {
-                auto d = mesh.cell(f).poly().centroid() - mc.poly().centroid();
+                const MeshCell* nei = opposing_nei(mesh, f, mc.tag());
+                auto d = nei->poly().centroid() - mc.poly().centroid();
+
+                //auto d = mesh.cell(f).poly().centroid() - mc.poly().centroid();
                 //auto d = f.const_addr()->poly().centroid() - mc.poly().centroid();
 
                 dx = d(0);
