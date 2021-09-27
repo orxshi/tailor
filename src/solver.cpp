@@ -759,14 +759,14 @@ namespace Tailor
                 }
 
                 auto [rotation_matrix, inv_rotation_matrix] = get_rotation_matrix(normal);
-                auto [rotated_left_state, rotated_right_state] = left_and_right_states(left_cell->cons_sp1_, right_cell->cons_sp1_, gamma, rotation_matrix, face_velocity);
-                //auto [rotated_left_state, rotated_right_state] = left_and_right_states(left_cons, right_cons, gamma, rotation_matrix, face_velocity);
+                //auto [rotated_left_state, rotated_right_state] = left_and_right_states(left_cell->cons_sp1_, right_cell->cons_sp1_, gamma, rotation_matrix, face_velocity);
+                auto [rotated_left_state, rotated_right_state] = left_and_right_states(left_cons, right_cons, gamma, rotation_matrix, face_velocity);
                 bool calculate_roe_jacobian = false;
                 if (temporal_discretization_ == "backward_euler")
                 {
                     calculate_roe_jacobian = true;
                 }
-                auto [flux, max_eigen, Aroe] = compute_flux(riemann_solver_type_, face_area, inv_rotation_matrix, rotated_left_state, rotated_right_state, calculate_roe_jacobian, gamma);
+                auto [flux, max_eigen, Aroe] = compute_flux(riemann_solver_type_, face_area, inv_rotation_matrix, rotated_left_state, rotated_right_state, gamma, calculate_roe_jacobian);
 
                 if (mf.btype() != BouType::empty)
                 {
