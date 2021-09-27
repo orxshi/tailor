@@ -1825,12 +1825,6 @@ namespace Tailor
         if (mc.oga_cell_type() == OGA_cell_type_t::non_resident || mc.oga_cell_type() == OGA_cell_type_t::ghost)
         {
             //prim = mc.prim();
-            std::cout << "cons(0): " << cons(0) << std::endl;
-            std::cout << "cons(1): " << cons(1) << std::endl;
-            std::cout << "cons(2): " << cons(2) << std::endl;
-            std::cout << "cons(3): " << cons(3) << std::endl;
-            std::cout << "cons(4): " << cons(4) << std::endl;
-            assert(false);
             return cons;
         }
 
@@ -1839,11 +1833,6 @@ namespace Tailor
             if (mff.btype() != BouType::interior)
             {
                 //prim = mc.prim();
-                std::cout << "cons(0): " << cons(0) << std::endl;
-                std::cout << "cons(1): " << cons(1) << std::endl;
-                std::cout << "cons(2): " << cons(2) << std::endl;
-                std::cout << "cons(3): " << cons(3) << std::endl;
-                std::cout << "cons(4): " << cons(4) << std::endl;
                 return cons;
             }
             else
@@ -1879,8 +1868,7 @@ namespace Tailor
         {
             assert(!std::isnan(dot(grad[i], d)));
             prim(i) = mc.prim(i) + limiter(i) * dot(grad[i], d);
-            std::cout << "grad: " << limiter(i) << " " << dot(grad[i], d) << std::endl;
-            assert(false);
+            //std::cout << "grad: " << limiter(i) << " " << dot(grad[i], d) << std::endl;
         }
 
         assert(!mc.prim().isnan());
