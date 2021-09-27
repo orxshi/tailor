@@ -213,6 +213,7 @@ namespace Tailor
         if (solver_on_)
         {
             profiler_start("solve");
+            solver_->print_settings(); 
             solver_->solve(max_time_step_);
             compute_aerodyn_coef(compute_para);
             mem_usage(&comm_,  "solve");
