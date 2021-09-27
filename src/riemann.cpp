@@ -102,7 +102,7 @@ namespace Tailor
         k = spec_kine_energy(u, v, w);
         a = std::sqrt((gamma - 1.) * (H - k));
 
-        if (H <= k || std::isnan(H) || std::isnan(k))
+        if (H <= k || std::isnan(H) || std::isnan(k) || a == 0.)
         {
             std::cout << "LEFT VALUES" << std::endl;
             left.print();
@@ -111,8 +111,10 @@ namespace Tailor
             std::cout << "ROE VALUES" << std::endl;
             std::cout << "H: " << H << std::endl;
             std::cout << "k: " << k << std::endl;
+            std::cout << "gamma: " << gamma << std::endl;
         }
         assert(H > k);
+        assert(a != 0.);
         assert(!std::isnan(H));
         assert(!std::isnan(k));
         assert(!std::isnan(a));
@@ -837,17 +839,6 @@ namespace Tailor
     Matrix5 RiemannSolver::Jacobian(const Matrix5& ws, const Matrix5& R, double gamma)
     {
         return ((R * ws) * left_eigenv(gamma));
-    }
-
-    Matrix5 RiemannSolver::roe_jacobian(const State& left, const State& right, double gamma)
-    {
-        // This function changes roe variables.
-
-        calc_roe_ave_vars(left, right, gamma);
-        auto R = right_eigenv();
-        auto ws = abs_eigen(left, right);
-
-        return Jacobian(ws, R, gamma);
     }
 
     void RiemannSolver::roe(const State& left, const State& right, Vector5& numflux, double& max_eigen, double signed_area, double gamma, Matrix5& Aroe, bool calculate_roe_jacobian)
