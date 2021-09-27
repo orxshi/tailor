@@ -1828,6 +1828,8 @@ namespace Tailor
             return cons;
         }
 
+        std::cout << "aaaaaaaaaaaaaaaaaaaaaaaaaaaa" << std::endl;
+
         for (const auto &mff : mc.face())
         {
             if (mff.btype() != BouType::interior) // TODO
@@ -1845,6 +1847,8 @@ namespace Tailor
                 assert(mff.parent_cell().size() == 2);
             }
         }
+
+        std::cout << "bbbbbbbbbbbbbbbbbbbbbbbbbbb" << std::endl;
 
         for (const auto& f: mc.pnei())
         {
