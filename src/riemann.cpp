@@ -581,6 +581,12 @@ namespace Tailor
                     left.print();
                     std::cout << "RIGHT VALUES" << std::endl;
                     right.print();
+                    std::cout << "u: " << u << std::endl;
+                    std::cout << "v: " << v << std::endl;
+                    std::cout << "w: " << w << std::endl;
+                    std::cout << "k: " << k << std::endl;
+                    std::cout << "a: " << a << std::endl;
+                    std::cout << "H: " << H << std::endl;
                 }
                 assert(!std::isnan(ldu(j)));
                 assert(!std::isnan(R(i,j)));
