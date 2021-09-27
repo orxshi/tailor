@@ -1828,27 +1828,23 @@ namespace Tailor
             return cons;
         }
 
-        std::cout << "aaaaaaaaaaaaaaaaaaaaaaaaaaaa" << std::endl;
-
-        for (const auto &mff : mc.face())
-        {
-            if (mff.btype() != BouType::interior) // TODO
-            {
-                //prim = mc.prim();
-                return cons;
-            }
-            else
-            {
-                if (mff.parent_cell().size() != 2)
-                {
-                    std::cout << "mc oga: " << static_cast<int>(mc.oga_cell_type()) << std::endl;
-                    std::cout << "mc btype: " << static_cast<int>(mc.btype()) << std::endl;
-                }
-                assert(mff.parent_cell().size() == 2);
-            }
-        }
-
-        std::cout << "bbbbbbbbbbbbbbbbbbbbbbbbbbb" << std::endl;
+        //for (const auto &mff : mc.face())
+        //{
+        //    if (mff.btype() != BouType::interior) // TODO
+        //    {
+        //        //prim = mc.prim();
+        //        return cons;
+        //    }
+        //    else
+        //    {
+        //        if (mff.parent_cell().size() != 2)
+        //        {
+        //            std::cout << "mc oga: " << static_cast<int>(mc.oga_cell_type()) << std::endl;
+        //            std::cout << "mc btype: " << static_cast<int>(mc.btype()) << std::endl;
+        //        }
+        //        assert(mff.parent_cell().size() == 2);
+        //    }
+        //}
 
         for (const auto& f: mc.pnei())
         {

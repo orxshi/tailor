@@ -12,9 +12,13 @@ namespace Tailor
         }
 
         int ff=0;
-        for (const auto& f: mc.pnei())
+        for (const MeshFace& f: mc.face())
+        //for (const auto& f: mc.pnei())
         {
-            const auto& nei = mesh.cell(f);
+            //const auto& nei = mesh.cell(f);
+
+            const MeshCell* nei = opposing_nei(mesh, f, mc.tag());
+
             for (int i=0; i<NVAR; ++i)
             {
                 //if (nei.btype() == BouType::partition) {
@@ -44,7 +48,7 @@ namespace Tailor
                 //assert(!std::isnan(mesh.cell(f).prim(i)));
                 assert(!std::isnan(mc.prim(i)));
 
-                double tempf = nei.prim(i) - mc.prim(i);
+                double tempf = nei->prim(i) - mc.prim(i);
                 //double tempf = f.const_addr()->prim(i) - mc.prim(i);
 
                 if (ff >= mc.ls_wx_.size())
