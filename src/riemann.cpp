@@ -575,6 +575,13 @@ namespace Tailor
             for (int j=0; j<NVAR; ++j)
             {
                 assert(!std::isnan(ws(j,j)));
+                if (std::isnan(ldu(j)))
+                {
+                    std::cout << "LEFT VALUES" << std::endl;
+                    left.print();
+                    std::cout << "RIGHT VALUES" << std::endl;
+                    right.print();
+                }
                 assert(!std::isnan(ldu(j)));
                 assert(!std::isnan(R(i,j)));
                 diss(i) += ws(j,j) * ldu(j) * R(i,j);
