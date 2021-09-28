@@ -7,6 +7,7 @@ tailor is a flow solver which can operate on overset meshes.
 Below is a helicopter model consisting of six components: A fuselage, a hub and four blades.
 
 ![](https://github.com/orxshi/tailor/blob/main/images/helicopter.png)
+![](https://github.com/orxshi/tailor/blob/main/images/hub_mesh_outline.png)
 
 It is difficult to generate a single structured grid around all the components. It is possible to generate a single unstructured grid around all the components, however, it is usually desired to have structured mesh especially in the boundary layer of components. Even if the single structured mesh is generated with great difficulties, in moving body problems, the single structured would need to be re-generated. It is possible to avoid mesh re-generation by allowing meshes to deform. However, careful mesh deformation techniques should be applied in order to avoid excessive mesh deformation which causes lower solution accuracy.
 
@@ -14,7 +15,6 @@ It is difficult to generate a single structured grid around all the components. 
 
 In overset mesh technique, a mesh is generated independently for each component. In the case of helicopter, 
 
-![](https://github.com/orxshi/tailor/blob/main/images/helicopter.png)
 
 In overset mesh technique, overlapping mesh-cells need to be in the processors either temporarily or permanently. In this code, the overlapping mesh-cells are stored in the same partitions. Graph partitioners such as METIS, partitions each component mesh
 
