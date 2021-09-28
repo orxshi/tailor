@@ -11,8 +11,6 @@ namespace Tailor
             data_[i] = 0.;
         }
 
-        return data_;
-
         int ff=0;
         for (const MeshFace& f: mc.face())
         //for (const auto& f: mc.pnei())
@@ -22,7 +20,7 @@ namespace Tailor
             const MeshCell* nei = opposing_nei(mesh, f, mc.tag());
             assert(nei != nullptr);
 
-            for (int i=0; i<NVAR; ++i)
+            /*for (int i=0; i<NVAR; ++i)
             {
                 //if (nei.btype() == BouType::partition) {
                     //data_[i] = 0.;
@@ -68,7 +66,7 @@ namespace Tailor
                 data_[i](0) = data_[i](0) + mc.ls_wx_[ff] * tempf;
                 data_[i](1) = data_[i](1) + mc.ls_wy_[ff] * tempf;
                 data_[i](2) = data_[i](2) + mc.ls_wz_[ff] * tempf;
-            }
+            }*/
 
             //if (nei.btype() == BouType::partition) {
                 //break;
