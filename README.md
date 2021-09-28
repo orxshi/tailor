@@ -10,17 +10,19 @@ The left-most figure below is a helicopter model consisting of six components: A
 ![](https://github.com/orxshi/tailor/blob/main/images/hub_mesh_outline.png)
 ![](https://github.com/orxshi/tailor/blob/main/images/blade_mesh_outline.png)
 
-## How overset mesh technique works
+## How overset grid technique works
 
-In overset mesh technique, a mesh is generated independently for each component. In the case of helicopter, a spherical mesh can be generated for the hub as shown in center figure above. Note that, only outline of the mesh shown for clarity. Similarly, a cylindrical mesh can be generated for a blade as shown in right-most figure above. For the fuselage, a spherical mesh can be used which would also act as a background mesh containing all other meshes.
+In overset grid technique, a mesh is generated independently for each component. In the case of helicopter, a spherical mesh can be generated for the hub as shown in center figure above. Note that, only outline of the mesh shown for clarity. Similarly, a cylindrical mesh can be generated for a blade as shown in right-most figure above. For the fuselage, a spherical mesh can be used which would also act as a background mesh containing all other meshes.
 
-## Overset mesh technique versus sliding mesh technique
+## Overset grid technique versus sliding mesh technique
 
 In sliding mesh technique meshes cannot overlap but only slide. It is possible to simulate the helicopter model shown above with sliding mesh technique. However, it is impossible to add a tail rotor to the model in sliding mesh technique but there is no such limitation in overset mesh technique.
 
 ## Partitioning
 
-![](https://github.com/orxshi/tailor/blob/main/images/partitioning.png)
+<p align="center">
+  <img src="https://github.com/orxshi/tailor/blob/main/images/partitioning.png" width="400" />
+</p>
 
 Graph partitioners such as METIS, partitions each component mesh independently. Therefore, a partition does not contain more than one mesh. Also, METIS with default settings produces partitions that contain approximately the same number of cells. In overset mesh technique, overlapping mesh-cells need to be in the processors. In order to bring overlapping mesh-cells to the same partitions, geometric partitioning is applied. An octree is used to registed mesh-cells based on their spatial locations.
 
