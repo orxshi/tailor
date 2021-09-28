@@ -454,11 +454,6 @@ namespace Tailor
                 }
             }
         }
-        
-        for (const MeshCell &mc : partition_->spc().sp().front().mesh().front().cell())
-        {
-            assert(mc.oga_cell_type() != OGA_cell_type_t::undefined);
-        }
     }
 
     void Solver::transfer_oga_cell_type(const ArrCon<DonorInfo2> &di)
@@ -1003,20 +998,10 @@ namespace Tailor
             fs_.read();
         }
 
-        for (const MeshCell &mc : partition_->spc().sp().front().mesh().front().cell())
-        {
-            assert(mc.oga_cell_type() != OGA_cell_type_t::undefined);
-        }
-
         init_partitioned_mesh_exchanger();
         calc_mesh_velocities();
         compute_gradient_coef();
         init_old_conservative_var();
-
-        for (const MeshCell &mc : partition_->spc().sp().front().mesh().front().cell())
-        {
-            assert(mc.oga_cell_type() != OGA_cell_type_t::undefined);
-        }
 
         auto residual = non_linear_iteration();
         print_residual(residual);
@@ -1493,10 +1478,6 @@ namespace Tailor
                     Mesh* mesh_ptr = nullptr;
                     auto meshp = std::find_if(sp.mesh_.begin(), sp.mesh_.end(), [i](Mesh& m){return m.tag()() == i;});
                     auto& mesh = *meshp;
-        for (const MeshCell &mc : partition_->spc().sp().front().mesh().front().cell())
-        {
-            assert(mc.oga_cell_type() != OGA_cell_type_t::undefined);
-        }
 
                     if (meshp != sp.mesh_.end())
                     {
@@ -1845,6 +1826,11 @@ namespace Tailor
         if (mc.oga_cell_type() == OGA_cell_type_t::non_resident || mc.oga_cell_type() == OGA_cell_type_t::ghost)
         {
             //prim = mc.prim();
+            return cons;
+        }
+
+        if (mc.btype() != BouType::interior)
+        {
             return cons;
         }
 
