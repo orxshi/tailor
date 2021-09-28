@@ -217,7 +217,6 @@ namespace Tailor
             if (!assembler_on_)
             {
                 solver_->set_oga_cell_type_all_field();
-                assert(false);
             }
             solver_->solve(max_time_step_);
             compute_aerodyn_coef(compute_para);
