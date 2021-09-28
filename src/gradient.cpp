@@ -15,6 +15,16 @@ namespace Tailor
         for (const MeshFace& f: mc.face())
         //for (const auto& f: mc.pnei())
         {
+            if (ff >= mc.ls_wx_.size())
+            {
+                std::cout << "mc oga: " << static_cast<int>(mc.oga_cell_type()) << std::endl;
+                std::cout << "ff: " << ff << std::endl;
+                std::cout << "wx: " << mc.ls_wx_.size() << std::endl;
+            }
+            assert(ff < mc.ls_wx_.size());
+            assert(ff < mc.ls_wy_.size());
+            assert(ff < mc.ls_wz_.size());
+
             //const auto& nei = mesh.cell(f);
 
             const MeshCell* nei = opposing_nei(mesh, f, mc.tag());
@@ -52,23 +62,13 @@ namespace Tailor
                 double tempf = nei->prim(i) - mc.prim(i);
                 //double tempf = f.const_addr()->prim(i) - mc.prim(i);
 
-                //if (ff >= mc.ls_wx_.size())
-                //{
-                //    std::cout << "mc oga: " << static_cast<int>(mc.oga_cell_type()) << std::endl;
-                //    std::cout << "ff: " << ff << std::endl;
-                //    std::cout << "mc.pnei().size(): " << mc.pnei().size() << std::endl;
-                //}
 
-                assert(ff < mc.ls_wx_.size());
-                assert(ff < mc.ls_wy_.size());
-                assert(ff < mc.ls_wz_.size());
-
-                /*
+                
 
                 data_[i](0) = data_[i](0) + mc.ls_wx_[ff] * tempf;
                 data_[i](1) = data_[i](1) + mc.ls_wy_[ff] * tempf;
                 data_[i](2) = data_[i](2) + mc.ls_wz_[ff] * tempf;
-                */
+                
             }
 
             //if (nei.btype() == BouType::partition) {
