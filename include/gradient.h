@@ -1,8 +1,7 @@
-#ifndef POES_GRADIENT_H
-#define POES_GRADIENT_H
+#ifndef TAILOR_GRADIENT_H
+#define TAILOR_GRADIENT_H
 
 #include "mesh.h"
-#include "meshcell.h"
 
 namespace Tailor
 {
@@ -10,12 +9,8 @@ namespace Tailor
     {
         public:
 
-            std::array<Vector3, NVAR> ls_grad(const Mesh& mesh, const MeshCell& mc);
-            void calc_ls_coef(Mesh& mesh);
-
-        private:
-
-            std::array<Vector3, NVAR> data_;
+            static std::array<Vector3, NVAR> ls_grad(const Mesh& mesh, const MeshCell& mc);
+            static void calc_ls_coef(Mesh& mesh);
     };
 }
 

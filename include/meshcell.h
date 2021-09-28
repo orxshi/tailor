@@ -14,6 +14,7 @@
 namespace Tailor
 {
     using FinalCandDonor = Array<Tag, 5>;
+    using gradient = std::array<Vector3, NVAR>;
 
     class MeshCell;
 
@@ -90,6 +91,7 @@ namespace Tailor
         std::vector<double> ls_wy_;
         std::vector<double> ls_wz_;
         double dtao_;
+        gradient gradient_;
 
         void add_cand_donor(const Tag& donor_mesh, const Tag& donor_cell, const MeshCell* addr);
         friend class boost::serialization::access;
@@ -257,6 +259,7 @@ namespace Tailor
             ar & cons_nm1_;
             ar & sumarea_;
             ar & dQ_;
+            ar & gradient_;
 
             assert(!prim_.isnan());
             assert(!cons_sp1_.isnan());

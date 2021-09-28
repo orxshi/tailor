@@ -4,89 +4,33 @@ namespace Tailor
 {
     std::array<Vector3, NVAR> Gradient::ls_grad(const Mesh& mesh, const MeshCell& mc)
     {    
-        std::array<Vector3, NVAR> data_;
+        std::array<Vector3, NVAR> gradient;
 
         for (int i=0; i<NVAR; ++i)
         {
-            data_[i] = 0.;
+            gradient[i] = 0.;
         }
 
-        int ff=0;
-        for (const MeshFace& f: mc.face())
-        //for (const auto& f: mc.pnei())
+        const auto& faces = mc.face();
+
+        for (int i = 0; i < faces.size(); ++i)
         {
-            if (ff >= mc.ls_wx_.size())
-            {
-                std::cout << "mc oga: " << static_cast<int>(mc.oga_cell_type()) << std::endl;
-                std::cout << "ff: " << ff << std::endl;
-                std::cout << "wx: " << mc.ls_wx_.size() << std::endl;
-            }
-            assert(ff < mc.ls_wx_.size());
-            assert(ff < mc.ls_wy_.size());
-            assert(ff < mc.ls_wz_.size());
+            const auto& face = faces[i];
 
-            //const auto& nei = mesh.cell(f);
-
-            const MeshCell* nei = opposing_nei(mesh, f, mc.tag());
+            const MeshCell* nei = opposing_nei(mesh, face, mc.tag());
             assert(nei != nullptr);
 
-            for (int i=0; i<NVAR; ++i)
+            for (int n = 0; n < NVAR; ++n)
             {
-                //if (nei.btype() == BouType::partition) {
-                    //data_[i] = 0.;
-                    //continue;
-                //}
+                double dif = nei->prim(n) - mc.prim(n);
 
-                //if (std::isnan(mc.ls_wx_[ff]))
-                //{
-                //    std::cout << "ls_wx size: " << mc.ls_wx_.size() << std::endl;
-                //    std::cout << "ff: " << ff << std::endl;
-                //    std::cout << "mc.pnei().size(): " << mc.pnei().size() << std::endl;
-                //}
-                //if (std::isnan(mc.ls_wy_[ff]))
-                //{
-                //    std::cout << "mesh: " << mesh.tag()() << std::endl;
-                //    std::cout << "mc: " << mc.tag()() << std::endl;
-                //    std::cout << "mc oga: " << static_cast<int>(mc.oga_cell_type()) << std::endl;
-                //    std::cout << "mc btype: " << static_cast<int>(mc.btype()) << std::endl;
-                //    std::cout << "ls_wy size: " << mc.ls_wy_.size() << std::endl;
-                //    std::cout << "ff: " << ff << std::endl;
-                //    std::cout << "mc.pnei().size(): " << mc.pnei().size() << std::endl;
-                //}
-                assert(!std::isnan(mc.ls_wx_[ff]));
-                assert(!std::isnan(mc.ls_wy_[ff]));
-                assert(!std::isnan(mc.ls_wz_[ff]));
-                //assert(!std::isnan(mesh.cell(f).prim(i)));
-                assert(!std::isnan(mc.prim(i)));
-
-                double tempf = nei->prim(i) - mc.prim(i);
-                //double tempf = f.const_addr()->prim(i) - mc.prim(i);
-
-
-                
-
-                data_[i](0) = data_[i](0) + mc.ls_wx_[ff] * tempf;
-                data_[i](1) = data_[i](1) + mc.ls_wy_[ff] * tempf;
-                data_[i](2) = data_[i](2) + mc.ls_wz_[ff] * tempf;
-                
+                gradient[n](0) += mc.ls_wx_[i] * dif;
+                gradient[n](1) += mc.ls_wy_[i] * dif;
+                gradient[n](2) += mc.ls_wz_[i] * dif;
             }
-
-            //if (nei.btype() == BouType::partition) {
-                //break;
-            //}
-
-            ++ff;
-        }
-        
-        for (int i=0; i<NVAR; ++i)
-        {
-            assert(!data_[i].isnan());
-            //assert(!std::isnan(data_[i](0)));
-            //assert(!std::isnan(data_[i](1)));
-            //assert(!std::isnan(data_[i](2)));
         }
 
-        return data_;
+        return gradient;
     }
 
     void Gradient::calc_ls_coef(Mesh& mesh)

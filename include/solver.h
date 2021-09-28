@@ -169,7 +169,6 @@ namespace Tailor
             Freestream fs_;
             bool pseudo3D_;
             double omega_;
-            Gradient gradient_;
             bool show_inner_res_;
             bool show_inner_norm_;
             bool print_residual_;
@@ -230,7 +229,7 @@ namespace Tailor
             void gmres(Mesh& mesh);
             void oga_interpolate(Mesh& mesh);
             void update_matrices(MeshFace *this_face, MeshFace *common_face, MeshCell& left_cell, MeshCell& right_cell, double facearea, const Vector3& face_velocity, double gamma, const Matrix5& rotation_matrix, const Matrix5& inv_rotation_matrix, const Matrix5& Aroe, const State& left_state, const State& right_state);
-            Vector5 apply_limiter(const Mesh &mesh, const MeshCell &mc, const MeshFace &mf);
+            Vector5 face_conservative_var(const Mesh &mesh, const MeshCell &mc, const MeshFace &mf);
             void print_residual(const Vector5& residual);
             void print_mesh_vtk(std::string);
             void update_ghosts();
@@ -244,6 +243,7 @@ namespace Tailor
             void update_partitioned_mesh_exchanger();
             void update_overset_mesh_exchanger();
             void first_order_residual(Vector5& res, const MeshCell& mc);
+            void compute_gradient(Mesh& mesh);
     };
 
     std::tuple<Matrix5, Matrix5> get_rotation_matrix(const Vector3& normal);

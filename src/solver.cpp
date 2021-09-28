@@ -734,22 +734,8 @@ namespace Tailor
 
                 auto [left_cell, right_cell] = left_and_right_cells(mesh, mf, mc.tag());
 
-                Vector5 left_cons;
-                Vector5 right_cons;
-
-                if (sorder_ == 1)
-                {
-                    left_cons = left_cell->cons_sp1();
-                    right_cons = right_cell->cons_sp1();
-                }
-                else if (sorder_ == 2)
-                {
-                    //apply_limiter(mesh, *left_cell , mf);
-                    //apply_limiter(mesh, *right_cell, mf);
-
-                    left_cons = apply_limiter(mesh, *left_cell, mf);
-                    right_cons = apply_limiter(mesh, *right_cell, mf);
-                }
+                auto left_cons = face_conservative_var(mesh, *left_cell, mf);
+                auto right_cons = face_conservative_var(mesh, *right_cell, mf);
 
                 MeshFace *commonface = nullptr;
                 if (!mf.is_boundary())
@@ -1238,16 +1224,16 @@ namespace Tailor
                     //assert(donor_cell.oga_cell_type() == OGA_cell_type_t::field || donor_cell.oga_cell_type() == OGA_cell_type_t::non_resident);
                     assert(donor_cell.oga_cell_type() == OGA_cell_type_t::field);
 
-                    auto grad = gradient_.ls_grad(*m, donor_cell);
+                    //auto grad = gradient_.ls_grad(*m, donor_cell);
 
-                    Limiter limiter(LimiterType::venka);
-                    limiter.limit(mesh, mc, grad);
+                    //Limiter limiter(LimiterType::venka);
+                    //limiter.limit(mesh, mc, grad);
 
-                    auto d = mc.poly().centroid() - donor_cell.poly().centroid();
+                    auto distance = mc.poly().centroid() - donor_cell.poly().centroid();
 
                     for (int i = 0; i < NVAR; ++i)
                     {
-                        mc.prim_(i) = donor_cell.prim(i) + limiter(i) * dot(grad[i], d);
+                        mc.prim_(i) = donor_cell.prim(i) + dot(donor_cell.gradient_[i], distance);
                     }
 
                     //mc.prim_(1) += mc.vgn(0);
@@ -1438,6 +1424,33 @@ namespace Tailor
         }
     }
 
+    void Solver::compute_gradient(Mesh& mesh)
+    {
+        Limiter limiter(LimiterType::venka);
+
+        for (MeshCell &mc : mesh.cell_)
+        {
+            if (mc.btype() != BouType::interior)
+            {
+                return;
+            }
+
+            if (mc.oga_cell_type() == OGA_cell_type_t::non_resident || mc.oga_cell_type() == OGA_cell_type_t::ghost)
+            {
+                return;
+            }
+
+            mc.gradient_ = Gradient::ls_grad(mesh, mc);
+
+            auto limit_coef = limiter.limit(mesh, mc, mc.gradient_);
+
+            for (int i = 0; i < NVAR; ++i)
+            {
+                mc.gradient_[i] *= limit_coef[i];
+            }
+        }
+    }
+
     Vector5 Solver::non_linear_iteration()
     {
         // loop is needed
@@ -1481,6 +1494,8 @@ namespace Tailor
 
                     if (meshp != sp.mesh_.end())
                     {
+                        compute_gradient(mesh);
+
                         update_donors(mesh);
 
                         set_boundary_conditions(mesh);
@@ -1638,7 +1653,7 @@ namespace Tailor
             {
                 if (sorder_ == 2)
                 {
-                    gradient_.calc_ls_coef(mesh);
+                    Gradient::calc_ls_coef(mesh);
                 }
             }
         }
@@ -1818,14 +1833,13 @@ namespace Tailor
         return M;
     }
 
-    Vector5 Solver::apply_limiter(const Mesh &mesh, const MeshCell &mc, const MeshFace &mf)
+    Vector5 Solver::face_conservative_var(const Mesh &mesh, const MeshCell &mc, const MeshFace &mf)
     {
         auto prim = mc.prim();
-        auto cons = prim_to_cons(prim, fs_.gamma_);
+        auto cons = mc.cons_sp1();
 
-        if (mc.oga_cell_type() == OGA_cell_type_t::non_resident || mc.oga_cell_type() == OGA_cell_type_t::ghost)
+        if (sorder_ == 1)
         {
-            //prim = mc.prim();
             return cons;
         }
 
@@ -1834,52 +1848,18 @@ namespace Tailor
             return cons;
         }
 
-        assert(mc.oga_cell_type() != OGA_cell_type_t::undefined);
-
-        //for (const auto &mff : mc.face())
-        //{
-        //    if (mff.btype() != BouType::interior)
-        //    {
-        //        //prim = mc.prim();
-        //        return cons;
-        //    }
-        //    else
-        //    {
-        //        if (mff.parent_cell().size() != 2)
-        //        {
-        //            std::cout << "mc oga: " << static_cast<int>(mc.oga_cell_type()) << std::endl;
-        //            std::cout << "mc btype: " << static_cast<int>(mc.btype()) << std::endl;
-        //        }
-        //        assert(mff.parent_cell().size() == 2);
-        //    }
-        //}
-
-        for (const auto& f: mc.pnei())
+        if (mc.oga_cell_type() == OGA_cell_type_t::non_resident || mc.oga_cell_type() == OGA_cell_type_t::ghost)
         {
-            const auto& nei = mesh.cell(f);
-            if (mc.oga_cell_type() == OGA_cell_type_t::field)
-            {
-                assert(nei.oga_cell_type() != OGA_cell_type_t::hole);
-            }
+            return cons;
         }
 
-        auto grad = gradient_.ls_grad(mesh, mc);
-
-        Limiter limiter(LimiterType::venka);
-        limiter.limit(mesh, mc, grad);
-
-        auto d = mf.face().centroid() - mc.poly().centroid();
-
-        assert(!mc.prim().isnan());
+        auto distance = mf.face().centroid() - mc.poly().centroid();
 
         for (int i = 0; i < NVAR; ++i)
         {
-            assert(!std::isnan(dot(grad[i], d)));
-            prim(i) = mc.prim(i) + limiter(i) * dot(grad[i], d);
+            prim(i) = mc.prim(i) + dot(mc.gradient_[i], distance);
             //std::cout << "grad: " << limiter(i) << " " << dot(grad[i], d) << std::endl;
         }
-
-        assert(!mc.prim().isnan());
 
         cons = prim_to_cons(prim, fs_.gamma_);
 

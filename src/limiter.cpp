@@ -12,23 +12,18 @@ namespace Tailor
         return type_;
     }
 
-    void Limiter::limit(const Mesh& mesh, const MeshCell& mc, const std::array<Vector3, NVAR>& grad)
+    std::array<double, NVAR> Limiter::limit(const Mesh& mesh, const MeshCell& mc, const std::array<Vector3, NVAR>& grad)
     {
         assert(type_ != LimiterType::undefined);
 
         if (type_ == LimiterType::venka)
         {
-            data_ = venka(mesh, mc, grad);
+            return venka(mesh, mc, grad);
         }
         else
         {
             assert(false);
         }
-    }
-
-    double Limiter::operator()(int var) const
-    {
-        return data_[var];
     }
 
     std::array<double, NVAR> Limiter::venka(const Mesh& mesh, const MeshCell& mc, const std::array<Vector3, NVAR>& grad)

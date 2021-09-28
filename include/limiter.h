@@ -22,15 +22,11 @@ namespace Tailor
             Limiter(LimiterType);
 
             LimiterType type() const;
-            void limit(const Mesh& mesh, const MeshCell& mc, const std::array<Vector3, NVAR>& grad);
-            double operator()(int var) const;
-            void limit_prim_cons(Mesh& mesh);
+            std::array<double, NVAR> limit(const Mesh& mesh, const MeshCell& mc, const std::array<Vector3, NVAR>& grad);
 
         private:
 
             LimiterType type_;
-            std::array<double, NVAR> data_;
-
             std::array<double, NVAR> venka(const Mesh& mesh, const MeshCell& mc, const std::array<Vector3, NVAR>& grad);
 
     };
