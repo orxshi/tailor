@@ -37,11 +37,11 @@ tailor solves three-dimensional Euler equations. At each interface a Riemann pro
 
 My first objective is to prepare a pdf documentation explaining details of overset grid assembly and flow solver. The reason of non-html format is usage of Latex for mathematical formulation. Code documentation will take some time though since a lot of code clean up is needed before settling on code documentation.
 
-# Required libraries
+## Required libraries
 * Boost MPI for parallelization
 * Boost Serialization to save & restore data.
 * Boost Program_options for reading configuration files.
 * METIS for load balancing.
 
-# Tested on
+## Tested on
 * GNU C++ compiler 8.3.0 and 9.2.0
