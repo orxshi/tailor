@@ -42,10 +42,13 @@ My first objective is to prepare a pdf documentation explaining details of overs
 I will provide parallel performance and validation results on pitching transonic airfoil, isentropic vortex, ONERA M6 and helicopter test cases.
 
 ## Required libraries
-* Boost MPI for parallelization
-* Boost Serialization to save & restore data.
-* Boost Program_options for reading configuration files.
-* METIS for load balancing.
+* Few [Boost](https://www.boost.org/) libraries such as
+    * Boost MPI for parallelization
+    * Boost Serialization to save & restore data.
+    * Boost Program_options for reading configuration files.
+* [METIS](http://glaros.dtc.umn.edu/gkhome/metis/metis/overview) for load balancing.
+* [Gmsh](https://gmsh.info/) for mesh generation in msh format.
+* [amgcl](https://github.com/ddemidov/amgcl) for solution of linear system of equations of implicit formulation is used.
 
 ## Tested on
-* GNU C++ compiler 8.3.0 and 9.2.0
+* GNU C++ compiler 8.3.0 and 9.2.0.
