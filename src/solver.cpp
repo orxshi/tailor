@@ -139,7 +139,7 @@ namespace Tailor
 
         for (const MeshCell &mc : partition_->spc().sp().front().mesh().front().cell())
         {
-            assert(mc.oga_cell_type() == OGA_cell_type_t::undefined);
+            assert(mc.oga_cell_type() != OGA_cell_type_t::undefined);
         }
 
         global_nmesh_ = partition_->spc_->mesh_system_size();
