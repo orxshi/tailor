@@ -1,6 +1,6 @@
 # tailor
 
-tailor is a flow solver which can operate on overset meshes.
+tailor is a spatially load balancing flow solver which can operate on three-dimensional overset meshes.
 
 ## Why use overset grid technique
 
