@@ -15,7 +15,6 @@ namespace Tailor
         for (const MeshFace& f: mc.face())
         //for (const auto& f: mc.pnei())
         {
-            std::cout << "aaaaaaa" << std::endl;
             //const auto& nei = mesh.cell(f);
 
             const MeshCell* nei = opposing_nei(mesh, f, mc.tag());
@@ -28,22 +27,22 @@ namespace Tailor
                     //continue;
                 //}
 
-                if (std::isnan(mc.ls_wx_[ff]))
-                {
-                    std::cout << "ls_wx size: " << mc.ls_wx_.size() << std::endl;
-                    std::cout << "ff: " << ff << std::endl;
-                    std::cout << "mc.pnei().size(): " << mc.pnei().size() << std::endl;
-                }
-                if (std::isnan(mc.ls_wy_[ff]))
-                {
-                    std::cout << "mesh: " << mesh.tag()() << std::endl;
-                    std::cout << "mc: " << mc.tag()() << std::endl;
-                    std::cout << "mc oga: " << static_cast<int>(mc.oga_cell_type()) << std::endl;
-                    std::cout << "mc btype: " << static_cast<int>(mc.btype()) << std::endl;
-                    std::cout << "ls_wy size: " << mc.ls_wy_.size() << std::endl;
-                    std::cout << "ff: " << ff << std::endl;
-                    std::cout << "mc.pnei().size(): " << mc.pnei().size() << std::endl;
-                }
+                //if (std::isnan(mc.ls_wx_[ff]))
+                //{
+                //    std::cout << "ls_wx size: " << mc.ls_wx_.size() << std::endl;
+                //    std::cout << "ff: " << ff << std::endl;
+                //    std::cout << "mc.pnei().size(): " << mc.pnei().size() << std::endl;
+                //}
+                //if (std::isnan(mc.ls_wy_[ff]))
+                //{
+                //    std::cout << "mesh: " << mesh.tag()() << std::endl;
+                //    std::cout << "mc: " << mc.tag()() << std::endl;
+                //    std::cout << "mc oga: " << static_cast<int>(mc.oga_cell_type()) << std::endl;
+                //    std::cout << "mc btype: " << static_cast<int>(mc.btype()) << std::endl;
+                //    std::cout << "ls_wy size: " << mc.ls_wy_.size() << std::endl;
+                //    std::cout << "ff: " << ff << std::endl;
+                //    std::cout << "mc.pnei().size(): " << mc.pnei().size() << std::endl;
+                //}
                 assert(!std::isnan(mc.ls_wx_[ff]));
                 assert(!std::isnan(mc.ls_wy_[ff]));
                 assert(!std::isnan(mc.ls_wz_[ff]));
@@ -53,12 +52,12 @@ namespace Tailor
                 double tempf = nei->prim(i) - mc.prim(i);
                 //double tempf = f.const_addr()->prim(i) - mc.prim(i);
 
-                if (ff >= mc.ls_wx_.size())
-                {
-                    std::cout << "mc oga: " << static_cast<int>(mc.oga_cell_type()) << std::endl;
-                    std::cout << "ff: " << ff << std::endl;
-                    std::cout << "mc.pnei().size(): " << mc.pnei().size() << std::endl;
-                }
+                //if (ff >= mc.ls_wx_.size())
+                //{
+                //    std::cout << "mc oga: " << static_cast<int>(mc.oga_cell_type()) << std::endl;
+                //    std::cout << "ff: " << ff << std::endl;
+                //    std::cout << "mc.pnei().size(): " << mc.pnei().size() << std::endl;
+                //}
 
                 assert(ff < mc.ls_wx_.size());
                 assert(ff < mc.ls_wy_.size());
@@ -69,8 +68,6 @@ namespace Tailor
                 data_[i](2) = data_[i](2) + mc.ls_wz_[ff] * tempf;
             }
 
-            std::cout << "bbbbbbb" << std::endl;
-
             //if (nei.btype() == BouType::partition) {
                 //break;
             //}
@@ -78,8 +75,6 @@ namespace Tailor
             ++ff;
         }
         
-        std::cout << "cccccccccc" << std::endl;
-
         for (int i=0; i<NVAR; ++i)
         {
             assert(!data_[i].isnan());
