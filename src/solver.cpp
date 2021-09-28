@@ -1012,6 +1012,12 @@ namespace Tailor
         calc_mesh_velocities();
         compute_gradient_coef();
         init_old_conservative_var();
+
+        for (const MeshCell &mc : partition_->spc().sp().front().mesh().front().cell())
+        {
+            assert(mc.oga_cell_type() != OGA_cell_type_t::undefined);
+        }
+
         auto residual = non_linear_iteration();
         print_residual(residual);
         if (print_vtk_only_last_step_)
@@ -1487,6 +1493,10 @@ namespace Tailor
                     Mesh* mesh_ptr = nullptr;
                     auto meshp = std::find_if(sp.mesh_.begin(), sp.mesh_.end(), [i](Mesh& m){return m.tag()() == i;});
                     auto& mesh = *meshp;
+        for (const MeshCell &mc : partition_->spc().sp().front().mesh().front().cell())
+        {
+            assert(mc.oga_cell_type() != OGA_cell_type_t::undefined);
+        }
 
                     if (meshp != sp.mesh_.end())
                     {
