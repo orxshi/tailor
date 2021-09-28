@@ -18,6 +18,7 @@ namespace Tailor
             //const auto& nei = mesh.cell(f);
 
             const MeshCell* nei = opposing_nei(mesh, f, mc.tag());
+            assert(nei != nullptr);
 
             for (int i=0; i<NVAR; ++i)
             {
