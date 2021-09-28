@@ -20,7 +20,7 @@ In sliding mesh technique meshes cannot overlap but only slide. It is possible t
 
 ## Partitioning
 
-<p align="center">
+<p align="left">
   <img src="https://github.com/orxshi/tailor/blob/main/images/partitioning.png" width="400" />
 </p>
 
