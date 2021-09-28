@@ -454,6 +454,11 @@ namespace Tailor
                 }
             }
         }
+        
+        for (const MeshCell &mc : partition_->spc().sp().front().mesh().front().cell())
+        {
+            assert(mc.oga_cell_type() == OGA_cell_type_t::field);
+        }
     }
 
     void Solver::transfer_oga_cell_type(const ArrCon<DonorInfo2> &di)
