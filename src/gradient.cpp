@@ -11,6 +11,8 @@ namespace Tailor
             data_[i] = 0.;
         }
 
+        return data_;
+
         int ff=0;
         for (const MeshFace& f: mc.face())
         //for (const auto& f: mc.pnei())
