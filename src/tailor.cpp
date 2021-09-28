@@ -214,6 +214,10 @@ namespace Tailor
         {
             profiler_start("solve");
             solver_->print_settings(); 
+            if (!assembler_on_)
+            {
+                solver_->set_oga_cell_type_all_field();
+            }
             solver_->solve(max_time_step_);
             compute_aerodyn_coef(compute_para);
             mem_usage(&comm_,  "solve");
