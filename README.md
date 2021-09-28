@@ -20,12 +20,6 @@ In sliding mesh technique meshes cannot overlap but only slide. It is possible t
 
 ## Partitioning
 
-<!--
-<p align="center">
-  <img src="https://github.com/orxshi/tailor/blob/main/images/partitioning.png" width="400" />
-</p>
--->
-
 <img src="https://github.com/orxshi/tailor/blob/main/images/partitioning.png" width="400" align="left" />
 
 Graph partitioners such as METIS, partitions each component mesh independently. Therefore, a partition does not contain more than one mesh. Also, METIS with default settings produces partitions that contain approximately the same number of cells. In overset mesh technique, overlapping mesh-cells need to be in the processors. In order to bring overlapping mesh-cells to the same partitions, geometric partitioning is applied. An octree is used to registed mesh-cells based on their spatial locations.
@@ -36,12 +30,12 @@ For balanced distrubution of work-load, the octree is refined adaptively at the 
 
 <br clear="left"/>
 
-## Features
-* Three-dimensional meshes
-* 
-3D Overset grid assembler and the Euler equations solver.
-Parallellization with OpenMPI.
-Spatial load balancing.
+## Flow solver
+tailor solves three-dimensional Euler equations. At each interface a Riemann problem is approximately solved with either explicit or implicit Roe solver or explicit HLLC solver. I am working on implicit HLLC solver.
+
+## Documentation
+
+My first objective is to prepare a pdf documentation explaining details of overset grid assembly and flow solver. The reason of non-html format is usage of Latex for mathematical formulation. Code documentation will take some time though since a lot of code clean up is needed before settling on code documentation.
 
 # Required libraries
 * Boost MPI for parallelization
@@ -50,4 +44,4 @@ Spatial load balancing.
 * METIS for load balancing.
 
 # Tested on
-* GNU C++ compiler 
+* GNU C++ compiler 8.3.0 and 9.2.0
