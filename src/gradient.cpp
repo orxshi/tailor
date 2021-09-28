@@ -15,6 +15,7 @@ namespace Tailor
         for (const MeshFace& f: mc.face())
         //for (const auto& f: mc.pnei())
         {
+            std::cout << "aaaaaaa" << std::endl;
             //const auto& nei = mesh.cell(f);
 
             const MeshCell* nei = opposing_nei(mesh, f, mc.tag());
@@ -68,12 +69,16 @@ namespace Tailor
                 data_[i](2) = data_[i](2) + mc.ls_wz_[ff] * tempf;
             }
 
+            std::cout << "bbbbbbb" << std::endl;
+
             //if (nei.btype() == BouType::partition) {
                 //break;
             //}
 
             ++ff;
         }
+        
+        std::cout << "cccccccccc" << std::endl;
 
         for (int i=0; i<NVAR; ++i)
         {
