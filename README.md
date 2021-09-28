@@ -48,7 +48,7 @@ I will provide parallel performance and validation results on pitching transonic
     * Boost Program_options for reading configuration files.
 * [METIS](http://glaros.dtc.umn.edu/gkhome/metis/metis/overview) for load balancing.
 * [Gmsh](https://gmsh.info/) for mesh generation in msh format.
-* [amgcl](https://github.com/ddemidov/amgcl) for solution of linear system of equations of implicit formulation is used.
+* [amgcl](https://github.com/ddemidov/amgcl) for solution if linear system of equations of implicit formulation is used.
 
 ## Tested on
 * GNU C++ compiler 8.3.0 and 9.2.0.
