@@ -1446,7 +1446,13 @@ namespace Tailor
 
             for (int i = 0; i < NVAR; ++i)
             {
+                std::cout << "grad(0) before: " << mc.gradient_[i](0) << std::endl;
+                std::cout << "grad(1) before: " << mc.gradient_[i](1) << std::endl;
+                std::cout << "grad(2) before: " << mc.gradient_[i](2) << std::endl;
                 mc.gradient_[i] *= limit_coef[i];
+                std::cout << "grad(0) after: " << mc.gradient_[i](0) << std::endl;
+                std::cout << "grad(1) after: " << mc.gradient_[i](1) << std::endl;
+                std::cout << "grad(2) after: " << mc.gradient_[i](2) << std::endl;
             }
         }
     }
@@ -1858,9 +1864,6 @@ namespace Tailor
         for (int i = 0; i < NVAR; ++i)
         {
             prim(i) = mc.prim(i) + dot(mc.gradient_[i], distance);
-            std::cout << "grad(0): " << mc.gradient_[i](0) << std::endl;
-            std::cout << "grad(1): " << mc.gradient_[i](1) << std::endl;
-            std::cout << "grad(2): " << mc.gradient_[i](2) << std::endl;
         }
 
         cons = prim_to_cons(prim, fs_.gamma_);
