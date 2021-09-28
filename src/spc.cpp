@@ -801,10 +801,6 @@ namespace Tailor
 
         for (const Mesh& m: mesh)
         {
-            for (const MeshCell &mc : m.cell())
-            {
-                assert(mc.oga_cell_type() == OGA_cell_type_t::field);
-            }
             sp.add_mesh(m);
             aabb.extend(AABB(m.rawpoint()));
         }

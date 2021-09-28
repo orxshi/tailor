@@ -137,6 +137,11 @@ namespace Tailor
             }
         }
 
+        for (const MeshCell &mc : partition_->spc().sp().front().mesh().front().cell())
+        {
+            assert(mc.oga_cell_type() == OGA_cell_type_t::undefined);
+        }
+
         global_nmesh_ = partition_->spc_->mesh_system_size();
 
         if (comm_->size() != 1)
@@ -448,8 +453,6 @@ namespace Tailor
         {
             for (MeshCell &mc : m.cell_)
             {
-                assert (mc.oga_cell_type() != OGA_cell_type_t::non_resident);
-                assert (mc.oga_cell_type() != OGA_cell_type_t::ghost);
                 if (mc.oga_cell_type() != OGA_cell_type_t::non_resident && mc.oga_cell_type() != OGA_cell_type_t::ghost)
                 {
                     mc.set_oga_cell_type(OGA_cell_type_t::field);
@@ -459,7 +462,7 @@ namespace Tailor
         
         for (const MeshCell &mc : partition_->spc().sp().front().mesh().front().cell())
         {
-            assert(mc.oga_cell_type() == OGA_cell_type_t::field);
+            assert(mc.oga_cell_type() != OGA_cell_type_t::undefined);
         }
     }
 
