@@ -34,6 +34,8 @@ Graph partitioners such as METIS, partitions each component mesh independently. 
 
 For balanced distrubution of work-load, the octree is refined adaptively at the most-loaded octree-bins until balanced distribution of octree-bins to processors is possible. At each refinement step, octree is converted to a graph and passed to METIS to find optimum distribution.
 
+<br clear="left"/>
+
 ## Features
 * Three-dimensional meshes
 * 
