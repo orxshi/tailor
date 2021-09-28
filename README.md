@@ -20,9 +20,13 @@ In sliding mesh technique meshes cannot overlap but only slide. It is possible t
 
 ## Partitioning
 
-<p align="left">
+<!--
+<p align="center">
   <img src="https://github.com/orxshi/tailor/blob/main/images/partitioning.png" width="400" />
 </p>
+-->
+
+<img src="https://github.com/orxshi/tailor/blob/main/images/partitioning.png" width="400" align="left" />
 
 Graph partitioners such as METIS, partitions each component mesh independently. Therefore, a partition does not contain more than one mesh. Also, METIS with default settings produces partitions that contain approximately the same number of cells. In overset mesh technique, overlapping mesh-cells need to be in the processors. In order to bring overlapping mesh-cells to the same partitions, geometric partitioning is applied. An octree is used to registed mesh-cells based on their spatial locations.
 
