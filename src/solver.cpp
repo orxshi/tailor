@@ -1828,6 +1828,8 @@ namespace Tailor
             return cons;
         }
 
+        assert(mc.oga_cell_type() != OGA_cell_type_t::undefined);
+
         //for (const auto &mff : mc.face())
         //{
         //    if (mff.btype() != BouType::interior) // TODO
