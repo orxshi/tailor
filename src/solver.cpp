@@ -1864,7 +1864,7 @@ namespace Tailor
         for (int i = 0; i < NVAR; ++i)
         {
             prim(i) = mc.prim(i) + dot(mc.gradient_[i], distance);
-            if (mc.gradient_[i](0) != 0. && mc.gradient_[i](1) != 0. && mc.gradient_[i](2) != 0.)
+            if (mc.gradient_[i](0) != 0.)
             {
                 std::cout << "grad(0) before: " << mc.gradient_[i](0) << std::endl;
                 std::cout << "grad(1) before: " << mc.gradient_[i](1) << std::endl;

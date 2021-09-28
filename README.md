@@ -1,6 +1,12 @@
 # tailor
 
-tailor is a flow solver which can operate on overset meshes. Below is an example component heli In overset mesh technique, overlapping mesh-cells need to be in the processors either temporarily or permanently. In this code, the overlapping mesh-cells are stored in the same partitions. Graph partitioners such as METIS, partitions each component mesh
+tailor is a flow solver which can operate on overset meshes.
+
+## Why use overset grid technique
+
+Below is a helicopter model consisting of six components: A fuselage, a hub and four blades. It is difficult to generate a single around all the components 
+
+In overset mesh technique, overlapping mesh-cells need to be in the processors either temporarily or permanently. In this code, the overlapping mesh-cells are stored in the same partitions. Graph partitioners such as METIS, partitions each component mesh
 
 ## Features
 * Three-dimensional meshes
