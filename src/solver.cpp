@@ -1858,7 +1858,9 @@ namespace Tailor
         for (int i = 0; i < NVAR; ++i)
         {
             prim(i) = mc.prim(i) + dot(mc.gradient_[i], distance);
-            //std::cout << "grad: " << limiter(i) << " " << dot(grad[i], d) << std::endl;
+            std::cout << "grad(0): " << mc.gradient_[i](0) << std::endl;
+            std::cout << "grad(1): " << mc.gradient_[i](1) << std::endl;
+            std::cout << "grad(2): " << mc.gradient_[i](2) << std::endl;
         }
 
         cons = prim_to_cons(prim, fs_.gamma_);
