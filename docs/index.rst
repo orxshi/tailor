@@ -5,10 +5,6 @@ Overview
    :maxdepth: 2
    :hidden:
 
-   index
-   solver
-   partitioning
-
 tailor is a spatially load balancing flow solver which can operate on three-dimensional moving overset meshes.
 
 Why use overset grid technique
