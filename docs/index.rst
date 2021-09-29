@@ -1,11 +1,5 @@
-Overview
-========
-
-.. toctree::
-   :maxdepth: 2
-
-   solver
-   partitioning
+tailor documentation
+====================
 
 tailor is a spatially load balancing flow solver which can operate on three-dimensional moving overset meshes.
 
@@ -67,3 +61,11 @@ Dependencies
 .. _Gmsh : https://gmsh.info/
 .. _amgcl : https://github.com/ddemidov/amgcl
 
+Contents
+--------
+
+.. toctree::
+   :maxdepth: 2
+
+   solver
+   partitioning
