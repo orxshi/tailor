@@ -46,10 +46,6 @@ Load balancing
 
 For balanced distrubution of work-load, the octree is refined adaptively at the most-loaded octree-bins until balanced distribution of octree-bins to processors is possible. At each refinement step, octree is converted to a graph and passed to METIS to find optimum distribution.
 
-Flow solver
------------
-tailor solves three-dimensional Euler equations. At each interface a Riemann problem is approximately solved with either explicit or implicit Roe solver or explicit HLLC solver. I am working on implicit HLLC solver.
-
 Test cases
 ----------
 
