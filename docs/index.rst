@@ -3,6 +3,7 @@ Overview
 
 .. toctree::
    :maxdepth: 2
+   :hidden:
 
    index
    solver
