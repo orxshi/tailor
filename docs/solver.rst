@@ -25,4 +25,40 @@ where, :math:`\mathbf{U}` is vector of conserved variables.
         \end{matrix}
     \right]
 
+    \mathbf{F}
+    =
+    \left[
+        \begin{matrix}
+            \rho u \\
+            \rho u^2 + p \\
+            \rho uv \\
+            \rho uw \\
+            u(E+p)
+        \end{matrix}
+    \right],
+    \quad
+    \mathbf{G}
+    =
+    \left[
+        \begin{matrix}
+            \rho v \\
+            \rho uv \\
+            \rho v^2 + p \\
+            \rho vw \\
+            v(E+p)
+        \end{matrix}
+    \right],
+    \quad
+    \mathbf{H}
+    =
+    \left[
+        \begin{matrix}
+            \rho w \\
+            \rho uw \\
+            \rho vw \\
+            \rho w^2 + p \\
+            w(E+p)
+        \end{matrix}
+    \right]
+
 and :math:`\mathbf{F}`, :math:`\mathbf{G}` and :math:`\mathbf{H}` are vectors of fluxes in x-, y- and z- directions, respectively.
