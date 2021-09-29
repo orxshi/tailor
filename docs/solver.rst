@@ -7,4 +7,4 @@ Differential form of the time dependent and three dimensional Euler equations is
 
 .. math::
 
-U_t + F_x + G_y + H_z = 0
+   U_t + F_x + G_y + H_z = 0
