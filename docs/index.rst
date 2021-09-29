@@ -10,9 +10,11 @@ The left-most figure below is a helicopter model consisting of six components: A
 
 .. image:: ../images/helicopter.png
   :width: 200
+  :alt: A simple helicopter configuration
 
 .. image:: ../hub_mesh_outline.png
   :width: 200
+  :alt: A simple helicopter configuration
 
 .. image:: ../blade_mesh_outline.png
   :width: 200
