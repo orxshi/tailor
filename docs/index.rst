@@ -1,5 +1,5 @@
-tailor
-======
+Overview
+========
 
 tailor is a spatially load balancing flow solver which can operate on three-dimensional moving overset meshes.
 
@@ -68,5 +68,5 @@ Dependencies
 .. toctree::
    :maxdepth: 2
 
-   tailor
+   index
    solver
