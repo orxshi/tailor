@@ -1645,6 +1645,10 @@ namespace Tailor
 
     void Solver::compute_gradient_coef()
     {
+        if (sorder_ == 1) {
+            return;
+        }
+
         auto &sp = partition_->spc_->sp_.front();
 
         for (Mesh &mesh : sp.mesh_)
