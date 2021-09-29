@@ -50,10 +50,15 @@ Test cases
 I will provide parallel performance and validation results on pitching transonic airfoil, isentropic vortex, ONERA M6 and helicopter test cases.
 
 ## Required libraries
-* Few [Boost](https://www.boost.org/) libraries such as
+* Few `Boost`_ libraries such as
     * Boost MPI for parallelization
     * Boost Serialization to save & restore data.
     * Boost Program_options for reading configuration files.
-* [METIS](http://glaros.dtc.umn.edu/gkhome/metis/metis/overview) for load balancing.
-* [Gmsh](https://gmsh.info/) for mesh generation in msh format.
-* [amgcl](https://github.com/ddemidov/amgcl) for solution of linear system of equations if implicit formulation is used.
+* `METIS`_ for load balancing.
+* `Gmsh`_ for mesh generation in msh format.
+* `amgcl`_ for solution of linear system of equations if implicit formulation is used.
+
+.. _Boost : https://www.boost.org/
+.. _METIS : http://glaros.dtc.umn.edu/gkhome/metis/metis/overview
+.. _Gmsh : https://gmsh.info/
+.. _amgcl : https://github.com/ddemidov/amgcl
