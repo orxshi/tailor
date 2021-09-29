@@ -10,13 +10,11 @@ The left-most figure below is a helicopter model consisting of six components: A
 
 .. image:: ../images/helicopter.png
   :width: 200
-  :alt: A simple helicopter configuration
 
-.. image:: ../hub_mesh_outline.png
+.. image:: ../images/hub_mesh_outline.png
   :width: 200
-  :alt: A simple helicopter configuration
 
-.. image:: ../blade_mesh_outline.png
+.. image:: ../images/blade_mesh_outline.png
   :width: 200
 
 How overset grid technique works
@@ -32,7 +30,7 @@ In sliding mesh technique meshes cannot overlap but only slide. It is possible t
 Partitioning
 ------------
 
-.. image:: ../partitioning.png
+.. image:: ../images/partitioning.png
   :width: 200
 
 Graph partitioners such as METIS, partitions each component mesh independently. Therefore, a partition does not contain more than one mesh. Also, METIS with default settings produces partitions that contain approximately the same number of cells. In overset mesh technique, overlapping mesh-cells need to be in the processors. In order to bring overlapping mesh-cells to the same partitions, geometric partitioning is applied. An octree is used to registed mesh-cells based on their spatial locations.
