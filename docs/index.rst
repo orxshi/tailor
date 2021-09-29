@@ -1,6 +1,12 @@
 Overview
 ========
 
+.. toctree::
+   :maxdepth: 2
+
+   index
+   solver
+
 tailor is a spatially load balancing flow solver which can operate on three-dimensional moving overset meshes.
 
 Why use overset grid technique
@@ -65,8 +71,3 @@ Dependencies
 .. _Gmsh : https://gmsh.info/
 .. _amgcl : https://github.com/ddemidov/amgcl
 
-.. toctree::
-   :maxdepth: 2
-
-   index
-   solver
