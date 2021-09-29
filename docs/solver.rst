@@ -23,8 +23,8 @@ where, :math:`\mathbf{U}` is vector of conserved variables.
             \rho w \\
             E
         \end{matrix}
-    \right]
-
+    \right],
+    \quad
     \mathbf{F}
     =
     \left[
