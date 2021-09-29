@@ -8,3 +8,21 @@ Differential form of the time dependent and three dimensional Euler equations is
 .. math::
 
    \mathbf{U}_t + \mathbf{F}_x + \mathbf{G}_y + \mathbf{H}_z = 0
+
+where, :math:`\mathbf{U}` is vector of conserved variables.
+
+.. math::
+
+    \mathbf{U}
+    =
+    \left[
+        \begin{matrix}
+            \rho \\
+            \rho u \\
+            \rho v \\
+            \rho w \\
+            E
+        \end{matrix}
+    \right]
+
+and :math:`\mathbf{F}`, :math:`\mathbf{G}` and :math:`\mathbf{H}` are vectors of fluxes in x-, y- and z- directions, respectively.
