@@ -3,7 +3,6 @@ Overview
 
 .. toctree::
    :maxdepth: 2
-   :hidden:
 
    solver
    partitioning
