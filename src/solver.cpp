@@ -1868,12 +1868,6 @@ namespace Tailor
 
         cons = prim_to_cons(prim, fs_.gamma_);
 
-        assert(cons(0) == mc.cons_sp1()(0));
-        assert(cons(1) == mc.cons_sp1()(1));
-        assert(cons(2) == mc.cons_sp1()(2));
-        assert(cons(3) == mc.cons_sp1()(3));
-        assert(cons(4) == mc.cons_sp1()(4));
-
         return cons;
     }
 
