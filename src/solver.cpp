@@ -1426,6 +1426,10 @@ namespace Tailor
 
     void Solver::compute_gradient(Mesh& mesh)
     {
+        if (sorder_ == 1) {
+            return;
+        }
+
         Limiter limiter(LimiterType::venka);
 
         for (MeshCell &mc : mesh.cell_)
@@ -1649,17 +1653,15 @@ namespace Tailor
             return;
         }
 
+        if (nsolve_ != 0) {
+            return;
+        }
+
         auto &sp = partition_->spc_->sp_.front();
 
         for (Mesh &mesh : sp.mesh_)
         {
-            if (nsolve_ == 0)
-            {
-                if (sorder_ == 2)
-                {
-                    Gradient::calc_ls_coef(mesh);
-                }
-            }
+            Gradient::calc_ls_coef(mesh);
         }
     }
 
