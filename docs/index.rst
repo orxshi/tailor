@@ -49,7 +49,9 @@ Test cases
 
 I will provide parallel performance and validation results on pitching transonic airfoil, isentropic vortex, ONERA M6 and helicopter test cases.
 
-## Required libraries
+Dependencies
+------------
+
 * Few `Boost`_ libraries such as
     * Boost MPI for parallelization
     * Boost Serialization to save & restore data.
@@ -62,3 +64,9 @@ I will provide parallel performance and validation results on pitching transonic
 .. _METIS : http://glaros.dtc.umn.edu/gkhome/metis/metis/overview
 .. _Gmsh : https://gmsh.info/
 .. _amgcl : https://github.com/ddemidov/amgcl
+
+.. toctree::
+   :maxdepth: 2
+
+   tailor
+   solver
