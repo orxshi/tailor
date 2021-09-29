@@ -1,14 +1,15 @@
 c=1; // chord length
 t=12 * c / 100; // thickness -- NACA0012
 nX=1000; // number of 'x' points
-depth=1; // extrusion length
-transCircleEach=5;
-major=100;
-minor=100;
+depth=1000; // extrusion length
+transCircleEach=400;
+transVert=150;
+major=30;
+minor=30;
 originx=0;
 originy=0;
-transVert=33;
-progvert=0.8;
+nz=1;
+stretchVert=0.95;
 
 cenPx = originx;
 cenPy = originy;
@@ -109,10 +110,10 @@ Curve Loop(llsw) = {-lss, -circleQ3, lww, liws};
 //Transfinite Line{circleQ3} = transCircleEach Using Progression 1.0;
 //Transfinite Line{circleQ4} = transCircleEach Using Progression 1.0;
 
-//Transfinite Line{lnn} = transVert Using Progression progvert;
-//Transfinite Line{lee} = transVert Using Progression progvert;
-//Transfinite Line{lww} = transVert Using Progression progvert;
-//Transfinite Line{lss} = transVert Using Progression progvert;
+//Transfinite Line{lnn} = transVert Using Progression stretchVert; // 0.78
+//Transfinite Line{lee} = transVert Using Progression stretchVert;
+//Transfinite Line{lww} = transVert Using Progression stretchVert;
+//Transfinite Line{lss} = transVert Using Progression stretchVert;
 
 //Transfinite Line{liws} = transCircleEach Using Progression 1.0;
 //Transfinite Line{lise} = transCircleEach Using Progression 1.0;
@@ -129,7 +130,12 @@ Plane Surface(4) = {llse};
 //Transfinite Surface{3};
 //Transfinite Surface{4};
 
-out[] = Extrude {0,0,depth} { Surface{1,2,3,4}; Layers{1}; Recombine;};
+//Recombine Surface{1};
+//Recombine Surface{2};
+//Recombine Surface{3};
+//Recombine Surface{4};
+
+out[] = Extrude {0,0,depth} { Surface{1,2,3,4}; Layers{nz}; Recombine;};
 
 Printf("out[0], empty: %g",out[0]);
 Printf("out[1], empty: %g",out[1]);
@@ -159,34 +165,34 @@ Printf("out[21], outer: %g",out[21]);
 Printf("out[22], skip: %g",out[22]);
 Printf("out[23], foil: %g",out[23]);
 
-outerbc[0] = out[3];
-outerbc[1] = out[9];
-outerbc[2] = out[15];
-outerbc[3] = out[21];
-
 wallbc[0] = out[5];
 wallbc[1] = out[11];
 wallbc[2] = out[17];
 wallbc[3] = out[23];
 
-emptybc[0] = out[0];
-emptybc[1] = out[1];
-emptybc[2] = out[6];
-emptybc[3] = out[7];
-emptybc[4] = out[12];
-emptybc[5] = out[13];
-emptybc[6] = out[18];
-emptybc[7] = out[19];
+outerbc[0] = out[3];
+outerbc[1] = out[9];
+outerbc[2] = out[15];
+outerbc[3] = out[21];
+
+emptybc[0] = out[1];
+emptybc[1] = out[7];
+emptybc[2] = out[13];
+emptybc[3] = out[19];
+emptybc[4] = out[0];
+emptybc[5] = out[6];
+emptybc[6] = out[12];
+emptybc[7] = out[18];
 
 Physical Surface(1) = wallbc[];
-Physical Surface(9) = outerbc[];
+Physical Surface(2) = outerbc[];
 Physical Surface(3) = emptybc[];
 Physical Volume(4) = {1,2,3,4};
 
-lc = 10;
+lc = 5;
 Field[1] = Distance;
-Field[1].FacesList = {out[5], out[11], out[17], out[23]};
+Field[1].FacesList = {wallbc[]};
 Field[1].NNodesByEdge = 100;
 Field[2] = MathEval;
-Field[2].F = Sprintf("F1/3 + %g", lc / 1000);
+Field[2].F = Sprintf("F1/5 + %g", lc / 1000);
 Background Field = 2;
