@@ -2,6 +2,7 @@ Test cases
 ==========
 
 .. _steady-transonic-airfoil:
+
 Steady transonic airfoil
 ------------------------
 
@@ -17,7 +18,7 @@ Flow properties are shown in the following table.
    * - Mach
      - 0.8
    * - Angle of attack
-     - 1.25 :math:`^\circ`
+     - 1.25:math:`^\circ`
    * - Freestream pressure
      - 0.7
    * - Freestream density
