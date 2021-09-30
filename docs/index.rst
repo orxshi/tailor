@@ -51,3 +51,4 @@ Contents
 
    solver
    partitioning
+   test_cases
