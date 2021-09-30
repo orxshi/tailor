@@ -17,7 +17,7 @@ Flow properties are shown in the following table.
    * - Mach
      - 0.8
    * - Angle of attack
-     - 1.25
+     - 1.25 :math:`^\circ`
    * - Freestream pressure
      - 0.7
    * - Freestream density
