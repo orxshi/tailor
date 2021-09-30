@@ -1,4 +1,5 @@
 .. _steady-transonic-airfoil:
+
 Steady transonic airfoil
 ------------------------
 
@@ -9,26 +10,34 @@ Boundary conditions on the airfoil and in outer boundary are slip-wall and Riema
 Flow properties are shown in the following table.
 
 .. list-table:: Flow properties
-   :header-rows: 1
+   :header-rows: 0
 
-   * - Mach, 0.8
-     - Angle of attack, 1.25
-     - Freestream pressure, 0.7
-     - Freestream density, 1
-     - Ratio of specific heats, 1.4
+   * - Mach
+     - 0.8
+   * - Angle of attack
+     - :math:`1.25^\circ`
+   * - Freestream pressure
+     - 0.7
+   * - Freestream density
+     - 1
+   * - Ratio of specific heats
+     - 1.4
 
 .. list-table:: Solver parameters
-   :header-rows: 1
+   :header-rows: 0
 
-   * - Rieman solver, Roe
-     - Formulation, implicit
-     - Spatial order of accuracy, 2
-     - Temporal order of accuracy, 1
-     - CFL, 10
+   * - Rieman solver
+     - Roe
+   * - Formulation
+     - implicit
+   * - Spatial order of accuracy
+     - 2
+   * - Temporal order of accuracy
+     - 1
+   * - CFL
+     - 10
 
 The code works even when CFL is greater than 10 however, residuals do not converge below 1e-2 in that case.
 
 Figure below shows convergence history.
 Figure below shows pressure coefficients at the airfoil surface.
-
-
