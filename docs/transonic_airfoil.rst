@@ -1,3 +1,4 @@
+.. _steady-transonic-airfoil:
 Steady transonic airfoil
 ------------------------
 
