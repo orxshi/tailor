@@ -15,19 +15,19 @@ Flow properties are shown in the following table.
    :header-rows: 0
 
    * - Mach, 0.8
-     - Angle of attack, 1.25
-     - Freestream pressure, 0.7
-     - Freestream density, 1
-     - Ratio of specific heats, 1.4
+   * - Angle of attack, 1.25
+   * - Freestream pressure, 0.7
+   * - Freestream density, 1
+   * - Ratio of specific heats, 1.4
 
 .. list-table:: Solver parameters
    :header-rows: 0
 
    * - Rieman solver, Roe
-     - Formulation, implicit
-     - Spatial order of accuracy, 2
-     - Temporal order of accuracy, 1
-     - CFL, 10
+   * - Formulation, implicit
+   * - Spatial order of accuracy, 2
+   * - Temporal order of accuracy, 1
+   * - CFL, 10
 
 The code works even when CFL is greater than 10 however, residuals do not converge below 1e-2 in that case.
 
