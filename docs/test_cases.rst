@@ -12,7 +12,7 @@ Boundary conditions on the airfoil and in outer boundary are slip-wall and Riema
 Flow properties are shown in the following table.
 
 .. list-table:: Flow properties
-   :header-rows: 1
+   :header-rows: 0
 
    * - Mach, 0.8
      - Angle of attack, 1.25
@@ -21,7 +21,7 @@ Flow properties are shown in the following table.
      - Ratio of specific heats, 1.4
 
 .. list-table:: Solver parameters
-   :header-rows: 1
+   :header-rows: 0
 
    * - Rieman solver, Roe
      - Formulation, implicit
