@@ -570,6 +570,10 @@ namespace Tailor
                     continue;
                 }
 
+                if (!mf.parent_cell().empty())
+                {
+                    std::cout << "mf.btype(): " << static_cast<int>(mf.btype()) << std::endl;
+                }
                 assert(mf.parent_cell().empty());
                 mf.add_parent_cell(mc.tag());
                 assert(mf.parent_cell().size() == 1);

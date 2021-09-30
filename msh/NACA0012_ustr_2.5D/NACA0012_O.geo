@@ -189,10 +189,10 @@ Physical Surface(2) = outerbc[];
 Physical Surface(3) = emptybc[];
 Physical Volume(4) = {1,2,3,4};
 
-lc = 5;
+lc = 1;
 Field[1] = Distance;
 Field[1].FacesList = {wallbc[]};
 Field[1].NNodesByEdge = 100;
 Field[2] = MathEval;
-Field[2].F = Sprintf("F1/5 + %g", lc / 1000);
+Field[2].F = Sprintf("F1/20 + %g", lc / 1000);
 Background Field = 2;
