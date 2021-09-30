@@ -1,4 +1,4 @@
 Test cases
 ==========
 
-:ref:`steady-transonic-airfoil`
+:ref:`transonic_airfoil:steady-transonic-airfoil`
