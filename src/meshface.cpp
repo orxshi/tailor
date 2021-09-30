@@ -409,7 +409,7 @@ namespace Tailor
     
     bool MeshFace::is_boundary() const
     {
-        if (btype_ == BouType::wall || btype_ == BouType::dirichlet || btype_ == BouType::farfield || btype_ == BouType::empty || btype_ == BouType::interog) {
+        if (btype_ == BouType::wall || btype_ == BouType::dirichlet || btype_ == BouType::farfield || btype_ == BouType::empty || btype_ == BouType::interog || btype_ == BouType::symmetry) {
             return true;
         }
 
