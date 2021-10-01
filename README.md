@@ -4,7 +4,7 @@ Tailor is a spatially load balancing flow solver which can operate on three-dime
 
 # Features
 * Can solve moving mesh problems.
-* Uses overset mesh technique so that each component can has its own mesh.
+* Uses overset mesh technique so that each component has its own mesh.
 * Has lower inter-processor communication thanks to geometric/spatial partitioning.
 * Makes load balance thanks to hybrid graph/geometric partitioning.
 * Can solve the three-dimensional Euler equations.
