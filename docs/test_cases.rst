@@ -44,3 +44,6 @@ The code works even when CFL is greater than 10 however, residuals do not conver
 
 Figure below shows convergence history.
 Figure below shows pressure coefficients at the airfoil surface.
+
+.. image:: ../images/transonic-airfoil-pc.png
+  :width: 200
