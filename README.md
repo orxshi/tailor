@@ -84,7 +84,7 @@ I will provide validation results on the following test cases.
 I will also provide parallel performance results on helicopter configuration.
 
 # Dependencies
-* Linux operating system (I haven't tried other systems).
+* Linux operating system (I have tried only Ubuntu and haven't tried other operating systems).
 * C++ compiler (I tested only on GNU C++ compiler 8.3.0 and 9.2.0).
 * Few [Boost](https://www.boost.org/) libraries such as
     * Boost MPI for parallelization
