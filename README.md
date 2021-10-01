@@ -19,7 +19,7 @@ Make a build directory and go to the build directory.
 
 `mkdir build && cd "$_"`
 
-Execute CMake with file locations of Boost and METIS if they are not in system directory.
+Execute CMake with locations of Boost and METIS if they are not in system directory. The following arguments are just examples.
 
 `cmake .. -DBOOST_ROOT=~/boost -DMETIS_DIR=~/metis`
 
