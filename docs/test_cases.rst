@@ -42,8 +42,7 @@ Flow properties are shown in the following table.
 
 The code works even when CFL is greater than 10 however, residuals do not converge below 1e-2 in that case.
 
-Figure below shows convergence history.
-Figure below shows pressure coefficients at the airfoil surface.
+Figures below show the mesh for the airfoil.
 
 .. image:: ../images/transonic-airfoil-mesh-far.png
   :width: 200
@@ -53,6 +52,13 @@ Figure below shows pressure coefficients at the airfoil surface.
 
 .. image:: ../images/transonic-airfoil-mesh-close.png
   :width: 200
+
+Figure below shows convergence history.
+
+.. image:: ../images/transonic-airfoil-converge.png
+  :width: 200
+
+Figure below shows pressure coefficients at the airfoil surface.
 
 .. image:: ../images/transonic-airfoil-pc.png
   :width: 200
