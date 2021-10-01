@@ -12,30 +12,26 @@ The left-most figure below is a helicopter model consisting of six components: A
 
 ## How overset grid technique works
 
-In overset grid technique, a mesh is generated independently for each component. In the case of helicopter, a spherical mesh can be generated for the hub as shown in center figure above. Note that, only outline of the mesh shown for clarity. Similarly, a cylindrical mesh can be generated for a blade as shown in right-most figure above. For the fuselage, a spherical mesh can be used which would also act as a background mesh containing all other meshes.
+In overset grid technique, each component is meshed independently. In the case of helicopter, a spherical mesh can be generated for the hub as shown in center figure above. Note that, only outline of the mesh shown for clarity. Similarly, a cylindrical mesh can be generated for a blade as shown in right-most figure above. For the fuselage, a spherical mesh can be used which would also act as a background mesh containing all other meshes. The component meshes, per se, are not useful since data cannot transmit across. The assembler determines the overlapping cells and forms donor-receptor pairs to transmit data. In addition, the assembler determines the invalid cells which overlap invalid regions of space such as solids/holes and exclude those from the mesh-system. In general, the assembler categorizes cells so that the flow solver operates different tasks based on the cell type. For example, there is a category called field/computational cell in which flow solver solves the Euler equations.
 
 ## Overset grid technique versus sliding mesh technique
 
 In sliding mesh technique meshes cannot overlap but only slide. It is possible to simulate the helicopter model shown above with sliding mesh technique. However, it is impossible to add a tail rotor to the model in sliding mesh technique but there is no such limitation in overset mesh technique.
 
-## Partitioning
+## Partitioning and load balancing
 
 <img src="https://github.com/orxshi/tailor/blob/main/images/partitioning.png" width="400" align="left" />
 
-Graph partitioners such as METIS, partitions each component mesh independently. Therefore, a partition does not contain more than one mesh. Also, METIS with default settings produces partitions that contain approximately the same number of cells. In overset mesh technique, overlapping mesh-cells need to be in the processors. In order to bring overlapping mesh-cells to the same partitions, geometric partitioning is applied. An octree is used to registed mesh-cells based on their spatial locations.
-
-## Load balancing
-
-For balanced distrubution of work-load, the octree is refined adaptively at the most-loaded octree-bins until balanced distribution of octree-bins to processors is possible. At each refinement step, octree is converted to a graph and passed to METIS to find optimum distribution.
+The figure on the left shows the flowchart for partitioning of mesh-system. In parallel computing environment, data, which is the mesh-system in this case, need to be decomposed into partitions on which processors work on. Tailor expects n partitions of each component mesh to be read by n processors. At this point, processors contain partitions/mesh-blocks that are not overlapping. Since data is transmitted across donor-receptor pairs, the pairs are brought together with geometric/spatial partitioning to avoid repetitive inter-processor communication. The geometric and graph partitioning continues back-and-forth until balanced distribution of partitions to processors is possible.
 
 <br clear="left"/>
 
 ## Flow solver
-tailor solves three-dimensional Euler equations. At each interface a Riemann problem is approximately solved with either explicit or implicit Roe solver or explicit HLLC solver. I am working on implicit HLLC solver.
+tailor solves three-dimensional Euler equations. At each interface a Riemann problem is approximately solved with either explicit/implicit Roe solver or explicit HLLC solver. I am working on implicit HLLC solver.
 
 ## Documentation
 
-My first objective is to prepare a pdf documentation explaining details of overset grid assembly and flow solver. The reason of non-html format is usage of Latex for mathematical formulation. Code documentation will take some time though since a lot of code clean up is needed before settling on code documentation.
+I am preparing a readthedocs documentation to explain the theory and the code. Code documentation will take some time though since a lot of code clean up is needed.
 
 ## Test cases
 

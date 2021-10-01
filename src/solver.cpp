@@ -1671,7 +1671,7 @@ namespace Tailor
 
         for (Mesh &mesh : sp.mesh_)
         {
-            mesh.calc_mesh_velocities(fs_, comm_->rank());
+            mesh.calc_mesh_velocities(fs_, comm_->rank(), nsolve_ * dt_);
         }
     }
 

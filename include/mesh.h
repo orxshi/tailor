@@ -126,7 +126,7 @@ namespace Tailor
 
         void set_all_cells_as_interior();
         bool is_gcl_satisfied(int rank) const;
-        void calc_mesh_velocities(const Freestream& fs, int rank);
+        void calc_mesh_velocities(const Freestream& fs, int rank, double real_time);
         void reset_R();
         void reset_D();
         void set_prim_cons(BouType btype, const Vector5& prim, double gamma);

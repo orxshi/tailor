@@ -59,6 +59,7 @@ namespace Tailor
     struct Component
     {
         bool rotation_;
+        bool oscillation;
         int rotaxis_;
         int rpm_;
         double mach_;
@@ -68,6 +69,10 @@ namespace Tailor
         double u;
         double v;
         double w;
+        double reduced_freq;
+        double chord;
+        double aoa_mean_deg;
+        double aoa_o_deg;
 
         void read(const Tag& mtag);
     };

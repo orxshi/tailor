@@ -208,7 +208,7 @@ namespace Tailor
         return vf_;
     }
 
-    void MeshFace::face_velocity(const Freestream& fs, const Component& compo)
+    void MeshFace::face_velocity(const Freestream& fs, const Component& compo, double real_time)
     {
         // https://www.lehman.edu/faculty/anchordoqui/chapter06.pdf
 
@@ -240,6 +240,7 @@ namespace Tailor
         //double aoa_foil_x = fs.aoa_foil_x_;
         //double aoa_foil_z = fs.aoa_foil_z_;
         double rotation = compo.rotation_;
+        double oscillation = compo.oscillation;
         double rotaxis = compo.rotaxis_;
         double rpm = compo.rpm_;
         auto pivot = compo.pivot_;
@@ -253,40 +254,79 @@ namespace Tailor
         double omega, alpha, thetax, thetay, r;
         if (rotation)
         {
-            // rpm_foil is positive if ccw.
-            double om = rpm * 2. * PI / 60.; // rad/s
-            Vector3 omega(0., 0., om);
+            if (!oscillation)
+            {
+                // rpm_foil is positive if ccw.
+                double om = rpm * 2. * PI / 60.; // rad/s
+                Vector3 omega(0., 0., om);
 
-            if (rotaxis == 0)
-            {
-                assert(false);
-            }
-            else if (rotaxis == 1)
-            {
-                assert(false);
-            }
-            else if (rotaxis == 2)
-            {
-                auto cnt = face_.centroid();
-                auto r = cnt - pivot;
-                r(2) = 0.;
-
-                vel = cross(omega, r);
-                if (vel(2) != 0.)
+                if (rotaxis == 0)
                 {
-                    std::cout << "vel(2): " << vel(2) << std::endl;
+                    assert(false);
                 }
-                assert(vel(2) == 0.);
+                else if (rotaxis == 1)
+                {
+                    assert(false);
+                }
+                else if (rotaxis == 2)
+                {
+                    auto cnt = face_.centroid();
+                    auto r = cnt - pivot;
+                    r(2) = 0.;
 
-                //auto rvec = Vector3(cnt(0), cnt(1), pivot(2));
-                //r = (rvec - pivot).len();
-                //alpha = std::atan2(cnt(0), cnt(1));
-                //thetax = -std::sin(alpha);
-                //thetay = std::cos(alpha);
-                //vel = Vector3(
-                //        omega * r * thetax,
-                //        omega * r * thetay,
-                //        0.);
+                    vel = cross(omega, r);
+                    if (vel(2) != 0.)
+                    {
+                        std::cout << "vel(2): " << vel(2) << std::endl;
+                    }
+                    assert(vel(2) == 0.);
+
+                    //auto rvec = Vector3(cnt(0), cnt(1), pivot(2));
+                    //r = (rvec - pivot).len();
+                    //alpha = std::atan2(cnt(0), cnt(1));
+                    //thetax = -std::sin(alpha);
+                    //thetay = std::cos(alpha);
+                    //vel = Vector3(
+                    //        omega * r * thetax,
+                    //        omega * r * thetay,
+                    //        0.);
+                }
+            }
+            else
+            {
+                double dirz = compo.dirz_;
+                double reduced_freq = compo.reduced_freq;
+                double u = compo.u;
+                double v = compo.v;
+                double w = compo.w;
+                Vector3 U(u, v, w);
+                double u_ref = U.len();
+                double chord = compo.chord;
+                double aoa_mean_deg = compo.aoa_mean_deg;
+                double aoa_o_deg = compo.aoa_o_deg;
+                double aoa_mean = deg_to_rad(aoa_mean_deg);
+                double aoa_o = deg_to_rad(aoa_o_deg);
+
+                double om = 2. * reduced_freq * u_ref / chord; // rad/s
+                double sign = std::sin(om * real_time);
+
+                if (sign < 0.)
+                {
+                    omega *= -1.;
+                }
+
+                Vector3 omega(0., 0., om);
+
+                assert(rotaxis == 2);
+
+                if (rotaxis == 2)
+                {
+                    auto cnt = face_.centroid();
+                    auto r = cnt - pivot;
+                    r(2) = 0.;
+
+                    vel = cross(omega, r);
+                }
             }
         }
         else

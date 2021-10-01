@@ -43,7 +43,7 @@ namespace Tailor
         void set_R_checked(bool b);
         const Vector3& vf() const;
         double vgn() const;
-        void face_velocity(const Freestream& fs, const Component& compo);
+        void face_velocity(const Freestream& fs, const Component& compo, double real_time);
         //const Matrix<NVAR, NVAR>& ML() const;
         //const Matrix<NVAR, NVAR>& MR() const;
         const Matrix5& M() const;

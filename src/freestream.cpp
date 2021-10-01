@@ -61,6 +61,7 @@ namespace Tailor
         po::options_description desc{sdesc};
         desc.add_options()
             (cstr(sdesc, "rotation"), po::value<bool>()->default_value(false), "")
+            (cstr(sdesc, "oscillation"), po::value<bool>()->default_value(false), "")
             (cstr(sdesc, "rotaxis"), po::value<int>()->default_value(0), "")
             (cstr(sdesc, "rpm"), po::value<int>()->default_value(0), "")
             (cstr(sdesc, "pivotx"), po::value<double>()->default_value(0), "")
@@ -72,6 +73,10 @@ namespace Tailor
             (cstr(sdesc, "u"), po::value<double>()->default_value(0), "")
             (cstr(sdesc, "v"), po::value<double>()->default_value(0), "")
             (cstr(sdesc, "w"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "reduced-freq"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "chord"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "aoa-mean-deg"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "aoa-o-deg"), po::value<double>()->default_value(0), "")
             ;
 
         op.add(desc);
@@ -83,6 +88,7 @@ namespace Tailor
         po::notify(vm);
 
         rotation_ = vm[cstr(sdesc, "rotation")].as<bool>();
+        oscillation = vm[cstr(sdesc, "oscillation")].as<bool>();
         rotaxis_ = vm[cstr(sdesc, "rotaxis")].as<int>();
         rpm_ = vm[cstr(sdesc, "rpm")].as<int>();
         double pivotx = vm[cstr(sdesc, "pivotx")].as<double>();
@@ -95,6 +101,10 @@ namespace Tailor
         u = vm[cstr(sdesc, "u")].as<double>();
         v = vm[cstr(sdesc, "v")].as<double>();
         w = vm[cstr(sdesc, "w")].as<double>();
+        reduced_freq = vm[cstr(sdesc, "reduced-freq")].as<double>();
+        chord = vm[cstr(sdesc, "chord")].as<double>();
+        aoa_mean_deg = vm[cstr(sdesc, "aoa-mean-deg")].as<double>();
+        aoa_o_deg = vm[cstr(sdesc, "aoa-o-deg")].as<double>();
     }
 
     void FlowInit::read(const Tag& meshtag)
