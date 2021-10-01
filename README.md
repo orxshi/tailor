@@ -1,6 +1,6 @@
-# tailor
+# Tailor
 
-tailor is a spatially load balancing flow solver which can operate on three-dimensional moving overset meshes.
+Tailor is a spatially load balancing flow solver which can operate on three-dimensional moving overset meshes.
 
 ## Why use overset mesh technique
 
@@ -27,7 +27,7 @@ The figure on the left shows the flowchart for partitioning of mesh-system. In p
 <br clear="left"/>
 
 ## Flow solver
-tailor solves three-dimensional Euler equations. At each interface a Riemann problem is approximately solved with either explicit/implicit Roe solver or explicit HLLC solver. I am working on implicit HLLC solver.
+Tailor solves three-dimensional Euler equations. At each interface a Riemann problem is approximately solved with either explicit/implicit Roe solver or explicit HLLC solver. I am working on implicit HLLC solver.
 
 ## Documentation
 
