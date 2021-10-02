@@ -2,8 +2,8 @@ c=1; // chord length
 t=12 * c / 100; // thickness -- NACA0012
 nX=1000; // number of 'x' points
 depth=1000; // extrusion length
-transCircleEach=400;
-transVert=150;
+transCircleEach=80;
+transVert=200;
 major=30;
 minor=30;
 originx=0;
@@ -105,35 +105,35 @@ Curve Loop(llse) = {-lee, -circleQ4, lss, lise};
 llsw = newll;
 Curve Loop(llsw) = {-lss, -circleQ3, lww, liws};
 
-Transfinite Line{circleQ1} = transCircleEach Using Progression 1.0;
-Transfinite Line{circleQ2} = transCircleEach Using Progression 1.0;
-Transfinite Line{circleQ3} = transCircleEach Using Progression 1.0;
-Transfinite Line{circleQ4} = transCircleEach Using Progression 1.0;
+//Transfinite Line{circleQ1} = transCircleEach Using Progression 1.0;
+//Transfinite Line{circleQ2} = transCircleEach Using Progression 1.0;
+//Transfinite Line{circleQ3} = transCircleEach Using Progression 1.0;
+//Transfinite Line{circleQ4} = transCircleEach Using Progression 1.0;
 
-Transfinite Line{lnn} = transVert Using Progression stretchVert; // 0.78
-Transfinite Line{lee} = transVert Using Progression stretchVert;
-Transfinite Line{lww} = transVert Using Progression stretchVert;
-Transfinite Line{lss} = transVert Using Progression stretchVert;
+//Transfinite Line{lnn} = transVert Using Progression stretchVert; // 0.78
+//Transfinite Line{lee} = transVert Using Progression stretchVert;
+//Transfinite Line{lww} = transVert Using Progression stretchVert;
+//Transfinite Line{lss} = transVert Using Progression stretchVert;
 
-Transfinite Line{liws} = transCircleEach Using Progression 1.0;
-Transfinite Line{lise} = transCircleEach Using Progression 1.0;
-Transfinite Line{line} = transCircleEach Using Progression 1.0;
-Transfinite Line{liwn} = transCircleEach Using Progression 1.0;
+//Transfinite Line{liws} = transCircleEach Using Progression 1.0;
+//Transfinite Line{lise} = transCircleEach Using Progression 1.0;
+//Transfinite Line{line} = transCircleEach Using Progression 1.0;
+//Transfinite Line{liwn} = transCircleEach Using Progression 1.0;
 
 Plane Surface(1) = {llnw};
 Plane Surface(2) = {llne};
 Plane Surface(3) = {llsw};
 Plane Surface(4) = {llse};
 
-Transfinite Surface{1};
-Transfinite Surface{2};
-Transfinite Surface{3};
-Transfinite Surface{4};
+//Transfinite Surface{1};
+//Transfinite Surface{2};
+//Transfinite Surface{3};
+//Transfinite Surface{4};
 
-Recombine Surface{1};
-Recombine Surface{2};
-Recombine Surface{3};
-Recombine Surface{4};
+//Recombine Surface{1};
+//Recombine Surface{2};
+//Recombine Surface{3};
+//Recombine Surface{4};
 
 out[] = Extrude {0,0,depth} { Surface{1,2,3,4}; Layers{nz}; Recombine;};
 
@@ -185,6 +185,14 @@ emptybc[6] = out[12];
 emptybc[7] = out[18];
 
 Physical Surface(1) = wallbc[];
-Physical Surface(9) = outerbc[];
+Physical Surface(11) = outerbc[];
 Physical Surface(3) = emptybc[];
 Physical Volume(4) = {1,2,3,4};
+
+lc = 1;
+Field[1] = Distance;
+Field[1].FacesList = {wallbc[]};
+Field[1].NNodesByEdge = 100;
+Field[2] = MathEval;
+Field[2].F = Sprintf("F1/20 + %g", lc / 1000);
+Background Field = 2;

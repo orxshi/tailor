@@ -18,7 +18,7 @@ std::vector<Tailor::AeroCoefPara> set_aero_para()
 void rotate(Tailor::Tailor& tailor)
 {
     Tailor::Component compo;
-    compo.read(Tailor::Tag(0));
+    compo.read(Tailor::Tag(1));
 
     auto solver = tailor.solver();
 
@@ -41,7 +41,7 @@ void rotate(Tailor::Tailor& tailor)
     int axis = compo.rotaxis_;
     Tailor::Vector3 pivot(compo.pivot_(0), compo.pivot_(1), compo.pivot_(2));
 
-    tailor.rotate(Tailor::Tag(0), aoa, axis, pivot);
+    tailor.rotate(Tailor::Tag(1), aoa, axis, pivot);
 }
 
 int main()
