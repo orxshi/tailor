@@ -118,8 +118,6 @@ namespace Tailor
 
         assert(!mesh_folder_.empty());
 
-        assert(mesh_folder_.size() == 1);
-
         if (mesh_folder_.size() == 1)
         {
             assembler_on_ = false;
@@ -166,6 +164,8 @@ namespace Tailor
         {
             solver_->set_oga_cell_type_all_field();
         }
+
+        assert(use_shared_partition_ == false);
     }
 
     void Tailor::profiler_start(std::string s)
@@ -352,6 +352,7 @@ namespace Tailor
             pre(time_step, compute_para);
             if (max_time_step_ > 1)
             {
+                assert(use_shared_partition_ == false);
                 callback(*this);
             }
             post();
