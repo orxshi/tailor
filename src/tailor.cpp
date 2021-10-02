@@ -96,6 +96,7 @@ namespace Tailor
     {
         if (!use_shared_partition_)
         {
+            assert(false);
             assembler_->rotate(mesh, ang, axis, pivot);
         }
 
