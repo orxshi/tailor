@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5.1)
 
 project(out C CXX)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "~/TailorNew")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "~/tailor")
 
 find_package(MPI REQUIRED)
 find_package(Threads REQUIRED)
@@ -18,8 +18,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wno-deprecated")
 
 ADD_DEFINITIONS(-DBOOST_LOG_DYN_LINK)
 
-include_directories(~/TailorNew/include ${Boost_INCLUDE_DIRS} ${MPI_INCLUDE_PATH} ${METIS_INCLUDE_DIRS} /truba/home/osibliyev/amgcl/include)
-link_directories(~/TailorNew/build)
+include_directories(~/tailor/include ${Boost_INCLUDE_DIRS} ${MPI_INCLUDE_PATH} ${METIS_INCLUDE_DIRS} /truba/home/osibliyev/amgcl/include)
+link_directories(~/tailor/build)
 add_executable(out main.cpp)
 target_link_libraries(out tailor ${MPI_LIBRARIES} ${Boost_LIBRARIES} ${METIS_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES} Threads::Threads)
 #target_link_libraries(out tailor ${MPI_LIBRARIES} ${Boost_LIBRARIES} ${METIS_LIBRARIES} Threads::Threads)

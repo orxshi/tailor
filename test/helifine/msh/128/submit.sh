@@ -5,4 +5,4 @@
 #SBATCH --ntasks=8
 #SBATCH --array=0-5
 
-bash mesh${SLURM_ARRAY_TASK_ID}.sh 1
+bash mesh${SLURM_ARRAY_TASK_ID}.sh 128
