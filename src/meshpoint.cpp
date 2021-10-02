@@ -64,6 +64,17 @@ namespace Tailor
 
         auto old = p_.r();
         auto z = p_.r() - rot_point;
+        std::cout << "angle: " << angle << std::endl;
+        std::cout << "axis: " << axis << std::endl;
+        std::cout << "z(0): " << z(0) << std::endl;
+        std::cout << "z(1): " << z(1) << std::endl;
+        std::cout << "z(2): " << z(2) << std::endl;
+        std::cout << "rot_point(0): " << rot_point(0) << std::endl;
+        std::cout << "rot_point(1): " << rot_point(1) << std::endl;
+        std::cout << "rot_point(2): " << rot_point(2) << std::endl;
+        std::cout << "p_.r(0): " << p_.r(0) << std::endl;
+        std::cout << "p_.r(1): " << p_.r(1) << std::endl;
+        std::cout << "p_.r(2): " << p_.r(2) << std::endl;
         auto newz = rm.rotate(angle, axis, z);
         p_.set_r(newz + rot_point - 0.1*sin(angle) + 0.2*cos(angle));
 

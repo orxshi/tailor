@@ -70,6 +70,17 @@ Since there 32 processors, initially the mesh is also partitioned into 32 partit
 
     gmsh NACA0012_O.geo -3 -oneFilePerPart -part 32 -format msh2
 
+Run program::
+
+   #!/bin/bash
+   #SBATCH -p short
+   #SBATCH --ntasks=32
+   #SBATCH --hint=nomultithread
+   #SBATCH -t 00-04:00:00
+   #SBATCH --output=slurm-%j.out
+   #SBATCH --error=slurm-%j.err
+   mpirun --tag-output --report-bindings /usr/bin/time -f '%e %S %U %P %M' -o "timing.dat" --append ./out
+
 It is useful to have raw pressure coefficient data to compare results, especially when data for upper and lower surfaces are provided separately. This saves time by avoiding plot digitizing. Here are pressure coefficient data for `upper_pc.dat <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/upper_pc.dat>`_ and `lower_pc.dat <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/lower_pc.dat>`_ airfoil surfaces.
     
 
