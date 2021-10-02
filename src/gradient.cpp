@@ -24,6 +24,13 @@ namespace Tailor
             {
                 double dif = nei->prim(n) - mc.prim(n);
 
+                if (i >= mc.ls_wx_.size())
+                {
+                    std::cout << "i: " << i << std::endl;
+                    std::cout << "size: " << mc.ls_wx_.size() << std::endl;
+                }
+                assert(i < mc.ls_wx_.size());
+
                 gradient[n](0) += mc.ls_wx_[i] * dif;
                 gradient[n](1) += mc.ls_wy_[i] * dif;
                 gradient[n](2) += mc.ls_wz_[i] * dif;
@@ -37,6 +44,12 @@ namespace Tailor
     {
         for (MeshCell& mc: mesh.cell_)
         {
+            if (mc.oga_cell_type() == OGA_cell_type_t::non_resident || mc.oga_cell_type() == OGA_cell_type_t::ghost) {
+                continue;
+            }
+
+            assert(mc.btype() == BouType::interior || mc.btype() == BouType::partition);
+
             mc.ls_wx_.reserve(mc.face().size());
             mc.ls_wy_.reserve(mc.face().size());
             mc.ls_wz_.reserve(mc.face().size());
@@ -48,12 +61,6 @@ namespace Tailor
             double r_22 = 0.;
             double r_23 = 0.;
             double r_33 = 0.;
-
-            if (mc.oga_cell_type() == OGA_cell_type_t::non_resident || mc.oga_cell_type() == OGA_cell_type_t::ghost) {
-                continue;
-            }
-
-            assert(mc.btype() == BouType::interior || mc.btype() == BouType::partition);
 
             if (mc.face().size() <= 1)
             {
