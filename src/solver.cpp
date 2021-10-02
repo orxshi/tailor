@@ -1649,11 +1649,9 @@ namespace Tailor
 
     void Solver::compute_gradient_coef()
     {
-        if (sorder_ == 1) {
-            return;
-        }
+        // For non-moving problems calculating coefficients is unnecessary. Improve this once you can check if meshes move or not.
 
-        if (nsolve_ != 0) {
+        if (sorder_ == 1) {
             return;
         }
 
