@@ -64,7 +64,7 @@ Figure below shows pressure coefficients at the airfoil surface.
   :width: 200
 
 
-The `.geo` file to be read by Gmsh is :download:`pdf <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/msh/NACA0012_O.geo>`.
+The ``.geo`` file to be read by Gmsh is :download:`<https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/msh/NACA0012_O.geo>`.
 
 Since there 32 processors, initially the mesh is also partitioned into 32 partitions.::
 
