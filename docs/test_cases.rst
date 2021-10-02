@@ -69,6 +69,32 @@ Reference 2: https://su2code.github.io/tutorials/Inviscid_2D_Unconstrained_NACA0
 
 ::
 
+   [tailor]
+   mesh_folder = msh/NACA0012_O
+   save_folder = sv-unsteady
+   save_interval = 4
+   max_time_step = 10
+   save = false
+   load = false
+   load_folder = sv-unsteady3418
+   profiler = false
+   solver = true
+
+   [general]
+   pseudo3D = true
+
+   [assembler]
+   can-rebalance = false
+   make-load-balance = true
+   load-estim = 2
+   merge-bins = true
+   donor-search-algo = 1
+   print-map = true
+   print-repart-info = true
+   print-imbalance = true
+   print-vtk = true
+   print-pre-vtk = true
+
    
 
 Oscillating airfoil
