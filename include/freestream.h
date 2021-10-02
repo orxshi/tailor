@@ -73,6 +73,9 @@ namespace Tailor
         double chord;
         double aoa_mean_deg;
         double aoa_o_deg;
+        bool compute_pres_coef;
+        bool compute_force_coef;
+        bool compute_moment_coef;
 
         void read(const Tag& mtag);
     };

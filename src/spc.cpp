@@ -144,10 +144,8 @@ namespace Tailor
         local_coef.compute_coef(P, aero_para, compute_pres_coef, compute_force_coef, compute_moment_coef);
     }
 
-    void SpatialPartitionContainer::get_coef(const std::vector<AeroCoefPara>& aero_para, int iter, bool compute_pres_coef, bool compute_force_coef, bool compute_moment_coef) const
+    void SpatialPartitionContainer::get_coef(const std::vector<AeroCoefPara>& aero_para, int iter) const
     {
-        assert(compute_pres_coef || compute_force_coef || compute_moment_coef); 
-
         int mss = mesh_system_size();
         for (int i = 0; i < mss; ++i)
         {
@@ -158,6 +156,19 @@ namespace Tailor
             AeroCoef local_coef;
 
             auto mesh = std::find_if(sp_.front().mesh().begin(), sp_.front().mesh().end(), [&](const auto& m){return m.tag()() == i;});
+
+            Component component;
+            component.read(mesh->tag());
+
+            bool compute_pres_coef = component.compute_pres_coef;
+            bool compute_force_coef = component.compute_force_coef;
+            bool compute_moment_coef = component.compute_moment_coef;
+
+            if (!compute_pres_coef && !compute_force_coef && !compute_moment_coef); 
+            {
+                continue;
+            }
+
             if (mesh != sp_.front().mesh().end())
             {
                 get_coef_(*mesh, local_coef, aero_para[i], this, compute_pres_coef, compute_force_coef, compute_moment_coef);

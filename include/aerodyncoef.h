@@ -59,14 +59,14 @@ namespace Tailor
 
         void check(const AeroCoefPara& para, bool compute_pres_coef, bool compute_force_coef, bool compute_moment_coef) const
         {
-            if (compute_pres_coef)
+            if (compute_pres_coef || compute_force_coef || compute_moment_coef)
             {
                 assert(para.rho_ref != -1.);
                 assert(para.p_ref != -1.);
                 assert(para.u_ref != -1.);
             }
 
-            if (compute_force_coef)
+            if (compute_force_coef || compute_moment_coef)
             {
                 assert(para.area_ref != -1.);
             }
@@ -124,7 +124,7 @@ namespace Tailor
 
                     if (compute_moment_coef) 
                     {
-                        M = M + cross(moment_center - moment_length, f);
+                        M = M + cross(cnt - moment_center, f);
                     }
                 }
 

@@ -77,6 +77,9 @@ namespace Tailor
             (cstr(sdesc, "chord"), po::value<double>()->default_value(0), "")
             (cstr(sdesc, "aoa-mean-deg"), po::value<double>()->default_value(0), "")
             (cstr(sdesc, "aoa-o-deg"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "compute-pres-coef"), po::value<bool>()->default_value(false), "")
+            (cstr(sdesc, "compute-force-coef"), po::value<bool>()->default_value(false), "")
+            (cstr(sdesc, "compute-moment-coef"), po::value<bool>()->default_value(false), "")
             ;
 
         op.add(desc);
@@ -105,6 +108,9 @@ namespace Tailor
         chord = vm[cstr(sdesc, "chord")].as<double>();
         aoa_mean_deg = vm[cstr(sdesc, "aoa-mean-deg")].as<double>();
         aoa_o_deg = vm[cstr(sdesc, "aoa-o-deg")].as<double>();
+        compute_pres_coef = vm[cstr(sdesc, "compute-pres-coef")].as<bool>();
+        compute_force_coef = vm[cstr(sdesc, "compute-force-coef")].as<bool>();
+        compute_moment_coef = vm[cstr(sdesc, "compute-moment-coef")].as<bool>();
     }
 
     void FlowInit::read(const Tag& meshtag)
