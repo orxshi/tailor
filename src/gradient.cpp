@@ -156,6 +156,16 @@ namespace Tailor
             {
                 assert(!std::isnan(a));
             }
+
+            if (mc.ls_wx_.size() != mc.face().size())
+            {
+                std::cout << "ls size: " << mc.ls_wx_.size() << std::endl;
+                std::cout << "face size: " << mc.face().size() << std::endl;
+            }
+
+            assert(mc.ls_wx_.size() == mc.face().size());
+            assert(mc.ls_wy_.size() == mc.face().size());
+            assert(mc.ls_wz_.size() == mc.face().size());
         }
     }
 }
