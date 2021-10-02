@@ -20,6 +20,8 @@ void rotate(Tailor::Tailor& tailor)
     Tailor::Component compo;
     compo.read(Tailor::Tag(0));
 
+    auto solver = tailor.solver();
+
     double reduced_freq = compo.reduced_freq;
     double u = compo.u;
     double v = compo.v;
@@ -34,12 +36,12 @@ void rotate(Tailor::Tailor& tailor)
 
     double om = 2. * reduced_freq * u_ref / chord; // rad/s
 
-    double aoa = aoa_mean + aoa_o * std::sin(om * solver()->nsolve() * solver()->dt());
+    double aoa = aoa_mean + aoa_o * std::sin(om * solver->nsolve() * solver->dt());
 
     int axis = compo.rotaxis_;
     Tailor::Vector3 pivot(compo.pivot_(0), compo.pivot_(1), compo.pivot_(2));
 
-    tailor.rotate(Tailor::Tag(1), azimuth, axis, pivot);
+    tailor.rotate(Tailor::Tag(0), aoa, axis, pivot);
 }
 
 int main()
