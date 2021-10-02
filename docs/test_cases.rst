@@ -76,7 +76,7 @@ Reference 1: Manzano, Luis, Jason Lassaline, and David Zingg. "A Newton-Krylov a
 Reference 2: `<https://su2code.github.io/tutorials/Inviscid_2D_Unconstrained_NACA0012/>`_
 
 
-Settings are read from ``settings.ini``: ::
+Settings are read from `settings.ini <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/settings.ini>`_: ::
 
    [tailor]
    mesh_folder = msh/32/unstr/NACA0012_O
