@@ -6,7 +6,34 @@ Test cases
 Steady transonic airfoil
 ------------------------
 
-A single unstructured mesh is used to solve the Euler equations on at transonic air speed. The unstructured mesh is of O-shape as shown in the figure below. Cell sizes are set with respect to distance from the airfoil surface. The unstructured mesh, in this case, avoids alongated cells which prevents residuals to converge below 1e-6. Therefore, an unstructured mesh is chosen instead of a structured mesh. There x cells in the unstructured mesh.
+A single unstructured mesh is used to solve the Euler equations at transonic air speed (Mach = 0.8).
+
+Mesh properties
+^^^^^^^^^^^^^^^
+
+.. image:: ../images/transonic-airfoil-mesh-far.png
+  :width: 200
+
+.. image:: ../images/transonic-airfoil-mesh-mid.png
+  :width: 200
+
+.. image:: ../images/transonic-airfoil-mesh-close.png
+  :width: 200
+
+The following figure shows the unstructured mesh used for solving transonic airfoil test case. Cell size is the finest near the airfoil and grows proportional to distance from the airfoil surface. Cell size is controlled with combination of ``Field`` in `NACA0012_O.geo <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/msh/NACA0012_O.geo>`_ as shown below.::
+
+   lc = 1;
+   Field[1] = Distance;
+   Field[1].FacesList = {wallbc[]};
+   Field[1].NNodesByEdge = 100;
+   Field[2] = MathEval;
+   Field[2].F = Sprintf("F1/20 + %g", lc / 1000);
+   Background Field = 2;
+
+According to the snippet above, cell size is set with equation `distance/20 + 1/1000`. I don't know how cell size is related to cell volume in Gmsh. There 137228 cells with shape of triangular prism in the unstructured mesh. The reason of having three-dimensional (3D) cells in a two dimensional(2D) problem is because Tailor always works in 3D space similar to OpenFOAM. This kind of problems are called 2.5-dimensional. The 3D mesh is obtained by extruding the 2D mesh by one layer. 
+
+Boundary conditions
+^^^^^^^^^^^^^^^^^^^
 
 Boundary conditions on the airfoil and in outer boundary are slip-wall and Riemann, respectively. Riemann boundary condition is based on Riemann invariant equations. Initially flow is set to freestream values everywhere in the domain.
 
@@ -44,14 +71,6 @@ The code works even when CFL is greater than 10 however, residuals do not conver
 
 Figures below show the mesh for the airfoil.
 
-.. image:: ../images/transonic-airfoil-mesh-far.png
-  :width: 200
-
-.. image:: ../images/transonic-airfoil-mesh-mid.png
-  :width: 200
-
-.. image:: ../images/transonic-airfoil-mesh-close.png
-  :width: 200
 
 Figure below shows convergence history.
 
