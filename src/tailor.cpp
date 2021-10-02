@@ -96,7 +96,6 @@ namespace Tailor
     {
         if (!use_shared_partition_)
         {
-            assert(false);
             assembler_->rotate(mesh, ang, axis, pivot);
         }
 
@@ -118,6 +117,8 @@ namespace Tailor
         read_settings();
 
         assert(!mesh_folder_.empty());
+
+        assert(mesh_folder_.size() == 1);
 
         if (mesh_folder_.size() == 1)
         {
