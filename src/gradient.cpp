@@ -50,9 +50,9 @@ namespace Tailor
 
             assert(mc.btype() == BouType::interior || mc.btype() == BouType::partition);
 
-            mc.ls_wx_.reserve(mc.face().size());
-            mc.ls_wy_.reserve(mc.face().size());
-            mc.ls_wz_.reserve(mc.face().size());
+            mc.ls_wx_.resize(mc.face().size(), 0.);
+            mc.ls_wy_.resize(mc.face().size(), 0.);
+            mc.ls_wz_.resize(mc.face().size(), 0.);
 
             double dx, dy, dz, a1, a2, a3, psi;
             double r_11 = 0.;
