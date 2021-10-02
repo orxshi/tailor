@@ -16,7 +16,8 @@ The following figure shows the unstructured mesh used for solving transonic airf
 .. figure:: ../images/transonic-airfoil-mesh-far.png
    :width: 200
 
-   The unstructured mesh around the airfoil.
+   | The unstructured mesh
+   | around the airfoil.
 
 .. figure:: ../images/transonic-airfoil-mesh-mid.png
    :width: 200
