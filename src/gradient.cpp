@@ -50,9 +50,13 @@ namespace Tailor
 
             assert(mc.btype() == BouType::interior || mc.btype() == BouType::partition);
 
-            mc.ls_wx_.resize(mc.face().size(), 0.);
-            mc.ls_wy_.resize(mc.face().size(), 0.);
-            mc.ls_wz_.resize(mc.face().size(), 0.);
+            mc.ls_wx_.clear();
+            mc.ls_wy_.clear();
+            mc.ls_wz_.clear();
+
+            mc.ls_wx_.reserve(mc.face().size());
+            mc.ls_wy_.reserve(mc.face().size());
+            mc.ls_wz_.reserve(mc.face().size());
 
             double dx, dy, dz, a1, a2, a3, psi;
             double r_11 = 0.;
@@ -82,6 +86,7 @@ namespace Tailor
                 }
                 assert(f.parent_cell().size() == 2);
                 const MeshCell* nei = opposing_nei(mesh, f, mc.tag());
+                assert(nei != nullptr);
                 auto d = nei->poly().centroid() - mc.poly().centroid();
 
                 dx = d(0);
@@ -156,16 +161,6 @@ namespace Tailor
             {
                 assert(!std::isnan(a));
             }
-
-            if (mc.ls_wx_.size() != mc.face().size())
-            {
-                std::cout << "ls size: " << mc.ls_wx_.size() << std::endl;
-                std::cout << "face size: " << mc.face().size() << std::endl;
-            }
-
-            assert(mc.ls_wx_.size() == mc.face().size());
-            assert(mc.ls_wy_.size() == mc.face().size());
-            assert(mc.ls_wz_.size() == mc.face().size());
         }
     }
 }
