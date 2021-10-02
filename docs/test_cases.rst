@@ -67,5 +67,9 @@ Reference 1: Manzano, Luis, Jason Lassaline, and David Zingg. "A Newton-Krylov a
 
 Reference 2: https://su2code.github.io/tutorials/Inviscid_2D_Unconstrained_NACA0012/
 
+::
+
+   
+
 Oscillating airfoil
 -------------------

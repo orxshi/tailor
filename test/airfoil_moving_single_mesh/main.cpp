@@ -24,13 +24,13 @@ void rotate(Tailor::Tailor& tailor)
     double u = compo.u;
     double v = compo.v;
     double w = compo.w;
-    Vector3 U(u, v, w);
+    Tailor::Vector3 U(u, v, w);
     double u_ref = U.len();
     double chord = compo.chord;
     double aoa_mean_deg = compo.aoa_mean_deg; 
     double aoa_o_deg = compo.aoa_o_deg;
-    double aoa_mean = Tailor::deg_to_rag(aoa_mean_deg); 
-    double aoa_o = Tailor::deg_to_rag(aoa_o_deg); 
+    double aoa_mean = Tailor::deg_to_rad(aoa_mean_deg); 
+    double aoa_o = Tailor::deg_to_rad(aoa_o_deg); 
 
     double om = 2. * reduced_freq * u_ref / chord; // rad/s
 
