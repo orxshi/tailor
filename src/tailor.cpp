@@ -94,7 +94,7 @@ namespace Tailor
 
     void Tailor::rotate(const Tag& mesh, double ang, int axis, const Vector3& pivot)
     {
-        if (!use_shared_partition_)
+        if (assembler_on_ && !use_shared_partition_)
         {
             assembler_->rotate(mesh, ang, axis, pivot);
         }
@@ -104,7 +104,7 @@ namespace Tailor
 
     void Tailor::move(const Tag& mesh, const Vector3& v)
     {
-        if (!use_shared_partition_)
+        if (assembler_on_ && !use_shared_partition_)
         {
             assembler_->move(mesh, v);
         }
@@ -121,10 +121,8 @@ namespace Tailor
         if (mesh_folder_.size() == 1)
         {
             assembler_on_ = false;
-            use_shared_partition_ = true;
+            use_shared_partition_ = false;
         }
-
-        assert(assembler_on_ == false);
 
         if (profiler_on_)
         {
@@ -204,7 +202,7 @@ namespace Tailor
             assembler_->assemble();
             mem_usage(&comm_, "assemble");
 
-            if (!use_shared_partition_ && solver_on_)
+            if (!use_shared_partition_ && solver_on_ && assembler_on_)
             {
                 DIExchanger di_exc(&comm_, *assembler_, *solver_);
                 di_exc.exchange(false, "asm-di", nullptr);
