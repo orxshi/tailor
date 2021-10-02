@@ -69,6 +69,8 @@ The ``.geo`` file to be read by Gmsh is `NACA0012_O.geo <https://github.com/orxs
 Since there 32 processors, initially the mesh is also partitioned into 32 partitions.::
 
     gmsh NACA0012_O.geo -3 -oneFilePerPart -part 32 -format msh2
+
+It is useful to have raw pressure coefficient data to compare results, especially when data for upper and lower surfaces are provided separately. This saves time by avoiding plot digitizing. Here are pressure coefficient data for `upper_pc.dat <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/upper_pc.dat>`_ and `lower_pc.dat <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/lower_pc.dat>`_ airfoil surfaces.
     
 
 Reference 1: Manzano, Luis, Jason Lassaline, and David Zingg. "A Newton-Krylov algorithm for the Euler equations using unstructured grids." 41st Aerospace Sciences Meeting and Exhibit. 2003.
