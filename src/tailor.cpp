@@ -140,7 +140,6 @@ namespace Tailor
         {
             if (assembler_on_)
             {
-                assert(false);
                 profiler_start("create_assembler");
                 assembler_ = std::make_unique<Assembler>(&comm_, nullptr, mesh_folder_);
                 profiler_stop("create_assembler");
