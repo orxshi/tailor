@@ -68,7 +68,7 @@ Reference 1: Manzano, Luis, Jason Lassaline, and David Zingg. "A Newton-Krylov a
 Reference 2: https://su2code.github.io/tutorials/Inviscid_2D_Unconstrained_NACA0012/
 
 
-See :download:`pdf <../test/airfoil_static_single_mesh/msh/NACA0012_O.geo>`
+See :download:`pdf <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/msh/NACA0012_O.geo>`
 
 Settings are read from the settings.ini: ::
 
