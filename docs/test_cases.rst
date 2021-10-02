@@ -13,14 +13,20 @@ Mesh properties
 
 The following figure shows the unstructured mesh used for solving transonic airfoil test case. 
 
-.. image:: ../images/transonic-airfoil-mesh-far.png
-  :width: 200
+.. figure:: ../images/transonic-airfoil-mesh-far.png
+   :width: 200
 
-.. image:: ../images/transonic-airfoil-mesh-mid.png
-  :width: 200
+   The unstructured mesh around the airfoil.
 
-.. image:: ../images/transonic-airfoil-mesh-close.png
-  :width: 200
+.. figure:: ../images/transonic-airfoil-mesh-mid.png
+   :width: 200
+
+   A closer view to the airfoil.
+
+.. figure:: ../images/transonic-airfoil-mesh-close.png
+   :width: 200
+
+   Even more close view.
 
 Cell size is the finest near the airfoil and grows proportional to distance from the airfoil surface. Cell size is controlled with combination of ``Field`` in `NACA0012_O.geo <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/msh/NACA0012_O.geo>`_ as shown below.::
 
