@@ -745,6 +745,12 @@ namespace Tailor
                     std::cout << "left_cell_prim(3): " << left_cell->prim_(3) << std::endl;
                     std::cout << "left_cell_prim(4): " << left_cell->prim_(4) << std::endl;
 
+                    std::cout << "right_cell_prim(0): " << right_cell->prim_(0) << std::endl;
+                    std::cout << "right_cell_prim(1): " << right_cell->prim_(1) << std::endl;
+                    std::cout << "right_cell_prim(2): " << right_cell->prim_(2) << std::endl;
+                    std::cout << "right_cell_prim(3): " << right_cell->prim_(3) << std::endl;
+                    std::cout << "right_cell_prim(4): " << right_cell->prim_(4) << std::endl;
+
                     std::cout << "left_grad(0): " << mc.gradient_[0](0) << " " << mc.gradient_[0](1) << " " << mc.gradient_[0](2) << std::endl;
 
                     std::cout << "left_cons(0): " << left_cons(0) << std::endl;
