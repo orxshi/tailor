@@ -758,8 +758,6 @@ namespace Tailor
                 auto left_cons = face_conservative_var(mesh, *left_cell, mf);
                 auto right_cons = face_conservative_var(mesh, *right_cell, mf);
 
-                assert(left_cons(0) > 0.);
-
                 MeshFace *commonface = nullptr;
                 if (!mf.is_boundary())
                 {
@@ -1473,16 +1471,16 @@ namespace Tailor
 
             auto limit_coef = limiter.limit(mesh, mc, mc.gradient_);
 
-            std::cout << "prim(0): " << mc.prim(0) << std::endl;
-            std::cout << "grad(0): " << mc.gradient_[0](0) << " " << mc.gradient_[0](1) << " " << mc.gradient_[0](2) << std::endl;
-            std::cout << "limiter(0): " << limit_coef[0] << std::endl;
+            //std::cout << "prim(0): " << mc.prim(0) << std::endl;
+            //std::cout << "grad(0): " << mc.gradient_[0](0) << " " << mc.gradient_[0](1) << " " << mc.gradient_[0](2) << std::endl;
+            //std::cout << "limiter(0): " << limit_coef[0] << std::endl;
 
             for (int i = 0; i < NVAR; ++i)
             {
                 mc.gradient_[i] *= limit_coef[i];
             }
         }
-        assert(false);
+        //assert(false);
     }
 
     Vector5 Solver::non_linear_iteration()
@@ -1905,6 +1903,15 @@ namespace Tailor
         }
 
         cons = prim_to_cons(prim, fs_.gamma_);
+
+        if (cons(0) <= 0.)
+        {
+            std::cout << "prim(0): " << prim(0) << std::endl;
+            std::cout << "mc.prim(0): " << mc.prim(0) << std::endl;
+            std::cout << "grad(0): " << mc.gradient_[0](0) << " " << mc.gradient_[0](1) << " " << mc.gradient_[0](2) << std::endl;
+            std::cout << "distance: " << distance(0) << " " << distance(1) << " " << distance(2) << std::endl;
+        }
+        assert(cons(0) > 0.);
 
         return cons;
     }
