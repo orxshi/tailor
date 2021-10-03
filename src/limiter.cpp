@@ -16,7 +16,19 @@ namespace Tailor
     {
         assert(type_ != LimiterType::undefined);
 
-        if (type_ == LimiterType::venkatakrishnan)
+        if (type_ == LimiterType::none)
+        {
+            std::array<double, NVAR> phi;
+
+            phi[0] = 1.;
+            phi[1] = 1.;
+            phi[2] = 1.;
+            phi[3] = 1.;
+            phi[4] = 1.;
+
+            return phi;
+        }
+        else if (type_ == LimiterType::venkatakrishnan)
         {
             return venkatakrishnan(mesh, mc, grad);
         }

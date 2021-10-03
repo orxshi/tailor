@@ -649,7 +649,11 @@ namespace Tailor
             assert(!print_vtk_every_step_);
         }
         
-        if (slimiter_type == "barth_jespersen")
+        if (slimiter_type == "none")
+        {
+            limiter_type_ = LimiterType::none;
+        }
+        else if (slimiter_type == "barth_jespersen")
         {
             limiter_type_ = LimiterType::barth_jespersen;
         }

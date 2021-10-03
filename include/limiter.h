@@ -11,6 +11,7 @@ enum class LimiterType
     valbada = 1,
     barth_jespersen = 2,
     venkatakrishnan = 3,
+    none = 4,
 };
 
 namespace Tailor
