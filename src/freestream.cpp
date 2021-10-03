@@ -23,11 +23,11 @@ namespace Tailor
             //("freestream.vel-air", po::value<double>()->default_value(0), "Vel air")
             //("freestream.aoa-air-x", po::value<double>(), "Angle of attack")
             //("freestream.aoa-air-z", po::value<double>(), "Angle of attack")
-            ("freestream.rho", po::value<double>(), "")
-            ("freestream.u", po::value<double>(), "")
-            ("freestream.v", po::value<double>(), "")
-            ("freestream.w", po::value<double>(), "")
-            ("freestream.p", po::value<double>(), "")
+            //("freestream.rho", po::value<double>(), "")
+            //("freestream.u", po::value<double>(), "")
+            //("freestream.v", po::value<double>(), "")
+            //("freestream.w", po::value<double>(), "")
+            //("freestream.p", po::value<double>(), "")
             ("freestream.gamma", po::value<double>(), "")
             ;
 
@@ -38,11 +38,11 @@ namespace Tailor
         po::store(po::parse_config_file(settings_file, op, true), vm);
         po::notify(vm);
 
-        rho_ = vm["freestream.rho"].as<double>();
-        p_ = vm["freestream.p"].as<double>();
-        u_ = vm["freestream.u"].as<double>();
-        v_ = vm["freestream.v"].as<double>();
-        w_ = vm["freestream.w"].as<double>();
+        //rho_ = vm["freestream.rho"].as<double>();
+        //p_ = vm["freestream.p"].as<double>();
+        //u_ = vm["freestream.u"].as<double>();
+        //v_ = vm["freestream.v"].as<double>();
+        //w_ = vm["freestream.w"].as<double>();
         //machair_ = vm["freestream.mach-air"].as<double>();
         //velair_ = vm["freestream.vel-air"].as<double>();
         //aoa_air_x_ = vm["freestream.aoa-air-x"].as<double>();
