@@ -82,7 +82,7 @@ namespace Tailor
 
     std::array<double, NVAR> Limiter::barth_jespersen(const Mesh& mesh, const MeshCell& mc, const std::array<Vector3, NVAR>& grad)
     {
-        //http://tetra.mech.ubc.ca/ANSLab/publications/michalak2008.pdf
+        // See page 3 of http://tetra.mech.ubc.ca/ANSLab/publications/michalak2008.pdf
 
         std::array<double, NVAR> phi;
         std::array<double, NVAR> max_dif;
