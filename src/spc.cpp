@@ -650,14 +650,6 @@ namespace Tailor
         }
     }
 
-    void SpatialPartitionContainer::init_sod()
-    {
-        for (SpatialPartition& sp: sp_)
-        {
-            sp.init_sod();
-        }
-    }
-
     void SpatialPartitionContainer::init_dirichlet()
     {
         for (SpatialPartition& sp: sp_)
@@ -671,14 +663,6 @@ namespace Tailor
         for (SpatialPartition& sp: sp_)
         {
             sp.init_flow();
-        }
-    }
-
-    void SpatialPartitionContainer::init_sod()
-    {
-        for (SpatialPartition& sp: sp_)
-        {
-            sp.init_sod();
         }
     }
 

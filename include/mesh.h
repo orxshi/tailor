@@ -116,7 +116,7 @@ namespace Tailor
         //void init(const Vector3& vinf_air, const Freestream& fs);
         void init_uniform(const FlowInit&, double gamma);
         void init_gaussian(const FlowInit&, double gamma);
-        void init_xsplit(const FlowInit& finit);
+        void init_xsplit(const FlowInit& finit, double gamma);
 
         void connect_add_bou_to_interior(BouType boutype, int rank);
         void reset_R_checked();

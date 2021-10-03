@@ -908,7 +908,7 @@ namespace Tailor
         }
     }
 
-    void Mesh::init_xsplit(const FlowInit& finit)
+    void Mesh::init_xsplit(const FlowInit& finit, double gamma)
     {
         Vector5 priml;
         priml(0) = finit.rhol;
@@ -937,7 +937,7 @@ namespace Tailor
                 mc.prim_ = primr;
             }
 
-            mc.cons_sp1_ = prim_to_cons(mc.prim_, fs.gamma_);
+            mc.cons_sp1_ = prim_to_cons(mc.prim_, gamma);
         }
 
         for (auto& mc: dirichlet_boundaries_)
@@ -951,7 +951,7 @@ namespace Tailor
                 mc.prim_ = primr;
             }
 
-            mc.cons_sp1_ = prim_to_cons(mc.prim_, fs.gamma_);
+            mc.cons_sp1_ = prim_to_cons(mc.prim_, gamma);
         }
     }
 

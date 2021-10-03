@@ -191,6 +191,26 @@ Settings are read from `settings.ini <https://github.com/orxshi/tailor/blob/main
    print-mesh-system-size = false
 
 
+Shock tube
+----------
+
+This is a 1D problem.
+
+.. list-table:: Initial profile
+   :header-rows: 1
+
+   * - Variable 
+     - Left
+     - Right
+   * - Density
+     - 1.0
+     - 0.125
+   * - Pressure
+     - 1.0
+     - 0.1
+   * - Velocity
+     - 0.0
+     - 0.0
    
 
 Oscillating airfoil

@@ -46,7 +46,6 @@ namespace Tailor
         void convert_to_fortran() const;
         //void solve(Solver& solver, const Vector3& vel, std::function<void(CellExchanger& cell_exchanger)> exchange_ghosts);
         //void solve(Solver& solver, const Vector3& vel, std::function<void()> exchange_ghosts);
-        void init_sod();
         //void init_interior();
         //void init_dirichlet();
         void init_flow();

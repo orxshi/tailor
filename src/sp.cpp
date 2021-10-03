@@ -200,30 +200,6 @@ namespace Tailor
         }
     }
 
-    void SpatialPartition::init_sod()
-    {
-        Freestream fs;
-        fs.read();
-
-        Vector5 L, R;
-        L(0) = 1.;
-        L(1) = 0.;
-        L(2) = 0.;
-        L(3) = 0.;
-        L(4) = 1.;
-
-        R(0) = 0.125;
-        R(1) = 0.;
-        R(2) = 0.;
-        R(3) = 0.;
-        R(4) = 0.1;
-
-        for (auto& mesh: mesh_)
-        {
-            mesh.init_sod(L, R, fs);
-        }
-    }
-
     void SpatialPartition::init_flow()
     {
         //namespace po = boost::program_options;
