@@ -1547,25 +1547,28 @@ namespace Tailor
 
     void Solver::print_sub_solver_residual(int ntimestep, const Vector5& residual)
     {
-        std::ofstream of;
-
-        std::string fn = "residual-";
-        fn.append(std::to_string(nsolve_));
-        fn.append(".dat");
-        of.open(fn, std::ios_base::app);
-
-        if (comm_->rank() == 0)
+        if (!steady_)
         {
-            of << ntimestep << " ";
-            for (int i = 0; i < residual.nelm(); ++i)
-            {
-                of << std::scientific << residual(i) << std::fixed;
-                of << " ";
-            }
-            of << std::endl;
-        }
+            std::ofstream of;
 
-        of.close();
+            std::string fn = "residual-";
+            fn.append(std::to_string(nsolve_));
+            fn.append(".dat");
+            of.open(fn, std::ios_base::app);
+
+            if (comm_->rank() == 0)
+            {
+                of << ntimestep << " ";
+                for (int i = 0; i < residual.nelm(); ++i)
+                {
+                    of << std::scientific << residual(i) << std::fixed;
+                    of << " ";
+                }
+                of << std::endl;
+            }
+
+            of.close();
+        }
     }
 
     Vector5 Solver::get_global_residual(const Vector5& local_residual, int ntimestep)
