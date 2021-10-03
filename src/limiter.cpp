@@ -90,6 +90,7 @@ namespace Tailor
         {
             max_dif[k] = TAILOR_BIG_NEG_NUM;
             min_dif[k] = TAILOR_BIG_POS_NUM;
+            phi[k] = TAILOR_BIG_POS_NUM;
         }
 
         for (const MeshFace& face: mc.face())
@@ -99,18 +100,10 @@ namespace Tailor
 
             for (int k=0; k<NVAR; ++k)
             {
-                max_dif[k] = std::max(max_dif[k], nei->prim(k) - mc.prim(k));
-            }
-        }
+                double dif = nei->prim(k) - mc.prim(k);
 
-        for (const MeshFace& face: mc.face())
-        {
-            const MeshCell* nei = opposing_nei(mesh, face, mc.tag());
-            assert(nei != nullptr);
-
-            for (int k=0; k<NVAR; ++k)
-            {
-                min_dif[k] = std::min(min_dif[k], nei->prim(k) - mc.prim(k));
+                max_dif[k] = std::max(max_dif[k], dif);
+                min_dif[k] = std::min(min_dif[k], dif);
             }
         }
 
