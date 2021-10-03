@@ -36,6 +36,8 @@ A single unstructured mesh is used to solve the Euler equations at transonic air
    * - CFL
      - 10
 
+Settings are read from `settings.ini <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/settings.ini>`_.
+
 Mesh properties
 ^^^^^^^^^^^^^^^
 
@@ -80,6 +82,8 @@ Boundary conditions
 
 Boundary conditions on the airfoil and in outer boundary are slip-wall and Riemann, respectively. Riemann boundary condition is based on Riemann invariant equations. Initially flow is set to freestream values everywhere in the domain.
 
+Job submission
+^^^^^^^^^^^^^^
 
 The code works even when CFL is greater than 10 however, residuals do not converge below 1e-2 in that case. The script below is the SLURM script used to submit a job to the cluster. ::
 
@@ -92,6 +96,9 @@ The code works even when CFL is greater than 10 however, residuals do not conver
    #SBATCH --error=slurm-%j.err
    mpirun --tag-output --report-bindings /usr/bin/time -f '%e %S %U %P %M' -o "timing.dat" --append ./out
 
+Results
+^^^^^^^
+
 Figure below shows pressure coefficients at the airfoil surface and convergence history.
 
 .. image:: ../images/transonic-airfoil-converge.png
@@ -100,90 +107,10 @@ Figure below shows pressure coefficients at the airfoil surface and convergence 
 .. image:: ../images/transonic-airfoil-pc.png
   :width: 400
 
-
-
-
 It is useful to have raw pressure coefficient data to compare results, especially when data for upper and lower surfaces are provided separately. This saves time by avoiding plot digitizing. Here are pressure coefficient data for `upper_pc.dat <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/upper_pc.dat>`_ and `lower_pc.dat <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/lower_pc.dat>`_ airfoil surfaces.
     
-
 Reference 1: Manzano, Luis, Jason Lassaline, and David Zingg. "A Newton-Krylov algorithm for the Euler equations using unstructured grids." 41st Aerospace Sciences Meeting and Exhibit. 2003.
-
 Reference 2: `<https://su2code.github.io/tutorials/Inviscid_2D_Unconstrained_NACA0012/>`_
-
-
-Settings are read from `settings.ini <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/settings.ini>`_: ::
-
-   [tailor]
-   mesh_folder = msh/32/unstr/NACA0012_O
-   save_folder = sv-unsteady
-   save_interval = 4
-   max_time_step = 1
-   save = false
-   load = false
-   load_folder = sv-unsteady3418
-   profiler = false
-   solver = true
-   compute-pres-coef = true
-
-   [general]
-   pseudo3D = true
-
-   [assembler]
-   can-rebalance = false
-   make-load-balance = true
-   load-estim = 2
-   merge-bins = true
-   donor-search-algo = 1
-   print-map = true
-   print-repart-info = true
-   print-imbalance = true
-   print-pre-vtk = true
-
-   [solver]
-   increase_cfl = false
-   cfl_multiplier = 2.0
-   cfl_ratio = 10
-   can-rebalance = true
-   steady = true
-   use-local-time-step = true
-   dt = 1e-3
-   tol = 1e-12
-   sorder = 2
-   torder = 1
-   cfl = 10
-   dual-ts = false
-   riemann-solver = 0
-   #temporal_discretization = runge_kutta_4
-   temporal_discretization = backward_euler
-   #temporal_discretization = forward_euler
-   load-estim = 2
-   max-time-step = 40000
-   make-load-balance = true
-   print-repart-info = false
-   print-imbalance = false
-   repart-ratio = 1000
-   print-vtk-only-last-step = true
-
-   [linear-solver]
-   #max-iteration = 1000
-   #max-restart = 10
-   #abs-error = 1e-15
-   #rel-error = 1e-15
-   print-error = false
-
-   [loadcalc]
-   arearep = 0
-
-   [loadmap]
-   refine-tol = 10
-   print-dev = false
-   printlm = false
-
-   [partition]
-   print-cell-dist = false
-   print-bin-dist = false
-   print-mesh-system-size = false
-
 
 Shock tube
 ----------
