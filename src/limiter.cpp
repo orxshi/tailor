@@ -18,7 +18,12 @@ namespace Tailor
 
         if (type_ == LimiterType::venka)
         {
+            assert(false);
             return venka(mesh, mc, grad);
+        }
+        else if (type_ == LimiterType::barth_jespersen)
+        {
+            return barth_jespersen(mesh, mc);
         }
         else
         {
@@ -47,6 +52,7 @@ namespace Tailor
         for (const MeshFace& face: mc.face())
         {
             const MeshCell* nei = opposing_nei(mesh, face, mc.tag());
+            assert(nei != nullptr);
 
             auto dis = face.face().centroid() - mc.poly().centroid();
 
@@ -73,5 +79,65 @@ namespace Tailor
 
         return ksiv;
     }
-}
 
+    std::array<double, NVAR> Limiter::barth_jespersen(const Mesh& mesh, const MeshCell& mc)
+    {
+        std::array<double, NVAR> phi;
+        std::array<double, NVAR> max_dif;
+        std::array<double, NVAR> min_dif;
+
+        for (int k=0; k<NVAR; ++k)
+        {
+            max_dif[k] = TAILOR_BIG_NEG_NUM;
+            min_dif[k] = TAILOR_BIG_POS_NUM;
+        }
+
+        for (const MeshFace& face: mc.face())
+        {
+            const MeshCell* nei = opposing_nei(mesh, face, mc.tag());
+            assert(nei != nullptr);
+
+            for (int k=0; k<NVAR; ++k)
+            {
+                max_dif[k] = std::max(max_dif[k], nei->prim(k) - mc.prim(k));
+            }
+        }
+
+        for (const MeshFace& face: mc.face())
+        {
+            const MeshCell* nei = opposing_nei(mesh, face, mc.tag());
+            assert(nei != nullptr);
+
+            for (int k=0; k<NVAR; ++k)
+            {
+                min_dif[k] = std::min(min_dif[k], nei->prim(k) - mc.prim(k));
+            }
+        }
+
+        for (const MeshFace& face: mc.face())
+        {
+            const MeshCell* nei = opposing_nei(mesh, face, mc.tag());
+            assert(nei != nullptr);
+
+            for (int k=0; k<NVAR; ++k)
+            {
+                double dif = nei->prim(k) - mc.prim(k);
+
+                if (dif > 0.)
+                {
+                    phi[k] = std::min(phi[k], std::min(1., max_dif[k] / dif));
+                }
+                else if (dif < 0.)
+                {
+                    phi[k] = std::min(phi[k], std::min(1., min_dif[k] / dif));
+                }
+                else
+                {
+                    phi[k] = std::min(phi[k], 1.);
+                }
+            }
+        }
+
+        return phi;
+    }
+}

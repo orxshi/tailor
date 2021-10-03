@@ -1456,7 +1456,7 @@ namespace Tailor
             return;
         }
 
-        Limiter limiter(LimiterType::venka);
+        Limiter limiter(LimiterType::barth_jespersen);
 
         for (MeshCell &mc : mesh.cell_)
         {
