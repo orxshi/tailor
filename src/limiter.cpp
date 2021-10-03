@@ -18,7 +18,6 @@ namespace Tailor
 
         if (type_ == LimiterType::venkatakrishnan)
         {
-            assert(false);
             return venkatakrishnan(mesh, mc, grad);
         }
         else if (type_ == LimiterType::barth_jespersen)
