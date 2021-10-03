@@ -334,7 +334,9 @@ namespace Tailor
             pre(time_step, compute_para);
             if (max_time_step_ > 1)
             {
-                callback(*this);
+                if (callback != nullptr) {
+                    callback(*this);
+                }
             }
             post();
             save(time_step, save_counter);
