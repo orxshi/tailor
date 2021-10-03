@@ -1910,6 +1910,19 @@ namespace Tailor
             std::cout << "mc.prim(0): " << mc.prim(0) << std::endl;
             std::cout << "grad(0): " << mc.gradient_[0](0) << " " << mc.gradient_[0](1) << " " << mc.gradient_[0](2) << std::endl;
             std::cout << "distance: " << distance(0) << " " << distance(1) << " " << distance(2) << std::endl;
+
+            for (int i = 0; i < mc.face().size(); ++i)
+            {
+                const auto& face = mc.face()[i];
+
+                const MeshCell* nei = opposing_nei(mesh, face, mc.tag());
+                assert(nei != nullptr);
+
+                double dif = nei->prim(0) - mc.prim(0);
+
+                std::cout << "dif: " << dif << std::endl;
+                std::cout << "mc.ls_wx_[i]: " << mc.ls_wx_[i] << std::endl;
+            }
         }
         assert(cons(0) > 0.);
 
