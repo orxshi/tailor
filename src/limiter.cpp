@@ -33,20 +33,22 @@ namespace Tailor
 
     std::array<double, NVAR> Limiter::venkatakrishnan(const Mesh& mesh, const MeshCell& mc, const std::array<Vector3, NVAR>& grad)
     {
-        auto phi = [&] (double x, double eps)
+        // See page 3 of http://tetra.mech.ubc.ca/ANSLab/publications/michalak2008.pdf
+
+        auto foo = [&] (double x)
         {
-            return (std::pow(x, 2.) + 2. * x + eps) / (std::pow(x, 2.) + x + 2. + eps);
+            return (std::pow(x, 2.) + 2. * x) / (std::pow(x, 2.) + x + 2.);
         };
 
-        std::array<double, NVAR> ksif;
-        std::array<double, NVAR> ksiv;
-        double K = 1e6;
-
-        double eps = std::pow(K * mc.poly().volume(), 3.);
+        std::array<double, NVAR> phi;
+        std::array<double, NVAR> max_dif;
+        std::array<double, NVAR> min_dif;
 
         for (int k=0; k<NVAR; ++k)
         {
-            ksiv[k] = TAILOR_BIG_POS_NUM;
+            max_dif[k] = TAILOR_BIG_NEG_NUM;
+            min_dif[k] = TAILOR_BIG_POS_NUM;
+            phi[k] = TAILOR_BIG_POS_NUM;
         }
 
         for (const MeshFace& face: mc.face())
@@ -54,30 +56,47 @@ namespace Tailor
             const MeshCell* nei = opposing_nei(mesh, face, mc.tag());
             assert(nei != nullptr);
 
-            auto dis = face.face().centroid() - mc.poly().centroid();
-
             for (int k=0; k<NVAR; ++k)
             {
-                double tmp = dot(grad[k], dis);
+                double dif = nei->prim(k) - mc.prim(k);
 
-                if (tmp > 0.)
-                {
-                    ksif[k] = phi((std::max(nei->prim(k), mc.prim(k) ) - mc.prim(k)) / tmp, eps);
-                }
-                else if (tmp < 0.)
-                {
-                    ksif[k] = phi((std::min(nei->prim(k), mc.prim(k) ) - mc.prim(k)) / tmp, eps);
-                }
-                else
-                {
-                    ksif[k] = 1.;
-                }
-
-                ksiv[k] = std::min(ksiv[k], ksif[k]);
+                max_dif[k] = std::max(max_dif[k], dif);
+                min_dif[k] = std::min(min_dif[k], dif);
             }
         }
 
-        return ksiv;
+        for (const MeshFace& face: mc.face())
+        {
+            const MeshCell* nei = opposing_nei(mesh, face, mc.tag());
+            assert(nei != nullptr);
+
+            auto dis = nei->poly().centroid() - mc.poly().centroid();
+
+            if (face.is_boundary())
+            {
+                dis *= 2.;
+            }
+
+            for (int k=0; k<NVAR; ++k)
+            {
+                double urecon = mc.prim(k) + dot(grad[k], dis);  // unconstrained reconstructed value.
+
+                if (urecon > 0.)
+                {
+                    phi[k] = std::min(phi[k], foo(max_dif[k] / urecon));
+                }
+                else if (urecon < 0.)
+                {
+                    phi[k] = std::min(phi[k], foo(min_dif[k] / urecon));
+                }
+                else
+                {
+                    phi[k] = std::min(phi[k], 1.);
+                }
+            }
+        }
+
+        return phi;
     }
 
     std::array<double, NVAR> Limiter::barth_jespersen(const Mesh& mesh, const MeshCell& mc, const std::array<Vector3, NVAR>& grad)
