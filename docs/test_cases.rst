@@ -43,19 +43,21 @@ Mesh properties
 
 The following figure shows the unstructured mesh used for solving transonic airfoil test case. 
 
-.. figure:: ../images/transonic-airfoil-mesh-far.png
+.. list-table::
+
+* - .. figure:: ../images/transonic-airfoil-mesh-far.png
    :width: 200
    :align: center
 
    The unstructured mesh.
 
-.. figure:: ../images/transonic-airfoil-mesh-mid.png
+.* - . figure:: ../images/transonic-airfoil-mesh-mid.png
    :width: 200
    :align: center
 
    A closer view to the airfoil.
 
-.. figure:: ../images/transonic-airfoil-mesh-close.png
+.* - . figure:: ../images/transonic-airfoil-mesh-close.png
    :width: 200
    :align: center
 
@@ -101,11 +103,11 @@ Results
 
 Figure below shows pressure coefficients at the airfoil surface and convergence history.
 
-.. image:: ../images/transonic-airfoil-converge.png
-  :width: 400
-
 .. image:: ../images/transonic-airfoil-pc.png
-  :width: 400
+  :width: 300
+
+.. image:: ../images/transonic-airfoil-converge.png
+  :width: 300
 
 It is useful to have raw pressure coefficient data to compare results, especially when data for upper and lower surfaces are provided separately. This saves time by avoiding plot digitizing. Here are pressure coefficient data for `upper_pc.dat <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/upper_pc.dat>`_ and `lower_pc.dat <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/lower_pc.dat>`_ airfoil surfaces.
     
