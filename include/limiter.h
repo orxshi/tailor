@@ -28,7 +28,7 @@ namespace Tailor
 
             LimiterType type_;
             std::array<double, NVAR> venka(const Mesh& mesh, const MeshCell& mc, const std::array<Vector3, NVAR>& grad);
-            std::array<double, NVAR> barth_jespersen(const Mesh& mesh, const MeshCell& mc);
+            std::array<double, NVAR> barth_jespersen(const Mesh& mesh, const MeshCell& mc, const std::array<Vector3, NVAR>& grad);
 
     };
 }

@@ -23,7 +23,7 @@ namespace Tailor
         }
         else if (type_ == LimiterType::barth_jespersen)
         {
-            return barth_jespersen(mesh, mc);
+            return barth_jespersen(mesh, mc, grad);
         }
         else
         {
@@ -80,8 +80,10 @@ namespace Tailor
         return ksiv;
     }
 
-    std::array<double, NVAR> Limiter::barth_jespersen(const Mesh& mesh, const MeshCell& mc)
+    std::array<double, NVAR> Limiter::barth_jespersen(const Mesh& mesh, const MeshCell& mc, const std::array<Vector3, NVAR>& grad)
     {
+        //http://tetra.mech.ubc.ca/ANSLab/publications/michalak2008.pdf
+
         std::array<double, NVAR> phi;
         std::array<double, NVAR> max_dif;
         std::array<double, NVAR> min_dif;
@@ -112,17 +114,19 @@ namespace Tailor
             const MeshCell* nei = opposing_nei(mesh, face, mc.tag());
             assert(nei != nullptr);
 
+            auto dis = face.face().centroid() - mc.poly().centroid();
+
             for (int k=0; k<NVAR; ++k)
             {
-                double dif = nei->prim(k) - mc.prim(k);
+                double urecon = mc.prim(k) + dot(grad[k], dis);  // unconstrained reconstructed value.
 
-                if (dif > 0.)
+                if (urecon > 0.)
                 {
-                    phi[k] = std::min(phi[k], std::min(1., max_dif[k] / dif));
+                    phi[k] = std::min(phi[k], std::min(1., max_dif[k] / urecon));
                 }
-                else if (dif < 0.)
+                else if (urecon < 0.)
                 {
-                    phi[k] = std::min(phi[k], std::min(1., min_dif[k] / dif));
+                    phi[k] = std::min(phi[k], std::min(1., min_dif[k] / urecon));
                 }
                 else
                 {
