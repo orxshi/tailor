@@ -898,9 +898,60 @@ namespace Tailor
         {
             init_gaussian(finit, fs.gamma_);
         }
+        else if (finit.type == "xsplit")
+        {
+            init_xsplit(finit, fs.gamma_);
+        }
         else
         {
             assert(false);
+        }
+    }
+
+    void Mesh::init_xsplit(const FlowInit& finit)
+    {
+        Vector5 priml;
+        priml(0) = finit.rhol;
+        priml(1) = finit.ul;
+        priml(2) = 0.;
+        priml(3) = 0.;
+        priml(4) = finit.pl;
+
+        Vector5 primr;
+        primr(0) = finit.rhor;
+        primr(1) = finit.ur;
+        primr(2) = 0.;
+        primr(3) = 0.;
+        primr(4) = finit.pr;
+
+        double x = finit.x;
+
+        for (auto& mc: cell_)
+        {
+            if (mc.poly().centroid()(0) <= x)
+            {
+                mc.prim_ = priml;
+            }
+            else
+            {
+                mc.prim_ = primr;
+            }
+
+            mc.cons_sp1_ = prim_to_cons(mc.prim_, fs.gamma_);
+        }
+
+        for (auto& mc: dirichlet_boundaries_)
+        {
+            if (mc.poly().centroid()(0) <= x)
+            {
+                mc.prim_ = priml;
+            }
+            else
+            {
+                mc.prim_ = primr;
+            }
+
+            mc.cons_sp1_ = prim_to_cons(mc.prim_, fs.gamma_);
         }
     }
 
@@ -2304,53 +2355,6 @@ namespace Tailor
             container->push_back(*mc);
         }
         //assert(container->size() == bimap->left.size());
-    }
-
-    void Mesh::init_sod(const Vector5& L, const Vector5& R, const Freestream& fs)
-    {
-        for (auto& mc: cell_)
-        {
-            if (mc.poly().centroid()(0) <= 0.)
-            {
-                mc.prim_(0) = L(0);
-                mc.prim_(1) = L(1);
-                mc.prim_(2) = L(2);
-                mc.prim_(3) = L(3);
-                mc.prim_(4) = L(4);
-            }
-            else
-            {
-                mc.prim_(0) = R(0);
-                mc.prim_(1) = R(1);
-                mc.prim_(2) = R(2);
-                mc.prim_(3) = R(3);
-                mc.prim_(4) = R(4);
-            }
-
-            mc.cons_sp1_ = prim_to_cons(mc.prim_, fs.gamma_);
-        }
-
-        for (auto& mc: dirichlet_boundaries_)
-        {
-            if (mc.poly().centroid()(0) <= 0.)
-            {
-                mc.prim_(0) = L(0);
-                mc.prim_(1) = L(1);
-                mc.prim_(2) = L(2);
-                mc.prim_(3) = L(3);
-                mc.prim_(4) = L(4);
-            }
-            else
-            {
-                mc.prim_(0) = R(0);
-                mc.prim_(1) = R(1);
-                mc.prim_(2) = R(2);
-                mc.prim_(3) = R(3);
-                mc.prim_(4) = R(4);
-            }
-
-            mc.cons_sp1_ = prim_to_cons(mc.prim_, fs.gamma_);
-        }
     }
 
     /*void Mesh::add_walls(std::vector<MeshCell>& cells)

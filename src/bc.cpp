@@ -962,14 +962,15 @@ namespace Tailor
             return;
         }
 
-        auto prim = read_dirichlet(mesh.tag());
+        //auto prim = read_dirichlet(mesh.tag());
+        // prim should already be set by init_flow.
 
         for (MeshCell& mc: mesh.dirichlet_boundaries_)
         {
             const MeshCell& nei = mesh.cell(mc.interior_boundary());
             auto mf = std::find_if(nei.face().begin(), nei.face().end(), [&](const MeshFace& f){return f.tag() == mc.face()[0].tag();});
 
-            mc.prim_ = prim;
+            //mc.prim_ = prim;
             auto vf = mf->vf();
             mc.prim_(1) -= vf(0);
             mc.prim_(2) -= vf(1);

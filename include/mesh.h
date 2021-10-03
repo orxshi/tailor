@@ -113,10 +113,10 @@ namespace Tailor
         void equate_RD_to_RDmid();
 
         void init_flow();
-        void init_sod(const Vector5& L, const Vector5& R, const Freestream& fs);
         //void init(const Vector3& vinf_air, const Freestream& fs);
         void init_uniform(const FlowInit&, double gamma);
         void init_gaussian(const FlowInit&, double gamma);
+        void init_xsplit(const FlowInit& finit);
 
         void connect_add_bou_to_interior(BouType boutype, int rank);
         void reset_R_checked();

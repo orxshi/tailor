@@ -52,6 +52,13 @@ namespace Tailor
         double u;
         double v;
         double w;
+        double x;
+        double ul;
+        double ur;
+        double pl;
+        double pr;
+        double rhol;
+        double rhor;
 
         void read(const Tag& meshtag);
     };

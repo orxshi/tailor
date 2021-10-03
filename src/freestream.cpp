@@ -128,11 +128,18 @@ namespace Tailor
             (cstr(sdesc, "cnt_y"), po::value<double>()->default_value(0), "")
             (cstr(sdesc, "cnt_z"), po::value<double>()->default_value(0), "")
             (cstr(sdesc, "strength"), po::value<double>()->default_value(0), "")
-            (cstr(sdesc, "rho"), po::value<double>()->required(), "")
-            (cstr(sdesc, "p"), po::value<double>()->required(), "")
-            (cstr(sdesc, "u"), po::value<double>()->required(), "")
-            (cstr(sdesc, "v"), po::value<double>()->required(), "")
-            (cstr(sdesc, "w"), po::value<double>()->required(), "")
+            (cstr(sdesc, "rho"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "p"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "u"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "v"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "w"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "ul"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "ur"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "pl"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "pr"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "rhol"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "rhor"), po::value<double>()->default_value(0), "")
+            (cstr(sdesc, "x"), po::value<double>()->default_value(0), "")
             ;
 
         op.add(desc);
@@ -153,6 +160,13 @@ namespace Tailor
         u = vm[cstr(sdesc, "u")].as<double>();
         v = vm[cstr(sdesc, "v")].as<double>();
         w = vm[cstr(sdesc, "w")].as<double>();
+        ul = vm[cstr(sdesc, "ul")].as<double>();
+        ur = vm[cstr(sdesc, "ur")].as<double>();
+        pl = vm[cstr(sdesc, "pl")].as<double>();
+        pr = vm[cstr(sdesc, "pr")].as<double>();
+        rhol = vm[cstr(sdesc, "rhol")].as<double>();
+        rhor = vm[cstr(sdesc, "rhor")].as<double>();
+        x = vm[cstr(sdesc, "x")].as<double>();
     }
 
     //void GaussianInit::read()
