@@ -89,6 +89,11 @@ namespace Tailor
                 assert(nei != nullptr);
                 auto d = nei->poly().centroid() - mc.poly().centroid();
 
+                if (f.is_boundary())
+                {
+                    d *= 2.;
+                }
+
                 dx = d(0);
                 dy = d(1);
                 dz = d(2);

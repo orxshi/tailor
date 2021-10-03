@@ -52,6 +52,8 @@ Following figures shows the unstructured mesh used for solving transonic airfoil
 .. image:: ../images/transonic-airfoil-mesh-close.png
    :width: 200
 
+|
+
 Cell size is the finest near the airfoil and grows proportional to distance from the airfoil surface. Cell size is controlled with combination of ``Field`` in `NACA0012_O.geo <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/msh/NACA0012_O.geo>`_ as shown below.::
 
    lc = 1;
@@ -98,6 +100,7 @@ Figure below shows pressure coefficients at the airfoil surface and convergence 
 .. image:: ../images/transonic-airfoil-converge.png
   :width: 300
 
+|
 
 It is useful to have raw pressure coefficient data to compare results, especially when data for upper and lower surfaces are provided separately. This saves time by avoiding plot digitizing. Here are pressure coefficient data for `upper_pc.dat <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/upper_pc.dat>`_ and `lower_pc.dat <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/lower_pc.dat>`_ airfoil surfaces.
     
