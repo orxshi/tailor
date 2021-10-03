@@ -114,7 +114,12 @@ namespace Tailor
             const MeshCell* nei = opposing_nei(mesh, face, mc.tag());
             assert(nei != nullptr);
 
-            auto dis = face.face().centroid() - mc.poly().centroid();
+            auto dis = nei->poly().centroid() - mc.poly().centroid();
+
+            if (face.is_boundary())
+            {
+                dis *= 2.;
+            }
 
             for (int k=0; k<NVAR; ++k)
             {
