@@ -41,20 +41,21 @@ Mesh properties
 
 The following figure shows the unstructured mesh used for solving transonic airfoil test case. 
 
-|meshfar| |meshmid| |meshclose|
-
-.. |meshfar| figure:: ../images/transonic-airfoil-mesh-far.png
+.. figure:: ../images/transonic-airfoil-mesh-far.png
    :width: 200
+   :align: center
 
    The unstructured mesh.
 
-.. |meshmid| figure:: ../images/transonic-airfoil-mesh-mid.png
+.. figure:: ../images/transonic-airfoil-mesh-mid.png
    :width: 200
+   :align: center
 
    A closer view to the airfoil.
 
-.. |meshclose| figure:: ../images/transonic-airfoil-mesh-close.png
+.. figure:: ../images/transonic-airfoil-mesh-close.png
    :width: 200
+   :align: center
 
    Even more close view.
 
