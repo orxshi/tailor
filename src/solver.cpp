@@ -989,7 +989,10 @@ namespace Tailor
         compute_gradient_coef();
         init_old_conservative_var();
 
+        std::cout << "A" << std::endl;
+
         auto residual = non_linear_iteration();
+        std::cout << "B" << std::endl;
         print_residual(residual);
         if (print_vtk_only_last_step_)
         {
