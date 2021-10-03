@@ -10,7 +10,7 @@ enum class LimiterType
     minmod = 0,
     valbada = 1,
     barth_jespersen = 2,
-    venka = 3,
+    venkatakrishnan = 3,
 };
 
 namespace Tailor
@@ -27,7 +27,7 @@ namespace Tailor
         private:
 
             LimiterType type_;
-            std::array<double, NVAR> venka(const Mesh& mesh, const MeshCell& mc, const std::array<Vector3, NVAR>& grad);
+            std::array<double, NVAR> venkatakrishnan(const Mesh& mesh, const MeshCell& mc, const std::array<Vector3, NVAR>& grad);
             std::array<double, NVAR> barth_jespersen(const Mesh& mesh, const MeshCell& mc, const std::array<Vector3, NVAR>& grad);
 
     };

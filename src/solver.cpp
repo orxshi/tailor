@@ -96,7 +96,8 @@ namespace Tailor
                        donor_var_exc_(nullptr),
                        riemann_solver_type_(RiemannSolverType::roe),
                        dual_ts_(false),
-                       global_nmesh_(0)
+                       global_nmesh_(0),
+                       limiter_type_(LimiterType::barth_jespersen)
     {
     }
 
@@ -105,7 +106,8 @@ namespace Tailor
     last_global_residual_(0.),
     increase_cfl_(true),
     cfl_multiplier_(100.),
-    global_nmesh_(0)
+    global_nmesh_(0),
+    limiter_type_(LimiterType::barth_jespersen)
     {
         read_settings();
 
@@ -566,6 +568,7 @@ namespace Tailor
             ("solver.use-local-time-step", po::value<bool>()->default_value(false), "")
             ("solver.print-vtk-only-last-step", po::value<bool>()->default_value(true), "")
             ("solver.print-vtk-every-step", po::value<bool>()->default_value(false), "")
+            ("solver.limiter-type", po::value<std::string>()->default_value("barth_jespersen"), "")
             ;
 
         po::options_description linear_solver{"Linear solver options"};
@@ -639,10 +642,24 @@ namespace Tailor
         print_linear_solver_error_ = vm["linear-solver.print-error"].as<bool>();
         print_vtk_only_last_step_ = vm["solver.print-vtk-only-last-step"].as<bool>();
         print_vtk_every_step_ = vm["solver.print-vtk-every-step"].as<bool>();
+        std::string slimiter_type = vm["solver.limiter-type"].as<std::string>();
 
         if (print_vtk_only_last_step_)
         {
             assert(!print_vtk_every_step_);
+        }
+        
+        if (slimiter_type == "barth_jespersen")
+        {
+            limiter_type_ = LimiterType::barth_jespersen;
+        }
+        else if (slimiter_type == "venkatakrishnan")
+        {
+            limiter_type_ = LimiterType::venkatakrishnan;
+        }
+        else
+        {
+            assert(false);
         }
     }
 
@@ -1456,7 +1473,7 @@ namespace Tailor
             return;
         }
 
-        Limiter limiter(LimiterType::barth_jespersen);
+        Limiter limiter(limiter_type_);
 
         for (MeshCell &mc : mesh.cell_)
         {

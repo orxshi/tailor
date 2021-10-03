@@ -16,10 +16,10 @@ namespace Tailor
     {
         assert(type_ != LimiterType::undefined);
 
-        if (type_ == LimiterType::venka)
+        if (type_ == LimiterType::venkatakrishnan)
         {
             assert(false);
-            return venka(mesh, mc, grad);
+            return venkatakrishnan(mesh, mc, grad);
         }
         else if (type_ == LimiterType::barth_jespersen)
         {
@@ -31,7 +31,7 @@ namespace Tailor
         }
     }
 
-    std::array<double, NVAR> Limiter::venka(const Mesh& mesh, const MeshCell& mc, const std::array<Vector3, NVAR>& grad)
+    std::array<double, NVAR> Limiter::venkatakrishnan(const Mesh& mesh, const MeshCell& mc, const std::array<Vector3, NVAR>& grad)
     {
         auto phi = [&] (double x, double eps)
         {

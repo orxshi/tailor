@@ -84,6 +84,7 @@ namespace Tailor
 
             template<class Archive> void serialize(Archive & ar, const unsigned int version)
             {
+                ar & limiter_type_;
                 ar & dual_ts_;
                 ar & repart_ratio_;
                 ar & initratio_;
@@ -139,6 +140,7 @@ namespace Tailor
 
         private:    
 
+            LimiterType limiter_type_;
             bool print_vtk_only_last_step_;
             bool print_vtk_every_step_;
             bool print_linear_solver_error_;
