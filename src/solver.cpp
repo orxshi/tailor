@@ -991,6 +991,13 @@ namespace Tailor
 
         auto residual = non_linear_iteration();
         print_residual(residual);
+        reset_overset_mesh_exchanger();
+        reset_partitioned_mesh_exchanger();
+
+        if (!steady_) {
+            ++nsolve_;
+        }
+
         if (print_vtk_only_last_step_)
         {
             if (nsolve_ == max_time_step)
@@ -998,15 +1005,10 @@ namespace Tailor
                 print_mesh_vtk("sol");
             }
         }
+
         if (print_vtk_every_step_)
         {
             print_mesh_vtk("sol");
-        }
-        reset_overset_mesh_exchanger();
-        reset_partitioned_mesh_exchanger();
-
-        if (!steady_) {
-            ++nsolve_;
         }
     }
 
