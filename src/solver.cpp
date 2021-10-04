@@ -937,18 +937,6 @@ namespace Tailor
                 {
                     mc.dQ_ = mc.runge_kutta_coef_[0] / 6. + mc.runge_kutta_coef_[1] / 3. + mc.runge_kutta_coef_[2] / 3. + mc.runge_kutta_coef_[3] / 6.;
                 }
-
-                //if (mc.tag()() == 452)
-                //{
-                //    //if (runge_kutta_stage == 3)
-                //    {
-                //        std::cout << "runge_kuuta_coef_[0](0): " << runge_kutta_coef_[0](0) << std::endl;
-                //        std::cout << "runge_kuuta_coef_[1](0): " << runge_kutta_coef_[1](0) << std::endl;
-                //        std::cout << "runge_kuuta_coef_[2](0): " << runge_kutta_coef_[2](0) << std::endl;
-                //        std::cout << "runge_kuuta_coef_[3](0): " << runge_kutta_coef_[3](0) << std::endl;
-                //        std::cout << "mc.dQ_(0): " << mc.dQ_(0) << std::endl;
-                //    }
-                //}
             }
         }
     }
