@@ -926,6 +926,7 @@ namespace Tailor
                 //runge_kutta_coef_[runge_kutta_stage] = mc.dtao_ * mc.R_ / volume;
                 runge_kutta_coef_[runge_kutta_stage] = dt_ * mc.R_ / volume;
 
+                std::cout << "mc: " << mc.tag()() << std::endl;
                 std::cout << "stage: " << runge_kutta_stage << std::endl;
                 std::cout << "runge_kuuta_coef_[](0): " << runge_kutta_coef_[runge_kutta_stage](0) << std::endl;
                 std::cout << "runge_kuuta_coef_[](1): " << runge_kutta_coef_[runge_kutta_stage](1) << std::endl;
