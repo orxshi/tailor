@@ -16,7 +16,7 @@ A single unstructured mesh is used to solve the Euler equations at transonic air
    * - Angle of attack
      - :math:`1.25^\circ`
    * - Freestream pressure
-     - 0.7
+     - 1 / 1.4
    * - Freestream density
      - 1
    * - Ratio of specific heats
@@ -29,10 +29,10 @@ A single unstructured mesh is used to solve the Euler equations at transonic air
      - Roe
    * - Formulation
      - implicit
-   * - Spatial order of accuracy
-     - 2
-   * - Temporal order of accuracy
-     - 1
+   * - Temporal discretization
+     - Forward Euler
+   * - Limiter
+     - Venkatakrishnan (K = 0)
    * - CFL
      - 10
 
@@ -73,7 +73,7 @@ Since there 32 processors, initially the mesh is also partitioned into 32 partit
 Boundary conditions
 ^^^^^^^^^^^^^^^^^^^
 
-Boundary conditions on the airfoil and in outer boundary are slip-wall and Riemann, respectively. Riemann boundary condition is based on Riemann invariant equations. Initially flow is set to freestream values everywhere in the domain.
+Boundary conditions on the airfoil and in outer boundary are slip-wall and Riemann, respectively. Riemann boundary condition is based on Riemann invariant equations. Empty boundary conditions are used in z-normal direction. Initially flow is set to freestream values everywhere in the domain.
 
 Job submission
 ^^^^^^^^^^^^^^
