@@ -181,6 +181,7 @@ namespace Tailor
                     std::cout << "min_dif: " << min_dif[k] << std::endl;
                     std::cout << "df: " << df << std::endl;
                 }
+                assert(std::abs(phi[k]) < 1e6);
             }
         }
 
