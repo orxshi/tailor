@@ -852,7 +852,8 @@ namespace Tailor
             {
                 for (MeshCell &mc : mesh.cell_)
                 {
-                    mc.cons_s_ = mc.cons_sp1_;
+                    //mc.cons_s_ = mc.cons_sp1_;
+                    mc.cons_n_ = mc.cons_sp1_;
                 }
             }
 
