@@ -31,6 +31,7 @@ namespace Tailor
         using Pnei = std::vector<Tag>;
         using Face = Array<MeshFace, 6>;
 
+        std::array<Vector5, 4> runge_kutta_coef_;
         double sumarea_;
         BouType btype_;
         bool erase_;

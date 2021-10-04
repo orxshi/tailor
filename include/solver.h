@@ -149,7 +149,6 @@ namespace Tailor
             double linear_solver_abs_error_;
             double linear_solver_rel_error_;
             int global_nmesh_;
-            std::array<Vector5, 4> runge_kutta_coef_;
             double cfl_multiplier_;
             double cfl_ratio_;
             bool increase_cfl_;
