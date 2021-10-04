@@ -141,18 +141,6 @@ namespace Tailor
                 mc.ls_wx_.push_back(a1 - a2 * r_12 / r_11 + psi * a3);
                 mc.ls_wy_.push_back(a2 - a3 * r_23 / r_22);
                 mc.ls_wz_.push_back(a3);
-                
-                if (std::abs(mc.ls_wx_.back()) > 40.)
-                {
-                    std::cout << "ls: " << mc.ls_wx_.back() << std::endl;
-                    std::cout << "dx: " << dx << std::endl;
-                    std::cout << "dy: " << dy << std::endl;
-                    std::cout << "dz: " << dz << std::endl;
-                    std::cout << "a1: " << a1 << std::endl;
-                    std::cout << "a2: " << a2 << std::endl;
-                    std::cout << "a3: " << a3 << std::endl;
-                    std::cout << "phi: " << psi << std::endl;
-                }
             }
 
             for (const auto& a: mc.ls_wx_)
