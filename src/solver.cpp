@@ -1234,7 +1234,227 @@ namespace Tailor
                     //assert(donor_cell.oga_cell_type() == OGA_cell_type_t::field || donor_cell.oga_cell_type() == OGA_cell_type_t::non_resident);
                     assert(donor_cell.oga_cell_type() == OGA_cell_type_t::field);
 
-                    //auto grad = gradient_.ls_grad(mesh, mc);
+                    //auto grad = gradient_.ls_grad(*m, donor_cell);
+
+                    //Limiter limiter(LimiterType::venka);
+                    //limiter.limit(mesh, mc, grad);
+
+                    auto distance = mc.poly().centroid() - donor_cell.poly().centroid();
+
+                    for (int i = 0; i < NVAR; ++i)
+                    {
+                        mc.prim_(i) = donor_cell.prim(i) + dot(donor_cell.gradient_[i], distance);
+                    }
+
+                    //mc.prim_(1) += mc.vgn(0);
+                    //mc.prim_(2) += mc.vgn(1);
+                    //mc.prim_(3) += mc.vgn(2);
+
+                    mc.cons_sp1_ = prim_to_cons(mc.prim_, fs.gamma_);
+                }
+                else
+                {
+                    mc.prim_ = donor_cell.prim();
+
+                    //mc.prim_(1) += mc.vgn(0);
+                    //mc.prim_(2) += mc.vgn(1);
+                    //mc.prim_(3) += mc.vgn(2);
+
+                    mc.dQ_ = donor_cell.dQ(); // ?
+                    mc.cons_sp1_ = prim_to_cons(mc.prim_, fs.gamma_);
+                    //for (int i = 0; i < NVAR; ++i)
+                    //{
+                        //mc.prim_[i] = donor_cell.prim(i);
+                        //if (mesh.tag()() == 0)
+                        //{
+                        //std::cout << "u: " << donor_cell.prim(1) << std::endl;
+                        //std::cout << "v: " << donor_cell.prim(2) << std::endl;
+                        //std::cout << "w: " << donor_cell.prim(3) << std::endl;
+                        //}
+                    //}
+                }
+
+                //auto vg = donor_cell.vgn();
+                //assert(vg(0) == 0.);
+                //assert(vg(1) == 0.);
+                //assert(vg(2) == 0.);
+                //mc.prim_(1) -= vg(0);
+                //mc.prim_(2) -= vg(1);
+                //mc.prim_(3) -= vg(2);
+
+                assert(!mc.prim_.isnan());
+            }
+        }
+    }
+
+    void Solver::print_settings() const
+    {
+        if (comm_->rank() != 0) {
+            return;
+        }
+
+        std::ofstream out;
+        out.open("solver_settings.log");
+
+        out << "cfl_multiplier = " << cfl_multiplier_ << std::endl;
+        out << "cfl_ratio = " << cfl_ratio_ << std::endl;
+        out << "increase_cfl = " << increase_cfl_ << std::endl;
+        out << "print_residual = " << print_residual_ << std::endl;
+        out << "show_inner_res = " << show_inner_res_ << std::endl;
+        out << "show_inner_norm = " << show_inner_norm_ << std::endl;
+        out << "progressive_cfl = " << progressive_cfl_ << std::endl;
+        out << "steady = " << steady_ << std::endl;
+        out << "temporal_discretization = " << temporal_discretization_ << std::endl;
+        out << "dt = " << dt_ << std::endl;
+        out << "nsweep = " << nsweep_ << std::endl;
+        out << "omega = " << omega_ << std::endl;
+        out << "tol = " << tol_ << std::endl;
+        out << "sorder = " << sorder_ << std::endl;
+        out << "torder = " << torder_ << std::endl;
+        out << "printfreq = " << printfreq_ << std::endl;
+        out << "cfl = " << cfl_ << std::endl;
+        out << "delta_cfl = " << delta_cfl_ << std::endl;
+        out << "cfl_increase_freq = " << cfl_increase_freq_ << std::endl;
+        out << "final_time = " << finaltime_ << std::endl;
+        out << "load_estim_type = " << static_cast<int>(load_estim_type_) << std::endl;
+        out << "make_load_balance = " << make_load_balance_ << std::endl;
+        out << "pseudo3D = " << pseudo3D_ << std::endl;
+        out << "print_map = " << print_map_ << std::endl;
+        out << "maxtimestep = " << maxtimestep_ << std::endl;
+        out << "half_cfl = " << half_cfl_ << std::endl;
+        out << "can_rebalance = " << can_rebalance_ << std::endl;
+        out << "force_rebalance = " << force_rebalance_ << std::endl;
+        out << "rebalance_thres = " << rebalance_thres_ << std::endl;
+        out << "print_repart_info = " << print_repart_info_ << std::endl;
+        out << "print_imbalance = " << print_imbalance_ << std::endl;
+        out << "repart_ratio = " << repart_ratio_ << std::endl;
+        out << "riemann_solver = " << static_cast<int>(riemann_solver_type_) << std::endl;
+        out << "dual_ts = " << dual_ts_ << std::endl;
+        out << "linear_solver_max_restart_ = " << linear_solver_max_restart_ << std::endl;
+        out << "linear_solver_max_iteration_ = " << linear_solver_max_iteration_ << std::endl;
+        out << "linear_solver_abs_error_ = " << linear_solver_abs_error_ << std::endl;
+        out << "linear_solver_rel_error_ = " << linear_solver_rel_error_ << std::endl;
+        out << "use_local_time_step_ = " << use_local_time_step_ << std::endl;
+
+        out.close();
+    }
+
+    void Solver::update_partitioned_mesh_exchanger()
+    {
+        //auto &sp = partition_->spc_->sp_.front();
+
+        //auto global_nmesh = partition_->spc_->mesh_system_size();
+
+        //for (int i = 0; i < global_nmesh; ++i)
+        {
+            //Mesh* mesh_ptr = nullptr;
+            //auto meshp = std::find_if(sp.mesh_.begin(), sp.mesh_.end(), [i](Mesh& m){return m.tag()() == i;});
+            //auto& mesh = *meshp;
+
+            //if (meshp != sp.mesh_.end())
+            //{
+                //mesh_ptr = &mesh;
+            //}
+
+            if (var_exc_ != nullptr)
+            {
+                //var_exc_->update(mesh_ptr, profiler_, "sol-ghost-exc");
+                var_exc_->update(profiler_, "sol-ghost-exc");
+            }
+        }
+    }
+
+    void Solver::update_ghosts()
+    {
+        auto &sp = partition_->spc_->sp_.front();
+
+        //if (sp.mesh_.size() == 1) {
+            //return;
+        //}
+        
+        if (comm_->size() == 1) {
+            return;
+        }
+
+        for (Mesh& mesh: sp.mesh_)
+        {
+            mesh.update_ghost_primitives(var_exc_->arrival(), comm_->rank(), fs_.gamma_);
+        }
+    }
+
+    void Solver::update_overset_mesh_exchanger()
+    {
+        //auto &sp = partition_->spc_->sp_.front();
+
+        //for (Mesh& mesh: sp.mesh_)
+        {
+            if (donor_var_exc_ != nullptr)
+            {
+                //donor_var_exc_->update(&mesh, profiler_, "sol-donor-exc");
+                donor_var_exc_->update(profiler_, "sol-donor-exc");
+            }
+        }
+    }
+
+    void Solver::update_donors(Mesh& mesh)
+    {
+        auto &sp = partition_->spc_->sp_.front();
+
+        if (sp.mesh_.size() == 1) {
+            return;
+        }
+
+        //for (Mesh& mesh: sp.mesh_)
+        {
+            if (donor_var_exc_ == nullptr)
+            {
+                oga_interpolate(mesh);
+            }
+            else
+            {
+                mesh.oga_interpolate(donor_var_exc_->arrival(), comm_->rank());
+            }
+        }
+    }
+
+    void Solver::set_boundary_conditions(Mesh& mesh)
+    {
+        bc_.set_bc(mesh, profiler_);
+    }
+
+    void Solver::compute_sum_of_fluxes(Mesh& mesh, int ntimestep)
+    {
+        if (ntimestep == 0 || steady_ || dual_ts_)
+        {
+            compute_sum_of_fluxes(mesh);
+        }
+        else
+        {
+            mesh.reset_to_mid();
+        }
+    }
+
+    void Solver::compute_gradient(Mesh& mesh)
+    {
+        if (sorder_ == 1) {
+            return;
+        }
+
+        Limiter limiter(limiter_type_);
+
+        for (MeshCell &mc : mesh.cell_)
+        {
+            if (mc.btype() != BouType::interior)
+            {
+                return;
+            }
+
+            if (mc.oga_cell_type() == OGA_cell_type_t::non_resident || mc.oga_cell_type() == OGA_cell_type_t::ghost)
+            {
+                return;
+            }
+
+            mc.gradient_ = Gradient::ls_grad(mesh, mc);
 
             auto limit_coef = limiter.limit(mesh, mc, mc.gradient_);
 
