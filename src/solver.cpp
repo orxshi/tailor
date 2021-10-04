@@ -1458,9 +1458,9 @@ namespace Tailor
 
             auto limit_coef = limiter.limit(mesh, mc, mc.gradient_);
 
-            std::cout << "prim(0): " << mc.prim(0) << std::endl;
-            std::cout << "grad(0): " << mc.gradient_[0](0) << " " << mc.gradient_[0](1) << " " << mc.gradient_[0](2) << std::endl;
-            std::cout << "limiter(0): " << limit_coef[0] << std::endl;
+            //std::cout << "prim(0): " << mc.prim(0) << std::endl;
+            //std::cout << "grad(0): " << mc.gradient_[0](0) << " " << mc.gradient_[0](1) << " " << mc.gradient_[0](2) << std::endl;
+            //std::cout << "limiter(0): " << limit_coef[0] << std::endl;
 
             for (int i = 0; i < NVAR; ++i)
             {

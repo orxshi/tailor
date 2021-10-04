@@ -174,6 +174,13 @@ namespace Tailor
                 {
                     phi[k] = std::min(phi[k], 1.);
                 }
+
+                if (std::abs(phi[k]) > 1e6)
+                {
+                    std::cout << "max_dif: " << max_dif[k] << std::endl;
+                    std::cout << "min_dif: " << min_dif[k] << std::endl;
+                    std::cout << "df: " << df << std::endl;
+                }
             }
         }
 
