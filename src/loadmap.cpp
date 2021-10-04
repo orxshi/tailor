@@ -733,6 +733,9 @@ namespace Tailor
         std::string s = name_;
         s.append("-refine");
         if (profiler_ != nullptr) {profiler_->bstart(s);}
+
+        std::cout << "Refining loadmap" << std::endl;
+
         if (adaptive) {
             refine(nmake_map);
         }
@@ -749,6 +752,8 @@ namespace Tailor
                 ++j;
             }
         }
+
+        std::cout << "Refined loadmap" << std::endl;
 
         get_bin_to_proc();
 
