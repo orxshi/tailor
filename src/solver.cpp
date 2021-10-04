@@ -129,7 +129,11 @@ namespace Tailor
             partition_ = new Partition(comm_, load_estim_type_, pseudo3D_, "sol", profiler_);
             partition_->read_mesh(filename);
 
+            std::cout << "Read meshes" << std::endl;
+
             partition_->make(true, make_load_balance_, nsolve_);
+
+            std::cout << "Made partition" << std::endl;
 
             partition_->clear_mesh();
 
