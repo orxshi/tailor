@@ -928,7 +928,8 @@ namespace Tailor
 
                 if (runge_kutta_stage < 2)
                 {
-                    mc.dQ_ = 0.5 * runge_kutta_coef_[runge_kutta_stage];
+                    //mc.dQ_ = 0.5 * runge_kutta_coef_[runge_kutta_stage];
+                    mc.dQ_ = runge_kutta_coef_[runge_kutta_stage]; // TODO DELELTE THIS AND UNCOMMENT AOBVE
                 }
                 else if (runge_kutta_stage == 2)
                 {
