@@ -156,6 +156,7 @@ namespace Tailor
                 {
                     solver_ = std::make_unique<Solver>(&comm_, mesh_folder_, nullptr);
                 }
+                std::cout << "constructured solver" << std::endl;
                 profiler_stop("create_solver");
             }
         }
