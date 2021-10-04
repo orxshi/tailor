@@ -94,7 +94,3 @@ I will also provide parallel performance results on helicopter configuration.
 * [Gmsh](https://gmsh.info/) for mesh generation in msh format.
 * [amgcl](https://github.com/ddemidov/amgcl) for solution of linear system of equations if implicit formulation is used.
 * [CMake](https://cmake.org/) for build file generation.
-
-# Warning
-
-Tailor is in active development. You will not be happy if you dig into source files or try to execute test cases.
