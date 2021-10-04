@@ -44,9 +44,9 @@ namespace Tailor
 
     std::array<double, NVAR> Limiter::venkatakrishnan(const Mesh& mesh, const MeshCell& mc, const std::array<Vector3, NVAR>& grad)
     {
-        // See page 3 of http://tetra.mech.ubc.ca/ANSLab/publications/michalak2008.pdf
+        // See page 3 and 4 of http://tetra.mech.ubc.ca/ANSLab/publications/michalak2008.pdf
 
-        double K = 0.3;
+        double K = 1.0;
         double epsq = std::pow(K * std::pow(mc.poly().volume(), 1./3.), 3.);
 
         auto foo = [&] (double ext, double df)
@@ -124,7 +124,7 @@ namespace Tailor
 
     std::array<double, NVAR> Limiter::barth_jespersen(const Mesh& mesh, const MeshCell& mc, const std::array<Vector3, NVAR>& grad)
     {
-        // See page 3 of http://tetra.mech.ubc.ca/ANSLab/publications/michalak2008.pdf
+        // See page 3 and 4 of http://tetra.mech.ubc.ca/ANSLab/publications/michalak2008.pdf
 
         std::array<double, NVAR> phi;
         std::array<double, NVAR> max_dif;
