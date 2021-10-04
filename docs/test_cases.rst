@@ -32,7 +32,7 @@ A single unstructured mesh is used to solve the Euler equations at transonic air
    * - Temporal discretization
      - Forward Euler
    * - Limiter
-     - Venkatakrishnan (K = 0)
+     - Venkatakrishnan (K = 0.3)
    * - CFL
      - 10
 
