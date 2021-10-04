@@ -146,6 +146,7 @@ namespace Tailor
 
     void SpatialPartitionContainer::get_coef(const std::vector<AeroCoefPara>& aero_para, int iter) const
     {
+        assert(false);
         int mss = mesh_system_size();
         for (int i = 0; i < mss; ++i)
         {
