@@ -2451,6 +2451,11 @@ namespace Tailor
 
     void Solver::temporal_discretization(Mesh& mesh)
     {
+        if (temporal_discretization_ == "runge_kutta_4")
+        {
+            return;
+        }
+
         for (MeshCell &mc : mesh.cell_)
         {
             if (!calc_cell(mc))
