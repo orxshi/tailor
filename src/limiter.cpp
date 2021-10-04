@@ -46,7 +46,7 @@ namespace Tailor
     {
         // See page 3 of http://tetra.mech.ubc.ca/ANSLab/publications/michalak2008.pdf
 
-        double K = 1.0;
+        double K = 0.3;
         double epsq = std::pow(K * std::pow(mc.poly().volume(), 1./3.), 3.);
 
         auto foo = [&] (double ext, double df)
