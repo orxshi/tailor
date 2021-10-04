@@ -1467,7 +1467,7 @@ namespace Tailor
                 mc.gradient_[i] *= limit_coef[i];
             }
         }
-        assert(false);
+        //assert(false);
     }
 
     Vector5 Solver::non_linear_iteration()
