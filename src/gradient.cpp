@@ -113,29 +113,18 @@ namespace Tailor
             r_23 = (r_23 - r_12 * r_13) / r_22;
             r_33 = std::sqrt(r_33 - std::pow(r_13,2.) - std::pow(r_23,2.));
 
-            if (r_22 == 0.)
-            {
-                for (MeshFace& f: mc.face_p())
-                {
-                    const MeshCell* nei = opposing_nei(mesh, f, mc.tag());
-                    auto d = nei->poly().centroid() - mc.poly().centroid();
-
-                    dx = d(0);
-                    dy = d(1);
-                    dz = d(2);
-
-                    std::cout << "dx: " << dx << std::endl;
-                    std::cout << "dy: " << dy << std::endl;
-                    std::cout << "dz: " << dz << std::endl;
-                }
-            }
-            assert(r_22 != 0.);
-
             for (MeshFace& f: mc.face_p())
             //for (const auto& f: mc.pnei())
             {
                 const MeshCell* nei = opposing_nei(mesh, f, mc.tag());
+                assert(nei != nullptr);
+
                 auto d = nei->poly().centroid() - mc.poly().centroid();
+                
+                if (f.is_boundary())
+                {
+                    d *= 2.;
+                }
 
                 //auto d = mesh.cell(f).poly().centroid() - mc.poly().centroid();
                 //auto d = f.const_addr()->poly().centroid() - mc.poly().centroid();
@@ -152,6 +141,18 @@ namespace Tailor
                 mc.ls_wx_.push_back(a1 - a2 * r_12 / r_11 + psi * a3);
                 mc.ls_wy_.push_back(a2 - a3 * r_23 / r_22);
                 mc.ls_wz_.push_back(a3);
+                
+                if (std::abs(mc.ls_wx_.back()) > 40.)
+                {
+                    std::cout << "ls: " << mc.ls_wx_.back() << std::endl;
+                    std::cout << "dx: " << dx << std::endl;
+                    std::cout << "dy: " << dy << std::endl;
+                    std::cout << "dz: " << dz << std::endl;
+                    std::cout << "a1: " << a1 << std::endl;
+                    std::cout << "a2: " << a2 << std::endl;
+                    std::cout << "a3: " << a3 << std::endl;
+                    std::cout << "phi: " << psi << std::endl;
+                }
             }
 
             for (const auto& a: mc.ls_wx_)
