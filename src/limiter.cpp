@@ -99,6 +99,11 @@ namespace Tailor
             {
                 double df = dot(grad[k], dis);
 
+                if (std::abs(df) < TAILOR_ZERO)
+                {
+                    df = 0.
+                }
+
                 if (df > 0.)
                 {
                     phi[k] = foo(max_dif[k], df);
@@ -162,6 +167,11 @@ namespace Tailor
             {
                 double df = dot(grad[k], dis);
 
+                if (std::abs(df) < TAILOR_ZERO)
+                {
+                    df = 0.
+                }
+
                 if (df > 0.)
                 {
                     phi[k] = std::min(phi[k], std::min(1., max_dif[k] / df));
@@ -174,14 +184,6 @@ namespace Tailor
                 {
                     phi[k] = std::min(phi[k], 1.);
                 }
-
-                if (std::abs(phi[k]) > 1e6)
-                {
-                    std::cout << "max_dif: " << max_dif[k] << std::endl;
-                    std::cout << "min_dif: " << min_dif[k] << std::endl;
-                    std::cout << "df: " << df << std::endl;
-                }
-                assert(std::abs(phi[k]) < 1e6);
             }
         }
 
