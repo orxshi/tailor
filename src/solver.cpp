@@ -928,8 +928,7 @@ namespace Tailor
 
                 if (runge_kutta_stage < 2)
                 {
-                    //mc.dQ_ = 0.5 * runge_kutta_coef_[runge_kutta_stage];
-                    mc.dQ_ = runge_kutta_coef_[runge_kutta_stage]; // TODO DELELTE THIS AND UNCOMMENT AOBVE
+                    mc.dQ_ = 0.5 * runge_kutta_coef_[runge_kutta_stage];
                 }
                 else if (runge_kutta_stage == 2)
                 {
@@ -937,7 +936,7 @@ namespace Tailor
                 }
                 else
                 {
-                    mc.dQ_ = runge_kutta_coef_[0] / 6. + runge_kutta_coef_[1] / 3. + runge_kutta_coef_[2] / 3. + runge_kutta_coef_[3] / 6.;
+                    mc.dQ_ = runge_kutta_coef_[0] * 2. / 6. + runge_kutta_coef_[1] * 2. / 3. + runge_kutta_coef_[2] / 3. + runge_kutta_coef_[3] / 6.;
                 }
             }
         }
@@ -1489,8 +1488,7 @@ namespace Tailor
 
             int r_max = 1;
             if (temporal_discretization_ == "runge_kutta_4") {
-                //r_max = 4;
-                r_max = 1; // TODO DELETE LATER and UNCCOMENT ABOVE LINE
+                r_max = 4;
             }
 
             for (int runge_kutta_stage = 0; runge_kutta_stage < r_max; ++runge_kutta_stage)
