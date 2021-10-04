@@ -198,7 +198,10 @@ namespace Tailor
                 std::string mems = "bef-lm";
                 mem_usage(comm_, mems);
             }
+
+        std::cout << "Making loadmap" << std::endl;
         make_loadmap(mesh, make_load_balance, regtype, make_load_balance, part_to_commsize_only, let);
+        std::cout << "Made loadmap" << std::endl;
 
             {
                 std::string mems = "aft-lm";
@@ -206,6 +209,7 @@ namespace Tailor
             }
 
         remap(merge_bins, iter);
+        std::cout << "Remapped" << std::endl;
 
             {
                 std::string mems = "aft-remap";

@@ -72,7 +72,6 @@ namespace Tailor
         in >> temps; // end of nodes.
         in >> temps; // elements.
         in >> n_total; // the number under "$Elements" is total number of elements which includes boundary faces and cells.
-        std::cout << "Total number of Elements: " << n_total << std::endl;
         line_number += 3;
 
         // read elements.
@@ -125,8 +124,6 @@ namespace Tailor
 
             ++n_bface;
         }
-
-        std::cout << "Total number of boundary elements: " << n_bface << std::endl;
 
         go_to_beg_of_line(in, line_number);
 
