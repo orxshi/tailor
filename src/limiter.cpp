@@ -101,7 +101,7 @@ namespace Tailor
 
                 if (std::abs(df) < TAILOR_ZERO)
                 {
-                    df = 0.
+                    df = 0.;
                 }
 
                 if (df > 0.)
@@ -169,7 +169,7 @@ namespace Tailor
 
                 if (std::abs(df) < TAILOR_ZERO)
                 {
-                    df = 0.
+                    df = 0.;
                 }
 
                 if (df > 0.)
