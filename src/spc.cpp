@@ -164,14 +164,10 @@ namespace Tailor
             bool compute_force_coef = component.compute_force_coef;
             bool compute_moment_coef = component.compute_moment_coef;
 
-            std::cout << "compute_presa: " << component.compute_pres_coef << std::endl;
-
-            if (!compute_pres_coef && !compute_force_coef && !compute_moment_coef); 
+            if (!compute_pres_coef && !compute_force_coef && !compute_moment_coef)
             {
                 continue;
             }
-
-            std::cout << "compute_presb: " << component.compute_pres_coef << std::endl;
 
             if (mesh != sp_.front().mesh().end())
             {
@@ -236,7 +232,6 @@ namespace Tailor
 
             if (compute_pres_coef)
             {
-            std::cout << "compute_presc: " << component.compute_pres_coef << std::endl;
                 if (mesh != sp_.front().mesh().end())
                 {
                     std::string fn = "pres-coef-";
