@@ -75,6 +75,12 @@ Boundary conditions
 
 Boundary conditions on the airfoil and in outer boundary are slip-wall and Riemann, respectively. Riemann boundary condition is based on Riemann invariant equations. Empty boundary conditions are used in z-normal direction. Initially flow is set to freestream values everywhere in the domain.
 
+.. image:: ../images/airfoil-bc.png
+  :width: 300
+
+.. image:: ../images/airfoil-mesh-iso.png
+  :width: 300
+
 Job submission
 ^^^^^^^^^^^^^^
 
