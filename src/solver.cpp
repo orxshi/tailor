@@ -846,19 +846,18 @@ namespace Tailor
 
     void Solver::evolve_old_solution_in_time(Mesh& mesh, int runge_kutta_stage)
     {
-        if (temporal_discretization_ == "runge_kutta_4")
-        {
-            if (runge_kutta_stage == 3)
-            {
-                for (MeshCell &mc : mesh.cell_)
-                {
-                    //mc.cons_s_ = mc.cons_sp1_;
-                    mc.cons_n_ = mc.cons_sp1_;
-                }
-            }
+        //if (temporal_discretization_ == "runge_kutta_4")
+        //{
+        //    if (runge_kutta_stage == 3)
+        //    {
+        //        for (MeshCell &mc : mesh.cell_)
+        //        {
+        //            mc.cons_s_ = mc.cons_sp1_;
+        //        }
+        //    }
 
-            return;
-        }
+        //    return;
+        //}
 
         for (MeshCell &mc : mesh.cell_)
         {
@@ -937,7 +936,8 @@ namespace Tailor
 
                 double volume = mc.poly().volume();
 
-                runge_kutta_coef_[runge_kutta_stage] = mc.dtao_ * mc.R_ / volume;
+                //runge_kutta_coef_[runge_kutta_stage] = mc.dtao_ * mc.R_ / volume;
+                runge_kutta_coef_[runge_kutta_stage] = dt_ * mc.R_ / volume;
 
                 if (runge_kutta_stage < 2)
                 {
