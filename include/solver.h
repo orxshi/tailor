@@ -220,7 +220,7 @@ namespace Tailor
             //void update_cons_implicitly(Mesh& mesh, int ntimestep);
             void calc_change_in_conserved_var(Mesh& mesh, int runge_kutta_stage);
             void evolve_solution_in_time(Mesh& mesh);
-            void evolve_old_solution_in_time(Mesh& mesh, int runge_kutta_stage);
+            void evolve_old_solution_in_time(Mesh& mesh);
             void compute_sum_of_fluxes(Mesh &mesh);
             void compute_sum_of_fluxes(Mesh& mesh, int ntimestep);
             bool sor(Mesh& mesh, int ntimestep);

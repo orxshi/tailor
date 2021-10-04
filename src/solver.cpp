@@ -844,21 +844,8 @@ namespace Tailor
         }   
     }
 
-    void Solver::evolve_old_solution_in_time(Mesh& mesh, int runge_kutta_stage)
+    void Solver::evolve_old_solution_in_time(Mesh& mesh)
     {
-        //if (temporal_discretization_ == "runge_kutta_4")
-        //{
-        //    if (runge_kutta_stage == 3)
-        //    {
-        //        for (MeshCell &mc : mesh.cell_)
-        //        {
-        //            mc.cons_s_ = mc.cons_sp1_;
-        //        }
-        //    }
-
-        //    return;
-        //}
-
         for (MeshCell &mc : mesh.cell_)
         {
             if (dual_ts_)
@@ -1501,7 +1488,8 @@ namespace Tailor
 
             int r_max = 1;
             if (temporal_discretization_ == "runge_kutta_4") {
-                r_max = 4;
+                //r_max = 4;
+                r_max = 1; // TODO DELETE LATER and UNCCOMENT ABOVE LINE
             }
 
             for (int runge_kutta_stage = 0; runge_kutta_stage < r_max; ++runge_kutta_stage)
@@ -1540,7 +1528,7 @@ namespace Tailor
                         calc_change_in_conserved_var(mesh, runge_kutta_stage);
 
                         evolve_solution_in_time(mesh);
-                        evolve_old_solution_in_time(mesh, runge_kutta_stage);
+                        evolve_old_solution_in_time(mesh);
 
                         mesh_ptr = &mesh;
                     }
