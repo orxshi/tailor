@@ -189,7 +189,7 @@ Physical Surface(9) = outerbc[];
 Physical Surface(3) = emptybc[];
 Physical Volume(4) = {1,2,3,4};
 
-lc = 5;
+lc = 1;
 Field[1] = Distance;
 Field[1].FacesList = {wallbc[]};
 Field[1].NNodesByEdge = 100;
