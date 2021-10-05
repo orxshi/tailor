@@ -83,6 +83,7 @@ namespace Tailor
         bool compute_pres_coef;
         bool compute_force_coef;
         bool compute_moment_coef;
+        int priority;
 
         void read(const Tag& mtag);
     };

@@ -80,6 +80,7 @@ namespace Tailor
             (cstr(sdesc, "compute-pres-coef"), po::value<bool>()->default_value(false), "")
             (cstr(sdesc, "compute-force-coef"), po::value<bool>()->default_value(false), "")
             (cstr(sdesc, "compute-moment-coef"), po::value<bool>()->default_value(false), "")
+            (cstr(sdesc, "priority"), po::value<int>()->default_value(-1), "")
             ;
 
         op.add(desc);
@@ -111,6 +112,7 @@ namespace Tailor
         compute_pres_coef = vm[cstr(sdesc, "compute-pres-coef")].as<bool>();
         compute_force_coef = vm[cstr(sdesc, "compute-force-coef")].as<bool>();
         compute_moment_coef = vm[cstr(sdesc, "compute-moment-coef")].as<bool>();
+        priority = vm[cstr(sdesc, "priority")].as<int>();
     }
 
     void FlowInit::read(const Tag& meshtag)

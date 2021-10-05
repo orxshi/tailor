@@ -54,25 +54,16 @@ namespace Tailor
 
     void DonorSearcher::read_priority()
     {
-        std::ifstream in;
-        in.open("priority");
+        Component component;
 
-        if (!in.is_open())
+        for (auto& sp: spc_->sp_)
         {
-            return;
-        }
-
-        int meshtag = -1;
-        int pri = -1;
-
-        while (in >> meshtag >> pri)
-        {
-            for (auto& sp: spc_->sp_) {
-                sp.set_mesh_priority(meshtag, pri);
+            for (auto& mesh: sp.mesh_)
+            {
+                component.read(mesh.tag());
+                mesh.set_priority(component.priority);
             }
         }
-
-        in.close();
     }
 
     void DonorSearcher::donor_search(int nassemble, bool pseudo3D)
