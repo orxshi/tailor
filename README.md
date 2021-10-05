@@ -97,7 +97,7 @@ I will also provide parallel performance results on helicopter configuration.
 * [amgcl](https://github.com/ddemidov/amgcl) for solution of linear system of equations if implicit formulation is used.
 * [CMake](https://cmake.org/) for build file generation.
 
-## TODO
+## Todo
 
 1. Elements such as cells and faces store IDs of neighbors and parent cells not pointers. Book-keeping pointers is complicated since cells can move across partitions. Code should speed up remarkable if this improvement is made.
 
