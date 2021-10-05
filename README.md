@@ -70,7 +70,8 @@ Overset mesh technique shines in moving mesh problems. Component meshes are free
 
 # Documentation
 
-I am preparing a [readthedocs](https://tailor.readthedocs.io/en/latest/index.html) documentation to explain the theory and the code. Code documentation will take some time though since a lot of code-clean-up is needed.
+I am preparing a [readthedocs](https://tailor.readthedocs.io/en/latest/index.html) documentation.
+
 # Test cases
 
 I will provide validation results on the following test cases.
