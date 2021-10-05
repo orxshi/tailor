@@ -1,6 +1,58 @@
 Test cases
 ==========
 
+.. _shock-tube:
+
+Shock tube
+----------
+
+Shock tube test case is comprised of a tube containing initially two gases separated by an imaginary membrane at x = 0.
+
+Initial condition
+^^^^^^^^^^^^^^^^^
+
+Flow is initizalized by reading `flow_init.ini <https://github.com/orxshi/tailor/blob/main/test/shock_tube/flow_init.ini>`_.
+
+.. list-table:: Initial profile
+   :header-rows: 1
+
+   * - Variable 
+     - Left
+     - Right
+   * - Density
+     - 1.0
+     - 0.125
+   * - Pressure
+     - 1.0
+     - 0.1
+   * - Velocity
+     - 0.0
+     - 0.0
+
+.. list-table:: Solver parameters
+   :header-rows: 0
+
+   * - Flow type
+     - Steady
+   * - Riemannsolver
+     - HLLC
+   * - Temporal discretization
+     - Runge-Kutta (4-stage)
+   * - Limiter
+     - Venkatakrishnan (K = 0.3)
+   * - CFL
+     - 10
+
+
+Boundary condition
+^^^^^^^^^^^^^^^^^^
+
+Flow in the tube is made one-dimensional by imposing empty boundary conditions in peripheral surfaces of the tube. At caps of the tube, dirichlet boundary condition is imposed.
+
+Results
+^^^^^^^
+
+
 .. _steady-transonic-airfoil:
 
 Steady transonic airfoil
@@ -112,52 +164,6 @@ It is useful to have raw pressure coefficient data to compare results, especiall
     
 Reference 1: Manzano, Luis, Jason Lassaline, and David Zingg. "A Newton-Krylov algorithm for the Euler equations using unstructured grids." 41st Aerospace Sciences Meeting and Exhibit. 2003.
 Reference 2: `<https://su2code.github.io/tutorials/Inviscid_2D_Unconstrained_NACA0012/>`_
-
-Shock tube
-----------
-
-Shock tube test case is comprised of a tube containing initially two gases separated by an imaginary membrane at x = 0.
-
-Initial condition
-^^^^^^^^^^^^^^^^^
-
-Flow is initizalized by reading `flow_init.ini <https://github.com/orxshi/tailor/blob/main/test/shock_tube/flow_init.ini>`_.
-
-.. list-table:: Initial profile
-   :header-rows: 1
-
-   * - Variable 
-     - Left
-     - Right
-   * - Density
-     - 1.0
-     - 0.125
-   * - Pressure
-     - 1.0
-     - 0.1
-   * - Velocity
-     - 0.0
-     - 0.0
-
-.. list-table:: Solver parameters
-   :header-rows: 0
-
-   * - Flow type
-     - Steady
-   * - Riemannsolver
-     - HLLC
-   * - Temporal discretization
-     - Runge-Kutta (4-stage)
-   * - Limiter
-     - Venkatakrishnan (K = 0.3)
-   * - CFL
-     - 10
-
-
-Boundary condition
-^^^^^^^^^^^^^^^^^^
-
-Flow in the tube is made one-dimensional by imposing empty boundary conditions in peripheral surfaces of the tube. At caps of the tube, dirichlet boundary condition is imposed.
 
    
 

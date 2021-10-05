@@ -49,6 +49,4 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-   solver
-   partitioning
    test_cases
