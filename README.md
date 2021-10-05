@@ -53,7 +53,7 @@ The figure on the left shows the flowchart for partitioning of mesh-system. In p
 
 <br clear="left"/>
 
-# Flow solver
+## Flow solver
 Tailor solves three-dimensional Euler equations with finite-volume formulation. At each cell-face a Riemann problem is approximately solved with either explicit/implicit Roe solver or explicit HLLC solver. To admit discontinuities, integral form of the Euler equations are discretized instead of differential form. Mathematical formulation is based on the book of [Toro](https://www.springer.com/gp/book/9783540252023) where flux is calculated in axis-aligned frame of reference (x-split form). Conservative variables and flux are rotated back-on-forth for consistent flux calculation.
 
 Up to second order spatial and temporal order of accuracy is possible. Gradients are computed by solving a least-squares problem and limited with the Venkatakrishnan multiplier. Time derivative can be discretized with forward and backward time levels and 4-stage Runge-Kutta.
