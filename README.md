@@ -94,3 +94,15 @@ I will also provide parallel performance results on helicopter configuration.
 * [Gmsh](https://gmsh.info/) for mesh generation in msh format.
 * [amgcl](https://github.com/ddemidov/amgcl) for solution of linear system of equations if implicit formulation is used.
 * [CMake](https://cmake.org/) for build file generation.
+
+# TODO
+
+1. Elements such as cells and faces store IDs of neighbors and parent cells not pointers. Book-keeping pointers is complicated since cells can move across partitions. Code should speed up remarkable if this improvement is made.
+
+2. Using Boost MPI saves a lot of development time but it is slower compared to pure OpenMPI because Boost MPI serializes/deserizalies data for communication.
+
+3. Data communication in Tailor is performed by `Exchanger` template. Buffers are members of Exchanger. Unfortunately, OpenMPI does not release buffers when an Exchanger instance is destructed. This causes memory usage to increase until program gets out of memory.
+
+4. `pseudo3d` boolean is an option that can be set to true if the flow is 2D. Make it generic. Rename boolean as `flow_dimension` as let it take values such as 1, 2, 3. Also, put this parameter under [tailor] options instead of [general].
+
+5. Set aerodynamic coefficients by reading from component.ini not by passing function to `tailor.make()`.
