@@ -1,2 +1,2 @@
 project = 'Tailor'
-exclude patterns = [solver.rst, partitioning.rst]
+exclude patterns = ['solver.rst', 'partitioning.rst']
