@@ -80,7 +80,7 @@ namespace Tailor
             (cstr(sdesc, "compute-pres-coef"), po::value<bool>()->default_value(false), "")
             (cstr(sdesc, "compute-force-coef"), po::value<bool>()->default_value(false), "")
             (cstr(sdesc, "compute-moment-coef"), po::value<bool>()->default_value(false), "")
-            (cstr(sdesc, "priority"), po::value<int>()->default_value(-1), "")
+            (cstr(sdesc, "priority"), po::value<int>()->default_value(0), "")
             ;
 
         op.add(desc);
