@@ -6,7 +6,7 @@ Test cases
 Steady transonic airfoil
 ------------------------
 
-A single unstructured mesh is used to solve the Euler equations at transonic air speed. Flow and solver properties are shown in the following tables.
+A single unstructured mesh is used to solve the Euler equations at transonic air speed to steady state. Flow and solver properties are shown in the following tables.
 
 .. list-table:: Flow properties
    :header-rows: 0
@@ -25,12 +25,12 @@ A single unstructured mesh is used to solve the Euler equations at transonic air
 .. list-table:: Solver parameters
    :header-rows: 0
 
-   * - Rieman solver
+   * - Flow type
+     - Steady
+   * - Riemann solver
      - Roe
-   * - Formulation
-     - implicit
    * - Temporal discretization
-     - Forward Euler
+     - Backward Euler
    * - Limiter
      - Venkatakrishnan (K = 0.3)
    * - CFL
@@ -116,7 +116,12 @@ Reference 2: `<https://su2code.github.io/tutorials/Inviscid_2D_Unconstrained_NAC
 Shock tube
 ----------
 
-This is a 1D problem.
+Shock tube test case is comprised of a tube containing initially two gases separated by an imaginary membrane at x = 0.
+
+Initial condition
+^^^^^^^^^^^^^^^^^
+
+Flow is initizalized by reading `flow_init.ini <https://github.com/orxshi/tailor/blob/main/test/shock_tube/flow_init.ini>`_.
 
 .. list-table:: Initial profile
    :header-rows: 1
@@ -133,6 +138,27 @@ This is a 1D problem.
    * - Velocity
      - 0.0
      - 0.0
+
+.. list-table:: Solver parameters
+   :header-rows: 0
+
+   * - Flow type
+     - Steady
+   * - Riemannsolver
+     - HLLC
+   * - Temporal discretization
+     - Runge-Kutta (4-stage)
+   * - Limiter
+     - Venkatakrishnan (K = 0.3)
+   * - CFL
+     - 10
+
+
+Boundary condition
+^^^^^^^^^^^^^^^^^^
+
+Flow in the tube is made one-dimensional by imposing empty boundary conditions in peripheral surfaces of the tube. At caps of the tube, dirichlet boundary condition is imposed.
+
    
 
 Oscillating airfoil

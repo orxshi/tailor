@@ -23,12 +23,12 @@ namespace Tailor
             //("freestream.vel-air", po::value<double>()->default_value(0), "Vel air")
             //("freestream.aoa-air-x", po::value<double>(), "Angle of attack")
             //("freestream.aoa-air-z", po::value<double>(), "Angle of attack")
-            ("freestream.rho", po::value<double>(), "")
-            ("freestream.u", po::value<double>(), "")
-            ("freestream.v", po::value<double>(), "")
-            ("freestream.w", po::value<double>(), "")
-            ("freestream.p", po::value<double>(), "")
-            ("freestream.gamma", po::value<double>(), "")
+            ("freestream.rho", po::value<double>()->default_value(0), "")
+            ("freestream.u", po::value<double>()->default_value(0), "")
+            ("freestream.v", po::value<double>()->default_value(0), "")
+            ("freestream.w", po::value<double>()->default_value(0), "")
+            ("freestream.p", po::value<double>()->default_value(0), "")
+            ("freestream.gamma", po::value<double>()->required(), "")
             ;
 
         op.add(desc);
