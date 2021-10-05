@@ -997,9 +997,13 @@ namespace Tailor
         }
 
         init_partitioned_mesh_exchanger();
+        std::cout << "Initialized partitioned mesh exchanger" << std::endl;
         calc_mesh_velocities();
+        std::cout << "Calculated mesh velocities" << std::endl;
         compute_gradient_coef();
+        std::cout << "Computed gradient coefficients" << std::endl;
         init_old_conservative_var();
+        std::cout << "Initialized old variables" << std::endl;
 
         auto residual = non_linear_iteration();
         print_residual(residual);
@@ -1497,6 +1501,7 @@ namespace Tailor
             for (int runge_kutta_stage = 0; runge_kutta_stage < r_max; ++runge_kutta_stage)
             {
                 update_ghosts();
+                std::cout << " updated ghosts" << std::endl;
                 //for (int i = 0; i < global_nmesh_; ++i)
                 //{
                 //    Mesh* mesh_ptr = nullptr;
@@ -1518,12 +1523,14 @@ namespace Tailor
                     if (meshp != sp.mesh_.end())
                     {
                         compute_gradient(mesh);
+                        std::cout << "Computed gradients" << std::endl;
 
                         update_donors(mesh);
 
                         set_boundary_conditions(mesh);
                         compute_sum_of_fluxes(mesh, ntimestep);
                         temporal_discretization(mesh);
+                        std::cout << "Computed fluxes" << std::endl;
 
                         local_residual = compute_residual(mesh);
 
