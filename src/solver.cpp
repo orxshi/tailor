@@ -1235,6 +1235,11 @@ namespace Tailor
                     //}
 
                     //assert(donor_cell.oga_cell_type() == OGA_cell_type_t::field || donor_cell.oga_cell_type() == OGA_cell_type_t::non_resident);
+                    if (donor_cell.oga_cell_type() != OGA_cell_type_t::field)
+                    {
+                        std::cout << "donor oga: " << static_cast<int>(donor_cell.oga_cell_type()) << std::endl;
+                        std::cout << "donor mesh: " << m->tag()() << std::endl;
+                    }
                     assert(donor_cell.oga_cell_type() == OGA_cell_type_t::field);
 
                     //auto grad = gradient_.ls_grad(*m, donor_cell);
