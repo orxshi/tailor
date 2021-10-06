@@ -251,7 +251,6 @@ namespace Tailor
         //double cinf = std::sqrt(fs.gamma_ * pinf / rhoinf);
 
         Vector3 vel;
-        double omega, alpha, thetax, thetay, r;
         if (rotation)
         {
             if (!oscillation)
