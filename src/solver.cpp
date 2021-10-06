@@ -1368,6 +1368,8 @@ namespace Tailor
 
     void Solver::update_ghosts()
     {
+        // Must precede update_donors so that non_residents get correct data.
+
         auto &sp = partition_->spc_->sp_.front();
 
         //if (sp.mesh_.size() == 1) {
