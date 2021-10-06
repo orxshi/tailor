@@ -1302,8 +1302,8 @@ namespace Tailor
                             {
                                 std::cout << "this mesh: " << m.tag()() << std::endl;
                                 std::cout << "this cell: " << mc.tag()() << std::endl;
-                                std::cout << "donor mesh: " << mc.donor().mesh_tag_ << std::endl;
-                                std::cout << "donor cell: " << mc.donor().cell_tag_ << std::endl;
+                                std::cout << "donor mesh: " << mc.donor().mesh_tag_() << std::endl;
+                                std::cout << "donor cell: " << mc.donor().cell_tag_() << std::endl;
                             }
                             assert(mesh_it != sp.mesh_.end());
                             assert(mesh_it->tag() != m.tag());
