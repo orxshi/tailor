@@ -1749,7 +1749,7 @@ namespace Tailor
                             cdm_best = cdm;
                             cdc_best = cdc;
                             donor_best = &(*cit);
-                            assert(donor_type->oga_cell_type() != OGA_cell_type_t::non_resident);
+                            assert(donor_best->oga_cell_type() != OGA_cell_type_t::non_resident);
                         }
                     }
 
