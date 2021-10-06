@@ -352,6 +352,8 @@ namespace Tailor
         //if (profiler_ != nullptr) {profiler_->start("asm-ds");}
         donor_searcher.donor_search(nassemble_, pseudo3D_);
         //if (profiler_ != nullptr) {profiler_->stop("asm-ds");}
+        
+        donor_searcher.check_donor_validity();
 
         if (profiler_ != nullptr) {profiler_->start("asm-con-undeftofield");}
         donor_searcher.convert_undefined_to_field();
@@ -371,7 +373,7 @@ namespace Tailor
 
         donor_searcher.increase_overlap_thickness(nlayer_of_overlap_);
         
-        donor_searcher.check_donor_validity();
+        //donor_searcher.check_donor_validity();
 
         donor_searcher.receptor_to_field(cand_donor_exc.arrival());
         donor_searcher.handle_donor_conflict(cand_donor_exc.arrival());
