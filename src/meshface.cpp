@@ -309,7 +309,7 @@ namespace Tailor
                 double om = 2. * reduced_freq * u_ref / chord; // rad/s
                 double sign = std::sin(om * real_time);
 
-                if (sign < 0.)
+                if (sign > 0.)
                 {
                     om *= -1.;
                 }
@@ -324,7 +324,7 @@ namespace Tailor
                     auto r = cnt - pivot;
                     r(2) = 0.;
 
-                    //vel = cross(omega, r);
+                    vel = cross(omega, r);
                 }
             }
         }
