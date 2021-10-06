@@ -10,6 +10,11 @@ originx=0;
 originy=0;
 nz=1;
 stretchVert=0.95;
+pivotx = 0.25;
+pivoty = 0.0;
+pivotz = 0.0;
+angle_deg = 2.89;
+angle = angle_deg * Pi / 180;
 
 cenPx = originx;
 cenPy = originy;
@@ -41,6 +46,7 @@ For i In {0:nX}
 	Point( pFoilUpper[i] ) = {x[i],y[i],0};
 EndFor
 
+
 Translate {cenPx, cenPy, 0} { Point{pFoilUpper[]}; }
 pFoilLower[] = Symmetry {0, 1, 0, -cenPy} { Duplicata { Point{pFoilUpper[]}; } };
 Delete{Point{pFoilLower[0]};}
@@ -48,6 +54,7 @@ Delete{Point{pFoilLower[nX]};}
 pFoilLower[0] = pFoilUpper[0];
 pFoilLower[nX] = pFoilUpper[nX];
 
+Rotate {{0, 0, 1}, {pivotx, pivoty, pivotz}, -angle} { Point{pFoilUpper[]}; Point{pFoilLower[]}; }
 
 lFoilUpper = newl;
 Spline(lFoilUpper) = pFoilUpper[];
