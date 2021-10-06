@@ -250,7 +250,7 @@ namespace Tailor
 
         //double cinf = std::sqrt(fs.gamma_ * pinf / rhoinf);
 
-        Vector3 vel;
+        Vector3 vel(0., 0., 0.);
         if (rotation)
         {
             if (!oscillation)
@@ -324,7 +324,7 @@ namespace Tailor
                     auto r = cnt - pivot;
                     r(2) = 0.;
 
-                    vel = cross(omega, r);
+                    //vel = cross(omega, r);
                 }
             }
         }
