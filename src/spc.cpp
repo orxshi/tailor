@@ -195,17 +195,18 @@ namespace Tailor
                         double u = component.u;
                         double v = component.v;
                         double w = component.w;
-                        Tailor::Vector3 U(u, v, w);
+                        Vector3 U(u, v, w);
                         double u_ref = U.len();
                         double chord = component.chord;
                         double aoa_mean_deg = component.aoa_mean_deg;
                         double aoa_o_deg = component.aoa_o_deg;
-                        double aoa_mean = Tailor::deg_to_rad(aoa_mean_deg);
-                        double aoa_o = Tailor::deg_to_rad(aoa_o_deg);
+                        double aoa_mean = deg_to_rad(aoa_mean_deg);
+                        double aoa_o = deg_to_rad(aoa_o_deg);
 
                         double om = 2. * reduced_freq * u_ref / chord; // rad/s
 
                         aoa = aoa_mean + aoa_o * std::sin(om * iter * dt);
+                        aoa = rad_to_deg(aoa);
                     }
 
                     std::string fn = "force-coef-";
