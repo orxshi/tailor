@@ -353,8 +353,6 @@ namespace Tailor
         donor_searcher.donor_search(nassemble_, pseudo3D_);
         //if (profiler_ != nullptr) {profiler_->stop("asm-ds");}
         
-        donor_searcher.check_donor_validity();
-
         if (profiler_ != nullptr) {profiler_->start("asm-con-undeftofield");}
         donor_searcher.convert_undefined_to_field();
         if (profiler_ != nullptr) {profiler_->stop("asm-con-undeftofield");}
@@ -388,7 +386,7 @@ namespace Tailor
         donor_searcher.determine_best_donor(cand_donor_exc.arrival());
         if (profiler_ != nullptr) {profiler_->stop("asm-ds-best");}
 
-        //donor_searcher.check_donor_validity();
+        donor_searcher.check_donor_validity();
 
         if (profiler_ != nullptr) {profiler_->start("asm-ds-orphan");}
         donor_searcher.determine_orphan(cand_donor_exc.arrival());
