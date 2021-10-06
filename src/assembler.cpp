@@ -370,11 +370,13 @@ namespace Tailor
         //cand_donor_exc.exchange();
 
         donor_searcher.increase_overlap_thickness(nlayer_of_overlap_);
+        
+        donor_searcher.check_donor_validity();
 
         donor_searcher.receptor_to_field(cand_donor_exc.arrival());
         donor_searcher.handle_donor_conflict(cand_donor_exc.arrival());
 
-        donor_searcher.check_donor_validity();
+        //donor_searcher.check_donor_validity();
 
         //if (profiler_ != nullptr) {profiler_->bstart("asm-canddonor-upd");}
         cand_donor_exc.update(profiler_, "asm-canddonor-upd");
