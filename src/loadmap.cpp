@@ -681,6 +681,7 @@ namespace Tailor
 
         if (dorefine)
         {
+            std::cout << "nrefine: " << nrefine << std::endl;
             while (!ire || nrefine < forced_n_refine_ || nrefine < min_forced_n_refine_)
             {
                 ++nrefine;
