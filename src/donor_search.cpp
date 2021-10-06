@@ -1658,6 +1658,7 @@ namespace Tailor
                             }
                             else
                             {
+                                assert(type != OGA_cell_type_t::non_resident);
                                 ++cand_donor;
                             }
                         }
@@ -1736,6 +1737,8 @@ namespace Tailor
                         if (donor_type == OGA_cell_type_t::receptor || donor_type == OGA_cell_type_t::mandat_receptor || donor_type == OGA_cell_type_t::orphan) {
                             continue;
                         }
+
+                        assert(donor_type != OGA_cell_type_t::non_resident);
 
                         if (sa < current_area)
                         {
