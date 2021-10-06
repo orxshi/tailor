@@ -1674,7 +1674,7 @@ namespace Tailor
             }
         }
     }
-
+    
     void DonorSearcher::determine_best_donor(const ArrCon<DonorInfo2>& arrival)
     {
         for (auto& sp: spc_->sp_)
