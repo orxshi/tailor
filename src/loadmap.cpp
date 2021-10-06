@@ -702,6 +702,8 @@ namespace Tailor
                 lc.gather_load(*rm_->bin(heaviest_bt.bintag()).rm(), loads, *mesh_);
                 //rm_->bin(heaviest_bt.bintag()).rm()->update_address();
 
+                std::cout << "gatherred load " << nrefine << std::endl;
+
                 std::vector<int> tag;
                 for (const Bin& b: inited_rm->bin())
                 {
@@ -715,6 +717,8 @@ namespace Tailor
                 if (nrefine == refine_limit_ || nrefine == forced_n_refine_) {
                     break;
                 }
+
+                std::cout << "end of do loop " << nrefine << std::endl;
             }
         }
 
