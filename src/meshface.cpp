@@ -312,7 +312,7 @@ namespace Tailor
 
                 if (sign < 0.)
                 {
-                    omega *= -1.;
+                    om *= -1.;
                 }
 
                 Vector3 omega(0., 0., om);

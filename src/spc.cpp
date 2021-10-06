@@ -208,6 +208,12 @@ namespace Tailor
                         aoa = aoa_mean + aoa_o * std::sin(om * iter * dt);
                         aoa = rad_to_deg(aoa);
                     }
+                    else if (component.rotation_)
+                    {
+                        double rpm = component.rpm_;
+                        double om = rpm * 2. * PI / 60.; // rad/s
+                        aoa = om * dt; // rad/s * time step
+                    }
 
                     std::string fn = "force-coef-";
                     fn.append(std::to_string(i));
