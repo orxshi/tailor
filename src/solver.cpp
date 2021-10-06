@@ -1239,6 +1239,8 @@ namespace Tailor
                     {
                         std::cout << "donor oga: " << static_cast<int>(donor_cell.oga_cell_type()) << std::endl;
                         std::cout << "donor mesh: " << m->tag()() << std::endl;
+                        std::cout << "donor cell: " << donor_cell.tag()() << std::endl;
+                        std::cout << "mc: " << mc.tag()() << std::endl;
                 std::string fn = "aaa";
                 fn.append("-");
                 fn.append(std::to_string(m->tag()()));
@@ -1248,6 +1250,7 @@ namespace Tailor
                 fn.append(std::to_string(nsolve_));
                 fn.append(".vtk");
                         m->print_as_vtk(fn);
+                        
 
                     }
                     assert(donor_cell.oga_cell_type() == OGA_cell_type_t::field);
