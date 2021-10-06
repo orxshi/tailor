@@ -1298,6 +1298,13 @@ namespace Tailor
                     if (type == OGA_cell_type_t::receptor || type == OGA_cell_type_t::mandat_receptor)
                     {
                             auto mesh_it = std::find_if(sp.mesh_.begin(), sp.mesh_.end(), [&](const Mesh& m){return m.tag() == mc.donor().mesh_tag_;});
+                            if (mesh_it == sp.mesh_.end())
+                            {
+                                std::cout << "this mesh: " << m.tag()() << std::endl;
+                                std::cout << "this cell: " << mc.tag()() << std::endl;
+                                std::cout << "donor mesh: " << mc.donor().mesh_tag_ << std::endl;
+                                std::cout << "donor cell: " << mc.donor().cell_tag_ << std::endl;
+                            }
                             assert(mesh_it != sp.mesh_.end());
                             assert(mesh_it->tag() != m.tag());
 
