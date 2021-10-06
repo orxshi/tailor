@@ -191,7 +191,7 @@ namespace Tailor
 
         auto aero_para = compute_para();
 
-        solver_->partition()->spc().get_coef(aero_para, solver_->nsolve());
+        solver_->partition()->spc().get_coef(aero_para, solver_->nsolve(), solver_->dt());
     }
 
     void Tailor::pre(int time_step, std::vector<AeroCoefPara> (*compute_para)())

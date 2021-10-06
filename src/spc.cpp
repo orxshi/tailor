@@ -144,7 +144,7 @@ namespace Tailor
         local_coef.compute_coef(P, aero_para, compute_pres_coef, compute_force_coef, compute_moment_coef);
     }
 
-    void SpatialPartitionContainer::get_coef(const std::vector<AeroCoefPara>& aero_para, int iter) const
+    void SpatialPartitionContainer::get_coef(const std::vector<AeroCoefPara>& aero_para, int iter, double dt) const
     {
         int mss = mesh_system_size();
         for (int i = 0; i < mss; ++i)
@@ -188,13 +188,35 @@ namespace Tailor
             {
                 if (comm_->rank() == 0)
                 {
+                    double aoa = -1;
+                    if (component.oscillation)
+                    {
+                        double reduced_freq = component.reduced_freq;
+                        double u = component.u;
+                        double v = component.v;
+                        double w = component.w;
+                        Tailor::Vector3 U(u, v, w);
+                        double u_ref = U.len();
+                        double chord = component.chord;
+                        double aoa_mean_deg = component.aoa_mean_deg;
+                        double aoa_o_deg = component.aoa_o_deg;
+                        double aoa_mean = Tailor::deg_to_rad(aoa_mean_deg);
+                        double aoa_o = Tailor::deg_to_rad(aoa_o_deg);
+
+                        double om = 2. * reduced_freq * u_ref / chord; // rad/s
+
+                        aoa = aoa_mean + aoa_o * std::sin(om * iter * dt);
+                    }
+
                     std::string fn = "force-coef-";
                     fn.append(std::to_string(i));
                     fn.append(".dat");
                     std::ofstream out;
                     out.open(fn, std::fstream::app);
 
-                    out << iter; // mesh tag
+                    out << iter;
+                    out << " ";
+                    out << aoa;
                     out << " ";
                     out << global[0]; // cN
                     out << " "; 
