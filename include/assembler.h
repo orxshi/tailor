@@ -35,6 +35,7 @@ namespace Tailor
 
             template<class Archive> void serialize(Archive & ar, const unsigned int version)
             {
+                ar & print_vtk_every_step_;
                 ar & rebalance_thres_;
                 ar & print_ds_info_;
                 ar & print_pre_vtk_;
@@ -56,6 +57,7 @@ namespace Tailor
 
         private:
 
+            bool print_vtk_every_step_;
             //DonorInfo* donor_info_;
             //std::deque<Mesh> wall_;
             //std::deque<Mesh> dirichlet_;
