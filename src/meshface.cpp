@@ -280,6 +280,8 @@ namespace Tailor
                     }
                     assert(vel(2) == 0.);
 
+                    std::cout << cnt(0) << " " << cnt(1) << " " << cnt(2) << " " << vel(0) << " " << vel(1) << " " << vel(2) << std::endl;
+
                     //auto rvec = Vector3(cnt(0), cnt(1), pivot(2));
                     //r = (rvec - pivot).len();
                     //alpha = std::atan2(cnt(0), cnt(1));
