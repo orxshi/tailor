@@ -17,6 +17,11 @@ namespace Tailor
         double dpp() const
         {
             double d = 0.5 * rho_ref * u_ref * u_ref;
+            if (d == 0.)
+            {
+                std::cout << "rho_ref: " << rho_ref << std::endl;
+                std::cout << "u_ref: " << u_ref << std::endl;
+            }
             assert(d != 0.);
             assert(!isnan(d));
 

@@ -330,7 +330,7 @@ namespace Tailor
                 }
             }
         }
-        else
+        //else
         {
             //vel = Vector3(0., 0., 0.);
             //vel = Vector3(
@@ -348,7 +348,7 @@ namespace Tailor
             //}
             //else
             {
-                vel = Vector3(
+                vel += Vector3(
                         compo.u,
                         compo.v,
                         compo.w
