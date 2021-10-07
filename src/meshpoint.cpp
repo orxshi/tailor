@@ -76,7 +76,12 @@ namespace Tailor
         //std::cout << "p_.r(1): " << p_.r(1) << std::endl;
         //std::cout << "p_.r(2): " << p_.r(2) << std::endl;
         auto newz = rm.rotate(angle, axis, z);
-        p_.set_r(newz + rot_point - 0.1*sin(angle) + 0.2*cos(angle));
+
+        //p_.set_r(newz + rot_point - 0.1*sin(angle) + 0.2*cos(angle)); // 
+        // but angle must be azimuth angle not delta_angle! This is wrong for helicopter case.
+        // also geom polygon and segment etc. should also be changed.
+
+        p_.set_r(newz + rot_point);
 
         if (std::isnan(p_.r(0)) || std::isnan(p_.r(1)) || std::isnan(p_.r(2)))
         {

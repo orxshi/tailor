@@ -570,7 +570,7 @@ namespace Tailor
             ("solver.dual-ts", po::value<bool>()->default_value(false), "")
             ("solver.flow-init-type", po::value<int>()->default_value(0), "")
             ("solver.use-local-time-step", po::value<bool>()->default_value(false), "")
-            ("solver.print-vtk-only-last-step", po::value<bool>()->default_value(true), "")
+            ("solver.print-vtk-only-last-step", po::value<bool>()->default_value(false), "")
             ("solver.print-vtk-every-step", po::value<bool>()->default_value(false), "")
             ("solver.limiter-type", po::value<std::string>()->default_value("barth_jespersen"), "")
             ;
