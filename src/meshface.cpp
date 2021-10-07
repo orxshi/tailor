@@ -308,15 +308,11 @@ namespace Tailor
                 double aoa_mean = deg_to_rad(aoa_mean_deg);
                 double aoa_o = deg_to_rad(aoa_o_deg);
 
-                double om = 2. * reduced_freq * u_ref / chord; // rad/s
-                double sign = std::sin(om * real_time);
-
-                if (sign > 0.)
-                {
-                    om *= -1.;
-                }
-
-                Vector3 omega(0., 0., om);
+                double omega = 2. * reduced_freq * u_ref / chord; // angular frequency.
+                
+                double rad_vel_z = aoa_o * omega * std::cos(omega * real_time); // z-component of angular velocity.
+                
+                Vector3 rad_vel(0., 0., -rad_vel_z);
 
                 assert(rotaxis == 2);
 
@@ -326,7 +322,7 @@ namespace Tailor
                     auto r = cnt - pivot;
                     r(2) = 0.;
 
-                    vel = cross(omega, r);
+                    vel = cross(rad_vel, r);
                 }
             }
         }
