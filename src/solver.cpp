@@ -1011,13 +1011,13 @@ namespace Tailor
 
         if (print_vtk_only_last_step_)
         {
-            if ((nsolve_ == max_time_step) || steady)
+            if ((nsolve_ == max_time_step) || steady_)
             {
                 print_mesh_vtk("sol");
             }
         }
 
-        if (print_vtk_every_step_ || steady)
+        if (print_vtk_every_step_ || steady_)
         {
             print_mesh_vtk("sol");
         }
