@@ -23,6 +23,7 @@ namespace Tailor
             void move(const Tag& mesh, const Vector3& v);
             const Solver* solver() const;
             const Assembler* assembler() const;
+            const boost::mpi::communicator& comm() const;
 
         private:
 

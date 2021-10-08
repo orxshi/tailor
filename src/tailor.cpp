@@ -2,6 +2,11 @@
 
 namespace Tailor
 {
+    const boost::mpi::communicator& Tailor::comm() const
+    {
+        return comm_;
+    }
+
     std::string make_serialization_folder(int time_step, std::string save_folder)
     {
         std::string sf = save_folder;
