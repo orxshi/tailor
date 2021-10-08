@@ -94,22 +94,34 @@ namespace Tailor
 
     void Tailor::rotate(const Tag& mesh, double ang, int axis, const Vector3& pivot)
     {
-        if (assembler_on_ && !use_shared_partition_)
+        if (assembler_on_)
         {
-            assembler_->rotate(mesh, ang, axis, pivot);
+            if (!use_shared_partition_ || !solver_on_)
+            {
+                assembler_->rotate(mesh, ang, axis, pivot);
+            }
         }
 
-        solver_->rotate(mesh, ang, axis, pivot);
+        if (solver_on_)
+        {
+            solver_->rotate(mesh, ang, axis, pivot);
+        }
     }
 
     void Tailor::move(const Tag& mesh, const Vector3& v)
     {
-        if (assembler_on_ && !use_shared_partition_)
+        if (assembler_on_)
         {
-            assembler_->move(mesh, v);
+            if (!use_shared_partition_ || !solver_on_)
+            {
+                assembler_->move(mesh, v);
+            }
         }
 
-        solver_->move(mesh, v);
+        if (solver_on_)
+        {
+            solver_->move(mesh, v);
+        }
     }
 
     Tailor::Tailor(): assembler_on_(true), solver_on_(true)
@@ -185,6 +197,10 @@ namespace Tailor
 
     void Tailor::compute_aerodyn_coef(std::vector<AeroCoefPara> (*compute_para)())
     {
+        if (solver_ == nullptr) {
+            return;
+        }
+
         if (compute_para == nullptr) {
             return;
         }
