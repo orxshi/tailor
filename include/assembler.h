@@ -53,10 +53,12 @@ namespace Tailor
                 ar & nlayer_of_overlap_;
                 ar & overlap_minimization_;
                 ar & print_vtk_interval_;
+                ar & make_donor_search_;
             }
 
         private:
 
+            bool make_donor_search_;
             int print_vtk_interval_;
             //DonorInfo* donor_info_;
             //std::deque<Mesh> wall_;

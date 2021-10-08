@@ -126,6 +126,7 @@ namespace Tailor
             ("assembler.print-imbalance", po::value<bool>()->default_value(false), "")
             ("assembler.nlayer-of-overlap", po::value<int>()->default_value(1), "")
             ("assembler.overlap-minimization", po::value<bool>()->default_value(false), "")
+            ("assembler.make-donor-search", po::value<bool>()->default_value(true), "")
             ;
 
         all_options.add(desc);
@@ -152,6 +153,7 @@ namespace Tailor
         nlayer_of_overlap_ = vm["assembler.nlayer-of-overlap"].as<int>();
         overlap_minimization_ = vm["assembler.overlap-minimization"].as<bool>();
         print_vtk_interval_ = vm["assembler.print-vtk-interval"].as<int>();
+        make_donor_search_ = vm["assembler.make-donor-search"].as<bool>();
     }
 
     bool Assembler::repartition()
@@ -285,7 +287,10 @@ namespace Tailor
 
         partition_->print_cell_dist(comm_, nassemble_);
 
-        donor_search();
+        if (make_donor_search_)
+        {
+            donor_search();
+        }
         ++nassemble_;
 
         if (print_map_)
@@ -295,6 +300,7 @@ namespace Tailor
 
         if (nassemble_ % print_vtk_interval_ == 0)
         {
+            std::cout << "Assembler: Printing mesh in VTK format in " << nassemble_ << "th assembly." << std::endl; 
             print_mesh_vtk("asm");
         }
     }
