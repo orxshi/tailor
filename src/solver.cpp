@@ -571,7 +571,7 @@ namespace Tailor
             ("solver.flow-init-type", po::value<int>()->default_value(0), "")
             ("solver.use-local-time-step", po::value<bool>()->default_value(false), "")
             ("solver.print-vtk-only-last-step", po::value<bool>()->default_value(false), "")
-            ("solver.print-vtk-every-step", po::value<bool>()->default_value(false), "")
+            ("solver.print-vtk-interval", po::value<int>()->default_value(1000), "")
             ("solver.limiter-type", po::value<std::string>()->default_value("barth_jespersen"), "")
             ;
 
@@ -645,14 +645,9 @@ namespace Tailor
         linear_solver_rel_error_ = vm["linear-solver.rel-error"].as<double>();
         print_linear_solver_error_ = vm["linear-solver.print-error"].as<bool>();
         print_vtk_only_last_step_ = vm["solver.print-vtk-only-last-step"].as<bool>();
-        print_vtk_every_step_ = vm["solver.print-vtk-every-step"].as<bool>();
+        print_vtk_interval_ = vm["solver.print-vtk-interval"].as<int>();
         std::string slimiter_type = vm["solver.limiter-type"].as<std::string>();
 
-        if (print_vtk_only_last_step_)
-        {
-            assert(!print_vtk_every_step_);
-        }
-        
         if (slimiter_type == "none")
         {
             limiter_type_ = LimiterType::none;
@@ -1017,7 +1012,7 @@ namespace Tailor
             }
         }
 
-        if (print_vtk_every_step_ || steady_)
+        if (nsolve_ % print_vtk_interval_ == 0)
         {
             print_mesh_vtk("sol");
         }

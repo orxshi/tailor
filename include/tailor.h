@@ -26,6 +26,7 @@ namespace Tailor
 
         private:
 
+            bool only_motion_;
             int max_time_step_;
             int save_interval_;
             bool assembler_on_;

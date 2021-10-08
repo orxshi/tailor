@@ -318,6 +318,7 @@ namespace Tailor
             ("tailor.mesh_folder", po::value<std::vector<std::string>>()->multitoken(), "")
             ("tailor.profiler", po::value<bool>()->default_value(false), "")
             ("tailor.solver", po::value<bool>()->default_value(true), "")
+            ("tailor.only-motion", po::value<bool>()->default_value(false), "")
             ;
 
         all_options.add(desc);
@@ -338,6 +339,7 @@ namespace Tailor
         save_folder_ = vm["tailor.save_folder"].as<std::string>();
         profiler_on_ = vm["tailor.profiler"].as<bool>();
         solver_on_ = vm["tailor.solver"].as<bool>();
+        only_motion_ = vm["tailor.only-motion"].as<bool>();
     }
 
     void Tailor::make(void (*callback)(Tailor&), std::vector<AeroCoefPara> (*compute_para)())
@@ -348,14 +350,20 @@ namespace Tailor
 
         for (int time_step = 0; time_step < max_time_step_; ++time_step)
         {
-            pre(time_step, compute_para);
+            if (!only_motion_)
+            {
+                pre(time_step, compute_para);
+            }
             if (max_time_step_ > 1)
             {
                 if (callback != nullptr) {
                     callback(*this);
                 }
             }
-            post();
+            if (!only_motion_)
+            {
+                post();
+            }
             save(time_step, save_counter);
 
             if (profiler_on_)

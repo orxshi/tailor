@@ -300,7 +300,6 @@ namespace Tailor
 
         if (nassemble_ % print_vtk_interval_ == 0)
         {
-            std::cout << "Assembler: Printing mesh in VTK format in " << nassemble_ << "th assembly." << std::endl; 
             print_mesh_vtk("asm");
         }
     }

@@ -135,14 +135,14 @@ namespace Tailor
                 ar & linear_solver_abs_error_;
                 ar & linear_solver_rel_error_;
                 ar & print_vtk_only_last_step_;
-                ar & print_vtk_every_step_;
+                ar & print_vtk_interval_;
             }
 
         private:    
 
+            int print_vtk_interval_;
             LimiterType limiter_type_;
             bool print_vtk_only_last_step_;
-            bool print_vtk_every_step_;
             bool print_linear_solver_error_;
             int linear_solver_max_iteration_;
             int linear_solver_max_restart_;
