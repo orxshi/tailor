@@ -120,7 +120,7 @@ namespace Tailor
             ("assembler.print-map", po::value<bool>()->default_value(false), "Print map.")
             ("assembler.merge-bins", po::value<bool>()->default_value(true), "")
             ("assembler.print-ds-info", po::value<bool>()->default_value(false), "")
-            ("assembler.print-vtk-every-step", po::value<bool>()->default_value(false), "")
+            ("assembler.print-vtk-interval", po::value<int>()->default_value(1000), "")
             ("assembler.print-pre-vtk", po::value<bool>()->default_value(false), "")
             ("assembler.print-repart-info", po::value<bool>()->default_value(false), "")
             ("assembler.print-imbalance", po::value<bool>()->default_value(false), "")
@@ -151,7 +151,7 @@ namespace Tailor
         print_imbalance_ = vm["assembler.print-imbalance"].as<bool>();
         nlayer_of_overlap_ = vm["assembler.nlayer-of-overlap"].as<int>();
         overlap_minimization_ = vm["assembler.overlap-minimization"].as<bool>();
-        print_vtk_every_step_ = vm["assembler.print-vtk-every-step"].as<bool>();
+        print_vtk_interval_ = vm["assembler.print-vtk-interval"].as<bool>();
     }
 
     bool Assembler::repartition()
@@ -293,7 +293,7 @@ namespace Tailor
             partition_->spc().global_rm().print("asm");
         }
 
-        if (print_vtk_every_step_)
+        if (nassemble_ % print_vtk_interval_ == 0)
         {
             print_mesh_vtk("asm");
         }
