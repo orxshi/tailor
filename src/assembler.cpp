@@ -151,7 +151,7 @@ namespace Tailor
         print_imbalance_ = vm["assembler.print-imbalance"].as<bool>();
         nlayer_of_overlap_ = vm["assembler.nlayer-of-overlap"].as<int>();
         overlap_minimization_ = vm["assembler.overlap-minimization"].as<bool>();
-        print_vtk_interval_ = vm["assembler.print-vtk-interval"].as<bool>();
+        print_vtk_interval_ = vm["assembler.print-vtk-interval"].as<int>();
     }
 
     bool Assembler::repartition()
