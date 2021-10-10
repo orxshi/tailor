@@ -679,10 +679,13 @@ namespace Tailor
         BinRMTag heaviest_bt;
         bool ire = resolution_is_enough(heaviest_bt, nmake_map);
 
+        std::cout << "Starting refining" << std::endl;
+
         if (dorefine)
         {
             while (!ire || nrefine < forced_n_refine_ || nrefine < min_forced_n_refine_)
             {
+                std::cout << "nrefine: " << nrefine << std::endl;
                 ++nrefine;
                 int new_rmtag;
                 int new_bt;
