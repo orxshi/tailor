@@ -295,8 +295,14 @@ namespace Tailor
             if (save_counter == save_interval_)
             {
                 auto save_folder = make_serialization_folder(assembler_->nassemble(), save_folder_);
-                serialize(*assembler_, comm_.rank(), save_folder);
-                serialize(*solver_, comm_.rank(), save_folder);
+                if (assembler_)
+                {
+                    serialize(*assembler_, comm_.rank(), save_folder);
+                }
+                if (solver_)
+                {
+                    serialize(*solver_, comm_.rank(), save_folder);
+                }
             }
 
             if (save_counter > save_interval_) {
