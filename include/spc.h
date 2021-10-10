@@ -147,6 +147,7 @@ namespace Tailor
             void profstart(std::string fun);
             void profstop(std::string fun);
             //bool brmt_rank(int bintag, BinRMTag& brmt, int& rank) const;
+            void get_coef_(const Mesh& mesh, AeroCoef& local_coef, AeroCoefPara& aero_para, const SpatialPartitionContainer* spc, bool compute_pres_coef, bool compute_force_coef, bool compute_moment_coef) const;
     };
 
     bool duplicate_exist(const SpatialPartitionContainer& spc);

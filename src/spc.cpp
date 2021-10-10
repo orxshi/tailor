@@ -117,7 +117,7 @@ namespace Tailor
         //}
     }
 
-    void get_coef_(const Mesh& mesh, AeroCoef& local_coef, AeroCoefPara& aero_para, const SpatialPartitionContainer* spc, bool compute_pres_coef, bool compute_force_coef, bool compute_moment_coef)
+    void SpatialPartitionContainer::get_coef_(const Mesh& mesh, AeroCoef& local_coef, AeroCoefPara& aero_para, const SpatialPartitionContainer* spc, bool compute_pres_coef, bool compute_force_coef, bool compute_moment_coef) const
     {
         const auto& wall = mesh.wall_boundaries();
 
@@ -139,6 +139,31 @@ namespace Tailor
             }
 
             P.push_back(std::make_tuple(cnt, mc->face()[0].face().normal(), std::abs(mc->face()[0].face().signed_area()), mc->prim(4)));
+        }
+
+        if (compute_force_coef)
+        {
+            if (aero_para.area_ref == -1.)
+            {
+                auto compute_surface_area = [&]()
+                {
+                    double surface_area = 0.;
+
+                    for (int i=0; i<P.size(); ++i)
+                    {
+                        auto [cnt, normal, abs_area, pres] = P[i];
+
+                        surface_area += abs_area;
+                    }
+
+                    return surface_area;
+                };
+
+                double surface_area_local = compute_surface_area();
+                double surface_area_global = 0.;
+                boost::mpi::all_reduce(*comm_, surface_area_local, surface_area_global, std::plus<double>());
+                aero_para.area_ref = surface_area_global;
+            }
         }
 
         local_coef.compute_coef(P, aero_para, compute_pres_coef, compute_force_coef, compute_moment_coef);
@@ -164,6 +189,11 @@ namespace Tailor
             bool compute_force_coef = component.compute_force_coef;
             bool compute_moment_coef = component.compute_moment_coef;
 
+            if (!compute_pres_coef && !compute_force_coef && !compute_moment_coef)
+            {
+                continue;
+            }
+
             if (compute_moment_coef && !compute_force_coef)
             {
                 if (comm_->rank() == 0)
@@ -172,11 +202,6 @@ namespace Tailor
                 }
 
                 compute_force_coef = true;
-            }
-
-            if (!compute_pres_coef && !compute_force_coef && !compute_moment_coef)
-            {
-                continue;
             }
 
             if (mesh != sp_.front().mesh().end())

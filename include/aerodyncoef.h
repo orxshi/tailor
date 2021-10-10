@@ -90,20 +90,6 @@ namespace Tailor
             }
         }
 
-        double compute_surface_area(const std::vector<std::tuple<Vector3, Vector3, double, double>>& P)
-        {
-            double surface_area = 0.;
-
-            for (int i=0; i<P.size(); ++i)
-            {
-                auto [cnt, normal, abs_area, pres] = P[i];
-
-                surface_area += abs_area;
-            }
-
-            return surface_area;
-        }
-
         void compute_coef(const std::vector<std::tuple<Vector3, Vector3, double, double>>& P, AeroCoefPara para, bool compute_pres_coef, bool compute_force_coef, bool compute_moment_coef)
         {
             F = Vector3(0., 0., 0.);
@@ -130,11 +116,6 @@ namespace Tailor
 
             if (compute_force_coef)
             {
-                if (para.area_ref == -1.)
-                {
-                    para.area_ref = compute_surface_area(P);
-                }
-
                 for (int i=0; i<P.size(); ++i)
                 {
                     auto [cnt, normal, abs_area, pres] = P[i];
