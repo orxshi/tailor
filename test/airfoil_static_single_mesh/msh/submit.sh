@@ -1,7 +1,5 @@
 #!/bin/bash
-#SBATCH -p short
-#SBATCH -J helimesh
+#SBATCH -p single
 #SBATCH -t 00:10:00
-#SBATCH --ntasks=4
 
-bash mesh.sh 1
+bash mesh.sh 32
