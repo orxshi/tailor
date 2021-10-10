@@ -184,11 +184,11 @@ namespace Tailor
 
             boost::mpi::all_reduce(*comm_, local.data(), 7, global.data(), std::plus<double>());
 
-            if (compute_force_coef)
+            double aoa = -1;
+            if (compute_force_coef || compute_moment_coef)
             {
                 if (comm_->rank() == 0)
                 {
-                    double aoa = -1;
                     if (component.oscillation)
                     {
                         double reduced_freq = component.reduced_freq;
@@ -215,6 +215,10 @@ namespace Tailor
                     }
 
                     aoa = rad_to_deg(aoa);
+            }
+
+            if (compute_force_coef)
+            {
 
                     std::string fn = "force-coef-";
                     fn.append(std::to_string(i));
@@ -249,6 +253,8 @@ namespace Tailor
                     out.open(fn, std::fstream::app);
 
                     out << iter; // mesh tag
+                    out << " ";
+                    out << aoa;
                     out << " ";
                     out << global[4]; // cn
                     out << " "; 

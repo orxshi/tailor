@@ -150,16 +150,7 @@ namespace Tailor
             connect_partition_cells();
         }
 
-        if (profiler_ != nullptr)
-        {
-            profiler_->start("sol-init");
-        }
         partition_->spc_->init_flow();
-        //partition_->spc_->init_sod();
-        if (profiler_ != nullptr)
-        {
-            profiler_->stop("sol-init");
-        }
 
         //double tl, fl;
         //imbalance(partition_->spc(), tl, fl);
