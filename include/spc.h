@@ -24,7 +24,7 @@ namespace Tailor
         void set_comm(boost::mpi::communicator* comm);
         void set_profiler(Profiler* prof);
         int nresi() const;
-        void get_coef(const std::vector<AeroCoefPara>& aero_para, int iter, double dt) const;
+        void get_coef(std::vector<AeroCoefPara>& aero_para, int iter, double dt) const;
         //bool search_rm(const Vector3& cnt, BinRMTag& brmt, int& rank) const;
         bool search_rm(const Vector3& cnt, Tag& bintag, int& rank, bool verbose=false) const;
         //std::map<BinRMTag, int> search_rm(const AABB& aabb) const;

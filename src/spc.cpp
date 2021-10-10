@@ -117,7 +117,7 @@ namespace Tailor
         //}
     }
 
-    void get_coef_(const Mesh& mesh, AeroCoef& local_coef, const AeroCoefPara& aero_para, const SpatialPartitionContainer* spc, bool compute_pres_coef, bool compute_force_coef, bool compute_moment_coef)
+    void get_coef_(const Mesh& mesh, AeroCoef& local_coef, AeroCoefPara& aero_para, const SpatialPartitionContainer* spc, bool compute_pres_coef, bool compute_force_coef, bool compute_moment_coef)
     {
         const auto& wall = mesh.wall_boundaries();
 
@@ -144,7 +144,7 @@ namespace Tailor
         local_coef.compute_coef(P, aero_para, compute_pres_coef, compute_force_coef, compute_moment_coef);
     }
 
-    void SpatialPartitionContainer::get_coef(const std::vector<AeroCoefPara>& aero_para, int iter, double dt) const
+    void SpatialPartitionContainer::get_coef(std::vector<AeroCoefPara>& aero_para, int iter, double dt) const
     {
         int mss = mesh_system_size();
         for (int i = 0; i < mss; ++i)
@@ -163,6 +163,16 @@ namespace Tailor
             bool compute_pres_coef = component.compute_pres_coef;
             bool compute_force_coef = component.compute_force_coef;
             bool compute_moment_coef = component.compute_moment_coef;
+
+            if (compute_moment_coef && !compute_force_coef)
+            {
+                if (comm_->rank() == 0)
+                {
+                    std::clog << "Warning: Although not asked, force coefficient will also be computed to compute moment coefficient.\n";
+                }
+
+                compute_force_coef = true;
+            }
 
             if (!compute_pres_coef && !compute_force_coef && !compute_moment_coef)
             {

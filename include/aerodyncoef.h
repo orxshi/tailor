@@ -25,7 +25,7 @@ namespace Tailor
             assert(d != 0.);
             assert(!isnan(d));
 
-            return 0.5 * rho_ref * u_ref * u_ref;
+            return d;
         }
         double dpf() const
         {
@@ -33,7 +33,7 @@ namespace Tailor
             assert(d != 0.);
             assert(!isnan(d));
 
-            return dpp() * area_ref;
+            return d;
         }
         double dpm() const
         {
@@ -41,7 +41,7 @@ namespace Tailor
             assert(d != 0.);
             assert(!isnan(d));
 
-            return dpf() * moment_length;
+            return d;
         }
 
         AeroCoefPara():
@@ -71,13 +71,9 @@ namespace Tailor
                 assert(para.u_ref != -1.);
             }
 
-            if (compute_force_coef || compute_moment_coef)
-            {
-                assert(para.area_ref != -1.);
-            }
-
             if (compute_moment_coef)
             {
+                assert(compute_force_coef);
                 assert(para.moment_length != -1.);
 
                 if (para.moment_center(0) == -1.)
@@ -94,7 +90,21 @@ namespace Tailor
             }
         }
 
-        void compute_coef(const std::vector<std::tuple<Vector3, Vector3, double, double>>& P, const AeroCoefPara& para, bool compute_pres_coef, bool compute_force_coef, bool compute_moment_coef)
+        double compute_surface_area(const std::vector<std::tuple<Vector3, Vector3, double, double>>& P)
+        {
+            double surface_area = 0.;
+
+            for (int i=0; i<P.size(); ++i)
+            {
+                auto [cnt, normal, abs_area, pres] = P[i];
+
+                surface_area += abs_area;
+            }
+
+            return surface_area;
+        }
+
+        void compute_coef(const std::vector<std::tuple<Vector3, Vector3, double, double>>& P, AeroCoefPara para, bool compute_pres_coef, bool compute_force_coef, bool compute_moment_coef)
         {
             F = Vector3(0., 0., 0.);
             M = Vector3(0., 0., 0.);
@@ -120,6 +130,11 @@ namespace Tailor
 
             if (compute_force_coef)
             {
+                if (para.area_ref == -1.)
+                {
+                    para.area_ref = compute_surface_area(P);
+                }
+
                 for (int i=0; i<P.size(); ++i)
                 {
                     auto [cnt, normal, abs_area, pres] = P[i];
