@@ -1,7 +1,7 @@
 c=1; // chord length
 t=12 * c / 100; // thickness -- NACA0012
 nX=1000; // number of 'x' points
-depth=5; // extrusion length
+depth=1; // extrusion length
 transCircleEach=80;
 transVert=200;
 major=30;
@@ -13,7 +13,7 @@ stretchVert=0.95;
 pivotx = 0.25;
 pivoty = 0.0;
 pivotz = 0.0;
-angle_deg = 2.89;
+angle_deg = 1.25;
 angle = angle_deg * Pi / 180;
 
 cenPx = originx;
@@ -192,7 +192,8 @@ emptybc[6] = out[12];
 emptybc[7] = out[18];
 
 Physical Surface(1) = wallbc[];
-Physical Surface(11) = outerbc[];
+//Physical Surface(11) = outerbc[];
+Physical Surface(9) = outerbc[];
 Physical Surface(3) = emptybc[];
 Physical Volume(4) = {1,2,3,4};
 
@@ -201,5 +202,5 @@ Field[1] = Distance;
 Field[1].FacesList = {wallbc[]};
 Field[1].NNodesByEdge = 100;
 Field[2] = MathEval;
-Field[2].F = Sprintf("F1/5 + %g", lc / 1000);
+Field[2].F = Sprintf("F1/10 + %g", lc / 1000);
 Background Field = 2;

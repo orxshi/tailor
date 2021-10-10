@@ -1,11 +1,11 @@
 c=1; // chord length
 t=12 * c / 100; // thickness -- NACA0012
 nX=1000; // number of 'x' points
-depth=10; // extrusion length
+depth=1000; // extrusion length
 transCircleEach=80;
 transVert=200;
-major=30;
-minor=30;
+major=15;
+minor=15;
 originx=0;
 originy=0;
 nz=1;
@@ -189,7 +189,7 @@ Physical Surface(9) = outerbc[];
 Physical Surface(3) = emptybc[];
 Physical Volume(4) = {1,2,3,4};
 
-lc = 1;
+lc = 0.5;
 Field[1] = Distance;
 Field[1].FacesList = {wallbc[]};
 Field[1].NNodesByEdge = 100;
