@@ -1461,12 +1461,12 @@ namespace Tailor
 
             for (int i = 0; i < NVAR; ++i)
             {
-                if (std::abs(mc.gradient_[i](0)) > TAILOR_ZERO)
+                if (std::abs(mc.gradient_[i](0)) > 1e-8)
                 {
                     std::cout << "grad(i): " << mc.gradient_[i](0) << std::endl;
                     std::cout << "limit(i): " << limit_coef[i] << std::endl;
                 }
-                assert(std::abs(mc.gradient_[i](0)) < TAILOR_ZERO);
+                assert(std::abs(mc.gradient_[i](0)) < 1e-8);
                 mc.gradient_[i] *= limit_coef[i];
             }
         }
