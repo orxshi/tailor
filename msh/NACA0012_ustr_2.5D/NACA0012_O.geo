@@ -4,8 +4,8 @@ nX=1000; // number of 'x' points
 depth=1000; // extrusion length
 transCircleEach=400;
 transVert=150;
-major=15;
-minor=15;
+major=30;
+minor=30;
 originx=0;
 originy=0;
 nz=1;
@@ -185,14 +185,38 @@ emptybc[6] = out[12];
 emptybc[7] = out[18];
 
 Physical Surface(1) = wallbc[];
-Physical Surface(2) = outerbc[];
+Physical Surface(9) = outerbc[];
 Physical Surface(3) = emptybc[];
 Physical Volume(4) = {1,2,3,4};
 
-lc = 0.5;
+lc = 10;
+
 Field[1] = Distance;
 Field[1].FacesList = {wallbc[]};
 Field[1].NNodesByEdge = 100;
+
 Field[2] = MathEval;
 Field[2].F = Sprintf("F1/10 + %g", lc / 1000);
-Background Field = 2;
+
+Field[3] = Distance;
+Field[3].PointsList = {pFoilUpper[0], pFoilUpper[nX]};
+
+lc_tip = lc / 5;
+
+Field[4] = MathEval;
+Field[4].F = Sprintf("F3/10 + %g", lc_tip / 1000);
+
+Field[5] = Box;
+Field[5].VIn = 20/1000;
+Field[5].VOut = 100;
+Field[5].XMin = -0.5*c;
+Field[5].XMax = 1.5*c;
+Field[5].YMin = -0.5*c;
+Field[5].YMax = 0.5*c;
+Field[5].ZMin = -10*c;
+Field[5].ZMax = 10*c;
+
+Field[6] = Min;
+Field[6].FieldsList = {2, 4, 5};
+Background Field = 6;
+
