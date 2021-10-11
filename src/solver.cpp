@@ -748,12 +748,12 @@ namespace Tailor
                 auto left_cons = face_conservative_var(mesh, *left_cell, mf);
                 auto right_cons = face_conservative_var(mesh, *right_cell, mf);
 
-                if (left_cons(0) != left_cell->cons_sp1(0))
-                {
-                    std::cout << "left_cons(0): " << left_cons(0) << std::endl;
-                    std::cout << "left_cell(0): " << left_cell->cons_sp1(0) << std::endl;
-                }
-                assert(left_cons(0) == left_cell->cons_sp1(0));
+                //if (left_cons(0) != left_cell->cons_sp1(0))
+                //{
+                //    std::cout << "left_cons(0): " << left_cons(0) << std::endl;
+                //    std::cout << "left_cell(0): " << left_cell->cons_sp1(0) << std::endl;
+                //}
+                //assert(left_cons(0) == left_cell->cons_sp1(0));
 
                 MeshFace *commonface = nullptr;
                 if (!mf.is_boundary())
@@ -1461,6 +1461,12 @@ namespace Tailor
 
             for (int i = 0; i < NVAR; ++i)
             {
+                if (std::abs(mc.gradient_[i](0)) > TAILOR_ZERO)
+                {
+                    std::cout << "grad(i): " << mc.gradient_[i](0) << std::endl;
+                    std::cout << "limit(i): " << limit_coef[i] << std::endl;
+                }
+                assert(std::abs(mc.gradient_[i](0)) < TAILOR_ZERO);
                 mc.gradient_[i] *= limit_coef[i];
             }
         }
