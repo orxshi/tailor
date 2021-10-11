@@ -133,22 +133,32 @@ namespace Tailor
 
             auto cnt = mf.face().centroid();
 
-            Tag temp;
-            if (!spc->is_resident(in.poly().centroid(), -1, temp)) {
+            //Tag temp;
+            //if (!spc->is_resident(in.poly().centroid(), -1, temp)) {
+                //continue;
+            //}
+
+            if (in.oga_cell_type() != OGA_cell_type_t::field)
+            {
                 continue;
             }
 
-            if (in.btype() != BouType::interior)
-            {
+            if (in.btype() != BouType::interior) {
                 std::cout << "btype: " << static_cast<int>(in.btype()) << std::endl;
             }
             assert(in.btype() == BouType::interior);
 
-            if (in.oga_cell_type() != OGA_cell_type_t::field)
-            {
-                std::cout << "oga: " << static_cast<int>(in.oga_cell_type()) << std::endl;
-            }
-            assert(in.oga_cell_type() == OGA_cell_type_t::field);
+            //if (in.btype() != BouType::interior)
+            //{
+            //    std::cout << "btype: " << static_cast<int>(in.btype()) << std::endl;
+            //}
+            //assert(in.btype() == BouType::interior);
+
+            //if (in.oga_cell_type() != OGA_cell_type_t::field)
+            //{
+            //    std::cout << "oga: " << static_cast<int>(in.oga_cell_type()) << std::endl;
+            //}
+            //assert(in.oga_cell_type() == OGA_cell_type_t::field);
 
             P.push_back(std::make_tuple(cnt, mc->face()[0].face().normal(), std::abs(mc->face()[0].face().signed_area()), mc->prim(4)));
         }
