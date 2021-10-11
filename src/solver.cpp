@@ -748,16 +748,6 @@ namespace Tailor
                 auto left_cons = face_conservative_var(mesh, *left_cell, mf);
                 auto right_cons = face_conservative_var(mesh, *right_cell, mf);
 
-                for (int ii=0; ii<NVAR; ++ii)
-                {
-                    if (std::abs(left_cons(ii) - left_cell->cons_sp1(ii)) > 1e-10)
-                    {
-                        std::cout << "left_cons(ii): " << left_cons(ii) << std::endl;
-                        std::cout << "left_cell(ii): " << left_cell->cons_sp1(ii) << std::endl;
-                    }
-                    assert(std::abs(left_cons(ii) - left_cell->cons_sp1(ii)) < 1e-10);
-                }
-
                 MeshFace *commonface = nullptr;
                 if (!mf.is_boundary())
                 {
