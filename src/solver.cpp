@@ -1885,7 +1885,7 @@ namespace Tailor
         {
             prim(i) = mc.prim(i) + dot(mc.gradient_[i], distance);
 
-            if (dot(mc.gradient_[i], distance) > 1e-8)
+            if (dot(mc.gradient_[i], distance) > 1e-2)
             {
                 std::cout << "grad(0): " << mc.gradient_[i](0) << std::endl;
                 std::cout << "grad(1): " << mc.gradient_[i](1) << std::endl;
@@ -1895,7 +1895,7 @@ namespace Tailor
                 std::cout << "distance(1): " << distance(1) << std::endl;
                 std::cout << "distance(2): " << distance(2) << std::endl;
             }
-            assert(dot(mc.gradient_[i], distance) < 1e-8);
+            assert(dot(mc.gradient_[i], distance) < 1e-2);
         }
 
         cons = prim_to_cons(prim, fs_.gamma_);
