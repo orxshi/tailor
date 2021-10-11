@@ -8,6 +8,9 @@ Shock tube
 
 Shock tube test case is comprised of a tube containing initially two gases separated by an imaginary membrane at x = 0.
 
+.. image:: ../images/shock_tube_pressure.png
+  :width: 300
+
 Initial condition
 ^^^^^^^^^^^^^^^^^
 
