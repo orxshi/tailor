@@ -1854,7 +1854,6 @@ namespace Tailor
 
         if (sorder_ == 1)
         {
-            assert(false);
             return cons;
         }
 
