@@ -748,12 +748,12 @@ namespace Tailor
                 auto left_cons = face_conservative_var(mesh, *left_cell, mf);
                 auto right_cons = face_conservative_var(mesh, *right_cell, mf);
 
-                //if (left_cons(0) != left_cell->cons_sp1(0))
-                //{
-                //    std::cout << "left_cons(0): " << left_cons(0) << std::endl;
-                //    std::cout << "left_cell(0): " << left_cell->cons_sp1(0) << std::endl;
-                //}
-                //assert(left_cons(0) == left_cell->cons_sp1(0));
+                if (std::abs(left_cons(0) - left_cell->cons_sp1(0)) > 1e-1)
+                {
+                    std::cout << "left_cons(0): " << left_cons(0) << std::endl;
+                    std::cout << "left_cell(0): " << left_cell->cons_sp1(0) << std::endl;
+                }
+                assert(std::abs(left_cons(0) - left_cell->cons_sp1(0)) < 1e-1);
 
                 MeshFace *commonface = nullptr;
                 if (!mf.is_boundary())
@@ -1885,17 +1885,17 @@ namespace Tailor
         {
             prim(i) = mc.prim(i) + dot(mc.gradient_[i], distance);
 
-            if (dot(mc.gradient_[i], distance) > 1e-2)
-            {
-                std::cout << "grad(0): " << mc.gradient_[i](0) << std::endl;
-                std::cout << "grad(1): " << mc.gradient_[i](1) << std::endl;
-                std::cout << "grad(2): " << mc.gradient_[i](2) << std::endl;
+            //if (dot(mc.gradient_[i], distance) > 1e-2)
+            //{
+            //    std::cout << "grad(0): " << mc.gradient_[i](0) << std::endl;
+            //    std::cout << "grad(1): " << mc.gradient_[i](1) << std::endl;
+            //    std::cout << "grad(2): " << mc.gradient_[i](2) << std::endl;
 
-                std::cout << "distance(0): " << distance(0) << std::endl;
-                std::cout << "distance(1): " << distance(1) << std::endl;
-                std::cout << "distance(2): " << distance(2) << std::endl;
-            }
-            assert(dot(mc.gradient_[i], distance) < 1e-2);
+            //    std::cout << "distance(0): " << distance(0) << std::endl;
+            //    std::cout << "distance(1): " << distance(1) << std::endl;
+            //    std::cout << "distance(2): " << distance(2) << std::endl;
+            //}
+            //assert(dot(mc.gradient_[i], distance) < 1e-2);
         }
 
         cons = prim_to_cons(prim, fs_.gamma_);
