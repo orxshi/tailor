@@ -138,17 +138,17 @@ namespace Tailor
                 continue;
             }
 
-            if (mc->btype() != BouType::interior)
+            if (in.btype() != BouType::interior)
             {
-                std::cout << "btype: " << static_cast<int>(mc->btype()) << std::endl;
+                std::cout << "btype: " << static_cast<int>(in.btype()) << std::endl;
             }
-            assert(mc->btype() == BouType::interior);
+            assert(in.btype() == BouType::interior);
 
-            if (mc->oga_cell_type() != OGA_cell_type_t::field)
+            if (in.oga_cell_type() != OGA_cell_type_t::field)
             {
-                std::cout << "oga: " << static_cast<int>(mc->oga_cell_type()) << std::endl;
+                std::cout << "oga: " << static_cast<int>(in.oga_cell_type()) << std::endl;
             }
-            assert(mc->oga_cell_type() == OGA_cell_type_t::field);
+            assert(in.oga_cell_type() == OGA_cell_type_t::field);
 
             P.push_back(std::make_tuple(cnt, mc->face()[0].face().normal(), std::abs(mc->face()[0].face().signed_area()), mc->prim(4)));
         }
