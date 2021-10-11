@@ -294,7 +294,17 @@ namespace Tailor
 
             if (save_counter == save_interval_)
             {
-                auto save_folder = make_serialization_folder(assembler_->nassemble(), save_folder_);
+                std::string save_folder;
+
+                if (assembler_)
+                {
+                    save_folder = make_serialization_folder(assembler_->nassemble(), save_folder_);
+                }
+                else if (solver_)
+                {
+                    save_folder = make_serialization_folder(solver_->nsolve(), save_folder_);
+                }
+
                 if (assembler_)
                 {
                     serialize(*assembler_, comm_.rank(), save_folder);
