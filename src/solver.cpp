@@ -1461,12 +1461,6 @@ namespace Tailor
 
             for (int i = 0; i < NVAR; ++i)
             {
-                if (std::abs(mc.gradient_[i](0)) > 1e-8)
-                {
-                    std::cout << "grad(i): " << mc.gradient_[i](0) << std::endl;
-                    std::cout << "limit(i): " << limit_coef[i] << std::endl;
-                }
-                assert(std::abs(mc.gradient_[i](0)) < 1e-8);
                 mc.gradient_[i] *= limit_coef[i];
             }
         }
@@ -1890,6 +1884,18 @@ namespace Tailor
         for (int i = 0; i < NVAR; ++i)
         {
             prim(i) = mc.prim(i) + dot(mc.gradient_[i], distance);
+
+            if (dot(mc.gradient_[i], distance) > 1e-8)
+            {
+                std::cout << "grad(0): " << mc.gradient_[i](0) << std::endl;
+                std::cout << "grad(1): " << mc.gradient_[i](1) << std::endl;
+                std::cout << "grad(2): " << mc.gradient_[i](2) << std::endl;
+
+                std::cout << "distance(0): " << distance(0) << std::endl;
+                std::cout << "distance(1): " << distance(1) << std::endl;
+                std::cout << "distance(2): " << distance(2) << std::endl;
+            }
+            assert(dot(mc.gradient_[i], distance) < 1e-8);
         }
 
         cons = prim_to_cons(prim, fs_.gamma_);
