@@ -361,10 +361,14 @@ namespace Tailor
                 mc.prim_(3) = v(2);
                 mc.prim_(4) = pb;
 
+                if (std::abs(mc.prim_(1) - u) > TAILOR_ZERO)
+                {
+                    std::cout << "vi: " << vi(0) << " " << vi(1) << " " << vi(2) << std::endl;
+                    std::cout << "vb: " << vb << std::endl;
+                    std::cout << "vin: " << vin << std::endl;
+                }
                 assert(mc.prim_(0) == rhoinf);
-                assert(mc.prim_(1) == u);
-                assert(mc.prim_(2) == 0.);
-                assert(mc.prim_(3) == w);
+                assert(std::abs(mc.prim_(1) - u) < TAILOR_ZERO);
                 assert(mc.prim_(4) == pinf);
 
                 mc.cons_sp1_ = prim_to_cons(mc.prim_, gamma);
@@ -431,16 +435,14 @@ namespace Tailor
                 mc.prim_(3) = v(2);
                 mc.prim_(4) = pb;
 
-                assert(mc.prim_(0) == rhoinf);
-                if (mc.prim_(1) != u)
+                if (std::abs(mc.prim_(1) - u) > TAILOR_ZERO)
                 {
                     std::cout << "vi: " << vi(0) << " " << vi(1) << " " << vi(2) << std::endl;
                     std::cout << "vb: " << vb << std::endl;
                     std::cout << "vin: " << vin << std::endl;
                 }
-                assert(mc.prim_(1) == u);
-                assert(mc.prim_(2) == 0.);
-                assert(mc.prim_(3) == w);
+                assert(mc.prim_(0) == rhoinf);
+                assert(std::abs(mc.prim_(1) - u) < TAILOR_ZERO);
                 assert(mc.prim_(4) == pinf);
 
                 mc.cons_sp1_ = prim_to_cons(mc.prim_, gamma);
