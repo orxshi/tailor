@@ -28,6 +28,7 @@ namespace Tailor
                 {
                     if (dif != 0.)
                     {
+                        std::cout << "oga type: " << static_cast<int>(nei->oga_cell_type()) << std::endl;
                         std::cout << "nei btype: " << static_cast<int>(nei->btype()) << std::endl;
                         std::cout << "mc btype: " << static_cast<int>(mc.btype()) << std::endl;
                         std::cout << "mf btype: " << static_cast<int>(face.btype()) << std::endl;
