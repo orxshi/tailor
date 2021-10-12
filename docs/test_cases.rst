@@ -68,7 +68,7 @@ Following results correspond to :math:`t = 0.2` seconds.
 Remarks
 *******
 
-* Second order spatially-accurate results are better then first order one.
+* Second order spatially-accurate results are better than first order one.
 * A limiter is required otherwise the code blows up if only gradient is used for flux reconstruction at cell-faces.
 * Venkatakrishnan limiter with coefficient of :math:`K=0.3` is not TVD, hence, overshoots are observed near discontinuities.
 
@@ -192,6 +192,7 @@ Remarks
 * Compared to other references, finer mesh is needed to accurately solve pressure and force coefficients.
 * There is practically no difference between results of first and second order spatial accuracy. This may be due to steady state solution.
 
+..
 It is useful to have raw pressure coefficient data to compare results, especially when data for upper and lower surfaces are provided separately. This saves time by avoiding plot digitizing. Here are pressure coefficient data for `upper_pc.dat <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/upper_pc.dat>`_ and `lower_pc.dat <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/lower_pc.dat>`_ airfoil surfaces.
     
 Reference 1: Manzano, Luis, Jason Lassaline, and David Zingg. "A Newton-Krylov algorithm for the Euler equations using unstructured grids." 41st Aerospace Sciences Meeting and Exhibit. 2003.
