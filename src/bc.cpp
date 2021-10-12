@@ -279,17 +279,6 @@ namespace Tailor
                 continue;
             }
 
-            // TODO DELETE LATER
-                mc.prim_(0) = rhoinf;
-                mc.prim_(1) = u;
-                mc.prim_(2) = v;
-                mc.prim_(3) = w;
-                mc.prim_(4) = pinf;
-
-                mc.cons_sp1_ = prim_to_cons(mc.prim_, gamma);
-
-                continue;
-
             double rhoi= interior.prim(0);
             double pi = interior.prim(4);
             if (pi < 0. || std::isnan(pi))
@@ -372,6 +361,12 @@ namespace Tailor
                 mc.prim_(3) = v(2);
                 mc.prim_(4) = pb;
 
+                assert(mc.prim_(0) == rhoinf);
+                assert(mc.prim_(1) == u);
+                assert(mc.prim_(2) == v);
+                assert(mc.prim_(3) == w);
+                assert(mc.prim_(4) == pinf);
+
                 mc.cons_sp1_ = prim_to_cons(mc.prim_, gamma);
             }
             else // outflow
@@ -435,6 +430,12 @@ namespace Tailor
                 mc.prim_(2) = v(1);
                 mc.prim_(3) = v(2);
                 mc.prim_(4) = pb;
+
+                assert(mc.prim_(0) == rhoinf);
+                assert(mc.prim_(1) == u);
+                assert(mc.prim_(2) == v);
+                assert(mc.prim_(3) == w);
+                assert(mc.prim_(4) == pinf);
 
                 mc.cons_sp1_ = prim_to_cons(mc.prim_, gamma);
             }
