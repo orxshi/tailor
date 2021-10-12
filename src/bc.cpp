@@ -361,25 +361,25 @@ namespace Tailor
                 mc.prim_(3) = v(2);
                 mc.prim_(4) = pb;
 
-                if (std::abs(mc.prim_(1) - u) > 1e-8)
-                {
-                    std::cout << "vi: " << vi(0) << " " << vi(1) << " " << vi(2) << std::endl;
-                    std::cout << "vin: " << vin << std::endl;
-                    std::cout << "v: " << v(0) << " " << v(1) << " " << v(2) << std::endl;
-                    std::cout << "u: " << u << std::endl;
-                    std::cout << "vb: " << vb << std::endl;
-                    std::cout << "vinfn: " << vinfn << std::endl;
-                    std::cout << "vinf: " << vinf(0) << " " << vinf(1) << " " << vinf(2) << std::endl;
-                //Vector3 v = vinf + n * (vb - vinfn);
-                }
-                if (std::abs(mc.prim_(0) - rhoinf) > 1e-8)
-                {
-                    std::cout << "mc.prim_(0): " << mc.prim_(0) << std::endl;
-                    std::cout << "rhoinf: " << rhoinf << std::endl;
-                }
-                if (std::abs(mc.prim_(0) - rhoinf) < 1e-8)
-                assert(std::abs(mc.prim_(1) - u) < 1e-8);
-                assert(std::abs(mc.prim_(4) - pinf) < 1e-8);
+                //if (std::abs(mc.prim_(1) - u) > 1e-8)
+                //{
+                //    std::cout << "vi: " << vi(0) << " " << vi(1) << " " << vi(2) << std::endl;
+                //    std::cout << "vin: " << vin << std::endl;
+                //    std::cout << "v: " << v(0) << " " << v(1) << " " << v(2) << std::endl;
+                //    std::cout << "u: " << u << std::endl;
+                //    std::cout << "vb: " << vb << std::endl;
+                //    std::cout << "vinfn: " << vinfn << std::endl;
+                //    std::cout << "vinf: " << vinf(0) << " " << vinf(1) << " " << vinf(2) << std::endl;
+                ////Vector3 v = vinf + n * (vb - vinfn);
+                //}
+                //if (std::abs(mc.prim_(0) - rhoinf) > 1e-8)
+                //{
+                //    std::cout << "mc.prim_(0): " << mc.prim_(0) << std::endl;
+                //    std::cout << "rhoinf: " << rhoinf << std::endl;
+                //}
+                //if (std::abs(mc.prim_(0) - rhoinf) < 1e-8)
+                //assert(std::abs(mc.prim_(1) - u) < 1e-8);
+                //assert(std::abs(mc.prim_(4) - pinf) < 1e-8);
 
                 mc.cons_sp1_ = prim_to_cons(mc.prim_, gamma);
             }
@@ -445,20 +445,20 @@ namespace Tailor
                 mc.prim_(3) = v(2);
                 mc.prim_(4) = pb;
 
-                if (std::abs(mc.prim_(1) - u) > 1e-8)
-                {
-                    std::cout << "vi: " << vi(0) << " " << vi(1) << " " << vi(2) << std::endl;
-                    std::cout << "vb: " << vb << std::endl;
-                    std::cout << "vin: " << vin << std::endl;
-                }
-                if (std::abs(mc.prim_(0) - rhoinf) > 1e-8)
-                {
-                    std::cout << "mc.prim_(0): " << mc.prim_(0) << std::endl;
-                    std::cout << "rhoinf: " << rhoinf << std::endl;
-                }
-                if (std::abs(mc.prim_(0) - rhoinf) < 1e-8)
-                assert(std::abs(mc.prim_(1) - u) < 1e-8);
-                assert(std::abs(mc.prim_(4) - pinf) < 1e-8);
+                //if (std::abs(mc.prim_(1) - u) > 1e-8)
+                //{
+                //    std::cout << "vi: " << vi(0) << " " << vi(1) << " " << vi(2) << std::endl;
+                //    std::cout << "vb: " << vb << std::endl;
+                //    std::cout << "vin: " << vin << std::endl;
+                //}
+                //if (std::abs(mc.prim_(0) - rhoinf) > 1e-8)
+                //{
+                //    std::cout << "mc.prim_(0): " << mc.prim_(0) << std::endl;
+                //    std::cout << "rhoinf: " << rhoinf << std::endl;
+                //}
+                //if (std::abs(mc.prim_(0) - rhoinf) < 1e-8)
+                //assert(std::abs(mc.prim_(1) - u) < 1e-8);
+                //assert(std::abs(mc.prim_(4) - pinf) < 1e-8);
 
                 mc.cons_sp1_ = prim_to_cons(mc.prim_, gamma);
             }
@@ -922,18 +922,17 @@ namespace Tailor
 
         auto T = make_rot_matrix(n);
         auto neii = nei.prim();
-        auto vf = mf->vf();
-        neii(1) -= vf(0);
-        neii(2) -= vf(1);
-        neii(3) -= vf(2);
-        //auto prim = T * nei.prim();
+        //auto vf = mf->vf();
+        //neii(1) -= vf(0);
+        //neii(2) -= vf(1);
+        //neii(3) -= vf(2);
         auto prim = T * neii;
         prim(1) *= -1.;
 
         mc.prim_ = T.transpose() * prim;
-        mc.prim_(1) += vf(0);
-        mc.prim_(2) += vf(1);
-        mc.prim_(3) += vf(2);
+        //mc.prim_(1) += vf(0);
+        //mc.prim_(2) += vf(1);
+        //mc.prim_(3) += vf(2);
         mc.cons_sp1_ = prim_to_cons(mc.prim_, fs_.gamma_);
 
         return;
