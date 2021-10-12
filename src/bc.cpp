@@ -364,8 +364,13 @@ namespace Tailor
                 if (std::abs(mc.prim_(1) - u) > TAILOR_ZERO)
                 {
                     std::cout << "vi: " << vi(0) << " " << vi(1) << " " << vi(2) << std::endl;
-                    std::cout << "vb: " << vb << std::endl;
                     std::cout << "vin: " << vin << std::endl;
+                    std::cout << "v: " << v(0) << " " << v(1) << " " << v(2) << std::endl;
+                    std::cout << "u: " << u << std::endl;
+                    std::cout << "vb: " << vb << std::endl;
+                    std::cout << "vinfn: " << vinfn << std::endl;
+                    std::cout << "vinf: " << vinf(0) << " " << vinf(1) << " " << vinf(2) << std::endl;
+                //Vector3 v = vinf + n * (vb - vinfn);
                 }
                 if (std::abs(mc.prim_(0) - rhoinf) > TAILOR_ZERO)
                 {
