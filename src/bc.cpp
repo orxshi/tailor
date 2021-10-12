@@ -432,6 +432,12 @@ namespace Tailor
                 mc.prim_(4) = pb;
 
                 assert(mc.prim_(0) == rhoinf);
+                if (mc.prim_(1) != u)
+                {
+                    std::cout << "vi: " << vi(0) << " " << vi(1) << " " << vi(2) << std::endl;
+                    std::cout << "vb: " << vb << std::endl;
+                    std::cout << "vin: " << vin << std::endl;
+                }
                 assert(mc.prim_(1) == u);
                 assert(mc.prim_(2) == 0.);
                 assert(mc.prim_(3) == w);
