@@ -198,8 +198,8 @@ Remarks
 
 It is useful to have raw pressure coefficient data to compare results, especially when data for upper and lower surfaces are provided separately. This saves time by avoiding plot digitizing. Here are pressure coefficient data for `upper_pc.dat <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/upper_pc.dat>`_ and `lower_pc.dat <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/lower_pc.dat>`_ airfoil surfaces.
     
-Reference 1: Manzano, Luis, Jason Lassaline, and David Zingg. "A Newton-Krylov algorithm for the Euler equations using unstructured grids." 41st Aerospace Sciences Meeting and Exhibit. 2003.
-Reference 2: `<https://su2code.github.io/tutorials/Inviscid_2D_Unconstrained_NACA0012/>`_
+* Reference 1: Manzano, Luis, Jason Lassaline, and David Zingg. "A Newton-Krylov algorithm for the Euler equations using unstructured grids." 41st Aerospace Sciences Meeting and Exhibit. 2003.
+* Reference 2: `<https://su2code.github.io/tutorials/Inviscid_2D_Unconstrained_NACA0012/>`_
 
    
 
@@ -221,10 +221,10 @@ NACA0012
 
    * - Mean pitch angle
      - :math:`\alpha_{mean}` 
-     - 0.016^\circ
+     - :math:`0.016^\circ`
    * - Pitch amplitude
      - :math:`\alpha_{amp}` 
-     - 2.51^\circ
+     - :math:`2.51^\circ`
    * - Reduced frequency
      - :math:`k` 
      - 0.0814
@@ -236,6 +236,6 @@ NACA0012
      - 0.755
 
 
-Development of a coupled matrix-free LU-SGS solver for turbulent compressible flows
-Implicit Approaches for Moving Boundaries in a 3-D Cartesian Method
-Limit-cycle shape optimization using time-dependent transonic equation
+* Reference 1: Development of a coupled matrix-free LU-SGS solver for turbulent compressible flows
+* Reference 2: Implicit Approaches for Moving Boundaries in a 3-D Cartesian Method
+* Reference 3: Limit-cycle shape optimization using time-dependent transonic equation
