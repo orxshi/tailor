@@ -1000,6 +1000,8 @@ namespace Tailor
 
     void BoundaryCondition::set_dirichlet(Mesh& mesh)
     {
+        return;
+
         if (mesh.dirichlet_boundaries_.empty())
         {
             return;
