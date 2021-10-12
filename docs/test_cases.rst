@@ -210,21 +210,21 @@ NACA0012
 
 .. math::
 
-   \alpha = \alpha_mean + \alpha_amp sin(\omega t)
+   \alpha = \alpha_{mean} + \alpha_{amp} \sin(\omega t)
 
 .. math::
 
-   \k = \frac{\omega c}{2u_\infty}
+   k = \frac{\omega c}{2u_\infty}
 
 .. list-table:: Parameters
    :header-rows: 0
 
    * - Mean pitch angle
-     - :math:`\alpha_mean` 
-     - 0.016
+     - :math:`\alpha_{mean}` 
+     - 0.016^\circ
    * - Pitch amplitude
-     - :math:`\alpha_amp` 
-     - 2.51
+     - :math:`\alpha_{amp}` 
+     - 2.51^\circ
    * - Reduced frequency
      - :math:`k` 
      - 0.0814
