@@ -290,9 +290,9 @@ namespace Tailor
                     out << " ";
                     out << aoa;
                     out << " ";
-                    out << global[0]; // cN
+                    out << global[0]; // cA
                     out << " "; 
-                    out << global[1]; // cA
+                    out << global[1]; // cN
                     out << " "; 
                     out << global[2]; // cY
                     out << " "; 
@@ -316,11 +316,11 @@ namespace Tailor
                     out << " ";
                     out << aoa;
                     out << " ";
-                    out << global[4]; // cn
+                    out << global[4]; // moment-x
                     out << " "; 
-                    out << global[5]; // cm
+                    out << global[5]; // moment-y
                     out << " "; 
-                    out << global[6]; // cl
+                    out << global[6]; // moment-z
                     out << std::endl; 
                     out.close();
                 }
