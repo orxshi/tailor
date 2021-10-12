@@ -286,6 +286,8 @@ namespace Tailor
                 mc.prim_(3) = w;
                 mc.prim_(4) = pinf;
 
+                mc.cons_sp1_ = prim_to_cons(mc.prim_, gamma);
+
                 continue;
 
             double rhoi= interior.prim(0);
