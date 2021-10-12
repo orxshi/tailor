@@ -80,7 +80,7 @@ Remarks
 Steady transonic airfoil
 ------------------------
 
-A single unstructured mesh is used to solve the Euler equations at transonic air speed to steady state. Flow and solver properties are shown in the following tables.
+A single unstructured mesh is used to solve the Euler equations at transonic air speed to steady state. Flow and solver properties are shown in the following tables. The mesh is rotated :math:`1.25^\circ` clock-wise, therefore, the freestream x-velocity has no angle of attack. Freestream pressure and density are adjusted such that sound speed is unity and freestream velocity is identical to Mach number.
 
 .. list-table:: Flow properties
    :header-rows: 0
@@ -202,3 +202,9 @@ Reference 2: `<https://su2code.github.io/tutorials/Inviscid_2D_Unconstrained_NAC
 
 Oscillating airfoil
 -------------------
+
+.. math::
+
+\alpha = \alpha_mean + \alpha_amp sin(\omega t)
+
+

@@ -1,7 +1,7 @@
-tailor documentation
+Tailor documentation
 ====================
 
-tailor is a spatially load balancing flow solver which can operate on three-dimensional moving overset meshes.
+Tailor is a spatially load balancing flow solver which can operate on three-dimensional moving overset meshes.
 
 Why use overset grid technique
 ------------------------------
