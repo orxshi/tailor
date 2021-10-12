@@ -279,6 +279,15 @@ namespace Tailor
                 continue;
             }
 
+            // TODO DELETE LATER
+                mc.prim_(0) = rhoinf;
+                mc.prim_(1) = u;
+                mc.prim_(2) = v;
+                mc.prim_(3) = w;
+                mc.prim_(4) = pinf;
+
+                continue;
+
             double rhoi= interior.prim(0);
             double pi = interior.prim(4);
             if (pi < 0. || std::isnan(pi))
@@ -970,6 +979,7 @@ namespace Tailor
             const MeshCell& nei = mesh.cell(mc.interior_boundary());
             auto mf = std::find_if(nei.face().begin(), nei.face().end(), [&](const MeshFace& f){return f.tag() == mc.face()[0].tag();});
 
+            // TODO WHy add face vel???
             //mc.prim_ = prim;
             auto vf = mf->vf();
             mc.prim_(1) -= vf(0);

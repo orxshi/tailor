@@ -95,6 +95,8 @@ A single unstructured mesh is used to solve the Euler equations at transonic air
      - 1
    * - Ratio of specific heats
      - 1.4
+   * - Reference area
+     - 1
 
 .. list-table:: Solver parameters
    :header-rows: 0
@@ -193,6 +195,7 @@ Remarks
 * There is practically no difference between results of first and second order spatial accuracy. This may be due to steady state solution.
 
 ..
+
 It is useful to have raw pressure coefficient data to compare results, especially when data for upper and lower surfaces are provided separately. This saves time by avoiding plot digitizing. Here are pressure coefficient data for `upper_pc.dat <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/upper_pc.dat>`_ and `lower_pc.dat <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/lower_pc.dat>`_ airfoil surfaces.
     
 Reference 1: Manzano, Luis, Jason Lassaline, and David Zingg. "A Newton-Krylov algorithm for the Euler equations using unstructured grids." 41st Aerospace Sciences Meeting and Exhibit. 2003.
@@ -203,8 +206,36 @@ Reference 2: `<https://su2code.github.io/tutorials/Inviscid_2D_Unconstrained_NAC
 Oscillating airfoil
 -------------------
 
+NACA0012
+
 .. math::
 
-\alpha = \alpha_mean + \alpha_amp sin(\omega t)
+   \alpha = \alpha_mean + \alpha_amp sin(\omega t)
+
+.. math::
+
+   \k = \frac{\omega c}{2u_\infty}
+
+.. list-table:: Parameters
+   :header-rows: 0
+
+   * - Mean pitch angle
+     - :math:`\alpha_mean` 
+     - 0.016
+   * - Pitch amplitude
+     - :math:`\alpha_amp` 
+     - 2.51
+   * - Reduced frequency
+     - :math:`k` 
+     - 0.0814
+   * - Chord length
+     - c
+     - 1
+   * - Mach
+     - M
+     - 0.755
 
 
+Development of a coupled matrix-free LU-SGS solver for turbulent compressible flows
+Implicit Approaches for Moving Boundaries in a 3-D Cartesian Method
+Limit-cycle shape optimization using time-dependent transonic equation
