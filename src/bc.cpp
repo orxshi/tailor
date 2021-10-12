@@ -922,17 +922,17 @@ namespace Tailor
 
         auto T = make_rot_matrix(n);
         auto neii = nei.prim();
-        //auto vf = mf->vf();
-        //neii(1) -= vf(0);
-        //neii(2) -= vf(1);
-        //neii(3) -= vf(2);
+        auto vf = mf->vf();
+        neii(1) -= vf(0);
+        neii(2) -= vf(1);
+        neii(3) -= vf(2);
         auto prim = T * neii;
         prim(1) *= -1.;
 
         mc.prim_ = T.transpose() * prim;
-        //mc.prim_(1) += vf(0);
-        //mc.prim_(2) += vf(1);
-        //mc.prim_(3) += vf(2);
+        mc.prim_(1) += vf(0);
+        mc.prim_(2) += vf(1);
+        mc.prim_(3) += vf(2);
         mc.cons_sp1_ = prim_to_cons(mc.prim_, fs_.gamma_);
 
         return;
