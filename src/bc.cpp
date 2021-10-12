@@ -246,8 +246,8 @@ namespace Tailor
             //Vector3 vinf = vinf_air - normalize(n) * mf->vgn();
             //Vector3 vinf = vinf_air - mf->vgn();
             //Vector3 vinf = vinf_air - (n * mf->vgn());
-            //Vector3 vinf = vinf_air - mf->vf();
             Vector3 vinf = vinf_air;
+            vinf = vinf - mf->vf();
             //if (mf->vf()(0) != 0. || vinf(1) != 0.)
             //{
             //    std::cout << "vf(0): " << mf->vf()(0) << std::endl;
@@ -291,6 +291,7 @@ namespace Tailor
             }
             assert(pi >= 0.);
             Vector3 vi(interior.prim(1), interior.prim(2), interior.prim(3));
+            vi = vi - mf->vf();
             double vin = dot(vi, n);
             double vinfn = dot(vinf, n);
             double ci = std::sqrt(gamma * pi / rhoi);
@@ -360,6 +361,10 @@ namespace Tailor
                 mc.prim_(2) = v(1);
                 mc.prim_(3) = v(2);
                 mc.prim_(4) = pb;
+
+                mc.prim_(1) += mf->vf()(0);
+                mc.prim_(2) += mf->vf()(1);
+                mc.prim_(3) += mf->vf()(2);
 
                 //if (std::abs(mc.prim_(1) - u) > 1e-8)
                 //{
@@ -444,6 +449,10 @@ namespace Tailor
                 mc.prim_(2) = v(1);
                 mc.prim_(3) = v(2);
                 mc.prim_(4) = pb;
+
+                mc.prim_(1) += mf->vf()(0);
+                mc.prim_(2) += mf->vf()(1);
+                mc.prim_(3) += mf->vf()(2);
 
                 //if (std::abs(mc.prim_(1) - u) > 1e-8)
                 //{
