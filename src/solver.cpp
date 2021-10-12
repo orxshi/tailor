@@ -765,30 +765,30 @@ namespace Tailor
                 }
                 auto [flux, max_eigen, Aroe] = compute_flux(riemann_solver_type_, face_area, inv_rotation_matrix, rotated_left_state, rotated_right_state, gamma, calculate_roe_jacobian);
 
-                if (std::abs(flux(0)) > 1e-8)
-                {
-                    std::cout << "flux[0]: " << flux(0) << std::endl;
-                    std::cout << "flux[1]: " << flux(1) << std::endl;
-                    std::cout << "flux[2]: " << flux(2) << std::endl;
-                    std::cout << "flux[3]: " << flux(3) << std::endl;
-                    std::cout << "flux[4]: " << flux(4) << std::endl;
+                //if (std::abs(flux(0)) > 1e-8)
+                //{
+                //    std::cout << "flux[0]: " << flux(0) << std::endl;
+                //    std::cout << "flux[1]: " << flux(1) << std::endl;
+                //    std::cout << "flux[2]: " << flux(2) << std::endl;
+                //    std::cout << "flux[3]: " << flux(3) << std::endl;
+                //    std::cout << "flux[4]: " << flux(4) << std::endl;
 
-                    std::cout << "mf.btype: " << static_cast<int>(mf.btype()) << std::endl;
+                //    std::cout << "mf.btype: " << static_cast<int>(mf.btype()) << std::endl;
 
-                    std::cout << "left cons[0]: " << left_cons(0) << std::endl;
-                    std::cout << "left cons[1]: " << left_cons(1) << std::endl;
-                    std::cout << "left cons[2]: " << left_cons(2) << std::endl;
-                    std::cout << "left cons[3]: " << left_cons(3) << std::endl;
-                    std::cout << "left cons[4]: " << left_cons(4) << std::endl;
+                //    std::cout << "left cons[0]: " << left_cons(0) << std::endl;
+                //    std::cout << "left cons[1]: " << left_cons(1) << std::endl;
+                //    std::cout << "left cons[2]: " << left_cons(2) << std::endl;
+                //    std::cout << "left cons[3]: " << left_cons(3) << std::endl;
+                //    std::cout << "left cons[4]: " << left_cons(4) << std::endl;
 
 
-                    std::cout << "right cons[0]: " << right_cons(0) << std::endl;
-                    std::cout << "right cons[1]: " << right_cons(1) << std::endl;
-                    std::cout << "right cons[2]: " << right_cons(2) << std::endl;
-                    std::cout << "right cons[3]: " << right_cons(3) << std::endl;
-                    std::cout << "right cons[4]: " << right_cons(4) << std::endl;
-                }
-                assert(std::abs(flux(0)) < 1e-8);
+                //    std::cout << "right cons[0]: " << right_cons(0) << std::endl;
+                //    std::cout << "right cons[1]: " << right_cons(1) << std::endl;
+                //    std::cout << "right cons[2]: " << right_cons(2) << std::endl;
+                //    std::cout << "right cons[3]: " << right_cons(3) << std::endl;
+                //    std::cout << "right cons[4]: " << right_cons(4) << std::endl;
+                //}
+                //assert(std::abs(flux(0)) < 1e-8);
 
                 if (mf.btype() != BouType::empty)
                 {
@@ -1528,11 +1528,10 @@ namespace Tailor
 
                     if (meshp != sp.mesh_.end())
                     {
-                        compute_gradient(mesh);
-
+                        set_boundary_conditions(mesh);
                         update_donors(mesh);
 
-                        set_boundary_conditions(mesh);
+                        compute_gradient(mesh);
                         compute_sum_of_fluxes(mesh, ntimestep);
                         temporal_discretization(mesh);
 

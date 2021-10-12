@@ -24,20 +24,20 @@ namespace Tailor
             {
                 double dif = nei->prim(n) - mc.prim(n);
 
-                if (face.btype() != BouType::empty)
-                {
-                    if (dif != 0.)
-                    {
-                        std::cout << "oga type: " << static_cast<int>(mc.oga_cell_type()) << std::endl;
-                        std::cout << "nei btype: " << static_cast<int>(nei->btype()) << std::endl;
-                        std::cout << "mc btype: " << static_cast<int>(mc.btype()) << std::endl;
-                        std::cout << "mf btype: " << static_cast<int>(face.btype()) << std::endl;
-                        std::cout << "nei prim n: " << nei->prim(n) << std::endl;
-                        std::cout << "mc prim n: " << mc.prim(n) << std::endl;
-                        std::cout << "n: " << n << std::endl;
-                    }
-                    assert(dif == 0.);
-                }
+                //if (face.btype() != BouType::empty)
+                //{
+                //    if (dif != 0.)
+                //    {
+                //        std::cout << "oga type: " << static_cast<int>(mc.oga_cell_type()) << std::endl;
+                //        std::cout << "nei btype: " << static_cast<int>(nei->btype()) << std::endl;
+                //        std::cout << "mc btype: " << static_cast<int>(mc.btype()) << std::endl;
+                //        std::cout << "mf btype: " << static_cast<int>(face.btype()) << std::endl;
+                //        std::cout << "nei prim n: " << nei->prim(n) << std::endl;
+                //        std::cout << "mc prim n: " << mc.prim(n) << std::endl;
+                //        std::cout << "n: " << n << std::endl;
+                //    }
+                //    assert(dif == 0.);
+                //}
 
                 if (i >= mc.ls_wx_.size())
                 {
