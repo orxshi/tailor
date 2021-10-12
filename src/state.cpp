@@ -8,6 +8,14 @@ namespace Tailor
 
         assert(cons(0) == conservative_var(0));
         assert(cons(4) == conservative_var(4));
+        if (cons(0) <= 0.)
+        {
+            std::cout << "cons(0): " << cons(0) << std::endl;
+            std::cout << "cons(1): " << cons(1) << std::endl;
+            std::cout << "cons(2): " << cons(2) << std::endl;
+            std::cout << "cons(3): " << cons(3) << std::endl;
+            std::cout << "cons(4): " << cons(4) << std::endl;
+        }
         assert(cons(0) > 0.);
 
         auto primitive_var = cons_to_prim(cons, gamma);
