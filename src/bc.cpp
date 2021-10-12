@@ -363,7 +363,7 @@ namespace Tailor
 
                 assert(mc.prim_(0) == rhoinf);
                 assert(mc.prim_(1) == u);
-                assert(mc.prim_(2) == v);
+                assert(mc.prim_(2) == 0.);
                 assert(mc.prim_(3) == w);
                 assert(mc.prim_(4) == pinf);
 
@@ -433,7 +433,7 @@ namespace Tailor
 
                 assert(mc.prim_(0) == rhoinf);
                 assert(mc.prim_(1) == u);
-                assert(mc.prim_(2) == v);
+                assert(mc.prim_(2) == 0.);
                 assert(mc.prim_(3) == w);
                 assert(mc.prim_(4) == pinf);
 
