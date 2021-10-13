@@ -296,7 +296,7 @@ namespace Tailor
                     out.close();
                 }
 
-                if (global[1] < 0.)
+                if (iter == 300)
                 {
                 if (mesh != sp_.front().mesh().end())
                 {
