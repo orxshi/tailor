@@ -148,10 +148,16 @@ namespace Tailor
 
         if (load_)
         {
-            assembler_ = std::make_unique<Assembler>();
-            solver_ = std::make_unique<Solver>();
-            deserialize(*assembler_, &comm_, nullptr, load_folder_);
-            deserialize(assembler_.get(), *solver_, &comm_, nullptr, use_shared_partition_, load_folder_);
+            if (assembler_on_)
+            {
+                assembler_ = std::make_unique<Assembler>();
+                deserialize(*assembler_, &comm_, nullptr, load_folder_);
+            }
+            if (solver_on_)
+            {
+                solver_ = std::make_unique<Solver>();
+                deserialize(assembler_.get(), *solver_, &comm_, nullptr, use_shared_partition_, load_folder_);
+            }
         }
         else
         {
