@@ -335,7 +335,8 @@ namespace Tailor
 
                     vel = cross(rad_vel, project);
 
-                    std::cout << omega << " " << real_time << " " << omega * real_time << " " << std::sin(omega * real_time) << " " << std::cos(omega * real_time) << rad_vel(0) << " " << rad_vel(1) << " " << rad_vel(2) << " " << project(0) << " " << project(1) << " " << project(2) << " " << vel(0) << " " << vel(1) << " " << vel(2) << std::endl;
+                    std::cout << omega << " " << real_time << " " << omega * real_time << " " << std::sin(omega * real_time) << " " << std::cos(omega * real_time) << " " << rad_vel(0) << " " << rad_vel(1) << " " << rad_vel(2) << " " << project(0) << " " << project(1) << " " << project(2) << " " << vel(0) << " " << vel(1) << " " << vel(2) << " " << r(0) << " " << r(1) << " " << r(2) << std::endl;
+                    std::cout << chord_line(0) << " " << chord_line(1) << " " << chord_line(2) << std::endl;
                     assert(false);
                 }
             }
