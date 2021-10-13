@@ -322,7 +322,7 @@ namespace Tailor
                 auto rotaxis = compo.rotaxis_;
 
                 RotationMatrix rm;
-                Vector3 insta_chord_line = rm.rotate(-insta_pitch, rotaxis, chord_line);
+                rm.rotate(-insta_pitch, rotaxis, pivot, chord_line);
 
                 assert(rotaxis == 2);
 

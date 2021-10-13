@@ -10,7 +10,7 @@ namespace Tailor
     {
         public: 
 
-        Vector3 rotate(double angle, int axis, const Vector3& v);
+        void rotate(double angle, int axis, const Vector3& pivot, Vector3& v);
 
         private:
 

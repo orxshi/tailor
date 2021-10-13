@@ -43,9 +43,9 @@ namespace Tailor
 
         for (Point& p: vertex_)
         {
-            auto z = p.r() - rot_point;
-            auto newz = rm.rotate(angle, axis, z);
-            p.set_r(newz + rot_point);
+            auto z = p.r();
+            rm.rotate(angle, axis, rot_point, z);
+            p.set_r(z);
         }
     }
 

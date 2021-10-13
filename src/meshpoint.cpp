@@ -62,8 +62,8 @@ namespace Tailor
     {
         RotationMatrix rm;
 
-        auto old = p_.r();
-        auto z = p_.r() - rot_point;
+        //auto old = p_.r();
+        auto z = p_.r();
         //std::cout << "angle: " << angle << std::endl;
         //std::cout << "axis: " << axis << std::endl;
         //std::cout << "z(0): " << z(0) << std::endl;
@@ -75,19 +75,19 @@ namespace Tailor
         //std::cout << "p_.r(0): " << p_.r(0) << std::endl;
         //std::cout << "p_.r(1): " << p_.r(1) << std::endl;
         //std::cout << "p_.r(2): " << p_.r(2) << std::endl;
-        auto newz = rm.rotate(angle, axis, z);
+        rm.rotate(angle, axis, rot_point, z);
 
         //p_.set_r(newz + rot_point - 0.1*sin(angle) + 0.2*cos(angle)); // 
         // but angle must be azimuth angle not delta_angle! This is wrong for helicopter case.
         // also geom polygon and segment etc. should also be changed.
 
-        p_.set_r(newz + rot_point);
+        p_.set_r(z);
 
         if (std::isnan(p_.r(0)) || std::isnan(p_.r(1)) || std::isnan(p_.r(2)))
         {
             std::cout << "z: " << z(0) << " " << z(1) << " " << z(2) << std::endl;
-            std::cout << "newz: " << newz(0) << " " << newz(1) << " " << newz(2) << std::endl;
-            std::cout << "old: " << old(0) << " " << old(1) << " " << old(2) << std::endl;
+            //std::cout << "newz: " << newz(0) << " " << newz(1) << " " << newz(2) << std::endl;
+            //std::cout << "old: " << old(0) << " " << old(1) << " " << old(2) << std::endl;
             std::cout << "angle: " << angle << std::endl;
             std::cout << "axis: " << axis << std::endl;
             std::cout << "rotpoint: " << rot_point(0) << " " << rot_point(1) << " " << rot_point(2) << std::endl;
