@@ -63,6 +63,10 @@ namespace Tailor
                 continue;
             }
 
+            if (mc.btype() != BouType::interior && mc.btype() != BouType::partition)
+            {
+                std::cout << "btype: " << static_cast<int>(mc.btype()) << std::endl;
+            }
             assert(mc.btype() == BouType::interior || mc.btype() == BouType::partition);
 
             mc.ls_wx_.clear();
