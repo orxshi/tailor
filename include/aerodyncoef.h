@@ -120,7 +120,8 @@ namespace Tailor
                 {
                     auto [cnt, normal, abs_area, pres] = P[i];
 
-                    Vector3 f = normal * pres * abs_area;
+                    //Vector3 f = normal * pres * abs_area;
+                    Vector3 f = Vector(1., 0., 0.) * pres; //TODO delete this
                     F = F + f;
 
                     if (compute_moment_coef) 
