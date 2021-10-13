@@ -219,7 +219,7 @@ namespace Tailor
     {
         if (global_nmesh_ == 1)
         {
-            return;
+            //return;
         }
 
         if (profiler_ != nullptr)

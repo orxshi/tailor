@@ -264,6 +264,11 @@ namespace Tailor
             solver_->reconnectivity();
             profiler_stop("reconnect");
             mem_usage(&comm_,  "reconnect");
+
+            if (!assembler_on_)
+            {
+                solver_->set_oga_cell_type_all_field();
+            }
         }
 
         if (assembler_on_)
