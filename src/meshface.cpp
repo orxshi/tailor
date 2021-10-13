@@ -334,6 +334,8 @@ namespace Tailor
                     auto project = dot(r, chord_line) * chord_line;
 
                     vel = cross(rad_vel, project);
+
+                    std::cout << omega << " " << real_time << " " << omega * real_time << " " << std::sin(omega * real_time) << " " << std::cos(omega * real_time) << rad_vel(0) << " " << rad_vel(1) << " " << rad_vel(2) << " " << project(0) << " " << project(1) << " " << project(2) << " " << vel(0) << " " << vel(1) << " " << vel(2) << std::endl;
                 }
             }
         }
