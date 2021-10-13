@@ -219,6 +219,7 @@ namespace Tailor
     {
         if (global_nmesh_ == 1)
         {
+            set_oga_cell_type_all_field();
             return;
         }
 
