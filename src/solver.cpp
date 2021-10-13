@@ -448,7 +448,7 @@ namespace Tailor
         {
             for (MeshCell &mc : m.cell_)
             {
-                if (mc.oga_cell_type() != OGA_cell_type_t::non_resident && mc.oga_cell_type() != OGA_cell_type_t::ghost)
+                //if (mc.oga_cell_type() != OGA_cell_type_t::non_resident && mc.oga_cell_type() != OGA_cell_type_t::ghost)
                 {
                     mc.set_oga_cell_type(OGA_cell_type_t::field);
                 }
