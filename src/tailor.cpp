@@ -70,14 +70,10 @@ namespace Tailor
         file_name.append(std::to_string(comm->rank()));
         file_name.append(".ser");
 
-        std::cout << "aaaaaaaaaaaaaaaaaa" << std::endl;
-
         std::ifstream ifs(file_name);
         //boost::archive::text_iarchive ia(ifs);
         boost::archive::binary_iarchive ia(ifs);
         ia >> solver;
-
-        std::cout << "bbbbbbbbbbbbbbbb" << std::endl;
 
         if (use_shared_partition)
         {
@@ -85,19 +81,13 @@ namespace Tailor
             solver.set_partition(assembler->partition());
         }
 
-        std::cout << "cccccccccccccc" << std::endl;
-
         solver.set_comm(comm);
 
         if (profiler != nullptr) {
             solver.set_profiler(profiler);
         }
 
-        std::cout << "dddddddddddddddd" << std::endl;
-
         solver.read_settings();
-
-        std::cout << "eeeeeeeeeeeeee" << std::endl;
 
         if (!use_shared_partition)
         {
@@ -105,11 +95,7 @@ namespace Tailor
             solver.partition()->spc().global_rm().update_address();
         }
 
-        std::cout << "fffffffffff" << std::endl;
-
         solver.read_settings();
-
-        std::cout << "gggggggggggggg" << std::endl;
     }
 
     void Tailor::rotate(const Tag& mesh, double ang, int axis, const Vector3& pivot)

@@ -84,6 +84,7 @@ namespace Tailor
 
             template<class Archive> void serialize(Archive & ar, const unsigned int version)
             {
+                ar & partition_;
                 ar & limiter_type_;
                 ar & dual_ts_;
                 ar & repart_ratio_;
