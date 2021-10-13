@@ -294,7 +294,50 @@ namespace Tailor
                     out << global[3]; // cT
                     out << std::endl; 
                     out.close();
+
+
+
                 }
+
+                    if (global[1] < 0.)
+                    {
+                        if (mesh != sp_.front().mesh().end())
+                        {
+                            std::string fn = "pres-coef-";
+                            fn.append(std::to_string(comm_->rank()));
+                            fn.append("-");
+                            fn.append(std::to_string(i));
+                            fn.append("-");
+                            fn.append(std::to_string(iter));
+                            fn.append(".dat");
+
+                            std::ofstream out;
+                            out.open(fn);
+
+                            for (const auto& P: local_coef.p)
+                            {
+                                auto [cnt, p] = P;
+
+                                out << cnt(0);
+                                out << " "; 
+                                out << cnt(1);
+                                out << " "; 
+                                out << cnt(2);
+                                out << " "; 
+                                out << p;
+                                out << std::endl;
+                            }
+
+                            out.close();
+                        }
+
+                std::string fn = "fail-";
+                fn.append(std::to_string(comm_->rank()));
+                fn.append(".vtk");
+                mesh->print_as_vtk(fn);
+                    }
+                    assert(global[1] > 0.);
+
             }
 
             if (compute_moment_coef)
