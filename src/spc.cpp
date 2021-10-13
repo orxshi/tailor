@@ -233,6 +233,7 @@ namespace Tailor
             boost::mpi::all_reduce(*comm_, local.data(), 7, global.data(), std::plus<double>());
 
             double aoa = -1;
+            double rad_vel_z = -1;
             if (compute_force_coef || compute_moment_coef)
             {
                 if (comm_->rank() == 0)
@@ -254,6 +255,8 @@ namespace Tailor
                         double om = 2. * reduced_freq * u_ref / chord; // rad/s
 
                         aoa = aoa_mean + aoa_o * std::sin(om * iter * dt);
+
+                        rad_vel_z = aoa_o * om * std::cos(om * iter * dt); // z-component of angular velocity.
                     }
                     else if (component.rotation_)
                     {
@@ -279,6 +282,8 @@ namespace Tailor
                     out << iter;
                     out << " ";
                     out << aoa;
+                    out << " ";
+                    out << -rad_vel_z;
                     out << " ";
                     out << global[0]; // cA
                     out << " "; 
