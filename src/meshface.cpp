@@ -331,10 +331,9 @@ namespace Tailor
                     auto cnt = face_.centroid();
                     auto r = cnt - pivot;
                     r(2) = 0.;
-                    //auto project = dot(r, chord_line) * chord_line;
+                    auto project = dot(r, chord_line) * chord_line;
 
-                    vel = cross(rad_vel, r);
-                    //vel = cross(rad_vel, project);
+                    vel = cross(rad_vel, project);
                 }
             }
         }
