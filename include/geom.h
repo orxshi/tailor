@@ -273,6 +273,7 @@ namespace Tailor
 
         double volume_of_overlap(const RegularHexahedron& a, RegularHexahedron& aabb);
         bool extend(const RegularHexahedron& other);
+        void extend(double aabb_margin);
         using Polyhedron::do_intersect;
         bool do_intersect(const RegularHexahedron&) const;
         bool do_contain(const RegularHexahedron& other, bool strict) const;

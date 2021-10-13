@@ -509,6 +509,7 @@ namespace Tailor
             ("loadmap.print-graph-dist", po::value<bool>()->default_value(false), "")
             ("loadmap.forced-n-refine", po::value<int>()->default_value(-1), "")
             ("loadmap.min-forced-n-refine", po::value<int>()->default_value(-1), "")
+            ("loadmap.rm-aabb-margin", po::value<double>()->default_value(10), "")
             ;
 
         all_options.add(desc);
@@ -528,6 +529,7 @@ namespace Tailor
         print_graph_dist_ = vm["loadmap.print-graph-dist"].as<bool>();
         forced_n_refine_ = vm["loadmap.forced-n-refine"].as<int>();
         min_forced_n_refine_ = vm["loadmap.min-forced-n-refine"].as<int>();
+        rm_aabb_margin_ = vm["loadmap.rm-aabb-margin"].as<double>();
     }
 
     AABB Loadmap::max_aabb() const
@@ -609,6 +611,8 @@ namespace Tailor
         for (const AABB& ab: aabbs) {
             aabb.extend(ab);
         }
+
+        aabb.extend(rm_aabb_margin_);
 
         rm_->set_aabb(AABB(aabb.min(), aabb.max()));
         rm_->calc_h();

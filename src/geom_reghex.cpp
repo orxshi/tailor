@@ -64,6 +64,29 @@ namespace Tailor
         set_max(Vector3(xmax, ymax, zmax));
     }
 
+    void RegularHexahedron::extend(double aabb_margin)
+    {
+        double xmin = min(0);
+        double ymin = min(1);
+        double zmin = min(2);
+        double xmax = max(0);
+        double ymax = max(1);
+        double zmax = max(2);
+
+        xmin -= aabb_margin;
+        xmax += aabb_margin;
+
+        ymin -= aabb_margin;
+        ymax += aabb_margin;
+
+        zmin -= aabb_margin;
+        zmax += aabb_margin;
+
+        set_bbox(xmin, ymin, zmin, xmax, ymax, zmax);
+        set_vertices_from_bbox();
+        set_faces();
+    }
+
     bool RegularHexahedron::extend(const RegularHexahedron& other)
     {
         bool modified = false;

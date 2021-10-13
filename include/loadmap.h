@@ -13,6 +13,7 @@ namespace Tailor
 
     class Loadmap
     {
+        double rm_aabb_margin_;
         int forced_n_refine_; // refines exactly forced_n_refine times.
         int min_forced_n_refine_; // refines minimum min_forced_n_refine times.
         std::string name_;
