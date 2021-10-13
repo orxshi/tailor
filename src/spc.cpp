@@ -217,16 +217,6 @@ namespace Tailor
                 continue;
             }
 
-            if (compute_moment_coef && !compute_force_coef)
-            {
-                if (comm_->rank() == 0)
-                {
-                    std::clog << "Warning: Although not asked, force coefficient will also be computed to compute moment coefficient.\n";
-                }
-
-                compute_force_coef = true;
-            }
-
             if (mesh != sp_.front().mesh().end())
             {
                 get_coef_(*mesh, local_coef, aero_para[i], this, compute_pres_coef, compute_force_coef, compute_moment_coef);

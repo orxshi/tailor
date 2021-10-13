@@ -114,7 +114,7 @@ namespace Tailor
                 }
             }
 
-            if (compute_force_coef)
+            if (compute_force_coef || compute_moment_coef)
             {
                 for (int i=0; i<P.size(); ++i)
                 {
