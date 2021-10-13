@@ -97,14 +97,18 @@ namespace Tailor
 
         solver.read_settings();
 
+        std::cout << "eeeeeeeeeeeeee" << std::endl;
+
         if (!use_shared_partition)
         {
             solver.partition()->spc().global_rm().update_address();
         }
 
+        std::cout << "fffffffffff" << std::endl;
+
         solver.read_settings();
 
-        std::cout << "eeeeeeeeeeeeee" << std::endl;
+        std::cout << "gggggggggggggg" << std::endl;
     }
 
     void Tailor::rotate(const Tag& mesh, double ang, int axis, const Vector3& pivot)

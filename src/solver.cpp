@@ -97,7 +97,8 @@ namespace Tailor
                        riemann_solver_type_(RiemannSolverType::roe),
                        dual_ts_(false),
                        global_nmesh_(0),
-                       limiter_type_(LimiterType::barth_jespersen)
+                       limiter_type_(LimiterType::barth_jespersen),
+                       print_vtk_interval_(1000)
     {
     }
 
@@ -107,7 +108,8 @@ namespace Tailor
     increase_cfl_(true),
     cfl_multiplier_(100.),
     global_nmesh_(0),
-    limiter_type_(LimiterType::barth_jespersen)
+    limiter_type_(LimiterType::barth_jespersen),
+    print_vtk_interval_(1000)
     {
         read_settings();
 
