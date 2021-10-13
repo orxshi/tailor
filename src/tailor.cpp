@@ -101,6 +101,7 @@ namespace Tailor
 
         if (!use_shared_partition)
         {
+            assert(solver.partition() != nullptr);
             solver.partition()->spc().global_rm().update_address();
         }
 

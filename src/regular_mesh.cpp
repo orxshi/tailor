@@ -918,6 +918,7 @@ namespace Tailor
 
     void RegularMesh::update_address(std::map<Tag, RegularMesh*>& map, std::map<Tag, Bin*>& binmap)
     {
+        std::cout << "updating address" << std::endl;
         if (map.empty()) {
             return;
         }
@@ -947,6 +948,7 @@ namespace Tailor
             if (b.rm() != nullptr)
                 b.rm()->update_address(map, binmap);
         }
+        std::cout << "updated address" << std::endl;
     }
 
     void RegularMesh::merge(const RegularMesh& other)
