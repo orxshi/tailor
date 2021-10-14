@@ -312,7 +312,8 @@ namespace Tailor
                 
                 double rad_vel_z = aoa_o * omega * std::cos(omega * real_time); // z-component of angular velocity.
 
-                Vector3 rad_vel(0., 0., -rad_vel_z);
+                //Vector3 rad_vel(0., 0., -rad_vel_z);
+                Vector3 rad_vel(0., 0., rad_vel_z);
 
                 double insta_pitch = aoa_mean + aoa_o * std::sin(omega * real_time);
 
