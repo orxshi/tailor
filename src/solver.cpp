@@ -1571,6 +1571,11 @@ namespace Tailor
                     return global_residual;
                 }
             }
+
+            if (!steady_)
+            {
+                return global_residual;
+            }
         }
 
         return global_residual;
