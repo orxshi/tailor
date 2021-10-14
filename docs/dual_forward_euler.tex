@@ -1,0 +1,65 @@
+\documentclass{report}
+
+\usepackage{amsmath}
+\usepackage{cleveref}
+\usepackage{geometry}
+\geometry{
+    a4paper,
+    left=5mm,
+    right=5mm,
+    top=5mm,
+    bottom=5mm,
+}
+
+\usepackage{mathtools}
+
+\begin{document}
+
+If temporal term is discretized with forward Euler method, we get
+
+\begin{equation}\label{eq:original}
+    \frac{V}{\Delta t} (q^{n+1}-q^n) = -\sum R(q^{n+1}).
+\end{equation}
+
+Denote new time level as $s+1$ instead of $n+1$ to obtain
+
+\begin{equation}\label{eq:denote}
+    \frac{V}{\Delta t} (q^{s+1}-q^n) = -\sum R(q^{s+1}).
+\end{equation}
+
+Add pseudo temporal term, $\frac{V}{\Delta \tau} (q^{s+1}-q^s)$ to the LHS to obtain
+
+\begin{equation}
+    \frac{V}{\Delta \tau} (q^{s+1}-q^s) + \frac{V}{\Delta t} (q^{s+1}-q^n) = -\sum R(q^{s+1}).
+\end{equation}
+
+When steady state is reached in pseudo time, $q^{s+1}=q^s$, therefore, \Cref{eq:denote} and in turn \Cref{eq:original} are recovered. 
+
+Substract $\frac{V}{\Delta t} q^s$ from both sides:
+
+\begin{equation}
+    \frac{V}{\Delta \tau} (q^{s+1}-q^s) + \frac{V}{\Delta t} (q^{s+1}-q^n) - \frac{V}{\Delta t} q^s = -\sum R(q^{s+1}) - \frac{V}{\Delta t} q^s.
+\end{equation}
+
+Change positions of $q^s$ and $q^n$ in second and third terms on RHS:
+
+\begin{equation}
+    \frac{V}{\Delta \tau} (q^{s+1}-q^s) + \frac{V}{\Delta t} (q^{s+1}-q^s) - \frac{V}{\Delta t} q^n = -\sum R(q^{s+1}) - \frac{V}{\Delta t} q^s.
+\end{equation}
+
+Put the last term on LHS to RHS so that
+
+\begin{equation}
+    \frac{V}{\Delta \tau} (q^{s+1}-q^s) + \frac{V}{\Delta t} (q^{s+1}-q^s) = -\sum R(q^{s+1}) - \frac{V}{\Delta t} (q^s-q^n).
+\end{equation}
+
+Simplify the LHS to obtain
+
+\begin{equation}
+    \boxed
+    {
+        V\left(\frac{1}{\Delta \tau}+\frac{1}{\Delta t}\right)(q^{s+1}-q^s) = -\sum R(q^{s+1}) - \frac{V}{\Delta t} (q^s-q^n).
+    }
+\end{equation}
+
+\end{document}

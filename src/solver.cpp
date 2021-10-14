@@ -645,7 +645,7 @@ namespace Tailor
         {
             limiter_type_ = LimiterType::none;
         }
-        else if (slimiter_type == "barth_jespersen")
+        else if (slimiter_type == "barth-jespersen")
         {
             limiter_type_ = LimiterType::barth_jespersen;
         }
@@ -656,6 +656,25 @@ namespace Tailor
         else
         {
             assert(false);
+        }
+
+        if (steady_)
+        {
+            if (dual_ts_)
+            {
+                std::clog << "Dual time stepping is useful for implicit unsteady formulation.\n";
+                assert(!dual_ts_);
+            }
+        }
+
+        if (dual_ts_)
+        {
+            if (temporal_discretization_ != "backward_euler")
+            {
+                std::clog << "Dual time stepping is useful for implicit formulation.\n";
+                std::clog << "Use backward_euler for temporal discretization.\n";
+                assert(temporal_discretization_ == "backward_euler");
+            }
         }
     }
 
@@ -906,8 +925,7 @@ namespace Tailor
                         //assert(false);
                         //std::cout << "dQ_ before: " << mc.dQ_(0) << std::endl;
 
-                //if (dual_ts_ || steady_) {
-                if (dual_ts_ || use_local_time_step_) {
+                if (use_local_time_step_) {
                     mc.dQ_ *= mc.dtao_;
                 }
                 else
@@ -1194,23 +1212,16 @@ namespace Tailor
                 }
                 else if (torder_ == 2)
                 {
-                    //if (dual_ts_)
-                    //{
-                        //first_order_residual(res, mc);
-                    //}
-                    //else
+                    if (nsolve_ > 1)
                     {
-                        if (nsolve_ > 1)
+                        for (int i = 0; i < mc.R_.nelm(); ++i)
                         {
-                            for (int i = 0; i < mc.R_.nelm(); ++i)
-                            {
-                                res(i) = std::max(res(i), std::abs(mc.R_(i) - 0.5 * mc.poly().volume() * (3. * mc.cons_sp1_(i) - 4. * mc.cons_n_(i) + mc.cons_nm1_(i)) / dt_));
-                            }
+                            res(i) = std::max(res(i), std::abs(mc.R_(i) - 0.5 * mc.poly().volume() * (3. * mc.cons_sp1_(i) - 4. * mc.cons_n_(i) + mc.cons_nm1_(i)) / dt_));
                         }
-                        else
-                        {
-                            first_order_residual(res, mc);
-                        }
+                    }
+                    else
+                    {
+                        first_order_residual(res, mc);
                     }
                 }
             }
@@ -1447,6 +1458,7 @@ namespace Tailor
         }
         else
         {
+            assert(false);
             mesh.reset_to_mid();
         }
     }
@@ -2488,10 +2500,8 @@ namespace Tailor
 
             if (torder_ == 1)
             {
-                //if (dual_ts_ || steady_)
                 if (dual_ts_)
                 {
-                    assert(false);
                     double t = volume / mc.dtao_;
                     mc.D_.add_diag(t);
 
@@ -2510,14 +2520,9 @@ namespace Tailor
             }
             else if (torder_ == 2)
             {
-                //double t = volume * (1. / mc.dtao_ + 1.5 / dt_);
-                //mc.D_.add_diag(t);
-
                 if (dual_ts_)
                 {
-                    assert(false);
-                    //double t = volume / mc.dtao_;
-                    double t = volume / mc.dtao_;
+                    double t = volume * (1. / mc.dtao_ + 1.5 / dt_);
                     mc.D_.add_diag(t);
 
                     if (nsolve_ > 1)
