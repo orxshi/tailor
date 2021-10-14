@@ -234,8 +234,6 @@ namespace Tailor
 
             double aoa = -1;
             double rad_vel_z = -1;
-            if (compute_force_coef || compute_moment_coef)
-            {
                 if (comm_->rank() == 0)
                 {
                     if (component.oscillation)
@@ -267,6 +265,8 @@ namespace Tailor
 
                     aoa = rad_to_deg(aoa);
                 }
+            if (compute_force_coef || compute_moment_coef)
+            {
             }
 
             if (compute_force_coef)
