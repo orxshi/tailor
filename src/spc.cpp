@@ -236,7 +236,7 @@ namespace Tailor
             double rad_vel_z = -1;
                 if (comm_->rank() == 0)
                 {
-                    if (component.oscillation)
+                    //if (component.oscillation)
                     {
                         double reduced_freq = component.reduced_freq;
                         double u = component.u;
@@ -256,12 +256,12 @@ namespace Tailor
 
                         rad_vel_z = aoa_o * om * std::cos(om * iter * dt); // z-component of angular velocity.
                     }
-                    else if (component.rotation_)
-                    {
-                        double rpm = component.rpm_;
-                        double om = rpm * 2. * PI / 60.; // rad/s
-                        aoa = om * dt; // rad/s * time step
-                    }
+                    //else if (component.rotation_)
+                    //{
+                        //double rpm = component.rpm_;
+                        //double om = rpm * 2. * PI / 60.; // rad/s
+                        //aoa = om * dt; // rad/s * time step
+                    //}
 
                     aoa = rad_to_deg(aoa);
                 }
