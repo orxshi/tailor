@@ -1197,11 +1197,18 @@ namespace Tailor
                 continue;
             }
 
-            if (steady_ || dual_ts_)
+            if (steady_)
             {
                 for (int i = 0; i < mc.R_.nelm(); ++i)
                 {
                     res(i) = std::max(res(i), std::abs(mc.R_(i)));
+                }
+            }
+            else if (dual_ts_)
+            {
+                for (int i = 0; i < mc.R_.nelm(); ++i)
+                {
+                    res(i) = std::max(res(i), std::abs(mc.R_(i) - 1.5 * mc.poly().volume() * mc.dQ_(i) * (1. / mc.dtao_ + 1.5 / dt_)));
                 }
             }
             else
@@ -1216,7 +1223,7 @@ namespace Tailor
                     {
                         for (int i = 0; i < mc.R_.nelm(); ++i)
                         {
-                            res(i) = std::max(res(i), std::abs(mc.R_(i) - 0.5 * mc.poly().volume() * (3. * mc.cons_sp1_(i) - 4. * mc.cons_n_(i) + mc.cons_nm1_(i)) / dt_));
+                            res(i) = std::max(res(i), std::abs(mc.R_(i) - 1.5 * mc.poly().volume() * mc.dQ_(i) / dt_));
                         }
                     }
                     else
@@ -1595,7 +1602,7 @@ namespace Tailor
 
     void Solver::print_sub_solver_residual(int ntimestep, const Vector5& residual)
     {
-        if (!steady_)
+        if (temporal_discretization_ != "backward_euler")
         {
             return;
         }
