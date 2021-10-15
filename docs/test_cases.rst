@@ -203,14 +203,16 @@ It is useful to have raw pressure coefficient data to compare results, especiall
 
    
 
-Oscillating airfoil
+Pitching airfoil
 -------------------
 
-NACA0012
+Freestream pressure and density are adjusted such that sound speed is unity and freestream velocity is identical to Mach number. Mesh velocity :math:`(-0.755, 0, 0)` is given. Mesh is pitched with the equation below.
 
 .. math::
 
    \alpha = \alpha_{mean} + \alpha_{amp} \sin(\omega t)
+
+where,
 
 .. math::
 
@@ -235,7 +237,9 @@ NACA0012
      - M
      - 0.755
 
+Pitching mesh is equivalent to changing angle of attack of freestream.
 
 * Reference 1: Development of a coupled matrix-free LU-SGS solver for turbulent compressible flows
 * Reference 2: Implicit Approaches for Moving Boundaries in a 3-D Cartesian Method
 * Reference 3: Limit-cycle shape optimization using time-dependent transonic equation
+* Reference 4: Landon, R.H., “NACA 0012 Oscillatory and Transient Pitching,” Data Set 3, Compendium of Unsteady Aerodynamic Measurements,” AGARD Report 702, August 1982.

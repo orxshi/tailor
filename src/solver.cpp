@@ -1602,7 +1602,7 @@ namespace Tailor
 
     void Solver::print_sub_solver_residual(int ntimestep, const Vector5& residual)
     {
-        if (temporal_discretization_ != "backward_euler")
+        if (!steady_ || !dual_ts_)
         {
             return;
         }
