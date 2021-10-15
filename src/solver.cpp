@@ -1637,7 +1637,7 @@ namespace Tailor
 
     void Solver::print_sub_solver_residual(int ntimestep, const Vector5& residual)
     {
-        if (!steady_ && !dual_ts_)
+        if (!steady_ && !implicit)
         {
             return;
         }
