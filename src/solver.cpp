@@ -1626,7 +1626,7 @@ namespace Tailor
                 }
             }
 
-            if (!steady_)
+            if (!steady_ && !implicit_)
             {
                 return global_residual;
             }
