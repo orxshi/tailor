@@ -1493,7 +1493,8 @@ namespace Tailor
 
     void Solver::compute_sum_of_fluxes(Mesh& mesh, int ntimestep)
     {
-        if (ntimestep == 0 || steady_ || dual_ts_)
+        //if (ntimestep == 0 || steady_ || implicit_)
+        if (steady_ || implicit_)
         {
             compute_sum_of_fluxes(mesh);
         }
