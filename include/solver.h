@@ -30,6 +30,14 @@
 
 namespace Tailor
 {   
+    enum class TemporalDiscretization
+    {
+        undefined = -1,
+        euler = 0,
+        three_time_level = 1,
+        rk4 = 2,
+    };
+
     typedef amgcl::backend::builtin<double> Backend;
 
     //typedef amgcl::make_solver<
@@ -84,6 +92,7 @@ namespace Tailor
 
             template<class Archive> void serialize(Archive & ar, const unsigned int version)
             {
+                ar & implicit_;
                 ar & partition_;
                 ar & limiter_type_;
                 ar & dual_ts_;
@@ -141,6 +150,7 @@ namespace Tailor
 
         private:    
 
+            bool implicit_;
             int print_vtk_interval_;
             LimiterType limiter_type_;
             bool print_vtk_only_last_step_;
@@ -189,7 +199,7 @@ namespace Tailor
             bool verbose_;
             int printfreq_;
             double finaltime_;
-            std::string temporal_discretization_;
+            TemporalDiscretization temporal_discretization_;
             int nsolve_;
             BoundaryCondition bc_;
             Vector5 initial_global_residual_;

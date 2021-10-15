@@ -2,6 +2,7 @@
 
 \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 \usepackage{amsmath,amssymb}
+\usepackage{booktabs}
 
 \begin{document}
 
@@ -18,20 +19,24 @@
 \newcommand{\flux}{\mathbf{F}}
 \newcommand{\cons}{\mathbf{U}}
 \newcommand{\invrotmat}{\mathbf{T}^{-1}}
+\newcommand{\R}{\mathbf{R}}
+\newcommand{\T}{\mathbf{T}}
 
 \begin{equation}
-    \mathcal{H} \cdot \mathbf{n}
+    \sum\mathcal{H} \cdot \mathbf{n}S
     =
-    \invrotmat\flux(\rotmat\cons)
+    \sum\invrotmat\flux(\rotmat\cons)S
 \end{equation}
 
 \begin{equation}
-    \invrotmat\flux(\rotmat\cons^{n+1})
+    \invrotmat\flux(\rotmat\cons^{n+1})S
     =
-    \invrotmat\flux(\rotmat\cons^{n})
+    \invrotmat\flux(\rotmat\cons^{n})S
     +
-    \invrotmat\frac{\partial\flux(\rotmat\cons)}{\partial(\rotmat\cons)}\Delta(\rotmat\cons)
+    \invrotmat\frac{\partial\flux(\rotmat\cons^n)}{\partial(\rotmat\cons^n)}\Delta(\rotmat\cons^n)S
 \end{equation}
+
+For simplicity, drop $()^n$. 
 
 \begin{equation}
     \invrotmat\frac{\partial\flux(\rotmat\cons)}{\partial(\rotmat\cons)}\Delta(\rotmat\cons)
@@ -67,128 +72,144 @@
 \end{equation}
 
 \begin{equation}
-    \invrotmat\frac{\partial\flux(\rotmat\cons)}{\partial(\rotmat\cons)}\Delta(\rotmat\cons)
+    \invrotmat\frac{\partial\flux(\rotmat\cons)}{\partial(\rotmat\cons)}\Delta(\rotmat\cons)S
     =
-    \NL\Delta\cons_L
+    \ML\Delta\cons_L
     -
-    \NR\Delta\cons_R
-\end{equation}
-
-where, 
-
-\begin{equation}
-    \NL
-    =
-    (\invrotmat\frac{\AL + \Aroe}{2}\rotmat)\Delta\cons_L
-\end{equation}
-
-\begin{equation}
-    \NR
-    =
-    -(\invrotmat\frac{\AR - \Aroe}{2}\rotmat)\Delta\cons_R
-\end{equation}
-
-Consider first order forward Euler temporal discretization,
-
-\begin{equation}
-    V\frac{\cons^{n+1} - \cons^{n}}{\Delta t}
-    =
-    -\sum\invrotmat\flux(\rotmat\cons)S
-\end{equation}
-
-\begin{equation}
-    V\frac{\Delta\cons}{\Delta t}
-    =
-    -\sum\invrotmat\flux(\rotmat\cons)S
-\end{equation}
-
-A cell can be either on the left or on the right of a face. If a cell is on the left of a face,
-
-\begin{equation}
-    V\frac{\Delta\cons_L}{\Delta t}
-    =
-    -\NL\Delta\cons_LS
-    +
-    \NR\Delta\cons_RS
-\end{equation}
-
-Define $\ML_K = \NL_K S$.
-
-\begin{equation}
-    \left(
-        \frac{V}{\Delta t} + \ML
-    \right)
-    \Delta\cons_L
-    =
     \MR\Delta\cons_R
 \end{equation}
 
-If a cell is on the right of a face, flux through a face is opposite to that for the left cell, that is, $-\invrotmat\flux(\rotmat\cons) \rightarrow \invrotmat\flux(\rotmat\cons)$.
-
 \begin{equation}
-    V\frac{\Delta\cons_R}{\Delta t}
+    \ML
     =
-    \NL\Delta\cons_LS
-    -
-    \NR\Delta\cons_RS
-\end{equation}
-
-\begin{equation}
     \left(
-        \frac{V}{\Delta t} + \MR
+        \invrotmat\frac{\AL + \Aroe}{2}\rotmat
     \right)
-    \Delta\cons_R
-    =
-    \ML\Delta\cons_L
+    \Delta\cons_LS
 \end{equation}
 
-In general,
+\begin{equation}
+    \MR
+    =
+    -\left(
+        \invrotmat\frac{\AR - \Aroe}{2}\rotmat
+    \right)
+    \Delta\cons_RS
+\end{equation}
+
+Set $()$ to $()^n$ back again.
+
+\begin{equation}
+    \sum\invrotmat\flux(\rotmat\cons^{n+1})S
+    =
+    \sum\invrotmat\flux(\rotmat\cons^{n})S
+    +
+    \sum\ML\Delta\cons^{n}_L
+    -
+    \sum\MR\Delta\cons^{n}_R
+\end{equation}
+
+\begin{equation}
+    \sum\R(\cons^{n+1})
+    =
+    \sum\invrotmat\flux(\rotmat\cons^{n})S
+    +
+    \sum\ML\Delta\cons^{n}_L
+    -
+    \sum\MR\Delta\cons^{n}_R
+\end{equation}
+
+A cell can be a left or right cell. 
+
+\begin{equation}
+    \sum\R(\cons^{n+1}_i)
+    =
+    \sum\invrotmat\flux(\rotmat\cons^{n}_i)S
+    +
+    \sum\Mi\Delta\cons^{n}_i
+    +
+    \sum\Mj\Delta\cons^{n}_j
+\end{equation}
+
+Consider a generic temporal discretization:
+
+\begin{equation}
+    \alpha V\frac{\Delta\cons}{\Delta t}
+    -
+    \T
+    +
+    \sum\R(\cons^{n+1}_i)
+    =
+    0
+\end{equation}
+
+where, $\alpha$ is a coefficient depending on temporal discretization and $\T$ is higher order terms of the temporal discretization. Rearranging the equation:
+
+\begin{equation}
+    \alpha V\frac{\Delta\cons}{\Delta t}
+    =
+    -\sum\R(\cons^{n+1}_i)
+    +
+    \T
+\end{equation}
 
 \begin{equation}
     \left(
-        \frac{V}{\Delta t} + \Mi
+        \alpha\frac{V}{\Delta t} + \sum\Mi
     \right)
     \Delta\cons_i
     =
+    -\sum\R(\cons_i)
+    +
     \sum\Mj\Delta\cons_j
+    +
+    \T
 \end{equation}
 
-Now consider second order three-time level backward Euler discretization.
+where, for each cell-face,
+
+\begin{equation}
+    \Mi =
+    \begin{cases}
+        \ML & \text{if $i$ is on the left}\\
+        -\MR & \text{if $i$ is on the right}
+    \end{cases}
+\end{equation}
+
+\begin{equation}
+    \Mj =
+    \begin{cases}
+        -\MR & \text{if $i$ is on the left}\\
+        \ML & \text{if $i$ is on the right}
+    \end{cases}
+\end{equation}
+
+For example, consider three-time level backward Euler discretization.
 
 \begin{equation}
     V\frac{3\cons^{n+1}-4\cons^n+\cons^{n-1}}{2\Delta t}
     =
-    -\sum\invrotmat\flux(\rotmat\cons)S
+    -\sum\R(\cons^{n+1}_i)
 \end{equation}
 
+Separate the first and higher order terms of temporal discretization.
+
 \begin{equation}
-    \begin{aligned}
-        V\frac{3\cons^{n+1}-4\cons^n+\cons^{n-1}}{2\Delta t}
-        &=
-        \frac{V}{\Delta t}
-        \left(
-            \frac{3}{2}\cons^{n+1}-2\cons^n+\frac{1}{2}\cons^{n-1}
-        \right)
-        \\
-        &=
-        \frac{3}{2}\frac{V}{\Delta t}(\cons^{n+1}-\cons^n)
-        -
-        \frac{1}{2}\frac{V}{\Delta t}(\cons^{n} - \cons^{n-1})
-        \\
-        &=
-        \frac{3}{2}\frac{V}{\Delta t}\Delta\cons
-        -
-        \frac{1}{2}\frac{V}{\Delta t}(\cons^{n} - \cons^{n-1})
-    \end{aligned}
+    V\frac{3\cons^{n+1}-4\cons^n+\cons^{n-1}}{2\Delta t}
+    &=
+    \frac{1}{2}\frac{V}{\Delta t}
+    [
+    3\Delta\cons
+    -
+    (\cons^{n} - \cons^{n-1})
+    ]
 \end{equation}
 
 \begin{equation}
     \frac{3}{2}\frac{V}{\Delta t}\Delta\cons
     =
-    -\sum\invrotmat\flux(\rotmat\cons)S + \frac{1}{2}\frac{V}{\Delta t}(\cons^{n} - \cons^{n-1})
+    -\sum\R(\cons^{n+1}_i) + \frac{1}{2}\frac{V}{\Delta t}(\cons^{n} - \cons^{n-1})
 \end{equation}
-
-In general,
 
 \begin{equation}
     \left(
@@ -196,8 +217,19 @@ In general,
     \right)
     \Delta\cons_i
     =
-    \sum\Mj\Delta\cons_j + \frac{1}{2}\frac{V}{\Delta t}(\cons^{n} - \cons^{n-1})
+    -\sum\R(\cons^{n}_i) + \sum\Mj\Delta\cons_j + \frac{1}{2}\frac{V}{\Delta t}(\cons^{n} - \cons^{n-1})
 \end{equation}
+
+\begin{table}
+    \centering
+    \begin{tabular}{lll}
+        Implicit Scheme & $\alpha$ & $\T$\\
+        \midrule
+        Euler & 1 & $[0]^T$\\
+        Three-time level & $\frac{3}{2}$ & $\frac{1}{2}\frac{V}{\Delta t}(\cons^{n} - \cons^{n-1})$
+    \end{tabular}
+\end{table}
+
 
 
 

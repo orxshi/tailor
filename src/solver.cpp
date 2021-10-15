@@ -84,7 +84,7 @@ namespace Tailor
                        verbose_(false),
                        printfreq_(0),
                        finaltime_(0.),
-                       temporal_discretization_(""),
+                       temporal_discretization_(TemporalDiscretization::undefined),
                        nsolve_(0),
                        partition_(nullptr),
                        comm_(nullptr),
@@ -98,7 +98,8 @@ namespace Tailor
                        dual_ts_(false),
                        global_nmesh_(0),
                        limiter_type_(LimiterType::barth_jespersen),
-                       print_vtk_interval_(1000)
+                       print_vtk_interval_(1000),
+                       implicit_(false)
     {
     }
 
@@ -109,20 +110,11 @@ namespace Tailor
     cfl_multiplier_(100.),
     global_nmesh_(0),
     limiter_type_(LimiterType::barth_jespersen),
-    print_vtk_interval_(1000)
+    print_vtk_interval_(1000),
+    implicit_(false)
     {
         read_settings();
 
-        //if (steady_)
-        if (use_local_time_step_)
-        {
-            dt_ = TAILOR_BIG_POS_NUM;
-        } 
-
-        if (!steady_)
-        {
-            assert(!use_local_time_step_);
-        }
 
         ncfl_increase_ = 0;
 
@@ -535,7 +527,7 @@ namespace Tailor
             ("solver.print_residual", po::value<bool>()->default_value(true), "Print outer norm")
             ("solver.steady", po::value<bool>()->default_value(false), "Steady state")
             ("solver.progressive_cfl", po::value<bool>()->default_value(false), "Progressive CFL increase")
-            ("solver.temporal_discretization", po::value<std::string>()->default_value("forward_euler"), "Temporal discretization")
+            ("solver.temporal_discretization", po::value<std::string>()->default_value("euler"), "Temporal discretization")
             ("solver.dt", po::value<double>()->default_value(0.001), "Real time step")
             ("solver.nsweep", po::value<int>()->default_value(1), "Number of sweeps in SOR")
             ("solver.omega", po::value<double>()->default_value(1), "Relaxation parameter in SOR")
@@ -566,6 +558,7 @@ namespace Tailor
             ("solver.print-vtk-only-last-step", po::value<bool>()->default_value(false), "")
             ("solver.print-vtk-interval", po::value<int>()->default_value(1000), "")
             ("solver.limiter-type", po::value<std::string>()->default_value("barth_jespersen"), "")
+            ("solver.implicit", po::value<bool>()->default_value(false), "")
             ;
 
         po::options_description linear_solver{"Linear solver options"};
@@ -592,7 +585,23 @@ namespace Tailor
         show_inner_norm_ = vm["solver.show_inner_norm"].as<bool>();
         progressive_cfl_ = vm["solver.progressive_cfl"].as<bool>();
         steady_ = vm["solver.steady"].as<bool>();
-        temporal_discretization_ = vm["solver.temporal_discretization"].as<std::string>();
+        {
+            std::string s = vm["solver.temporal_discretization"].as<std::string>();
+
+            if (s == "euler")
+            {
+                temporal_discretization_ = TemporalDiscretization::euler;
+            }
+            else if (s == "three-time-level")
+            {
+                temporal_discretization_ = TemporalDiscretization::three_time_level;
+            }
+            else
+            {
+                assert(false);
+            }
+        }
+
         dt_ = vm["solver.dt"].as<double>();
         nsweep_ = vm["solver.nsweep"].as<int>();
         cfl_multiplier_ = vm["solver.cfl_multiplier"].as<double>();
@@ -620,12 +629,13 @@ namespace Tailor
         print_repart_info_ = vm["solver.print-repart-info"].as<bool>();
         print_imbalance_ = vm["solver.print-imbalance"].as<bool>();
         repart_ratio_ = vm["solver.repart-ratio"].as<int>();
+        implicit_ = vm["solver.implicit"].as<bool>();
         if (vm["solver.riemann-solver"].as<int>() == 0) {
             riemann_solver_type_ = RiemannSolverType::roe;
         }
         else if (vm["solver.riemann-solver"].as<int>() == 1) {
             riemann_solver_type_ = RiemannSolverType::hllc;
-            assert(temporal_discretization_ != "backward_euler");
+            assert(!implicit_);
         }
         else {
             assert(false);
@@ -662,18 +672,40 @@ namespace Tailor
         {
             if (dual_ts_)
             {
-                std::clog << "Dual time stepping is useful for implicit unsteady formulation.\n";
+                std::clog << "Dual time stepping is useful for implicit unsteady formulation but steady option is given.\n";
                 assert(!dual_ts_);
             }
+
+            if (temporal_discretization_ != TemporalDiscretization::euler)
+            {
+                std::clog << "For steady state simulation, temporal accuracy does not matter. Therefore, setting temporal discretization to euler.\n";
+            }
+            temporal_discretization_ = TemporalDiscretization::euler;
         }
 
         if (dual_ts_)
         {
-            if (temporal_discretization_ != "backward_euler")
+            std::clog << "Dual time stepping is useful only with implicit formulation.\n";
+            std::clog << "Turning implicit option on.\n";
+            implicit_ = true;
+        }
+        
+        if (use_local_time_step_)
+        {
+            dt_ = TAILOR_BIG_POS_NUM;
+        } 
+
+        if (!steady_)
+        {
+            assert(!use_local_time_step_);
+        }
+
+        if (use_local_time_step_)
+        {
+            if (temporal_discretization_ != TemporalDiscretization::euler)
             {
-                std::clog << "Dual time stepping is useful for implicit formulation.\n";
-                std::clog << "Use backward_euler for temporal discretization.\n";
-                assert(temporal_discretization_ == "backward_euler");
+                std::clog << "Temporal accuracy does not matter if local time stepping is used. Therefore, setting temporal discretization to euler.\n";
+                temporal_discretization_ = TemporalDiscretization::euler;
             }
         }
     }
@@ -780,7 +812,7 @@ namespace Tailor
                 //auto [rotated_left_state, rotated_right_state] = left_and_right_states(left_cell->cons_sp1_, right_cell->cons_sp1_, gamma, rotation_matrix, face_velocity);
                 auto [rotated_left_state, rotated_right_state] = left_and_right_states(left_cons, right_cons, gamma, rotation_matrix, face_velocity);
                 bool calculate_roe_jacobian = false;
-                if (temporal_discretization_ == "backward_euler")
+                if (implicit_)
                 {
                     calculate_roe_jacobian = true;
                 }
@@ -824,7 +856,7 @@ namespace Tailor
                 left_cell->R_mid_ -= flux;
                 right_cell->R_mid_ += flux;
 
-                if (temporal_discretization_ == "backward_euler")
+                if (implicit_)
                 {
                     update_matrices(&mf, commonface, *left_cell, *right_cell, face_area, face_velocity, gamma, rotation_matrix, inv_rotation_matrix, Aroe, rotated_left_state, rotated_right_state);
                 }
@@ -846,7 +878,7 @@ namespace Tailor
                 continue;
             }
 
-            if (dual_ts_)
+            if (implicit_)
             {
                 mc.cons_sp1_ = mc.cons_s_ + mc.dQ_;
             }
@@ -884,11 +916,12 @@ namespace Tailor
     {
         for (MeshCell &mc : mesh.cell_)
         {
-            if (dual_ts_)
+            if (implicit_)
             {
                 mc.cons_s_ = mc.cons_sp1_;
             }
-            else if (steady_)
+
+            if (steady_)
             {
                 mc.cons_nm1_ = mc.cons_n_;
                 mc.cons_n_ = mc.cons_sp1_;
@@ -903,11 +936,11 @@ namespace Tailor
             mc.dQ_ = 0.;
         }
 
-        if (temporal_discretization_ == "backward_euler")
+        if (implicit_)
         {
             linear_solver(mesh);
         }
-        else if (temporal_discretization_ == "forward_euler")
+        else if (temporal_discretization_ == TemporalDiscretization::euler || temporal_discretization_ == TemporalDiscretization::three_time_level)
         {
             for (MeshCell &mc : mesh.cell_)
             {
@@ -917,37 +950,22 @@ namespace Tailor
 
                 double volume = mc.poly().volume();
                 mc.dQ_ = mc.R_ / volume;
-                        //std::cout << "R: " << mc.R_(0) << std::endl;
-                        //std::cout << "R after: " << mc.R_(0) << std::endl;
-                        //std::cout << "volume: " << volume << std::endl;
-                        //std::cout << "cons_n(0)" << mc.cons_n(0) << std::endl;
-                        //std::cout << "cons_nm1(0)" << mc.cons_nm1(0) << std::endl;
-                        //assert(false);
-                        //std::cout << "dQ_ before: " << mc.dQ_(0) << std::endl;
 
-                if (use_local_time_step_) {
+                if (use_local_time_step_)
+                {
                     mc.dQ_ *= mc.dtao_;
                 }
-                else
+                else if (temporal_discretization_ == TemporalDiscretization::euler)
                 {
-                    if (torder_ == 1)
-                    {
-                        mc.dQ_ *= dt_;
-                        //std::cout << "dt: " << dt_ << std::endl;
-                        //std::cout << "dQ_: " << mc.dQ_(0) << std::endl;
-                        //for (int j = 0; j < NVAR; ++j)
-                        //{
-                            //assert(std::abs(mc.dQ_(j)) > 1e-6);
-                        //}
-                    }
-                    else if (torder_ == 2)
-                    {
-                        mc.dQ_ *= (2. / 3.) * dt_;
-                    }
+                    mc.dQ_ *= dt_;
+                }
+                else if (temporal_discretization_ == TemporalDiscretization::three_time_level)
+                {
+                    mc.dQ_ *= dt_ / 1.5;
                 }
             }
         }
-        else if (temporal_discretization_ == "runge_kutta_4")
+        else if (temporal_discretization_ == TemporalDiscretization::rk4)
         {
             for (MeshCell &mc : mesh.cell_)
             {
@@ -973,6 +991,10 @@ namespace Tailor
                     mc.dQ_ = mc.runge_kutta_coef_[0] / 6. + mc.runge_kutta_coef_[1] / 3. + mc.runge_kutta_coef_[2] / 3. + mc.runge_kutta_coef_[3] / 6.;
                 }
             }
+        }
+        else
+        {
+            assert(false);
         }
     }
 
@@ -1213,11 +1235,11 @@ namespace Tailor
             }
             else
             {
-                if (torder_ == 1)
+                if (temporal_discretization_ == TemporalDiscretization::euler || temporal_discretization_ == TemporalDiscretization::rk4)
                 {
                     first_order_residual(res, mc);
                 }
-                else if (torder_ == 2)
+                else if (temporal_discretization_ == TemporalDiscretization::three_time_level)
                 {
                     if (nsolve_ > 1)
                     {
@@ -1329,6 +1351,7 @@ namespace Tailor
         std::ofstream out;
         out.open("solver_settings.log");
 
+        out << "implicit = " << implicit_ << std::endl;
         out << "cfl_multiplier = " << cfl_multiplier_ << std::endl;
         out << "cfl_ratio = " << cfl_ratio_ << std::endl;
         out << "increase_cfl = " << increase_cfl_ << std::endl;
@@ -1337,7 +1360,7 @@ namespace Tailor
         out << "show_inner_norm = " << show_inner_norm_ << std::endl;
         out << "progressive_cfl = " << progressive_cfl_ << std::endl;
         out << "steady = " << steady_ << std::endl;
-        out << "temporal_discretization = " << temporal_discretization_ << std::endl;
+        out << "temporal_discretization = " << static_cast<int>(temporal_discretization_) << std::endl;
         out << "dt = " << dt_ << std::endl;
         out << "nsweep = " << nsweep_ << std::endl;
         out << "omega = " << omega_ << std::endl;
@@ -1522,7 +1545,7 @@ namespace Tailor
             auto &sp = partition_->spc_->sp_.front();
 
             int r_max = 1;
-            if (temporal_discretization_ == "runge_kutta_4") {
+            if (temporal_discretization_ == TemporalDiscretization::rk4) {
                 r_max = 4;
             }
 
@@ -2490,7 +2513,7 @@ namespace Tailor
 
     void Solver::temporal_discretization(Mesh& mesh)
     {
-        if (temporal_discretization_ == "runge_kutta_4")
+        if (!implicit_)
         {
             return;
         }
@@ -2505,7 +2528,7 @@ namespace Tailor
             double volume = mc.poly().volume();
             mc.dtao_ = calc_local_time_step(mc.sumarea_, volume, cfl_);
 
-            if (torder_ == 1)
+            if (temporal_discretization_ == TemporalDiscretization::euler)
             {
                 if (dual_ts_)
                 {
@@ -2525,8 +2548,10 @@ namespace Tailor
                     mc.D_.add_diag(t);
                 }
             }
-            else if (torder_ == 2)
+            else if (temporal_discretization_ == TemporalDiscretization::three_time_level)
             {
+                assert(!use_local_time_step_);
+
                 if (dual_ts_)
                 {
                     double t = volume * (1. / mc.dtao_ + 1.5 / dt_);
@@ -2534,29 +2559,35 @@ namespace Tailor
 
                     if (nsolve_ > 1)
                     {
+                        double t = volume * (1. / mc.dtao_ + 1.5 / dt_);
+                        mc.D_.add_diag(t);
                         mc.R_ -= 0.5 * volume * (3. * mc.cons_sp1() - 4. * mc.cons_n() + mc.cons_nm1()) / dt_;
                     }
                     else
                     {
+                        double t = volume * (1. / mc.dtao_ + 1. / dt_);
+                        mc.D_.add_diag(t);
                         mc.R_ -= volume * (mc.cons_sp1() - mc.cons_n()) / dt_;
                     }
                 }
-                else if (use_local_time_step_)
-                {
-                    double t = 1.5 * volume / mc.dtao_;
-                    mc.D_.add_diag(t);
-                    mc.R_ += 0.5 * volume * (mc.cons_n() - mc.cons_nm1()) / mc.dtao_;
-                }
                 else
                 {
-                    double t = 1.5 * volume / dt_;
-                    mc.D_.add_diag(t);
-
                     if (nsolve_ > 1)
                     {
+                        double t = 1.5 * volume / dt_;
+                        mc.D_.add_diag(t);
                         mc.R_ += 0.5 * volume * (mc.cons_n() - mc.cons_nm1()) / dt_;
                     }
+                    else
+                    {
+                        double t = volume / dt_;
+                        mc.D_.add_diag(t);
+                    }
                 }
+            }
+            else
+            {
+                assert(false);
             }
         }
     }
