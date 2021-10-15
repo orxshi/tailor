@@ -102,7 +102,7 @@ namespace Tailor
     {
     }
 
-    Solver::Solver(boost::mpi::communicator *comm, const std::vector<std::string> &filename, Profiler *profiler, Partition *partition) : verbose_(true), maxtimestep_(10000), comm_(comm), var_exc_(nullptr), donor_var_exc_(nullptr), nsolve_(0), profiler_(profiler), partition_(partition),
+    Solver::Solver(boost::mpi::communicator *comm, const std::vector<std::string> &filename, Profiler *profiler, Partition *partition) : verbose_(true), maxtimestep_(20000), comm_(comm), var_exc_(nullptr), donor_var_exc_(nullptr), nsolve_(0), profiler_(profiler), partition_(partition),
     initial_global_residual_(0.),
     last_global_residual_(0.),
     increase_cfl_(true),
@@ -542,7 +542,7 @@ namespace Tailor
             ("solver.load-estim", po::value<int>()->default_value(2), "Load estimation method")
             ("general.pseudo3D", po::value<bool>()->default_value(false), "2.5D simulation with 1 layer in depth")
             ("solver.print-map", po::value<bool>()->default_value(false), "Print map.")
-            ("solver.max-time-step", po::value<int>()->default_value(10000), "")
+            ("solver.max-time-step", po::value<int>()->default_value(20000), "")
             ("solver.half-cfl", po::value<bool>()->default_value(true), "")
             //("solver.restore-solution", po::value<bool>()->default_value(false), "")
             ("solver.can-rebalance", po::value<bool>()->default_value(true), "Make load rebalance if needed.")
