@@ -69,8 +69,6 @@ namespace Tailor
                        show_inner_res_(false),
                        show_inner_norm_(false),
                        print_residual_(false),
-                       sorder_(0),
-                       torder_(0),
                        maxtimestep_(0),
                        tol_(0.),
                        nsweep_(0.),
@@ -85,6 +83,7 @@ namespace Tailor
                        printfreq_(0),
                        finaltime_(0.),
                        temporal_discretization_(TemporalDiscretization::undefined),
+                       spatial_discretization_(SpatialDiscretization::upwind),
                        nsolve_(0),
                        partition_(nullptr),
                        comm_(nullptr),
@@ -111,6 +110,7 @@ namespace Tailor
     global_nmesh_(0),
     limiter_type_(LimiterType::barth_jespersen),
     print_vtk_interval_(1000),
+    spatial_discretization_(SpatialDiscretization::upwind),
     implicit_(false)
     {
         read_settings();
@@ -528,12 +528,11 @@ namespace Tailor
             ("solver.steady", po::value<bool>()->default_value(false), "Steady state")
             ("solver.progressive_cfl", po::value<bool>()->default_value(false), "Progressive CFL increase")
             ("solver.temporal_discretization", po::value<std::string>()->default_value("euler"), "Temporal discretization")
+            ("solver.spatial_discretization", po::value<std::string>()->default_value("upwind"), "Spatial discretization")
             ("solver.dt", po::value<double>()->default_value(0.001), "Real time step")
             ("solver.nsweep", po::value<int>()->default_value(1), "Number of sweeps in SOR")
             ("solver.omega", po::value<double>()->default_value(1), "Relaxation parameter in SOR")
             ("solver.tol", po::value<double>()->default_value(1e-12), "Error tolerance")
-            ("solver.sorder", po::value<int>()->default_value(1), "Spatial order of accuracy")
-            ("solver.torder", po::value<int>()->default_value(1), "Temporal order of accuracy")
             ("solver.printfreq", po::value<int>()->default_value(100), "Printting frequency")
             ("solver.cfl", po::value<double>()->default_value(0.5), "CFL number")
             ("solver.delta_cfl", po::value<double>()->default_value(0.), "Delta CFL number for progressive cfl increase")
@@ -601,6 +600,22 @@ namespace Tailor
                 assert(false);
             }
         }
+        {
+            std::string s = vm["solver.spatial_discretization"].as<std::string>();
+
+            if (s == "upwind")
+            {
+                spatial_discretization_ = SpatialDiscretization::upwind;
+            }
+            else if (s == "MUSCL")
+            {
+                spatial_discretization_ = SpatialDiscretization::MUSCL;
+            }
+            else
+            {
+                assert(false);
+            }
+        }
 
         dt_ = vm["solver.dt"].as<double>();
         nsweep_ = vm["solver.nsweep"].as<int>();
@@ -608,8 +623,6 @@ namespace Tailor
         cfl_ratio_ = vm["solver.cfl_ratio"].as<double>();
         omega_ = vm["solver.omega"].as<double>();
         tol_ = vm["solver.tol"].as<double>();
-        sorder_ = vm["solver.sorder"].as<int>();
-        torder_ = vm["solver.torder"].as<int>();
         printfreq_ = vm["solver.printfreq"].as<int>();
         cfl_ = vm["solver.cfl"].as<double>();
         delta_cfl_ = vm["solver.delta_cfl"].as<double>();
@@ -1280,7 +1293,7 @@ namespace Tailor
                 assert(m->tag() != mesh.tag());
                 const auto &donor_cell = m->cell(mc.donor().cell_tag_);
 
-                if (sorder_ == 2)
+                if (spatial_discretization_ == SpatialDiscretization::MUSCL)
                 {
                     //if (donor_cell.oga_cell_type() != OGA_cell_type_t::field || donor_cell.oga_cell_type() != OGA_cell_type_t::non_resident)
                     //{
@@ -1365,8 +1378,6 @@ namespace Tailor
         out << "nsweep = " << nsweep_ << std::endl;
         out << "omega = " << omega_ << std::endl;
         out << "tol = " << tol_ << std::endl;
-        out << "sorder = " << sorder_ << std::endl;
-        out << "torder = " << torder_ << std::endl;
         out << "printfreq = " << printfreq_ << std::endl;
         out << "cfl = " << cfl_ << std::endl;
         out << "delta_cfl = " << delta_cfl_ << std::endl;
@@ -1495,7 +1506,8 @@ namespace Tailor
 
     void Solver::compute_gradient(Mesh& mesh)
     {
-        if (sorder_ == 1) {
+        if (spatial_discretization_ == SpatialDiscretization::upwind)
+        {
             return;
         }
 
@@ -1734,7 +1746,8 @@ namespace Tailor
     {
         // For non-moving problems calculating coefficients is unnecessary. Improve this once you can check if meshes move or not.
 
-        if (sorder_ == 1) {
+        if (spatial_discretization_ == SpatialDiscretization::upwind)
+        {
             return;
         }
 
@@ -1925,7 +1938,7 @@ namespace Tailor
         auto prim = mc.prim();
         auto cons = mc.cons_sp1();
 
-        if (sorder_ == 1)
+        if (spatial_discretization_ == SpatialDiscretization::upwind)
         {
             return cons;
         }

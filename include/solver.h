@@ -38,6 +38,13 @@ namespace Tailor
         rk4 = 2,
     };
 
+    enum class SpatialDiscretization
+    {
+        undefined = -1,
+        upwind = 0,
+        MUSCL = 1,
+    };
+
     typedef amgcl::backend::builtin<double> Backend;
 
     //typedef amgcl::make_solver<
@@ -112,8 +119,6 @@ namespace Tailor
                 ar & show_inner_res_;
                 ar & show_inner_norm_;
                 ar & print_residual_;
-                ar & sorder_;
-                ar & torder_;
                 ar & maxtimestep_;
                 ar & tol_;
                 ar & nsweep_;
@@ -146,6 +151,8 @@ namespace Tailor
                 ar & linear_solver_rel_error_;
                 ar & print_vtk_only_last_step_;
                 ar & print_vtk_interval_;
+                ar & temporal_discretization_;
+                ar & spatial_discretization_;
             }
 
         private:    
@@ -184,8 +191,6 @@ namespace Tailor
             bool show_inner_res_;
             bool show_inner_norm_;
             bool print_residual_;
-            int sorder_;
-            int torder_;
             int maxtimestep_;
             double tol_;
             double nsweep_;
@@ -200,6 +205,7 @@ namespace Tailor
             int printfreq_;
             double finaltime_;
             TemporalDiscretization temporal_discretization_;
+            SpatialDiscretization spatial_discretization_;
             int nsolve_;
             BoundaryCondition bc_;
             Vector5 initial_global_residual_;
