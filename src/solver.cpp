@@ -698,9 +698,12 @@ namespace Tailor
 
         if (dual_ts_)
         {
-            std::clog << "Dual time stepping is useful only with implicit formulation.\n";
-            std::clog << "Turning implicit option on.\n";
-            implicit_ = true;
+            if (!implicit_)
+            {
+                std::clog << "Dual time stepping is useful only with implicit formulation.\n";
+                std::clog << "Turning implicit option on.\n";
+                implicit_ = true;
+            }
         }
         
         if (use_local_time_step_)
