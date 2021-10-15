@@ -1,0 +1,42 @@
+\documentclass{report}
+
+\usepackage{amsmath}
+\usepackage{cleveref}
+\usepackage{geometry}
+\geometry{
+    a4paper,
+    left=5mm,
+    right=5mm,
+    top=5mm,
+    bottom=5mm,
+}
+
+\usepackage{mathtools}
+
+\begin{document}
+
+If temporal term is discretized with three-time-level method, we get
+
+\begin{equation}\label{eq:original}
+    \frac{V}{2\Delta t} (3q^{n+1}-4q^n+q^{n-1}) = -\sum R(q^{n+1}).
+\end{equation}
+
+Add $\frac{V}{2\Delta t} q^n$ to both sides:
+
+\begin{equation}
+    \frac{V}{2\Delta t} (3q^{n+1}-4q^n+q^{n-1}) + \frac{V}{2\Delta t} q^n = -\sum R(q^{n+1}) + \frac{V}{2\Delta t} q^n.
+\end{equation}
+
+Regroup to get 
+
+\begin{equation}
+    \frac{3V}{2\Delta t} (q^{n+1}-q^n)  = -\sum R(q^{n+1}) + \frac{V}{2\Delta t} (q^n - q^{n-1}).
+\end{equation}
+
+Define $\Delta q = q^{n+1}-q^n$ to get
+
+\begin{equation}
+    \frac{3V}{2\Delta t} \Delta q = -\sum R(q^{n+1}) + \frac{V}{2\Delta t} (q^n - q^{n-1}).
+\end{equation}
+
+\end{document}

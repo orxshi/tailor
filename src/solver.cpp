@@ -1556,9 +1556,9 @@ namespace Tailor
                         compute_sum_of_fluxes(mesh, ntimestep);
                         temporal_discretization(mesh);
 
-                        local_residual = compute_residual(mesh);
-
                         calc_change_in_conserved_var(mesh, runge_kutta_stage);
+
+                        local_residual = compute_residual(mesh);
 
                         evolve_solution_in_time(mesh);
                         evolve_old_solution_in_time(mesh);
