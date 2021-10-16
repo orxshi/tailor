@@ -870,7 +870,7 @@ namespace Tailor
                         std::cout << "full: " << mf.vgn() * mf.face().signed_area() << std::endl;
                     }
 
-                    assert(false);
+                    //assert(false);
                     return false;
                 }
             }
