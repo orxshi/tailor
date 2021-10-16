@@ -870,8 +870,9 @@ namespace Tailor
                         std::cout << "full: " << mf.vgn() * mf.face().signed_area() << std::endl;
                     }
 
-                    //assert(false);
-                    return false;
+                    //assert(false); // TODO should be made per cell basis.
+                    //return false;
+                    return true;
                 }
             }
         }
