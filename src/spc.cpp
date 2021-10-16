@@ -208,6 +208,9 @@ namespace Tailor
             Component component;
             component.read(mesh->tag());
 
+            Freestream fs;
+            fs.read();
+
             bool compute_pres_coef = component.compute_pres_coef;
             bool compute_force_coef = component.compute_force_coef;
             bool compute_moment_coef = component.compute_moment_coef;
@@ -241,8 +244,10 @@ namespace Tailor
                         double u = component.u;
                         double v = component.v;
                         double w = component.w;
-                        Vector3 U(u, v, w);
-                        double u_ref = U.len();
+
+                        //Vector3 U(u, v, w);
+                        //double u_ref = U.len();
+                        double u_ref = fs.u_;
                         double chord = component.chord;
                         double aoa_mean_deg = component.aoa_mean_deg;
                         double aoa_o_deg = component.aoa_o_deg;
