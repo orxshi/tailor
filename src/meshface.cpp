@@ -297,11 +297,19 @@ namespace Tailor
             {
                 double dirz = compo.dirz_;
                 double reduced_freq = compo.reduced_freq;
+
                 double u = compo.u;
                 double v = compo.v;
                 double w = compo.w;
-                Vector3 U(u, v, w);
-                double u_ref = U.len();
+
+                Freestream fs;
+                fs.read();
+
+                //Vector3 U(u, v, w);
+                //double u_ref = U.len();
+
+                double u_ref = fs.u_;
+
                 double chord = compo.chord;
                 double aoa_mean_deg = compo.aoa_mean_deg;
                 double aoa_o_deg = compo.aoa_o_deg;
