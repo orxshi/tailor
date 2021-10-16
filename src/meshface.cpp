@@ -334,7 +334,10 @@ namespace Tailor
                     //auto project = dot(r, chord_line) * chord_line;
 
                     //vel = cross(rad_vel, project);
-                    vel = cross(rad_vel, r);
+                    if (btype_ == BouType::wall) // TODO just to test.
+                    {
+                        vel = cross(rad_vel, r);
+                    }
 
                     std::cout << omega << " " << real_time << " " << omega * real_time << " " << std::sin(omega * real_time) << " " << std::cos(omega * real_time) << " " << rad_vel(0) << " " << rad_vel(1) << " " << rad_vel(2) << " " << vel(0) << " " << vel(1) << " " << vel(2) << " " << r(0) << " " << r(1) << " " << r(2) << std::endl;
                     std::cout << "omega: " << omega << std::endl;
