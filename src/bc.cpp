@@ -882,6 +882,7 @@ namespace Tailor
 
     void BoundaryCondition::slipwall(Mesh& mesh, MeshCell& mc)
     {
+        assert(false);
         const MeshCell& nei = mesh.cell(mc.interior_boundary());
 
         //mc.prim_[0] = nei.prim(0);

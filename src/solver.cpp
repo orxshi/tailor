@@ -1516,7 +1516,6 @@ namespace Tailor
 
     void Solver::set_boundary_conditions(Mesh& mesh)
     {
-        assert(false);
         bc_.set_bc(mesh, profiler_);
     }
 
