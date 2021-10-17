@@ -899,8 +899,6 @@ namespace Tailor
                         std::cout << "n(0): " << normal(0) << std::endl;
                         std::cout << "n(1): " << normal(1) << std::endl;
                         std::cout << "n(2): " << normal(2) << std::endl;
-
-                        assert(false);
                     }
                 }
 
@@ -928,6 +926,9 @@ namespace Tailor
                 }
             }
         }
+
+        comm_->barrier();
+        assert(false);
     }
 
     void Solver::evolve_solution_in_time(Mesh& mesh)
