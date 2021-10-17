@@ -952,9 +952,13 @@ namespace Tailor
             std::cout << "vf(1): " << vf(1) << std::endl;
             std::cout << "vf(2): " << vf(2) << std::endl;
 
-            std::cout << "mc.prim(2): " << mc.prim(2) << std::endl;
             std::cout << "mc.prim(1): " << mc.prim(1) << std::endl;
+            std::cout << "mc.prim(2): " << mc.prim(2) << std::endl;
             std::cout << "mc.prim(3): " << mc.prim(3) << std::endl;
+
+            std::cout << "n(0): " << n(0) << std::endl;
+            std::cout << "n(1): " << n(1) << std::endl;
+            std::cout << "n(2): " << n(2) << std::endl;
 
             assert(false);
         }
