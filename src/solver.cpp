@@ -955,8 +955,10 @@ namespace Tailor
 
                 if (mc.tag()() == 64093)
                 {
-                    std::cout << "cons_sp1[0]: " << mc.cons_sp1_(0) << std::endl;
                     std::cout << "cons_s[0]: " << mc.cons_s_(0) << std::endl;
+                    std::cout << "cons_sp1[0]: " << mc.cons_sp1_(0) << std::endl;
+                    std::cout << "cons_s[1]: " << mc.cons_s_(1) << std::endl;
+                    std::cout << "cons_sp1[1]: " << mc.cons_sp1_(1) << std::endl;
                     assert(false);
                 }
             }
