@@ -884,10 +884,12 @@ namespace Tailor
                 //}
                 //assert(std::abs(flux(0)) < 1e-8);
 
-                if (mf.btype() == BouType::wall)
+                //if (mf.btype() == BouType::wall)
                 {
                     if (left_cell->tag()() == 64093)
                     {
+                        std::cout << "mf.btype: " << static_cast<int>(mf.btype()) << std::endl;
+                
                         std::cout << "flux[0]: " << flux(0) << std::endl;
                         std::cout << "flux[1]: " << flux(1) << std::endl;
                         std::cout << "flux[2]: " << flux(2) << std::endl;
