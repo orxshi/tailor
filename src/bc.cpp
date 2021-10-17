@@ -952,17 +952,23 @@ namespace Tailor
             std::cout << "vf(1): " << vf(1) << std::endl;
             std::cout << "vf(2): " << vf(2) << std::endl;
 
+            std::cout << "nei(0): " << nei.prim(0) << std::endl;
             std::cout << "nei(1): " << nei.prim(1) << std::endl;
             std::cout << "nei(2): " << nei.prim(2) << std::endl;
             std::cout << "nei(3): " << nei.prim(3) << std::endl;
+            std::cout << "nei(4): " << nei.prim(4) << std::endl;
 
+            std::cout << "neii(0): " << neii(0) << std::endl;
             std::cout << "neii(1): " << neii(1) << std::endl;
             std::cout << "neii(2): " << neii(2) << std::endl;
             std::cout << "neii(3): " << neii(3) << std::endl;
+            std::cout << "neii(4): " << neii(4) << std::endl;
 
+            std::cout << "mc.prim(0): " << mc.prim(0) << std::endl;
             std::cout << "mc.prim(1): " << mc.prim(1) << std::endl;
             std::cout << "mc.prim(2): " << mc.prim(2) << std::endl;
             std::cout << "mc.prim(3): " << mc.prim(3) << std::endl;
+            std::cout << "mc.prim(4): " << mc.prim(4) << std::endl;
 
             std::cout << "n(0): " << n(0) << std::endl;
             std::cout << "n(1): " << n(1) << std::endl;
