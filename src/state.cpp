@@ -4,35 +4,41 @@ namespace Tailor
 {
     State::State(const Vector5& conservative_var, double gamma, const Matrix5& rotation_matrix, const Vector3& face_velocity)
     {
-        cons = rotation_matrix * conservative_var;
+        auto primitive_var = cons_to_prim(conservative_var, gamma);
 
-        assert(cons(0) == conservative_var(0));
-        assert(cons(4) == conservative_var(4));
-        if (cons(0) <= 0.)
-        {
-            std::cout << "cons(0): " << cons(0) << std::endl;
-            std::cout << "cons(1): " << cons(1) << std::endl;
-            std::cout << "cons(2): " << cons(2) << std::endl;
-            std::cout << "cons(3): " << cons(3) << std::endl;
-            std::cout << "cons(4): " << cons(4) << std::endl;
-        }
-        assert(cons(0) > 0.);
+        primitive_var(1) -= face_velocity(0);
+        primitive_var(2) -= face_velocity(1);
+        primitive_var(3) -= face_velocity(2);
 
-        auto primitive_var = cons_to_prim(cons, gamma);
+        primitive_var = rotation_matrix * primitive_var;
 
-        // Rotation matrix is 5x5. Define new face velocity from 3x1 to 5x1 to multiply it with rotation matrix.
-        Vector5 vf5;
-        vf5(0) = 0.; 
-        vf5(1) = face_velocity(0); 
-        vf5(2) = face_velocity(1); 
-        vf5(3) = face_velocity(2); 
-        vf5(4) = 0.; 
+        //auto cons = prim_to_cons(primitive_var, gamma);
 
-        Vector5 rotated_face_velocity = rotation_matrix * vf5;
+        //assert(cons(0) == conservative_var(0));
+        //assert(cons(4) == conservative_var(4));
+        //if (cons(0) <= 0.)
+        //{
+        //    std::cout << "cons(0): " << cons(0) << std::endl;
+        //    std::cout << "cons(1): " << cons(1) << std::endl;
+        //    std::cout << "cons(2): " << cons(2) << std::endl;
+        //    std::cout << "cons(3): " << cons(3) << std::endl;
+        //    std::cout << "cons(4): " << cons(4) << std::endl;
+        //}
+        //assert(cons(0) > 0.);
 
-        auto vf_normal       = rotated_face_velocity(1);
-        auto vf_tangential_1 = rotated_face_velocity(2);
-        auto vf_tangential_2 = rotated_face_velocity(3);
+        //// Rotation matrix is 5x5. Define new face velocity from 3x1 to 5x1 to multiply it with rotation matrix.
+        //Vector5 vf5;
+        //vf5(0) = 0.; 
+        //vf5(1) = face_velocity(0); 
+        //vf5(2) = face_velocity(1); 
+        //vf5(3) = face_velocity(2); 
+        //vf5(4) = 0.; 
+
+        //Vector5 rotated_face_velocity = rotation_matrix * vf5;
+
+        //auto vf_normal       = rotated_face_velocity(1);
+        //auto vf_tangential_1 = rotated_face_velocity(2);
+        //auto vf_tangential_2 = rotated_face_velocity(3);
 
         //std::cout << "vf5(1): " << vf5(1) << std::endl;
         //std::cout << "vf5(2): " << vf5(2) << std::endl;
@@ -45,9 +51,9 @@ namespace Tailor
         //assert(false);
 
         // Update u, v, w, with face velocities.
-        primitive_var(1) -= vf_normal;
-        primitive_var(2) -= vf_tangential_1;
-        primitive_var(3) -= vf_tangential_2;
+        //primitive_var(1) -= vf_normal;
+        //primitive_var(2) -= vf_tangential_1;
+        //primitive_var(3) -= vf_tangential_2;
 
         rho = primitive_var(0);
         u   = primitive_var(1);
@@ -62,7 +68,7 @@ namespace Tailor
 
         flux = calc_flux(rho, p, u, v, w, H, 0.);
 
-        cons = prim_to_cons(primitive_var, gamma);
+        //cons = prim_to_cons(primitive_var, gamma);
     }
 
     void State::print() const
