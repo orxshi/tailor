@@ -262,6 +262,7 @@ namespace Tailor
             void update_overset_mesh_exchanger();
             void first_order_residual(Vector5& res, const MeshCell& mc);
             void compute_gradient(Mesh& mesh);
+            void rotate_velocity(const Tag &mesh, double ang, int axis, const Vector3 &pivot);
     };
 
     std::tuple<Matrix5, Matrix5> get_rotation_matrix(const Vector3& normal);

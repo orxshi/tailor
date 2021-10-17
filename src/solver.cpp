@@ -423,9 +423,34 @@ namespace Tailor
         }
     }
 
+    void Solver::rotate_velocity(const Tag &mesh, double ang, int axis, const Vector3 &pivot)
+    {
+        Freestream fs;
+        fs.read();
+
+        for (Mesh &m : partition_->spc_->sp_.front().mesh_)
+        {
+            for (MeshCell &mc : m.cell_)
+            {
+                Vector3 velocity(mc.prim_(1), mc.prim_(2), mc.prim_(3));
+
+                RotationMatrix rm;
+
+                rm.rotate(ang, axis, pivot, velocity);
+
+                mc.prim_(1) = velocity(0);
+                mc.prim_(2) = velocity(1);
+                mc.prim_(3) = velocity(2);
+
+                mc.cons_sp1_ = prim_to_cons(mc.prim_, fs.gamma_);
+            }
+        }
+    }
+
     void Solver::rotate(const Tag &mesh, double ang, int axis, const Vector3 &pivot)
     {
         partition_->rotate(mesh, ang, axis, pivot);
+        rotate_velocity(mesh, ang, axis, pivot);
     }
 
     void Solver::move(const Tag& mesh, const Vector3& v)
