@@ -342,7 +342,7 @@ namespace Tailor
                     //auto project = dot(r, chord_line) * chord_line;
 
                     //vel = cross(rad_vel, project);
-                    if (btype_ == BouType::wall) // TODO just to test.
+                    //if (btype_ == BouType::wall) // TODO just to test.
                     {
                         vel = cross(rad_vel, r);
                     }

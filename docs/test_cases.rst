@@ -244,3 +244,5 @@ Pitching mesh is equivalent to changing angle of attack of freestream.
 * Reference 3: Limit-cycle shape optimization using time-dependent transonic equation
 * Reference 4: Landon, R.H., “NACA 0012 Oscillatory and Transient Pitching,” Data Set 3, Compendium of Unsteady Aerodynamic Measurements,” AGARD Report 702, August 1982.
 * Reference 5: Transonic Flow Simulation Around the Pitching Airfoil with Accurate Pressure-Based Algorithm
+* Reference 6: Hejranfar, K., and M. H. Azampour. "Simulation of 2D fluid–structure interaction in inviscid compressible flows using a cell-vertex central difference finite volume method." Journal of Fluids and Structures 67 (2016): 190-218.
+* Reference 7: Ekici, Kivanc, et al. "Modeling periodic and non-periodic response of dynamical systems using an efficient Chebyshev-based time-spectral approach." Journal of Computational Physics 417 (2020): 109560.
