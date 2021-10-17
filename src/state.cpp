@@ -42,7 +42,7 @@ namespace Tailor
         std::cout << "rotated_face_velocity(2): " << rotated_face_velocity(2) << std::endl;
         std::cout << "rotated_face_velocity(3): " << rotated_face_velocity(3) << std::endl;
 
-        //assert(false);
+        assert(false);
 
         // Update u, v, w, with face velocities.
         primitive_var(1) -= vf_normal;
