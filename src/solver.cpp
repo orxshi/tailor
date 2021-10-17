@@ -886,8 +886,17 @@ namespace Tailor
 
                 //if (mf.btype() == BouType::wall)
                 {
-                    if (left_cell->tag()() == 64093)
+                    if (left_cell->tag()() == 64093 || right_cell->tag()() == 64093)
                     {
+                        if (left_cell->tag()() == 64093)
+                        {
+                            std::cout << "left" << std::endl;
+                        }
+                        else
+                        {
+                            std::cout << "right" << std::endl;
+                        }
+
                         std::cout << "mf.btype: " << static_cast<int>(mf.btype()) << std::endl;
                 
                         std::cout << "flux[0]: " << flux(0) << std::endl;
