@@ -450,7 +450,7 @@ namespace Tailor
     void Solver::rotate(const Tag &mesh, double ang, int axis, const Vector3 &pivot)
     {
         partition_->rotate(mesh, ang, axis, pivot);
-        rotate_velocity(mesh, ang, axis, pivot);
+        //rotate_velocity(mesh, ang, axis, pivot);
     }
 
     void Solver::move(const Tag& mesh, const Vector3& v)
