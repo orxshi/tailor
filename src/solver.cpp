@@ -936,8 +936,8 @@ namespace Tailor
             }
         }
 
-        comm_->barrier();
-        assert(false);
+        //comm_->barrier();
+        //assert(false);
     }
 
     void Solver::evolve_solution_in_time(Mesh& mesh)
@@ -952,6 +952,13 @@ namespace Tailor
             if (implicit_)
             {
                 mc.cons_sp1_ = mc.cons_s_ + mc.dQ_;
+
+                if (mc.tag()() == 64093)
+                {
+                    std::cout << "cons_sp1[0]: " << mc.cons_sp1_(0) << std::endl;
+                    std::cout << "cons_s[0]: " << mc.cons_s_(0) << std::endl;
+                    assert(false);
+                }
             }
             else
             {
