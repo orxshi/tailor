@@ -390,6 +390,13 @@ namespace Tailor
                         compo.v,
                         compo.w
                         );
+
+                if (btype_ == BouType::farfield)
+                {
+                    std::cout << "vel(0): " << vel(0) << std::endl;
+                    std::cout << "vel(1): " << vel(1) << std::endl;
+                    std::cout << "vel(2): " << vel(2) << std::endl;
+                }
             }
         }
 
