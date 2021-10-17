@@ -12,7 +12,7 @@ namespace Tailor
 
         primitive_var = rotation_matrix * primitive_var;
 
-        //auto cons = prim_to_cons(primitive_var, gamma);
+        cons = prim_to_cons(primitive_var, gamma);
 
         //assert(cons(0) == conservative_var(0));
         //assert(cons(4) == conservative_var(4));
