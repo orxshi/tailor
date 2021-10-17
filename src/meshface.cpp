@@ -345,7 +345,7 @@ namespace Tailor
                     {
                         std::cout << "btype: " << static_cast<int>(btype_) << std::endl;
                     }
-                    assert(btype_ == BouType::wall || btype_ == BouType::interior || btype_ == BouType::farfield || btype_ == BouType::empty || btype_ == BouType::partition) // TODO just to test.
+                    assert(btype_ == BouType::wall || btype_ == BouType::interior || btype_ == BouType::farfield || btype_ == BouType::empty || btype_ == BouType::partition); // TODO just to test.
 
                     //vel = cross(rad_vel, project);
                     //if (btype_ == BouType::wall) // TODO just to test.
