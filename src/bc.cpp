@@ -944,6 +944,19 @@ namespace Tailor
         mc.prim_(3) += vf(2);
         mc.cons_sp1_ = prim_to_cons(mc.prim_, fs_.gamma_);
 
+        if (mc.tag()() == 64093)
+        {
+            std::cout << "vf(0): " << vf(0) << std::endl;
+            std::cout << "vf(1): " << vf(1) << std::endl;
+            std::cout << "vf(2): " << vf(2) << std::endl;
+
+            std::cout << "mc.prim(2): " << mc.prim(2) << std::endl;
+            std::cout << "mc.prim(1): " << mc.prim(1) << std::endl;
+            std::cout << "mc.prim(3): " << mc.prim(3) << std::endl;
+
+            assert(false);
+        }
+
         return;
 
         mc.prim_(0) = nei.prim(0);
