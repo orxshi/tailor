@@ -34,15 +34,15 @@ namespace Tailor
         auto vf_tangential_1 = rotated_face_velocity(2);
         auto vf_tangential_2 = rotated_face_velocity(3);
 
-        std::cout << "vf5(1): " << vf5(1) << std::endl;
-        std::cout << "vf5(2): " << vf5(2) << std::endl;
-        std::cout << "vf5(3): " << vf5(3) << std::endl;
+        //std::cout << "vf5(1): " << vf5(1) << std::endl;
+        //std::cout << "vf5(2): " << vf5(2) << std::endl;
+        //std::cout << "vf5(3): " << vf5(3) << std::endl;
 
-        std::cout << "rotated_face_velocity(1): " << rotated_face_velocity(1) << std::endl;
-        std::cout << "rotated_face_velocity(2): " << rotated_face_velocity(2) << std::endl;
-        std::cout << "rotated_face_velocity(3): " << rotated_face_velocity(3) << std::endl;
+        //std::cout << "rotated_face_velocity(1): " << rotated_face_velocity(1) << std::endl;
+        //std::cout << "rotated_face_velocity(2): " << rotated_face_velocity(2) << std::endl;
+        //std::cout << "rotated_face_velocity(3): " << rotated_face_velocity(3) << std::endl;
 
-        assert(false);
+        //assert(false);
 
         // Update u, v, w, with face velocities.
         primitive_var(1) -= vf_normal;
