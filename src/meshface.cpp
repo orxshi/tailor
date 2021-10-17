@@ -305,10 +305,10 @@ namespace Tailor
                 Freestream fs;
                 fs.read();
 
-                //Vector3 U(u, v, w);
-                //double u_ref = U.len();
+                Vector3 U(u, v, w);
+                double u_ref = U.len();
 
-                double u_ref = fs.u_;
+                //double u_ref = fs.u_;
 
                 double chord = compo.chord;
                 double aoa_mean_deg = compo.aoa_mean_deg;
