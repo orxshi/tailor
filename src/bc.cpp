@@ -944,32 +944,32 @@ namespace Tailor
         mc.prim_(3) += vf(2);
         mc.cons_sp1_ = prim_to_cons(mc.prim_, fs_.gamma_);
 
-        //if (nei.tag()() == 73076)
-        //{
-        //    std::cout << "nei: " << nei.tag()() << std::endl;
+        if (nei.tag()() == 64093)
+        {
+            std::cout << "nei: " << nei.tag()() << std::endl;
 
-        //    std::cout << "vf(0): " << vf(0) << std::endl;
-        //    std::cout << "vf(1): " << vf(1) << std::endl;
-        //    std::cout << "vf(2): " << vf(2) << std::endl;
+            std::cout << "vf(0): " << vf(0) << std::endl;
+            std::cout << "vf(1): " << vf(1) << std::endl;
+            std::cout << "vf(2): " << vf(2) << std::endl;
 
-        //    std::cout << "nei(1): " << nei.prim(1) << std::endl;
-        //    std::cout << "nei(2): " << nei.prim(2) << std::endl;
-        //    std::cout << "nei(3): " << nei.prim(3) << std::endl;
+            std::cout << "nei(1): " << nei.prim(1) << std::endl;
+            std::cout << "nei(2): " << nei.prim(2) << std::endl;
+            std::cout << "nei(3): " << nei.prim(3) << std::endl;
 
-        //    std::cout << "neii(1): " << neii(1) << std::endl;
-        //    std::cout << "neii(2): " << neii(2) << std::endl;
-        //    std::cout << "neii(3): " << neii(3) << std::endl;
+            std::cout << "neii(1): " << neii(1) << std::endl;
+            std::cout << "neii(2): " << neii(2) << std::endl;
+            std::cout << "neii(3): " << neii(3) << std::endl;
 
-        //    std::cout << "mc.prim(1): " << mc.prim(1) << std::endl;
-        //    std::cout << "mc.prim(2): " << mc.prim(2) << std::endl;
-        //    std::cout << "mc.prim(3): " << mc.prim(3) << std::endl;
+            std::cout << "mc.prim(1): " << mc.prim(1) << std::endl;
+            std::cout << "mc.prim(2): " << mc.prim(2) << std::endl;
+            std::cout << "mc.prim(3): " << mc.prim(3) << std::endl;
 
-        //    std::cout << "n(0): " << n(0) << std::endl;
-        //    std::cout << "n(1): " << n(1) << std::endl;
-        //    std::cout << "n(2): " << n(2) << std::endl;
+            std::cout << "n(0): " << n(0) << std::endl;
+            std::cout << "n(1): " << n(1) << std::endl;
+            std::cout << "n(2): " << n(2) << std::endl;
 
-        //    assert(false);
-        //}
+            //assert(false);
+        }
 
         return;
 
