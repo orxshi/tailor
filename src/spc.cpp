@@ -245,10 +245,10 @@ namespace Tailor
                         double v = component.v;
                         double w = component.w;
 
-                        Vector3 U(u, v, w);
-                        double u_ref = U.len();
+                        //Vector3 U(u, v, w);
+                        //double u_ref = U.len();
                         
-                        //double u_ref = fs.u_;
+                        double u_ref = fs.u_;
                         double chord = component.chord;
                         double aoa_mean_deg = component.aoa_mean_deg;
                         double aoa_o_deg = component.aoa_o_deg;
