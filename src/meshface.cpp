@@ -347,7 +347,7 @@ namespace Tailor
                     //if (btype_ == BouType::wall || btype_ == BouType::interior && btype_ == BouType::farfield && btype_ == BouType::empty) // TODO just to test.
                     //if (btype_ != BouType::partition) // TODO just to test.
                     {
-                        vel = cross(rad_vel, r);
+                        //vel = cross(rad_vel, r);
                     }
 
                     //std::cout << omega << " " << real_time << " " << omega * real_time << " " << std::sin(omega * real_time) << " " << std::cos(omega * real_time) << " " << rad_vel(0) << " " << rad_vel(1) << " " << rad_vel(2) << " " << vel(0) << " " << vel(1) << " " << vel(2) << " " << r(0) << " " << r(1) << " " << r(2) << std::endl;
