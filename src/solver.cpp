@@ -952,6 +952,11 @@ namespace Tailor
             if (implicit_)
             {
                 mc.cons_sp1_ = mc.cons_s_ + mc.dQ_;
+            }
+            else
+            {
+                mc.cons_sp1_ = mc.cons_n_ + mc.dQ_;
+            }
 
                 if (mc.tag()() == 64093)
                 {
@@ -967,11 +972,6 @@ namespace Tailor
                     std::cout << "R[2]: " << mc.R_(2) << std::endl;
                     assert(false);
                 }
-            }
-            else
-            {
-                mc.cons_sp1_ = mc.cons_n_ + mc.dQ_;
-            }
 
             mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
 
