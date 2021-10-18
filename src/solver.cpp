@@ -885,31 +885,31 @@ namespace Tailor
                 //assert(std::abs(flux(0)) < 1e-8);
 
                 //if (mf.btype() == BouType::wall)
-                {
-                    if (left_cell->tag()() == 64093 || right_cell->tag()() == 64093)
-                    {
-                        if (left_cell->tag()() == 64093)
-                        {
-                            std::cout << "left" << std::endl;
-                        }
-                        else
-                        {
-                            std::cout << "right" << std::endl;
-                        }
+                //{
+                //    if (left_cell->tag()() == 64093 || right_cell->tag()() == 64093)
+                //    {
+                //        if (left_cell->tag()() == 64093)
+                //        {
+                //            std::cout << "left" << std::endl;
+                //        }
+                //        else
+                //        {
+                //            std::cout << "right" << std::endl;
+                //        }
 
-                        std::cout << "mf.btype: " << static_cast<int>(mf.btype()) << std::endl;
-                
-                        std::cout << "flux[0]: " << flux(0) << std::endl;
-                        std::cout << "flux[1]: " << flux(1) << std::endl;
-                        std::cout << "flux[2]: " << flux(2) << std::endl;
-                        std::cout << "flux[3]: " << flux(3) << std::endl;
-                        std::cout << "flux[4]: " << flux(4) << std::endl;
+                //        std::cout << "mf.btype: " << static_cast<int>(mf.btype()) << std::endl;
+                //
+                //        std::cout << "flux[0]: " << flux(0) << std::endl;
+                //        std::cout << "flux[1]: " << flux(1) << std::endl;
+                //        std::cout << "flux[2]: " << flux(2) << std::endl;
+                //        std::cout << "flux[3]: " << flux(3) << std::endl;
+                //        std::cout << "flux[4]: " << flux(4) << std::endl;
 
-                        std::cout << "n(0): " << normal(0) << std::endl;
-                        std::cout << "n(1): " << normal(1) << std::endl;
-                        std::cout << "n(2): " << normal(2) << std::endl;
-                    }
-                }
+                //        std::cout << "n(0): " << normal(0) << std::endl;
+                //        std::cout << "n(1): " << normal(1) << std::endl;
+                //        std::cout << "n(2): " << normal(2) << std::endl;
+                //    }
+                //}
 
                 if (mf.btype() != BouType::empty)
                 {
@@ -935,9 +935,6 @@ namespace Tailor
                 }
             }
         }
-
-        //comm_->barrier();
-        //assert(false);
     }
 
     void Solver::evolve_solution_in_time(Mesh& mesh)
@@ -958,20 +955,20 @@ namespace Tailor
                 mc.cons_sp1_ = mc.cons_n_ + mc.dQ_;
             }
 
-                if (mc.tag()() == 64093)
-                {
-                    std::cout << "cons_s[0]: " << mc.cons_s_(0) << std::endl;
-                    std::cout << "cons_sp1[0]: " << mc.cons_sp1_(0) << std::endl;
-                    std::cout << "cons_s[1]: " << mc.cons_s_(1) << std::endl;
-                    std::cout << "cons_sp1[1]: " << mc.cons_sp1_(1) << std::endl;
-                    std::cout << "cons_s[2]: " << mc.cons_s_(2) << std::endl;
-                    std::cout << "cons_sp1[2]: " << mc.cons_sp1_(2) << std::endl;
+            //if (mc.tag()() == 64093)
+            //{
+            //    std::cout << "cons_s[0]: " << mc.cons_s_(0) << std::endl;
+            //    std::cout << "cons_sp1[0]: " << mc.cons_sp1_(0) << std::endl;
+            //    std::cout << "cons_s[1]: " << mc.cons_s_(1) << std::endl;
+            //    std::cout << "cons_sp1[1]: " << mc.cons_sp1_(1) << std::endl;
+            //    std::cout << "cons_s[2]: " << mc.cons_s_(2) << std::endl;
+            //    std::cout << "cons_sp1[2]: " << mc.cons_sp1_(2) << std::endl;
 
-                    std::cout << "R[0]: " << mc.R_(0) << std::endl;
-                    std::cout << "R[1]: " << mc.R_(1) << std::endl;
-                    std::cout << "R[2]: " << mc.R_(2) << std::endl;
-                    assert(false);
-                }
+            //    std::cout << "R[0]: " << mc.R_(0) << std::endl;
+            //    std::cout << "R[1]: " << mc.R_(1) << std::endl;
+            //    std::cout << "R[2]: " << mc.R_(2) << std::endl;
+            //    assert(false);
+            //}
 
             mc.prim_ = cons_to_prim(mc.cons_sp1_, fs_.gamma_);
 
