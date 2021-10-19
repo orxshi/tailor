@@ -72,6 +72,8 @@ namespace Tailor
             Solver(boost::mpi::communicator* comm, const std::vector<std::string>& filename, Profiler* profiler, Partition* partition=nullptr); 
             Solver();
 
+            void update_flow_field_after_mesh_motion();
+
             int nsolve() const;
             void print_settings() const;
             void set_partition(Partition* partition);

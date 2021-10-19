@@ -53,6 +53,7 @@ namespace Tailor
         Tag tag_;
         Tag parent_mesh_;
         Donor donor_;
+        Receptor receptor_;
         //std::pair<Tag, Tag> donor_; // I will also use this for starting seed for field cells.
         //const MeshCell* donor_addr_;
         //std::vector<Tag> pnei_; // principal neighbors. // dynamic
@@ -165,6 +166,7 @@ namespace Tailor
         const Tag& root_parent_mesh() const;
         const Tag& first_tag() const;
         const Donor& donor() const;
+        const Receptor& receptor() const;
         void fringe_to_field();
         void reset_oga_status();
         const Tag& parent_mesh() const;
@@ -174,6 +176,7 @@ namespace Tailor
         void move_points(const Vector3& final_loc);
         void remove_cand_donor(const Tag& donor_cell, const Tag& donor_mesh);
         void set_donor(const Tag& im, const Tag& ic, const MeshCell* donor_addr);
+        void set_receptor(const Tag& im, const Tag& ic, const MeshCell* receptor);
         void set_oga_cell_type(OGA_cell_type_t t, const Tag& donor_mesh, const Tag& donor_cell, const MeshCell* donor_addr);
         void set_oga_cell_type(OGA_cell_type_t t);
         OGA_cell_type_t oga_cell_type() const;

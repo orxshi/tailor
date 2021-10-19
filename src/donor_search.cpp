@@ -1699,7 +1699,7 @@ namespace Tailor
                     double current_area = TAILOR_BIG_POS_NUM;
                     Tag cdm_best;
                     Tag cdc_best;
-                    const MeshCell* donor_best = nullptr;
+                    MeshCell* donor_best = nullptr;
                     for (auto& cand_donor: mc.cand_donor())
                     {
                         const auto& cdm = cand_donor.mesh_tag_;
@@ -1709,8 +1709,9 @@ namespace Tailor
                         assert(mesh_it != sp.mesh_.end());
                         assert(mesh_it->tag() != m.tag());
 
-                        auto cit = mesh_it->query(cdc);
-                        assert(cit != nullptr);
+                        //auto cit = mesh_it->query(cdc);
+                        auto cit = mesh_it->query_itp(cdc);
+                        //assert(cit != nullptr);
 
                         double sa = 0.;
                         OGA_cell_type_t donor_type(OGA_cell_type_t::undefined);
@@ -1756,6 +1757,7 @@ namespace Tailor
                     {
                         assert(donor_best != nullptr);
                         mc.set_donor(cdm_best, cdc_best, donor_best);
+                        donor_best->set_receptor(m.tag(), mc.tag(), &mc);
                         //if (donor_best->oga_cell_type() != OGA_cell_type_t::field)
                         //{
                             //std::cout << static_cast<int>(donor_best->oga_cell_type()) << std::endl;

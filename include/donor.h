@@ -24,6 +24,16 @@ namespace Tailor
             ar & addr_;
         }*/
     };
+
+    struct Receptor
+    {
+        Tag mesh_tag_;
+        Tag cell_tag_;
+        const MeshCell* addr_; // to retreive centroid. needed when mapping donor info from assembler partition to solver's. meaningful only in assembler where overlapping meshes are grouped together.
+
+        Receptor(const Tag& mesh_tag, const Tag& cell_tag, const MeshCell* addr);
+        Receptor();
+    };
 }
 
 #endif

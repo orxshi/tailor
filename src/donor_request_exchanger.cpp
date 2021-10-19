@@ -103,6 +103,7 @@ namespace Tailor
                     if (ogatype == OGA_cell_type_t::receptor || ogatype == OGA_cell_type_t::mandat_receptor)
                     {
                         mc.set_donor(Tag(mc_iter->donor_mesh_), Tag(mc_iter->donor_cell_), nullptr);
+                        // TODO set receptor.
                     }
 
                     if (ogatype != OGA_cell_type_t::receptor && ogatype != OGA_cell_type_t::mandat_receptor) {

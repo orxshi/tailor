@@ -1342,6 +1342,42 @@ namespace Tailor
         return res;
     }
 
+    void Solver::update_flow_field_after_mesh_motion()
+    {
+        Freestream fs;
+        fs.read();
+
+        auto &meshes = partition_->spc_->sp_.front().mesh_;
+
+        assert(!meshes.empty());
+
+        for (Mesh& mesh: meshes)
+        {
+            for (MeshCell &mc : mesh.cell_)
+            {
+                if (mc.oga_cell_type() == OGA_cell_type_t::field)
+                {
+                    assert(mc.receptor().mesh_tag_.isvalid());
+                    assert(mc.receptor().cell_tag_.isvalid());
+
+                    auto m = std::find_if(meshes.begin(), meshes.end(), [&](const auto &mm) { return mm.tag() == mc.receptor().mesh_tag_; });
+                    assert(m != meshes.end());
+                    assert(m->tag() != mesh.tag());
+                    const auto &receptor_cell = m->cell(mc.receptor().cell_tag_);
+
+                    auto distance = mc.poly().centroid() - receptor_cell.poly().centroid();
+
+                    for (int i = 0; i < NVAR; ++i)
+                    {
+                        mc.prim_(i) = receptor_cell.prim(i) + dot(receptor_cell.gradient_[i], distance);
+                    }
+
+                    mc.cons_sp1_ = prim_to_cons(mc.prim_, fs.gamma_);
+                }
+            }
+        }
+    }
+
     void Solver::oga_interpolate(Mesh& mesh)
     {
         Freestream fs;

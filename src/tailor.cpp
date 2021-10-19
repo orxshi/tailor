@@ -240,6 +240,14 @@ namespace Tailor
 
         if (solver_on_)
         {
+            if (solver_->nsolve() > 0)
+            {
+                if (assembler_on_)
+                {
+                    solver_->update_flow_field_after_mesh_motion();
+                }
+            }
+
             profiler_start("solve");
             solver_->print_settings(); 
             solver_->solve(max_time_step_);

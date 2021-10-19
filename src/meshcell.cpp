@@ -695,6 +695,11 @@ namespace Tailor
         return donor_;
     }
 
+    const Receptor& MeshCell::receptor() const
+    {
+        return receptor_;
+    }
+
     //const std::vector<Donor>& MeshCell::cand_donor() const
     const Donorcon& MeshCell::cand_donor() const
     {
@@ -848,6 +853,13 @@ namespace Tailor
         donor_.addr_ = donor;
         assert(im.isvalid());
         //assert(im() == 0 || im() == 1);
+    }
+
+    void MeshCell::set_receptor(const Tag& im, const Tag& ic, const MeshCell* receptor)
+    {
+        receptor_.mesh_tag_ = im;
+        receptor_.cell_tag_ = ic;
+        receptor_.addr_ = receptor;
     }
 
     void MeshCell::remove_cand_donor(const Tag& donor_cell, const Tag& donor_mesh)
