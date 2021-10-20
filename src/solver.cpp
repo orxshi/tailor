@@ -1357,8 +1357,8 @@ namespace Tailor
             {
                 if (mc.oga_cell_type() == OGA_cell_type_t::field)
                 {
-                    assert(mc.receptor().mesh_tag_.isvalid());
-                    assert(mc.receptor().cell_tag_.isvalid());
+                    assert(!mc.receptor().mesh_tag_.isvalid());
+                    assert(!mc.receptor().cell_tag_.isvalid());
 
                     auto m = std::find_if(meshes.begin(), meshes.end(), [&](const auto &mm) { return mm.tag() == mc.receptor().mesh_tag_; });
                     assert(m != meshes.end());
