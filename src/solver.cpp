@@ -1353,6 +1353,11 @@ namespace Tailor
 
         for (Mesh& mesh: meshes)
         {
+            if (mesh.tag()() == 0)
+            {
+                continue;
+            }
+
             for (MeshCell &mc : mesh.cell_)
             {
                 if (mc.oga_cell_type() == OGA_cell_type_t::field)
