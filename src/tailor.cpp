@@ -242,7 +242,6 @@ namespace Tailor
         {
             if (solver_->nsolve() > 0)
             {
-                std::cout << "aaaaaaaaaaaaaaaaa" << std::endl;
                 if (assembler_on_)
                 {
                     solver_->update_flow_field_after_mesh_motion();
