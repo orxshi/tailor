@@ -1355,6 +1355,7 @@ namespace Tailor
         {
             if (mesh.tag()() == 0)
             {
+                compute_gradient(mesh);
                 continue;
             }
 
