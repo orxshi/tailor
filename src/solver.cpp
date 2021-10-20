@@ -1379,8 +1379,6 @@ namespace Tailor
                     }
 
                     mc.cons_sp1_ = prim_to_cons(mc.prim_, fs.gamma_);
-
-                    assert(false);
                 }
             }
         }
