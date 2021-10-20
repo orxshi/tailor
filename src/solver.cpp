@@ -1380,10 +1380,10 @@ namespace Tailor
 
                     for (int i = 0; i < NVAR; ++i)
                     {
-                        //mc.prim_(i) = receptor_cell.prim(i) + dot(receptor_cell.gradient_[i], distance);
+                        mc.prim_(i) = receptor_cell.prim(i) + dot(receptor_cell.gradient_[i], distance);
                     }
 
-                    //mc.cons_sp1_ = prim_to_cons(mc.prim_, fs.gamma_);
+                    mc.cons_sp1_ = prim_to_cons(mc.prim_, fs.gamma_);
                 }
             }
         }
