@@ -3,4 +3,4 @@
 #SBATCH -t 00:10:00
 #SBATCH --ntasks=1
 
-bash mesh.sh 32
+bash mesh.sh 64
