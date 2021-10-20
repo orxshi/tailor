@@ -9,4 +9,12 @@ namespace Tailor
     Donor::Donor(const Tag& mesh_tag, const Tag& cell_tag, const MeshCell* addr): mesh_tag_(mesh_tag), cell_tag_(cell_tag), addr_(addr)
     {
     }
+
+    Receptor::Receptor(): addr_(nullptr)
+    {
+    }
+
+    Receptor::Receptor(const Tag& mesh_tag, const Tag& cell_tag, const MeshCell* addr): mesh_tag_(mesh_tag), cell_tag_(cell_tag), addr_(addr)
+    {
+    }
 }

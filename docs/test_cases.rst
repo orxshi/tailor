@@ -246,3 +246,5 @@ Pitching mesh is equivalent to changing angle of attack of freestream.
 * Reference 5: Transonic Flow Simulation Around the Pitching Airfoil with Accurate Pressure-Based Algorithm
 * Reference 6: Hejranfar, K., and M. H. Azampour. "Simulation of 2D fluid–structure interaction in inviscid compressible flows using a cell-vertex central difference finite volume method." Journal of Fluids and Structures 67 (2016): 190-218.
 * Reference 7: Ekici, Kivanc, et al. "Modeling periodic and non-periodic response of dynamical systems using an efficient Chebyshev-based time-spectral approach." Journal of Computational Physics 417 (2020): 109560.
+  https://link.springer.com/article/10.1007/s13272-019-00389-y
+  Landon, R. H. "Data from AGARD Report 702: NACA 64 A 006 Oscillating Flap; NACA 012 Oscillatory and Transient Pitching; NLR 7301 Supercritical Airfoil Oscillatory Pitching and Oscillating Flap; and ZKP Wing, Oscillating Aileron." 2000. (2000).ro

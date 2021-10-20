@@ -4,8 +4,8 @@ nX=1000; // number of 'x' points
 depth=1; // extrusion length
 transCircleEach=80;
 transVert=200;
-major=10;
-minor=10;
+major=30;
+minor=30;
 originx=0;
 originy=0;
 nz=1;
@@ -13,7 +13,7 @@ stretchVert=0.95;
 pivotx = 0.25;
 pivoty = 0.0;
 pivotz = 0.0;
-angle_deg = 1.25;
+angle_deg = 0.016;
 angle = angle_deg * Pi / 180;
 
 cenPx = originx;
@@ -192,7 +192,6 @@ emptybc[6] = out[12];
 emptybc[7] = out[18];
 
 Physical Surface(1) = wallbc[];
-//Physical Surface(11) = outerbc[];
 Physical Surface(9) = outerbc[];
 Physical Surface(3) = emptybc[];
 Physical Volume(4) = {1,2,3,4};
@@ -204,15 +203,16 @@ Field[1].FacesList = {wallbc[]};
 Field[1].NNodesByEdge = 100;
 
 Field[2] = MathEval;
-Field[2].F = Sprintf("F1/30 + %g", lc / 1000);
+Field[2].F = Sprintf("F1/20 + %g", lc / 1000);
+Background Field = 2;
 
-Field[3] = Distance;
-Field[3].PointsList = {pFoilUpper[0], pFoilUpper[nX]};
+//Field[3] = Distance;
+//Field[3].PointsList = {pFoilUpper[0], pFoilUpper[nX]};
 
-lc_tip = 2;
+//lc_tip = 2;
 
-Field[4] = MathEval;
-Field[4].F = Sprintf("F3/5 + %g", lc_tip / 1000);
+//Field[4] = MathEval;
+//Field[4].F = Sprintf("F3/5 + %g", lc_tip / 1000);
 //
 //Field[5] = Box;
 //Field[5].VIn = 20/1000;

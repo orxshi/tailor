@@ -1509,6 +1509,43 @@ namespace Tailor
         out << "linear_solver_rel_error_ = " << linear_solver_rel_error_ << std::endl;
         out << "use_local_time_step_ = " << use_local_time_step_ << std::endl;
 
+        out << std::endl;
+        out << "Component settings" << std::endl;
+        out << std::endl;
+
+        auto &meshes = partition_->spc_->sp_.front().mesh_;
+
+        for (const Mesh& mesh: meshes)
+        {
+            Component component;
+            component.read(mesh.tag());
+
+            out << "rotation: = " << component.rotation_ << std::endl;
+            out << "oscillation: = " << component.oscillation << std::endl;
+            out << "u: = " << component.u << std::endl;
+            out << "v: = " << component.v << std::endl;
+            out << "w: = " << component.w << std::endl;
+            out << "compute pressure coefficient: = " << component.compute_pres_coef << std::endl;
+            out << "compute force coefficient: = " << component.compute_force_coef << std::endl;
+            out << "compute moment coefficient: = " << component.compute_moment_coef << std::endl;
+            out << "priority:" << component.priority << std::endl;
+
+            if (component.rotation_)
+            {
+                out << "rotaxis: = " << component.rotaxis_ << std::endl;
+                out << "rpm: = " << component.rpm_ << std::endl;
+                out << "pivot: = " << component.pivot_ << std::endl;
+
+                if (component.oscillation)
+                {
+                    out << "reduced frequency: = " << component.reduced_freq << std::endl;
+                    out << "chord: = " << component.chord << std::endl;
+                    out << "mean aoa: = " << component.aoa_mean_deg << std::endl;
+                    out << "aoa amplitude: = " << component.aoa_o_deg << std::endl;
+                }
+            }
+        }
+
         out.close();
     }
 
