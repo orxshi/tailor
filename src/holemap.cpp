@@ -163,6 +163,13 @@ namespace Tailor
             return false;
         }
 
+        if (res.size() != 1)
+        {
+            std::cout << "res size: " << res.size() << std::endl;
+            std::cout << "query point(0): " << querypoint(0) << std::endl;
+            std::cout << "query point(1): " << querypoint(1) << std::endl;
+            std::cout << "query point(2): " << querypoint(2) << std::endl;
+        }
         assert(res.size() == 1);
 
         //for (const auto& t: tag)
