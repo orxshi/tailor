@@ -342,7 +342,7 @@ namespace Tailor
                     //auto project = dot(r, chord_line) * chord_line;
                     
                     //vel = cross(rad_vel, project);
-                    //if (btype_ == BouType::wall) // TODO just to test.
+                    if (btype_ == BouType::wall) // TODO just to test.
                     //if (btype_ == BouType::wall || btype_ == BouType::interior)
                     //if (btype_ == BouType::wall || btype_ == BouType::interior && btype_ == BouType::farfield && btype_ == BouType::empty) // TODO just to test.
                     //if (btype_ != BouType::partition) // TODO just to test.
