@@ -1357,8 +1357,14 @@ namespace Tailor
             {
                 if (mc.oga_cell_type() == OGA_cell_type_t::field)
                 {
-                    assert(!mc.receptor().mesh_tag_.isvalid());
-                    assert(!mc.receptor().cell_tag_.isvalid());
+                    if (!mc.receptor().mesh_tag_.isvalid())
+                    {
+                        continue;
+                    }
+                    if (!mc.receptor().cell_tag_.isvalid())
+                    {
+                        continue;
+                    }
 
                     auto m = std::find_if(meshes.begin(), meshes.end(), [&](const auto &mm) { return mm.tag() == mc.receptor().mesh_tag_; });
                     assert(m != meshes.end());
@@ -1373,6 +1379,8 @@ namespace Tailor
                     }
 
                     mc.cons_sp1_ = prim_to_cons(mc.prim_, fs.gamma_);
+
+                    assert(false);
                 }
             }
         }
