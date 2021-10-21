@@ -102,7 +102,6 @@ namespace Tailor
             std::cout << "k: " << k << std::endl;
             std::cout << "E: " << cons(4) / prim(0) << std::endl;
             std::cout << "e: " << e << std::endl;
-
         }
         assert(e > 0. && !std::isnan(e));
 
