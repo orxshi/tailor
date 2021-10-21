@@ -1136,6 +1136,8 @@ namespace Tailor
         compute_gradient_coef();
         init_old_conservative_var();
 
+        update_flow_field_after_mesh_motion();
+
         auto residual = non_linear_iteration();
         print_residual(residual);
         reset_overset_mesh_exchanger();
@@ -1344,12 +1346,21 @@ namespace Tailor
 
     void Solver::update_flow_field_after_mesh_motion()
     {
-        Freestream fs;
-        fs.read();
+        if (nsolve_ == 0)
+        {
+            return;
+        }
 
         auto &meshes = partition_->spc_->sp_.front().mesh_;
-
         assert(!meshes.empty());
+
+        if (meshes.size() == 1)
+        {
+            return;
+        }
+
+        Freestream fs;
+        fs.read();
 
         for (Mesh& mesh: meshes)
         {
@@ -1366,10 +1377,8 @@ namespace Tailor
                     {
                         continue;
                     }
-                    if (!mc.receptor().cell_tag_.isvalid())
-                    {
-                        continue;
-                    }
+
+                    assert(mc.receptor().cell_tag_.isvalid());
 
                     auto m = std::find_if(meshes.begin(), meshes.end(), [&](const auto &mm) { return mm.tag() == mc.receptor().mesh_tag_; });
                     assert(m != meshes.end());
@@ -1384,6 +1393,9 @@ namespace Tailor
                     }
 
                     mc.cons_sp1_ = prim_to_cons(mc.prim_, fs.gamma_);
+                    mc.cons_s_ = receptor_cell.cons_s();
+                    mc.cons_n_ = receptor_cell.cons_n();
+                    mc.cons_nm1_ = receptor_cell.cons_nm1();
                 }
             }
         }
@@ -1899,9 +1911,12 @@ namespace Tailor
 
     void Solver::compute_gradient_coef()
     {
-        // For non-moving problems calculating coefficients is unnecessary. Improve this once you can check if meshes move or not.
-
         if (spatial_discretization_ == SpatialDiscretization::upwind)
+        {
+            return;
+        }
+
+        if (nsolve_ > 0)
         {
             return;
         }

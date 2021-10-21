@@ -322,15 +322,8 @@ namespace Tailor
 
                 Vector3 rad_vel(0., 0., -rad_vel_z);
 
-                double insta_pitch = aoa_mean + aoa_o * std::sin(omega * real_time);
-
-                Vector3 chord_line(-1., 0., 0.); // from trailing edge to leading edge.
-
                 Vector3 pivot = compo.pivot_;
                 auto rotaxis = compo.rotaxis_;
-
-                RotationMatrix rm;
-                rm.rotate(-insta_pitch, rotaxis, pivot, chord_line);
 
                 assert(rotaxis == 2);
 
@@ -339,7 +332,6 @@ namespace Tailor
                     auto cnt = face_.centroid();
                     auto r = cnt - pivot;
                     r(2) = 0.;
-                    //auto project = dot(r, chord_line) * chord_line;
                     
                     //vel = cross(rad_vel, project);
                     if (btype_ == BouType::wall) // TODO just to test.
