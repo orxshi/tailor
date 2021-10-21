@@ -169,6 +169,8 @@ namespace Tailor
             std::cout << "query point(0): " << querypoint(0) << std::endl;
             std::cout << "query point(1): " << querypoint(1) << std::endl;
             std::cout << "query point(2): " << querypoint(2) << std::endl;
+            assert(wallrm_ != nullptr);
+            wallrm_->print("wall");
         }
         assert(res.size() == 1);
 
