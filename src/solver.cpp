@@ -1916,11 +1916,6 @@ namespace Tailor
             return;
         }
 
-        if (nsolve_ > 0)
-        {
-            return;
-        }
-
         auto &sp = partition_->spc_->sp_.front();
 
         for (Mesh &mesh : sp.mesh_)
