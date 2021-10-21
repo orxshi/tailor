@@ -714,25 +714,6 @@ namespace Tailor
 
     auto RiemannSolver::left_eigenv(double gamma)
     {
-        // inverse(R) or inverse(right_eigenv)
-
-        //double nx = n(0);
-        //double ny = n(1);
-        //double nz = n(2);
-
-        //double gamStar = gamma - 1.;
-
-        //double gsk = 0.5 * gamStar * k / asq;
-        //double gsu = 0.5 * gamStar * u / asq;
-        //double gsv = 0.5 * gamStar * v / asq;
-        //double gsw = 0.5 * gamStar * w / asq;
-        //double gs = 0.5 * gamStar / asq;
-
-        //double lstqn = 0.5 * a * qn / asq;
-        //double lstnx = 0.5 * a * nx / asq;
-        //double lstny = 0.5 * a * ny / asq;
-        //double lstnz = 0.5 * a * nz / asq;
-
         Matrix5 L;
 
         double gc = gamma - 1.;
@@ -768,6 +749,8 @@ namespace Tailor
         L(4,2) = -v;
         L(4,3) = -w;
         L(4,4) = 1.;
+
+        L = L * gc / (2. * a * a);
 
         //
 
