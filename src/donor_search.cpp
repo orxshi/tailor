@@ -269,6 +269,14 @@ namespace Tailor
         const Tag& ct = mc.tag();
         auto cell_type = mc.oga_cell_type();
 
+        if (target(2) != 0.5)
+        {
+            std::cout << "mesh: " << active_mesh.tag()() << std::endl;
+            std::cout << "mc: " << mc.tag()() << std::endl;
+            active_mesh.print_as_vtk("abc.vtk");
+        }
+        assert(target(2) == 0.5);
+
         if (passivehm != nullptr && passivehm->is_inside_holebin(target))
         {
             active_mesh.set_as_hole(ct);
