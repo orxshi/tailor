@@ -3383,6 +3383,9 @@ const MeshCell* Mesh::query_bou(const Tag& ic, BouType type) const
             {
                 for (MeshCell& mc: cell_)
                 {
+                    mc.donor_ = Donor();
+                    mc.receptor_ = Receptor();
+
                     if (mc.oga_cell_type() == OGA_cell_type_t::ghost) {
                         continue;
                     }
@@ -3390,8 +3393,6 @@ const MeshCell* Mesh::query_bou(const Tag& ic, BouType type) const
                         //continue;
                     //}
                     mc.reset_oga_status();
-                    mc.donor_ = Donor();
-                    mc.receptor_ = Receptor();
                     //mc.reset_btype();
                 }
 
