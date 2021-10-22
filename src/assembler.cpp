@@ -403,6 +403,17 @@ namespace Tailor
         donor_searcher.determine_best_donor(cand_donor_exc.arrival());
         if (profiler_ != nullptr) {profiler_->stop("asm-ds-best");}
 
+        if (spc->sp().front().mesh().back().tag()() == 1)
+        {
+            if (spc->sp().front().mesh().back().query(Tag(79724)) != nullptr)
+            {
+                const auto& cll = spc->sp().front().mesh().back().cell(Tag(79724));
+                std::cout << "oga2: " << static_cast<int>(cll.oga_cell_type()) << std::endl;
+                std::cout << "rmesh2: " << cll.receptor().mesh_tag_() << std::endl;
+                std::cout << "rcell2: " << cll.receptor().cell_tag_() << std::endl;
+            }
+        }
+
         if (overlap_minimization_)
         {
             if (profiler_ != nullptr) {profiler_->start("asm-con-receptohole");}
@@ -411,6 +422,17 @@ namespace Tailor
         }
 
         donor_searcher.check_orphan();
+
+        if (spc->sp().front().mesh().back().tag()() == 1)
+        {
+            if (spc->sp().front().mesh().back().query(Tag(79724)) != nullptr)
+            {
+                const auto& cll = spc->sp().front().mesh().back().cell(Tag(79724));
+                std::cout << "oga3: " << static_cast<int>(cll.oga_cell_type()) << std::endl;
+                std::cout << "rmesh3: " << cll.receptor().mesh_tag_() << std::endl;
+                std::cout << "rcell3: " << cll.receptor().cell_tag_() << std::endl;
+            }
+        }
     }
 
     Partition* Assembler::partition()
