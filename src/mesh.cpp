@@ -5723,28 +5723,56 @@ int Mesh::priority() const
                 out << "LOOKUP_TABLE default" << std::endl;    
                 for (auto mc = cell_.begin(); mc != cell_.end(); ++mc)
                 {
-                    if (mc->oga_cell_type() == OGA_cell_type_t::receptor || mc->oga_cell_type() == OGA_cell_type_t::mandat_receptor)
-                    {
+                    //if (mc->oga_cell_type() == OGA_cell_type_t::receptor || mc->oga_cell_type() == OGA_cell_type_t::mandat_receptor)
+                    //{
                         out << mc->donor().mesh_tag_() << std::endl;
-                    }
-                    else
-                    {
-                        out << -1 << std::endl;
-                    }
+                    //}
+                    //else
+                    //{
+                        //out << -1 << std::endl;
+                    //}
                 } 
 
                 out << "SCALARS " << "donor_cell " << "int " << "1" << std::endl;
                 out << "LOOKUP_TABLE default" << std::endl;    
                 for (auto mc = cell_.begin(); mc != cell_.end(); ++mc)
                 {
-                    if (mc->oga_cell_type() == OGA_cell_type_t::receptor || mc->oga_cell_type() == OGA_cell_type_t::mandat_receptor)
-                    {
+                    //if (mc->oga_cell_type() == OGA_cell_type_t::receptor || mc->oga_cell_type() == OGA_cell_type_t::mandat_receptor)
+                    //{
                         out << mc->donor().cell_tag_() << std::endl;
-                    }
-                    else
-                    {
-                        out << -1 << std::endl;
-                    }
+                    //}
+                    //else
+                    //{
+                        //out << -1 << std::endl;
+                    //}
+                } 
+
+                out << "SCALARS " << "receptor_mesh " << "int " << "1" << std::endl;
+                out << "LOOKUP_TABLE default" << std::endl;    
+                for (auto mc = cell_.begin(); mc != cell_.end(); ++mc)
+                {
+                    //if (mc->oga_cell_type() == OGA_cell_type_t::receptor || mc->oga_cell_type() == OGA_cell_type_t::mandat_receptor)
+                    //{
+                        out << mc->receptor().mesh_tag_() << std::endl;
+                    //}
+                    //else
+                    //{
+                        //out << -1 << std::endl;
+                    //}
+                } 
+
+                out << "SCALARS " << "receptor_cell " << "int " << "1" << std::endl;
+                out << "LOOKUP_TABLE default" << std::endl;    
+                for (auto mc = cell_.begin(); mc != cell_.end(); ++mc)
+                {
+                    //if (mc->oga_cell_type() == OGA_cell_type_t::receptor || mc->oga_cell_type() == OGA_cell_type_t::mandat_receptor)
+                    //{
+                        out << mc->receptor().cell_tag_() << std::endl;
+                    //}
+                    //else
+                    //{
+                        //out << -1 << std::endl;
+                    //}
                 } 
 
                 //out << "SCALARS " << "u " << "float " << "1" << std::endl;
