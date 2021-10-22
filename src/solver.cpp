@@ -1136,7 +1136,7 @@ namespace Tailor
         compute_gradient_coef();
         init_old_conservative_var();
 
-        //update_flow_field_after_mesh_motion();
+        update_flow_field_after_mesh_motion();
 
         auto residual = non_linear_iteration();
         print_residual(residual);
