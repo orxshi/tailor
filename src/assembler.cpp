@@ -291,7 +291,6 @@ namespace Tailor
         {
             donor_search();
         }
-        ++nassemble_;
 
         if (print_map_)
         {
@@ -302,6 +301,8 @@ namespace Tailor
         {
             print_mesh_vtk("asm");
         }
+
+        ++nassemble_;
     }
 
     void Assembler::reconnectivity()
