@@ -31,6 +31,7 @@ namespace Tailor
             void convert_receptor_to_hole();
             void check_donor_validity();
             void increase_overlap_thickness(int nlayer);
+            void check_orphan();
 
         private:
 

@@ -43,6 +43,7 @@ namespace Tailor
 
     void DonorSearcher::convert_receptor_to_hole()
     {
+        // TODO update receptors.
         for (auto& sp: spc_->sp_)
         {
             for (Mesh& m: sp.mesh_)
@@ -1602,6 +1603,20 @@ namespace Tailor
             }
         }
         if (profiler_ != nullptr) {profiler_->stop("asm-ds-handle");}
+    }
+
+    void DonorSearcher::check_orphan()
+    {
+        for (auto& sp: spc_->sp_)
+        {
+            for (Mesh& m: sp.mesh_)
+            {
+                for (MeshCell& mc: m.cell_)
+                {
+                    assert(mc.oga_cell_type() != OGA_cell_type_t::orphan);
+                }
+            }
+        }
     }
 
     void DonorSearcher::determine_orphan(const ArrCon<DonorInfo2>& arrival)
