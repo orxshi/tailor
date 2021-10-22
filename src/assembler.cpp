@@ -357,7 +357,19 @@ namespace Tailor
         //if (profiler_ != nullptr) {profiler_->start("asm-ds");}
         donor_searcher.donor_search(nassemble_, pseudo3D_);
         //if (profiler_ != nullptr) {profiler_->stop("asm-ds");}
+
+        if (spc->sp().front().mesh().back().tag()() == 1)
+        {
+            if (spc->sp().front().mesh().back().query(Tag(79724)) != nullptr)
+            {
+                const auto& cll = spc->sp().front().mesh().back().cell(Tag(79724));
+                std::cout << "oga: " << static_cast<int>(cll.oga_cell_type()) << std::endl;
+                std::cout << "rmesh: " << cll.receptor().mesh_tag_() << std::endl;
+                std::cout << "rcell: " << cll.receptor().cell_tag_() << std::endl;
+            }
+        }
         
+
         if (profiler_ != nullptr) {profiler_->start("asm-con-undeftofield");}
         donor_searcher.convert_undefined_to_field();
         if (profiler_ != nullptr) {profiler_->stop("asm-con-undeftofield");}
@@ -376,8 +388,8 @@ namespace Tailor
 
         donor_searcher.increase_overlap_thickness(nlayer_of_overlap_);
         
-        //donor_searcher.receptor_to_field(cand_donor_exc.arrival());
-        //donor_searcher.handle_donor_conflict(cand_donor_exc.arrival());
+        donor_searcher.receptor_to_field(cand_donor_exc.arrival());
+        donor_searcher.handle_donor_conflict(cand_donor_exc.arrival());
 
         //if (profiler_ != nullptr) {profiler_->bstart("asm-canddonor-upd");}
         cand_donor_exc.update(profiler_, "asm-canddonor-upd");

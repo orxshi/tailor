@@ -5927,7 +5927,7 @@ int Mesh::priority() const
                             my_cell.set_oga_cell_type(OGA_cell_type_t::field);
                             if (other_mesh.tag()() == 0)
                             {
-                                my_cell.set_receptor(other_mesh.tag(), other_cell->tag(), other_cell);
+                                assert(false);
                             }
                         }
                     }
