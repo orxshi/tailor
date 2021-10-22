@@ -1780,7 +1780,6 @@ namespace Tailor
                     {
                         assert(donor_best != nullptr);
                         mc.set_donor(cdm_best, cdc_best, donor_best);
-                        donor_best->set_receptor(m.tag(), mc.tag(), &mc);
                         //if (donor_best->oga_cell_type() != OGA_cell_type_t::field)
                         //{
                             //std::cout << static_cast<int>(donor_best->oga_cell_type()) << std::endl;

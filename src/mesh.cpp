@@ -5905,6 +5905,10 @@ int Mesh::priority() const
                     if (priority_ > other_mesh.priority())
                     {
                         my_cell.set_oga_cell_type(OGA_cell_type_t::field);
+                        if (other_mesh.tag()() == 0)
+                        {
+                            my_cell.set_receptor(other_mesh.tag(), other_cell->tag(), other_cell);
+                        }
                     }
                     else if (priority_ < other_mesh.priority())
                     {
@@ -5921,6 +5925,10 @@ int Mesh::priority() const
                         else
                         {
                             my_cell.set_oga_cell_type(OGA_cell_type_t::field);
+                            if (other_mesh.tag()() == 0)
+                            {
+                                my_cell.set_receptor(other_mesh.tag(), other_cell->tag(), other_cell);
+                            }
                         }
                     }
 
