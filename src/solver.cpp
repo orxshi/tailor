@@ -920,6 +920,21 @@ namespace Tailor
                         std::cout << "right cons[3]: " << right_cons(3) << std::endl;
                         std::cout << "right cons[4]: " << right_cons(4) << std::endl;
 
+                        auto priml = cons_to_prim(left_cons, gamma);
+                        auto primr = cons_to_prim(right_cons, gamma);
+
+                        std::cout << "left prim[0]: " << priml(0) << std::endl;
+                        std::cout << "left prim[1]: " << priml(1) << std::endl;
+                        std::cout << "left prim[2]: " << priml(2) << std::endl;
+                        std::cout << "left cons[3]: " << priml(3) << std::endl;
+                        std::cout << "left prim[4]: " << priml(4) << std::endl;
+
+                        std::cout << "right prim[0]: " << primr(0) << std::endl;
+                        std::cout << "right prim[1]: " << primr(1) << std::endl;
+                        std::cout << "right prim[2]: " << primr(2) << std::endl;
+                        std::cout << "right prim[3]: " << primr(3) << std::endl;
+                        std::cout << "right prim[4]: " << primr(4) << std::endl;
+
                         std::cout << "n(0): " << normal(0) << std::endl;
                         std::cout << "n(1): " << normal(1) << std::endl;
                         std::cout << "n(2): " << normal(2) << std::endl;
