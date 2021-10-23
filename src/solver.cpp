@@ -884,88 +884,88 @@ namespace Tailor
                 //}
                 //assert(std::abs(flux(0)) < 1e-8);
 
-                if (mf.btype() == BouType::wall)
-                {
-                    //if (left_cell->tag()() == 64093 || right_cell->tag()() == 64093)
-                    if (std::abs(flux(1)) > TAILOR_ZERO)
-                    {
-                        //if (left_cell->tag()() == 64093)
-                        //{
-                        //    std::cout << "left" << std::endl;
-                        //}
-                        //else
-                        //{
-                        //    std::cout << "right" << std::endl;
-                        //}
+                //if (mf.btype() == BouType::wall)
+                //{
+                //    //if (left_cell->tag()() == 64093 || right_cell->tag()() == 64093)
+                //    if (std::abs(flux(1)) > TAILOR_ZERO)
+                //    {
+                //        //if (left_cell->tag()() == 64093)
+                //        //{
+                //        //    std::cout << "left" << std::endl;
+                //        //}
+                //        //else
+                //        //{
+                //        //    std::cout << "right" << std::endl;
+                //        //}
 
-                        std::cout << "mc: " << mc.tag()() << std::endl;
+                //        std::cout << "mc: " << mc.tag()() << std::endl;
 
-                        std::cout << "mf.btype: " << static_cast<int>(mf.btype()) << std::endl;
-                
-                        std::cout << "flux[0]: " << flux(0) << std::endl;
-                        std::cout << "flux[1]: " << flux(1) << std::endl;
-                        std::cout << "flux[2]: " << flux(2) << std::endl;
-                        std::cout << "flux[3]: " << flux(3) << std::endl;
-                        std::cout << "flux[4]: " << flux(4) << std::endl;
+                //        std::cout << "mf.btype: " << static_cast<int>(mf.btype()) << std::endl;
+                //
+                //        std::cout << "flux[0]: " << flux(0) << std::endl;
+                //        std::cout << "flux[1]: " << flux(1) << std::endl;
+                //        std::cout << "flux[2]: " << flux(2) << std::endl;
+                //        std::cout << "flux[3]: " << flux(3) << std::endl;
+                //        std::cout << "flux[4]: " << flux(4) << std::endl;
 
-                        std::cout << "left cons[0]: " << left_cons(0) << std::endl;
-                        std::cout << "left cons[1]: " << left_cons(1) << std::endl;
-                        std::cout << "left cons[2]: " << left_cons(2) << std::endl;
-                        std::cout << "left cons[3]: " << left_cons(3) << std::endl;
-                        std::cout << "left cons[4]: " << left_cons(4) << std::endl;
+                //        std::cout << "left cons[0]: " << left_cons(0) << std::endl;
+                //        std::cout << "left cons[1]: " << left_cons(1) << std::endl;
+                //        std::cout << "left cons[2]: " << left_cons(2) << std::endl;
+                //        std::cout << "left cons[3]: " << left_cons(3) << std::endl;
+                //        std::cout << "left cons[4]: " << left_cons(4) << std::endl;
 
-                        std::cout << "right cons[0]: " << right_cons(0) << std::endl;
-                        std::cout << "right cons[1]: " << right_cons(1) << std::endl;
-                        std::cout << "right cons[2]: " << right_cons(2) << std::endl;
-                        std::cout << "right cons[3]: " << right_cons(3) << std::endl;
-                        std::cout << "right cons[4]: " << right_cons(4) << std::endl;
+                //        std::cout << "right cons[0]: " << right_cons(0) << std::endl;
+                //        std::cout << "right cons[1]: " << right_cons(1) << std::endl;
+                //        std::cout << "right cons[2]: " << right_cons(2) << std::endl;
+                //        std::cout << "right cons[3]: " << right_cons(3) << std::endl;
+                //        std::cout << "right cons[4]: " << right_cons(4) << std::endl;
 
-                        auto priml = cons_to_prim(left_cons, gamma);
-                        auto primr = cons_to_prim(right_cons, gamma);
+                //        auto priml = cons_to_prim(left_cons, gamma);
+                //        auto primr = cons_to_prim(right_cons, gamma);
 
-                        std::cout << "left prim[0]: " << priml(0) << std::endl;
-                        std::cout << "left prim[1]: " << priml(1) << std::endl;
-                        std::cout << "left prim[2]: " << priml(2) << std::endl;
-                        std::cout << "left cons[3]: " << priml(3) << std::endl;
-                        std::cout << "left prim[4]: " << priml(4) << std::endl;
+                //        std::cout << "left prim[0]: " << priml(0) << std::endl;
+                //        std::cout << "left prim[1]: " << priml(1) << std::endl;
+                //        std::cout << "left prim[2]: " << priml(2) << std::endl;
+                //        std::cout << "left cons[3]: " << priml(3) << std::endl;
+                //        std::cout << "left prim[4]: " << priml(4) << std::endl;
 
-                        std::cout << "right prim[0]: " << primr(0) << std::endl;
-                        std::cout << "right prim[1]: " << primr(1) << std::endl;
-                        std::cout << "right prim[2]: " << primr(2) << std::endl;
-                        std::cout << "right prim[3]: " << primr(3) << std::endl;
-                        std::cout << "right prim[4]: " << primr(4) << std::endl;
+                //        std::cout << "right prim[0]: " << primr(0) << std::endl;
+                //        std::cout << "right prim[1]: " << primr(1) << std::endl;
+                //        std::cout << "right prim[2]: " << primr(2) << std::endl;
+                //        std::cout << "right prim[3]: " << primr(3) << std::endl;
+                //        std::cout << "right prim[4]: " << primr(4) << std::endl;
 
-                        std::cout << "rl0: " << rotated_left_state.rho << std::endl;
-                        std::cout << "rl1: " << rotated_left_state.u << std::endl;
-                        std::cout << "rl2: " << rotated_left_state.v << std::endl;
-                        std::cout << "rl3: " << rotated_left_state.w << std::endl;
-                        std::cout << "rl4: " << rotated_left_state.p << std::endl;
-                        
-                        std::cout << "rlflx0: " << rotated_left_state.flux(0) << std::endl;
-                        std::cout << "rlflx1: " << rotated_left_state.flux(1) << std::endl;
-                        std::cout << "rlflx2: " << rotated_left_state.flux(2) << std::endl;
-                        std::cout << "rlflx3: " << rotated_left_state.flux(3) << std::endl;
-                        std::cout << "rlflx4: " << rotated_left_state.flux(4) << std::endl;
-                        
-                        std::cout << "rr0: " << rotated_right_state.rho << std::endl;
-                        std::cout << "rr1: " << rotated_right_state.u << std::endl;
-                        std::cout << "rr2: " << rotated_right_state.v << std::endl;
-                        std::cout << "rr3: " << rotated_right_state.w << std::endl;
-                        std::cout << "rr4: " << rotated_right_state.p << std::endl;
-                        
-                        std::cout << "rrflx0: " << rotated_right_state.flux(0) << std::endl;
-                        std::cout << "rrflx1: " << rotated_right_state.flux(1) << std::endl;
-                        std::cout << "rrflx2: " << rotated_right_state.flux(2) << std::endl;
-                        std::cout << "rrflx3: " << rotated_right_state.flux(3) << std::endl;
-                        std::cout << "rrflx4: " << rotated_right_state.flux(4) << std::endl;
+                //        std::cout << "rl0: " << rotated_left_state.rho << std::endl;
+                //        std::cout << "rl1: " << rotated_left_state.u << std::endl;
+                //        std::cout << "rl2: " << rotated_left_state.v << std::endl;
+                //        std::cout << "rl3: " << rotated_left_state.w << std::endl;
+                //        std::cout << "rl4: " << rotated_left_state.p << std::endl;
+                //        
+                //        std::cout << "rlflx0: " << rotated_left_state.flux(0) << std::endl;
+                //        std::cout << "rlflx1: " << rotated_left_state.flux(1) << std::endl;
+                //        std::cout << "rlflx2: " << rotated_left_state.flux(2) << std::endl;
+                //        std::cout << "rlflx3: " << rotated_left_state.flux(3) << std::endl;
+                //        std::cout << "rlflx4: " << rotated_left_state.flux(4) << std::endl;
+                //        
+                //        std::cout << "rr0: " << rotated_right_state.rho << std::endl;
+                //        std::cout << "rr1: " << rotated_right_state.u << std::endl;
+                //        std::cout << "rr2: " << rotated_right_state.v << std::endl;
+                //        std::cout << "rr3: " << rotated_right_state.w << std::endl;
+                //        std::cout << "rr4: " << rotated_right_state.p << std::endl;
+                //        
+                //        std::cout << "rrflx0: " << rotated_right_state.flux(0) << std::endl;
+                //        std::cout << "rrflx1: " << rotated_right_state.flux(1) << std::endl;
+                //        std::cout << "rrflx2: " << rotated_right_state.flux(2) << std::endl;
+                //        std::cout << "rrflx3: " << rotated_right_state.flux(3) << std::endl;
+                //        std::cout << "rrflx4: " << rotated_right_state.flux(4) << std::endl;
 
-                        std::cout << "n(0): " << normal(0) << std::endl;
-                        std::cout << "n(1): " << normal(1) << std::endl;
-                        std::cout << "n(2): " << normal(2) << std::endl;
-                    }
+                //        std::cout << "n(0): " << normal(0) << std::endl;
+                //        std::cout << "n(1): " << normal(1) << std::endl;
+                //        std::cout << "n(2): " << normal(2) << std::endl;
+                //    }
 
-                    assert(std::abs(flux(1)) < TAILOR_ZERO);
-                }
+                //    assert(std::abs(flux(1)) < TAILOR_ZERO);
+                //}
 
                 if (mf.btype() != BouType::empty)
                 {
