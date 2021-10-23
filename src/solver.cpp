@@ -935,6 +935,30 @@ namespace Tailor
                         std::cout << "right prim[3]: " << primr(3) << std::endl;
                         std::cout << "right prim[4]: " << primr(4) << std::endl;
 
+                        std::cout << "rl0: " << rotated_left_state.rho << std::endl;
+                        std::cout << "rl1: " << rotated_left_state.u << std::endl;
+                        std::cout << "rl2: " << rotated_left_state.v << std::endl;
+                        std::cout << "rl3: " << rotated_left_state.w << std::endl;
+                        std::cout << "rl4: " << rotated_left_state.p << std::endl;
+                        
+                        std::cout << "rlflx0: " << rotated_left_state.flux(0) << std::endl;
+                        std::cout << "rlflx1: " << rotated_left_state.flux(1) << std::endl;
+                        std::cout << "rlflx2: " << rotated_left_state.flux(2) << std::endl;
+                        std::cout << "rlflx3: " << rotated_left_state.flux(3) << std::endl;
+                        std::cout << "rlflx4: " << rotated_left_state.flux(4) << std::endl;
+                        
+                        std::cout << "rr0: " << rotated_right_state.rho << std::endl;
+                        std::cout << "rr1: " << rotated_right_state.u << std::endl;
+                        std::cout << "rr2: " << rotated_right_state.v << std::endl;
+                        std::cout << "rr3: " << rotated_right_state.w << std::endl;
+                        std::cout << "rr4: " << rotated_right_state.p << std::endl;
+                        
+                        std::cout << "rrflx0: " << rotated_right_state.flux(0) << std::endl;
+                        std::cout << "rrflx1: " << rotated_right_state.flux(1) << std::endl;
+                        std::cout << "rrflx2: " << rotated_right_state.flux(2) << std::endl;
+                        std::cout << "rrflx3: " << rotated_right_state.flux(3) << std::endl;
+                        std::cout << "rrflx4: " << rotated_right_state.flux(4) << std::endl;
+
                         std::cout << "n(0): " << normal(0) << std::endl;
                         std::cout << "n(1): " << normal(1) << std::endl;
                         std::cout << "n(2): " << normal(2) << std::endl;
