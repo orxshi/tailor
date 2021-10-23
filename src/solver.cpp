@@ -887,7 +887,7 @@ namespace Tailor
                 if (mf.btype() == BouType::wall)
                 {
                     //if (left_cell->tag()() == 64093 || right_cell->tag()() == 64093)
-                    if (std::abs(flux(1)) < TAILOR_ZERO)
+                    if (std::abs(flux(1)) > TAILOR_ZERO)
                     {
                         //if (left_cell->tag()() == 64093)
                         //{
@@ -923,9 +923,9 @@ namespace Tailor
                         std::cout << "n(0): " << normal(0) << std::endl;
                         std::cout << "n(1): " << normal(1) << std::endl;
                         std::cout << "n(2): " << normal(2) << std::endl;
-
-                        assert(std::abs(flux(1)) < TAILOR_ZERO);
                     }
+
+                    assert(std::abs(flux(1)) < TAILOR_ZERO);
                 }
 
                 if (mf.btype() != BouType::empty)

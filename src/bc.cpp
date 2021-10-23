@@ -949,7 +949,7 @@ namespace Tailor
         mc.prim_(1) += vf(0);
         mc.prim_(2) += vf(1);
         mc.prim_(3) += vf(2);
-        mc.prim_(4) += dp;
+        //mc.prim_(4) += dp;
         mc.cons_sp1_ = prim_to_cons(mc.prim_, fs_.gamma_);
 
         //if (nei.tag()() == 64093)
