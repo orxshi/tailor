@@ -325,7 +325,8 @@ namespace Tailor
                 double rad_vel_z = aoa_o * omega * std::cos(omega * real_time); // z-component of angular velocity.
                 double rad_acc_z = - aoa_o * omega * omega * std::sin(omega * real_time); // z-component of angular velocity.
 
-                Vector3 rad_vel(0., 0., -rad_vel_z);
+                //Vector3 rad_vel(0., 0., -rad_vel_z);
+                Vector3 rad_vel(0., 0., rad_vel_z);
                 Vector3 rad_acc(0., 0., -rad_acc_z);
 
                 Vector3 pivot = compo.pivot_;
