@@ -929,9 +929,16 @@ namespace Tailor
         //}
         assert(dot(mf->face().normal(), n) > TAILOR_ZERO);
 
+
         auto T = make_rot_matrix(n);
         auto neii = nei.prim();
         auto vf = mf->vf();
+        auto af = mf->af();
+
+        auto distance = 2. * mf->face().centroid() - nei.poly().centroid();
+
+        double dp = -neii(0) * dot(n, af) * len(distance);
+
         neii(1) -= vf(0);
         neii(2) -= vf(1);
         neii(3) -= vf(2);
@@ -942,6 +949,7 @@ namespace Tailor
         mc.prim_(1) += vf(0);
         mc.prim_(2) += vf(1);
         mc.prim_(3) += vf(2);
+        mc.prim_(4) += dp;
         mc.cons_sp1_ = prim_to_cons(mc.prim_, fs_.gamma_);
 
         //if (nei.tag()() == 64093)

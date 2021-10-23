@@ -207,6 +207,10 @@ namespace Tailor
     {
         return vf_;
     }
+    const Vector3& MeshFace::af() const
+    {
+        return af_;
+    }
 
     void MeshFace::face_velocity(const Freestream& fs, const Component& compo, double real_time)
     {
@@ -319,8 +323,10 @@ namespace Tailor
                 double omega = 2. * reduced_freq * u_ref / chord; // angular frequency.
                 
                 double rad_vel_z = aoa_o * omega * std::cos(omega * real_time); // z-component of angular velocity.
+                double rad_acc_z = - aoa_o * omega * omega * std::sin(omega * real_time); // z-component of angular velocity.
 
                 Vector3 rad_vel(0., 0., -rad_vel_z);
+                Vector3 rad_acc(0., 0., -rad_acc_z);
 
                 Vector3 pivot = compo.pivot_;
                 auto rotaxis = compo.rotaxis_;
@@ -340,6 +346,7 @@ namespace Tailor
                     //if (btype_ != BouType::partition) // TODO just to test.
                     {
                         vel = cross(rad_vel, r);
+                        af_ = cross(rad_acc, r);
                     }
 
                     //std::cout << omega << " " << real_time << " " << omega * real_time << " " << std::sin(omega * real_time) << " " << std::cos(omega * real_time) << " " << rad_vel(0) << " " << rad_vel(1) << " " << rad_vel(2) << " " << vel(0) << " " << vel(1) << " " << vel(2) << " " << r(0) << " " << r(1) << " " << r(2) << std::endl;
@@ -425,6 +432,7 @@ namespace Tailor
 
         vgn_ = dot(vel, n);
         vf_ = vel;
+        //af_ = acc;
         //if (vf_(2) != 0.)
         //{
             //std::cout << "vf_(2): " << vf_(2) << std::endl;

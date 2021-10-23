@@ -24,6 +24,7 @@ namespace Tailor
         //MeshFace* faceaddr_;
 
         Vector3 vf_;
+        Vector3 af_;
         double vgn_;
         //Matrix<NVAR, NVAR> ML_;
         //Matrix<NVAR, NVAR> MR_;
@@ -42,6 +43,7 @@ namespace Tailor
         bool R_checked() const;
         void set_R_checked(bool b);
         const Vector3& vf() const;
+        const Vector3& af() const;
         double vgn() const;
         void face_velocity(const Freestream& fs, const Component& compo, double real_time);
         //const Matrix<NVAR, NVAR>& ML() const;
@@ -82,6 +84,7 @@ namespace Tailor
             ar & btype_;
             ar & vgn_;
             ar & vf_;
+            ar & af_;
         }
     };
 
