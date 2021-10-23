@@ -884,32 +884,49 @@ namespace Tailor
                 //}
                 //assert(std::abs(flux(0)) < 1e-8);
 
-                //if (mf.btype() == BouType::wall)
-                //{
-                //    if (left_cell->tag()() == 64093 || right_cell->tag()() == 64093)
-                //    {
-                //        if (left_cell->tag()() == 64093)
-                //        {
-                //            std::cout << "left" << std::endl;
-                //        }
-                //        else
-                //        {
-                //            std::cout << "right" << std::endl;
-                //        }
+                if (mf.btype() == BouType::wall)
+                {
+                    //if (left_cell->tag()() == 64093 || right_cell->tag()() == 64093)
+                    if (std::abs(flux(1)) < TAILOR_ZERO)
+                    {
+                        //if (left_cell->tag()() == 64093)
+                        //{
+                        //    std::cout << "left" << std::endl;
+                        //}
+                        //else
+                        //{
+                        //    std::cout << "right" << std::endl;
+                        //}
 
-                //        std::cout << "mf.btype: " << static_cast<int>(mf.btype()) << std::endl;
-                //
-                //        std::cout << "flux[0]: " << flux(0) << std::endl;
-                //        std::cout << "flux[1]: " << flux(1) << std::endl;
-                //        std::cout << "flux[2]: " << flux(2) << std::endl;
-                //        std::cout << "flux[3]: " << flux(3) << std::endl;
-                //        std::cout << "flux[4]: " << flux(4) << std::endl;
+                        std::cout << "mc: " << mc.tag()() << std::endl;
 
-                //        std::cout << "n(0): " << normal(0) << std::endl;
-                //        std::cout << "n(1): " << normal(1) << std::endl;
-                //        std::cout << "n(2): " << normal(2) << std::endl;
-                //    }
-                //}
+                        std::cout << "mf.btype: " << static_cast<int>(mf.btype()) << std::endl;
+                
+                        std::cout << "flux[0]: " << flux(0) << std::endl;
+                        std::cout << "flux[1]: " << flux(1) << std::endl;
+                        std::cout << "flux[2]: " << flux(2) << std::endl;
+                        std::cout << "flux[3]: " << flux(3) << std::endl;
+                        std::cout << "flux[4]: " << flux(4) << std::endl;
+
+                        std::cout << "left cons[0]: " << left_cons(0) << std::endl;
+                        std::cout << "left cons[1]: " << left_cons(1) << std::endl;
+                        std::cout << "left cons[2]: " << left_cons(2) << std::endl;
+                        std::cout << "left cons[3]: " << left_cons(3) << std::endl;
+                        std::cout << "left cons[4]: " << left_cons(4) << std::endl;
+
+                        std::cout << "right cons[0]: " << right_cons(0) << std::endl;
+                        std::cout << "right cons[1]: " << right_cons(1) << std::endl;
+                        std::cout << "right cons[2]: " << right_cons(2) << std::endl;
+                        std::cout << "right cons[3]: " << right_cons(3) << std::endl;
+                        std::cout << "right cons[4]: " << right_cons(4) << std::endl;
+
+                        std::cout << "n(0): " << normal(0) << std::endl;
+                        std::cout << "n(1): " << normal(1) << std::endl;
+                        std::cout << "n(2): " << normal(2) << std::endl;
+
+                        assert(std::abs(flux(1)) < TAILOR_ZERO);
+                    }
+                }
 
                 if (mf.btype() != BouType::empty)
                 {
