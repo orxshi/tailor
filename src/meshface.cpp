@@ -326,7 +326,7 @@ namespace Tailor
                 double rad_acc_z = - aoa_o * omega * omega * std::sin(omega * real_time); // z-component of angular velocity.
 
                 //Vector3 rad_vel(0., 0., -rad_vel_z);
-                Vector3 rad_vel(0., 0., rad_vel_z);
+                Vector3 rad_vel(0., 0., -rad_vel_z);
                 Vector3 rad_acc(0., 0., -rad_acc_z);
 
                 Vector3 pivot = compo.pivot_;
@@ -341,7 +341,7 @@ namespace Tailor
                     r(2) = 0.;
                     
                     //vel = cross(rad_vel, project);
-                    //if (btype_ == BouType::wall) // TODO just to test.
+                    if (btype_ == BouType::wall) // TODO just to test.
                     //if (btype_ == BouType::wall || btype_ == BouType::interior)
                     //if (btype_ == BouType::wall || btype_ == BouType::interior && btype_ == BouType::farfield && btype_ == BouType::empty) // TODO just to test.
                     //if (btype_ != BouType::partition) // TODO just to test.
