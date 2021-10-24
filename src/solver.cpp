@@ -814,6 +814,11 @@ namespace Tailor
 
             for (auto &mf : mc.face_p())
             {
+                if (mf.btype() == BouType::wall)
+                {
+                    assert(false);
+                }
+
                 if (mf.R_checked())
                 {
                     continue;
