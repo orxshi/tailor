@@ -343,7 +343,7 @@ namespace Tailor
                     //vel = cross(rad_vel, project);
                     //if (btype_ == BouType::wall) // TODO just to test.
                     //if (btype_ == BouType::wall || btype_ == BouType::farfield) // TODO just to test.
-                    if (btype_ == BouType::wall || btype_ == BouType::farfield || btype_ == BouType::interior) // TODO just to test.
+                    //if (btype_ == BouType::wall || btype_ == BouType::farfield || btype_ == BouType::interior) // TODO just to test.
                     //if (btype_ == BouType::wall || btype_ == BouType::interior)
                     //if (btype_ == BouType::wall || btype_ == BouType::interior && btype_ == BouType::farfield && btype_ == BouType::empty) // TODO just to test.
                     //if (btype_ != BouType::partition) // TODO just to test.
@@ -353,21 +353,21 @@ namespace Tailor
                     }
 
                     //std::cout << omega << " " << real_time << " " << omega * real_time << " " << std::sin(omega * real_time) << " " << std::cos(omega * real_time) << " " << rad_vel(0) << " " << rad_vel(1) << " " << rad_vel(2) << " " << vel(0) << " " << vel(1) << " " << vel(2) << " " << r(0) << " " << r(1) << " " << r(2) << std::endl;
-                    if (btype_ == BouType::farfield)
-                    {
-                    std::cout << "omega: " << omega << std::endl;
-                    std::cout << "real_time: " << real_time << std::endl;
-                    std::cout << "rad_vel_z: " << rad_vel_z << std::endl;
-                    std::cout << "vel(0): " << vel(0) << std::endl;
-                    std::cout << "vel(1): " << vel(1) << std::endl;
-                    std::cout << "vel(2): " << vel(2) << std::endl;
-                    std::cout << "r(0): " << r(0) << std::endl;
-                    std::cout << "r(1): " << r(1) << std::endl;
-                    std::cout << "r(2): " << r(2) << std::endl;
-                    std::cout << "u: " << u << std::endl;
-                    std::cout << "v: " << v << std::endl;
-                    std::cout << "w: " << w << std::endl;
-                    }
+                    //if (btype_ == BouType::farfield)
+                    //{
+                    //std::cout << "omega: " << omega << std::endl;
+                    //std::cout << "real_time: " << real_time << std::endl;
+                    //std::cout << "rad_vel_z: " << rad_vel_z << std::endl;
+                    //std::cout << "vel(0): " << vel(0) << std::endl;
+                    //std::cout << "vel(1): " << vel(1) << std::endl;
+                    //std::cout << "vel(2): " << vel(2) << std::endl;
+                    //std::cout << "r(0): " << r(0) << std::endl;
+                    //std::cout << "r(1): " << r(1) << std::endl;
+                    //std::cout << "r(2): " << r(2) << std::endl;
+                    //std::cout << "u: " << u << std::endl;
+                    //std::cout << "v: " << v << std::endl;
+                    //std::cout << "w: " << w << std::endl;
+                    //}
                     //assert(false);
                 }
             }
