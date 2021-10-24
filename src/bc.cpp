@@ -935,7 +935,7 @@ namespace Tailor
         auto vf = mf->vf();
         auto af = mf->af();
 
-        auto distance = 2. * mf->face().centroid() - nei.poly().centroid();
+        auto distance = mf->face().centroid() - nei.poly().centroid();
 
         double dp = -neii(0) * dot(n, af) * len(distance);
 
