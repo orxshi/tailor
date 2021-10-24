@@ -6,9 +6,9 @@ namespace Tailor
     {
         auto primitive_var = cons_to_prim(conservative_var, gamma);
 
-        primitive_var(1) -= face_velocity(0);
-        primitive_var(2) -= face_velocity(1);
-        primitive_var(3) -= face_velocity(2);
+        //primitive_var(1) -= face_velocity(0);
+        //primitive_var(2) -= face_velocity(1);
+        //primitive_var(3) -= face_velocity(2);
 
         primitive_var = rotation_matrix * primitive_var;
 
