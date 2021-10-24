@@ -341,7 +341,7 @@ namespace Tailor
                     r(2) = 0.;
                     
                     //vel = cross(rad_vel, project);
-                    //if (btype_ == BouType::wall) // TODO just to test.
+                    if (btype_ == BouType::wall) // TODO just to test.
                     //if (btype_ == BouType::wall || btype_ == BouType::farfield) // TODO just to test.
                     //if (btype_ == BouType::wall || btype_ == BouType::farfield || btype_ == BouType::interior) // TODO just to test.
                     //if (btype_ == BouType::wall || btype_ == BouType::interior)
@@ -349,7 +349,7 @@ namespace Tailor
                     //if (btype_ != BouType::partition) // TODO just to test.
                     //if (btype_ != BouType::interior) // TODO just to test.
                     {
-                        //vel = cross(rad_vel, r);
+                        vel = cross(rad_vel, r);
                         af_ = cross(rad_acc, r);
                     }
 
