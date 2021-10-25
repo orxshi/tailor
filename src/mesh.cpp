@@ -5503,6 +5503,14 @@ int Mesh::priority() const
                     const MeshCell& nei = cell(mc->interior_boundary());
                     auto mf = std::find_if(nei.face().begin(), nei.face().end(), [&](const auto& f){return f.tag() == mc->face()[0].tag();});
                     assert(mf != nei.face().end());
+                    const auto& v0 = mf->face().vertex(0).r();
+                    const auto& v1 = mf->face().vertex(1).r();
+                    const auto& v2 = mf->face().vertex(2).r();
+                    Vector3 cr = cross((v0-v1), (v2-v1));
+                    if (len(cr) == 0.)
+                    {
+                        std::cout << "neiiiiiiiii: " << nei.tag()() << std::endl;
+                    }
                     auto n = mf->face().normal();
                     out << n(0) << " " << n(1) << " " << n(2) << std::endl;
                 }
