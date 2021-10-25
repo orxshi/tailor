@@ -5507,7 +5507,7 @@ int Mesh::priority() const
                     const auto& v1 = mf->face().vertex(1).r();
                     const auto& v2 = mf->face().vertex(2).r();
                     Vector3 cr = cross((v0-v1), (v2-v1));
-                    if (std::abs(cr(0)) <= TAILOR_ZERO || std::abs(cr(1)) <= TAILOR_ZERO || std::abs(cr(2)) <= TAILOR_ZERO)
+                    if (std::abs(cr(0)) <= TAILOR_ZERO && std::abs(cr(1)) <= TAILOR_ZERO && std::abs(cr(2)) <= TAILOR_ZERO)
                     {
                         std::cout << "neiiiiiiiii: " << nei.tag()() << std::endl;
                     }
