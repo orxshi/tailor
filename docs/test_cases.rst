@@ -206,17 +206,21 @@ It is useful to have raw pressure coefficient data to compare results, especiall
 Pitching airfoil
 -------------------
 
-Freestream pressure and density are adjusted such that sound speed is unity and freestream velocity is identical to Mach number. Mesh velocity :math:`(-0.755, 0, 0)` is given. Mesh is pitched with the equation below.
+A NACA 0012 airfoil undergoes a forced harmonic oscillation while moving against a free-stream with Mach number of :math:`M=0.755`. This problem can also be solved as static mesh problem by fluctuating the free-stream velocity. The mesh used in steady transonic airfoil problem is also used here except that the initially the airfoil mesh is rotated :math:`2.51^\circ` instead of :math:`1.25^\circ`.
+
+Mesh oscillates with instantaneous angle
 
 .. math::
 
    \alpha = \alpha_{mean} + \alpha_{amp} \sin(\omega t)
 
-where,
+where, :math:`\alpha_{mean}`, :math:`\alpha_{amp}`, :math:`t` is the mean, amplitude and time, respectively. :math:`\alpha_{\omega}` is the angular frequency found from the reduced frequency
 
 .. math::
 
    k = \frac{\omega c}{2u_\infty}
+
+where, :math:`c` and :math:`u_\infty` are the chord length and free-stream velocity which is the same as Mach number since free-stream pressure and density are adjusted to make speed of sound unity. Table below shows the parameters used to calculate the instantaneous angle of attack. 
 
 .. list-table:: Parameters
    :header-rows: 0
@@ -237,7 +241,14 @@ where,
      - M
      - 0.755
 
-Pitching mesh is equivalent to changing angle of attack of freestream.
+Results
+^^^^^^^
+
+.. image:: ../images/lift_hysteresis.png
+  :width: 300
+
+References
+^^^^^^^^^^
 
 * Reference 1: Development of a coupled matrix-free LU-SGS solver for turbulent compressible flows
 * Reference 2: Implicit Approaches for Moving Boundaries in a 3-D Cartesian Method
