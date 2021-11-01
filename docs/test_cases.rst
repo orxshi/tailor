@@ -197,11 +197,12 @@ Remarks
 ..
 
 It is useful to have raw pressure coefficient data to compare results, especially when data for upper and lower surfaces are provided separately. This saves time by avoiding plot digitizing. Here are pressure coefficient data for `upper_pc.dat <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/upper_pc.dat>`_ and `lower_pc.dat <https://github.com/orxshi/tailor/blob/main/test/airfoil_static_single_mesh/lower_pc.dat>`_ airfoil surfaces.
+
+References
+^^^^^^^^^^
     
 * Reference 1: Manzano, Luis, Jason Lassaline, and David Zingg. "A Newton-Krylov algorithm for the Euler equations using unstructured grids." 41st Aerospace Sciences Meeting and Exhibit. 2003.
 * Reference 2: `<https://su2code.github.io/tutorials/Inviscid_2D_Unconstrained_NACA0012/>`_
-
-   
 
 Pitching airfoil
 -------------------
@@ -244,19 +245,13 @@ where, :math:`c` and :math:`u_\infty` are the chord length and free-stream veloc
 Results
 ^^^^^^^
 
+Figure below shows the lift hysteresis. There is a good agreement with the another numerical method. The reason of discrepancy from the experimental lift is due to absence of viscosity in the numerical solution.
+
 .. image:: ../images/lift_hysteresis.png
   :width: 300
 
 References
 ^^^^^^^^^^
 
-* Reference 1: Development of a coupled matrix-free LU-SGS solver for turbulent compressible flows
-* Reference 2: Implicit Approaches for Moving Boundaries in a 3-D Cartesian Method
-* Reference 3: Limit-cycle shape optimization using time-dependent transonic equation
-* Reference 4: Landon, R.H., “NACA 0012 Oscillatory and Transient Pitching,” Data Set 3, Compendium of Unsteady Aerodynamic Measurements,” AGARD Report 702, August 1982.
-* Reference 5: Transonic Flow Simulation Around the Pitching Airfoil with Accurate Pressure-Based Algorithm
-* Reference 6: Hejranfar, K., and M. H. Azampour. "Simulation of 2D fluid–structure interaction in inviscid compressible flows using a cell-vertex central difference finite volume method." Journal of Fluids and Structures 67 (2016): 190-218.
-* Reference 7: Ekici, Kivanc, et al. "Modeling periodic and non-periodic response of dynamical systems using an efficient Chebyshev-based time-spectral approach." Journal of Computational Physics 417 (2020): 109560.
-  https://link.springer.com/article/10.1007/s13272-019-00389-y
-  Landon, R. H. "Data from AGARD Report 702: NACA 64 A 006 Oscillating Flap; NACA 012 Oscillatory and Transient Pitching; NLR 7301 Supercritical Airfoil Oscillatory Pitching and Oscillating Flap; and ZKP Wing, Oscillating Aileron." 2000. (2000).ro
-  Flows around moving bodies using a dynamic unstructured overset-grid method
+* Reference 1: Landon, R.H., “NACA 0012 Oscillatory and Transient Pitching,” Data Set 3, Compendium of Unsteady Aerodynamic Measurements,” AGARD Report 702, August 1982.
+* Reference 2: Venkatakrishnan, V., and D. J. Mavriplis. "Implicit method for the computation of unsteady flows on unstructured grids." Journal of Computational Physics 127.2 (1996): 380-397.
