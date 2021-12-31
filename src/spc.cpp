@@ -161,7 +161,7 @@ namespace Tailor
             //}
             //assert(in.oga_cell_type() == OGA_cell_type_t::field);
 
-            P.push_back(std::make_tuple(cnt, mc->face()[0].face().normal(), std::abs(mc->face()[0].face().signed_area()), mc->prim(4)));
+            P.push_back(std::make_tuple(cnt, -mc->face()[0].face().normal(), std::abs(mc->face()[0].face().signed_area()), mc->prim(4)));
         }
 
         if (compute_force_coef)
@@ -206,7 +206,8 @@ namespace Tailor
             auto mesh = std::find_if(sp_.front().mesh().begin(), sp_.front().mesh().end(), [&](const auto& m){return m.tag()() == i;});
 
             Component component;
-            component.read(mesh->tag());
+            //component.read(mesh->tag());
+            component.read(Tag(i));
 
             Freestream fs;
             fs.read();
@@ -238,7 +239,7 @@ namespace Tailor
             double aoa = -1;
                 if (comm_->rank() == 0)
                 {
-                    //if (component.oscillation)
+                    if (component.oscillation)
                     {
                         double reduced_freq = component.reduced_freq;
                         double u = component.u;
@@ -260,11 +261,17 @@ namespace Tailor
                         aoa = aoa_mean + aoa_o * std::sin(om * iter * dt);
                     }
                     //else if (component.rotation_)
-                    //{
-                        //double rpm = component.rpm_;
-                        //double om = rpm * 2. * PI / 60.; // rad/s
+                    {
+                        double rpm = component.rpm_;
+                        double om = rpm * 2. * PI / 60.; // rad/s
                         //aoa = om * dt; // rad/s * time step
-                    //}
+                        aoa = om * dt * iter; // rad/s * time
+                        int multiple = static_cast<int>(std::floor(aoa / PI));
+                        if (aoa > PI)
+                        {
+                            aoa -= multiple * PI;
+                        }
+                    }
 
                     aoa = rad_to_deg(aoa);
                 }
@@ -286,11 +293,11 @@ namespace Tailor
                     out << " ";
                     out << aoa;
                     out << " ";
-                    out << global[0]; // cA
+                    out << global[0];
                     out << " "; 
-                    out << global[1]; // cN
+                    out << global[1];
                     out << " "; 
-                    out << global[2]; // cY
+                    out << global[2];
                     out << " "; 
                     out << global[3]; // cT
                     out << std::endl; 
@@ -1318,7 +1325,7 @@ namespace Tailor
         //}
 
 
-        void SpatialPartitionContainer::rotate_meshblocks(const Tag& _parent_mesh, double ang, int axis, const Vector3& rot_axis)
+        void SpatialPartitionContainer::rotate_meshblocks(const Tag& _parent_mesh, double ang, const Vector3& axis, const Vector3& rot_axis)
         {
             // this is a temporary function to mimic solver.
             // aim is to displace certain meshblocks.

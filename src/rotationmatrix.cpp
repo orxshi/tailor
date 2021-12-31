@@ -2,107 +2,130 @@
 
 namespace Tailor
 {
-    void RotationMatrix::set_rx(double yaw)
+    Matrix3 set_r(double theta, const Vector3& u)
     {
-        rx[0] = 1.;
-        rx[1] = 0.;
-        rx[2] = 0.;
+        // https://en.wikipedia.org/wiki/Rotation_matrix#Rotation_matrix_from_axis_and_angle
+        // section: Rotation matrix from axis and angle
 
-        rx[3] = 0.;
-        rx[4] = std::cos(yaw);
-        rx[5] = -std::sin(yaw);
+        Matrix3 m;
 
-        rx[6] = 0.;
-        rx[7] = std::sin(yaw);
-        rx[8] = std::cos(yaw);
+        double ct = std::cos(theta);
+        double st = std::sin(theta);
+        double mct = 1. - ct;
+
+        m(0,0) = ct + u(0) * u(0) * mct;
+        m(0,1) = u(0) * u(1) * mct - u(2) * st;
+        m(0,2) = u(0) * u(2) * mct + u(1) * st;
+
+        m(1,0) = u(1) * u(0) * mct + u(2) * st;
+        m(1,1) = ct + u(1) * u(1) * mct;
+        m(1,2) = u(1) * u(2) * mct - u(0) * st;
+
+        m(2,0) = u(2) * u(0) * mct - u(1) * st;
+        m(2,1) = u(2) * u(1) * mct + u(0) * st;
+        m(2,2) = ct + u(2) * u(2) * mct;
+
+        return m;
     }
 
-    void RotationMatrix::set_ry(double pitch)
-    {
-        ry[0] = std::cos(pitch);
-        ry[1] = 0.;
-        ry[2] = std::sin(pitch);
+    //Matrix3 RotationMatrix::set_rx(double yaw)
+    //{
+    //    Matrix3 m;
 
-        ry[3] = 0.;
-        ry[4] = 1.;
-        ry[5] = 0.;
+    //    m(0,0) = 1.;
+    //    m(0,1) = 0.;
+    //    m(0,2) = 0.;
 
-        ry[6] = -std::sin(pitch);
-        ry[7] = 0.;
-        ry[8] = std::cos(pitch);
-    }
+    //    m(1,0) = 0.;
+    //    m(1,1) = std::cos(yaw);
+    //    m(1,2) = -std::sin(yaw);
 
-    void RotationMatrix::set_rz(double roll)
-    {
-        rz[0] = std::cos(roll);
-        rz[1] = -std::sin(roll);
-        rz[2] = 0.;
+    //    m(2,0) = 0.;
+    //    m(2,1) = std::sin(yaw);
+    //    m(2,2) = std::cos(yaw);
 
-        rz[3] = std::sin(roll);
-        rz[4] = std::cos(roll);
-        rz[5] = 0.;
+    //    return m;
+    //}
 
-        rz[6] = 0.;
-        rz[7] = 0.;
-        rz[8] = 1.;
+    //Matrix3 RotationMatrix::set_ry(double pitch)
+    //{
+    //    Matrix3 m;
 
-        //std::cout << "rz[0]: " << rz[0] << std::endl;
-        //std::cout << "rz[1]: " << rz[1] << std::endl;
-        //std::cout << "rz[2]: " << rz[2] << std::endl;
-        //std::cout << "rz[3]: " << rz[3] << std::endl;
-        //std::cout << "rz[4]: " << rz[4] << std::endl;
-        //std::cout << "rz[5]: " << rz[5] << std::endl;
-        //std::cout << "rz[6]: " << rz[6] << std::endl;
-        //std::cout << "rz[7]: " << rz[7] << std::endl;
-        //std::cout << "rz[8]: " << rz[8] << std::endl;
+    //    m(0,0) = std::cos(pitch);
+    //    m(0,1) = 0.;
+    //    m(0,2) = std::sin(pitch);
+    //          
+    //    m(1,0) = 0.;
+    //    m(1,1) = 1.;
+    //    m(1,2) = 0.;
+    //          
+    //    m(2,0) = -std::sin(pitch);
+    //    m(2,1) = 0.;
+    //    m(2,2) = std::cos(pitch);
 
-        assert(!std::isnan(rz[0]));
-        assert(!std::isnan(rz[1]));
-        assert(!std::isnan(rz[2]));
-        assert(!std::isnan(rz[3]));
-        assert(!std::isnan(rz[4]));
-        assert(!std::isnan(rz[5]));
-        assert(!std::isnan(rz[6]));
-        assert(!std::isnan(rz[7]));
-        assert(!std::isnan(rz[8]));
-    }
+    //    return m;
+    //}
 
-    void RotationMatrix::rotate(double angle, int axis, const Vector3& pivot, Vector3& v)
+    //Matrix3 RotationMatrix::set_rz(double roll)
+    //{
+    //    Matrix3 m;
+
+    //    m(0,0) = std::cos(roll);
+    //    m(0,1) = -std::sin(roll);
+    //    m(0,2) = 0.;
+    //          
+    //    m(1,0) = std::sin(roll);
+    //    m(1,1) = std::cos(roll);
+    //    m(1,2) = 0.;
+    //          
+    //    m(2,0) = 0.;
+    //    m(2,1) = 0.;
+    //    m(2,2) = 1.;
+
+    //    return m;
+    //}
+
+    //void RotationMatrix::rotate(double angle, int axis, const Vector3& pivot, Vector3& v)
+    void RotationMatrix::rotate(double angle, const Vector3& axis, const Vector3& pivot, Vector3& v)
     {
         v = v - pivot;
 
-        if (axis == 0) {
-            set_rx(angle);
-            v = mul(rx, v);
-        }
-        else if (axis == 1) {
-            set_ry(angle);
-            v = mul(ry, v);
-        }
-        else if (axis == 2) {
-            set_rz(angle);
-            assert(!std::isnan(v(0)));
-            assert(!std::isnan(v(1)));
-            assert(!std::isnan(v(2)));
-            //std::cout << "v(0): " << v(0) << std::endl;
-            //std::cout << "v(1): " << v(1) << std::endl;
-            //std::cout << "v(2): " << v(2) << std::endl;
-            v = mul(rz, v);
-        }
+        auto m = set_r(angle, axis);
 
+        v = m * v;
         v = v + pivot;
+
+        assert(!std::isnan(v(0)));
+        assert(!std::isnan(v(1)));
+        assert(!std::isnan(v(2)));
     }
 
-    Vector3 RotationMatrix::mul(const trimat& m, const Vector3& v)
+    //Vector3 RotationMatrix::mul(const Matrix3& m, const Vector3& v)
+    //{
+    //    Vector3 c = m * v;
+
+    //    assert(!c.isnan());
+
+    //    return c;
+    //}
+
+    //Vector3 RotationMatrix::mul(const trimat& m, const Vector3& v)
+    //{
+    //    Vector3 c;
+
+    //    c(0) = m[0] * v(0) + m[1] * v(1) + m[2] * v(2);
+    //    c(1) = m[3] * v(0) + m[4] * v(1) + m[5] * v(2);
+    //    c(2) = m[6] * v(0) + m[7] * v(1) + m[8] * v(2);
+
+    //    assert(!c.isnan());
+
+    //    return c;
+    //}
+
+    double angle(const Vector3& a, const Vector3& b)
     {
-        Vector3 c;
+        double l = dot(a, b) / (len(a) * len(b));
 
-        c(0) = m[0] * v(0) + m[1] * v(1) + m[2] * v(2);
-        c(1) = m[3] * v(0) + m[4] * v(1) + m[5] * v(2);
-        c(2) = m[6] * v(0) + m[7] * v(1) + m[8] * v(2);
-
-        assert(!c.isnan());
-
-        return c;
+        return std::acos(l);
     }
 }

@@ -98,7 +98,8 @@ namespace Tailor
         solver.read_settings();
     }
 
-    void Tailor::rotate(const Tag& mesh, double ang, int axis, const Vector3& pivot)
+    //void Tailor::rotate(const Tag& mesh, double ang, int axis, const Vector3& pivot)
+    void Tailor::rotate(const Tag& mesh, double ang, const Vector3& axis, const Vector3& pivot)
     {
         if (assembler_on_)
         {
@@ -180,7 +181,6 @@ namespace Tailor
                 {
                     solver_ = std::make_unique<Solver>(&comm_, mesh_folder_, nullptr);
                 }
-                std::cout << "constructured solver" << std::endl;
                 profiler_stop("create_solver");
             }
         }
@@ -218,6 +218,9 @@ namespace Tailor
         }
 
         auto aero_para = compute_para();
+
+        assert(solver_ != nullptr);
+        assert(solver_->partition() != nullptr);
 
         solver_->partition()->spc().get_coef(aero_para, solver_->nsolve(), solver_->dt());
     }

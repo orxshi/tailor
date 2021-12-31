@@ -88,7 +88,7 @@ namespace Tailor
             Partition* partition();
             void transfer_oga_cell_type(const ArrCon<DonorInfo2>& di);
             void set_oga_cell_type_all_field();
-            void rotate(const Tag& mesh, double ang, int axis, const Vector3& pivot);
+            void rotate(const Tag& mesh, double ang, const Vector3& axis, const Vector3& pivot);
             void move(const Tag& mesh, const Vector3& v);
             void exchange();
             void reset_oga_status();
@@ -265,10 +265,13 @@ namespace Tailor
             void first_order_residual(Vector5& res, const MeshCell& mc);
             void compute_gradient(Mesh& mesh);
             void rotate_velocity(const Tag &mesh, double ang, int axis, const Vector3 &pivot);
+            void print_status(int linear_iter, const Vector5& global_residual);
     };
 
     std::tuple<Matrix5, Matrix5> get_rotation_matrix(const Vector3& normal);
     std::tuple<Vector5, double, Matrix5> compute_flux(RiemannSolverType riemann_solver_type, double face_area, const Matrix5& inverse_rotation_matrix, const State& rotated_left_state, const State& rotated_right_state, const State& left_state, const State& right_state, double gamma);
+
+    void parallel_print(const boost::mpi::communicator& comm, std::string message);
 }
 
 #endif

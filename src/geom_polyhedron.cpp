@@ -170,7 +170,7 @@ namespace Tailor
         return face_[i];
     }
 
-    void Polyhedron::rotate_points(double angle, double axis, const Vector3& rot_point)
+    void Polyhedron::rotate_points(double angle, const Vector3& axis, const Vector3& rot_point)
     {
         RotationMatrix rm;
 

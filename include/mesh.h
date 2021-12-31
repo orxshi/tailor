@@ -235,7 +235,7 @@ namespace Tailor
         bool do_point_exist(const Tag& t) const;
 
         void move(const Vector3& v);
-        void rotate(double angle, int axis, const Vector3& rot_point);
+        void rotate(double angle, const Vector3& axis, const Vector3& rot_point);
         void print_as_vtk (std::string file_name) const;
         void print_as_vtk_geometry(std::string file_name) const;
         void print_wall_as_vtk(std::string file_name) const;

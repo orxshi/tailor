@@ -36,8 +36,7 @@ void rotate(Tailor::Tailor& tailor)
 	double u = component.u;
 	double v = component.v;
 	double w = component.w;
-	//Tailor::Vector3 U(u, v, w);
-	//double u_ref = U.len();
+	//double u_ref = std::abs(u);
 	double u_ref = fs.u_;
 	double chord = component.chord;
 	double aoa_o_deg = component.aoa_o_deg;

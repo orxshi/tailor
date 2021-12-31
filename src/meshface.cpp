@@ -277,7 +277,9 @@ namespace Tailor
                     auto r = cnt - pivot;
                     r(2) = 0.;
 
-                    vel = cross(omega, r);
+                    if (btype_ == BouType::wall) {
+                        vel = cross(omega, r);
+                    }
                     if (vel(2) != 0.)
                     {
                         std::cout << "vel(2): " << vel(2) << std::endl;
@@ -522,7 +524,7 @@ namespace Tailor
         face_.move_points(v);
     }
 
-    void MeshFace::rotate(double angle, int axis, const Vector3& rot_point)
+    void MeshFace::rotate(double angle, const Vector3& axis, const Vector3& rot_point)
     {
         face_.rotate_points(angle, axis, rot_point);
     }

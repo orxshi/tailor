@@ -83,7 +83,7 @@ namespace Tailor
             void make_regular_maps_uniproc();
 
             // Move mesh
-            void rotate_meshblocks(const Tag& _parent_mesh, double ang, int axis, const Vector3& rot_axis);
+            void rotate_meshblocks(const Tag& _parent_mesh, double ang, const Vector3& axis, const Vector3& rot_axis);
             void move_meshblocks(const Tag& _parent_mesh, const Vector3& v);
 
             // Remap

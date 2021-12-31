@@ -32,7 +32,7 @@ namespace Tailor
         bool erase() const;
         const Tag& parent_mesh() const;
         void remove_parent_cell(const Tag& ic);
-        void rotate_point(double ang, int axis, const Vector3& rot_point);
+        void rotate_point(double ang, const Vector3& axis, const Vector3& rot_point);
         void move_point(const Vector3& v);
         //void set_px(double v);
         void remove_from_parent_cells();

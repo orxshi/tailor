@@ -62,7 +62,7 @@ namespace Tailor
         const Point& vertex(int i) const;
         bool do_intersect(const Point&, int ignoredim) const;
         bool do_intersect(const Segment& s, bool point_on_segment_means_inter, int ignoredim, bool verbose=false) const;
-        void rotate_points(double ang, double axis, const Vector3& rot_axis);
+        void rotate_points(double ang, const Vector3& axis, const Vector3& rot_axis);
         const Vector3& min() const;
         const Vector3& max() const;
         double min(int i) const;
@@ -104,7 +104,7 @@ namespace Tailor
         bool degenerate() const;
         void set_vertices(const std::vector<Point>& vertex);
         void set_edge();
-        void rotate_points(double ang, double axis, const Vector3& rot_axis);
+        void rotate_points(double ang, const Vector3& axis, const Vector3& rot_axis);
         void move_points(const Vector3& v);
         const Vertices& vertex() const;
         const Point& vertex(int i) const;
@@ -195,7 +195,7 @@ namespace Tailor
         bool face_cross_len() const;
         bool degenerate() const;
         Shape shape() const;
-        void rotate_points(double ang, double axis, const Vector3& rot_axis);
+        void rotate_points(double ang, const Vector3& axis, const Vector3& rot_axis);
         void move_points(const Vector3& v);
         const Vertices& vertices() const;
         const Faces& faces() const;

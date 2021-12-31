@@ -58,7 +58,7 @@ namespace Tailor
         return parent_mesh_;
     }
 
-    void MeshPoint::rotate_point(double angle, int axis, const Vector3& rot_point)
+    void MeshPoint::rotate_point(double angle, const Vector3& axis, const Vector3& rot_point)
     {
         RotationMatrix rm;
 

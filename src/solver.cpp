@@ -184,6 +184,18 @@ namespace Tailor
         //        m.print_wall_as_vtk(fn);
         //    }
         //}
+
+        std::ofstream out;
+        out.open("status.dat");
+
+        out << std::setw(20) << std::left << "Time step";
+        out << std::setw(2) << std::left << "|";
+        out << std::setw(20) << std::left << "Inner iter";
+        out << std::setw(2) << std::left << "|";
+        out << std::setw(20) << std::left << "Res rho";
+
+        out << "\n";
+        out.close();
     }
 
     void Solver::reconnectivity()
@@ -377,6 +389,18 @@ namespace Tailor
         return repart;
     }
 
+    void parallel_print(const boost::mpi::communicator& comm, std::string message)
+    {
+        // will cause all processors to syncronize.
+        // use for debugging or necessary message printing.
+        
+        comm.barrier();
+
+        if (comm.rank() == 0) {
+            std::clog << message << "\n";
+        }
+    }
+
     void Solver::exchange()
     {
         if (comm_->size() == 1)
@@ -391,6 +415,7 @@ namespace Tailor
             profiler_->start("sol-rem-ghost");
         }
         spc->remove_ghosts();
+
         if (profiler_ != nullptr)
         {
             profiler_->stop("sol-rem-ghost");
@@ -447,7 +472,8 @@ namespace Tailor
         }
     }
 
-    void Solver::rotate(const Tag &mesh, double ang, int axis, const Vector3 &pivot)
+    //void Solver::rotate(const Tag &mesh, double ang, int axis, const Vector3 &pivot)
+    void Solver::rotate(const Tag &mesh, double ang, const Vector3& axis, const Vector3 &pivot)
     {
         partition_->rotate(mesh, ang, axis, pivot);
         //rotate_velocity(mesh, ang, axis, pivot);
@@ -710,13 +736,17 @@ namespace Tailor
         {
             if (dual_ts_)
             {
-                std::clog << "Dual time stepping is useful for implicit unsteady formulation but steady option is given.\n";
+                if (comm_->rank() == 0) {
+                    std::clog << "Dual time stepping is useful for implicit unsteady formulation but steady option is given.\n";
+                }
                 assert(!dual_ts_);
             }
 
             if (temporal_discretization_ != TemporalDiscretization::euler)
             {
-                std::clog << "For steady state simulation, temporal accuracy does not matter. Therefore, setting temporal discretization to euler.\n";
+                if (comm_->rank() == 0) {
+                    std::clog << "For steady state simulation, temporal accuracy does not matter. Therefore, setting temporal discretization to euler.\n";
+                }
             }
             temporal_discretization_ = TemporalDiscretization::euler;
         }
@@ -725,8 +755,11 @@ namespace Tailor
         {
             if (!implicit_)
             {
-                std::clog << "Dual time stepping is useful only with implicit formulation.\n";
-                std::clog << "Turning implicit option on.\n";
+                if (comm_->rank() == 0)
+                {
+                    std::clog << "Dual time stepping is useful only with implicit formulation.\n";
+                    std::clog << "Turning implicit option on.\n";
+                }
                 implicit_ = true;
             }
         }
@@ -1215,6 +1248,22 @@ namespace Tailor
         {
             print_mesh_vtk("sol");
         }
+    }
+
+    void Solver::print_status(int linear_iter, const Vector5& global_residual)
+    {
+        std::ofstream out;
+        out.open("status.dat", std::ios_base::app);
+
+        out << std::setw(20) << std::left << nsolve_;
+        out << std::setw(2) << std::left << "|";
+        out << std::setw(20) << std::left << linear_iter;
+        out << std::setw(2) << std::left << "|";
+        out << std::setw(20) << std::left << global_residual(0);
+
+        out << "\n";
+
+        out.close();
     }
 
     void Solver::print_mesh_vtk(std::string fn0)

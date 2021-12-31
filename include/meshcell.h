@@ -171,8 +171,8 @@ namespace Tailor
         void reset_oga_status();
         const Tag& parent_mesh() const;
         void remove_parent_cells_of_vertices();
-        void rotate_points(double ang, const Vector3& rot_axis);
-        void rotate_points(double ang, int axis, const Vector3& rot_axis);
+        //void rotate_points(double ang, const Vector3& rot_axis);
+        void rotate_points(double ang, const Vector3& axis, const Vector3& rot_axis);
         void move_points(const Vector3& final_loc);
         void remove_cand_donor(const Tag& donor_cell, const Tag& donor_mesh);
         void set_donor(const Tag& im, const Tag& ic, const MeshCell* donor_addr);

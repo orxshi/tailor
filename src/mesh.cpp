@@ -3447,7 +3447,7 @@ const MeshCell* Mesh::query_bou(const Tag& ic, BouType type) const
                 return std::distance(point_.begin(), it);
             }
 
-            void Mesh::rotate(double angle, int axis, const Vector3& rot_point)
+            void Mesh::rotate(double angle, const Vector3& axis, const Vector3& rot_point)
             {
                 assert(!std::isnan(rot_point(0)));
                 assert(!std::isnan(rot_point(1)));
@@ -5389,6 +5389,9 @@ int Mesh::priority() const
 
             void Mesh::print_wall_as_vtk(std::string file_name) const
             {
+                Freestream fs;
+                fs.read();
+
                 int cell_list_size = 0;
                 std::ofstream out;    
 
@@ -5473,6 +5476,17 @@ int Mesh::priority() const
                 {
                     out << mc->prim(0) << std::endl;
                 }
+
+                out << "SCALARS " << "Mach " << "float " << "1" << std::endl;
+                out << "LOOKUP_TABLE default" << std::endl;
+                for (auto mc = wall_boundaries_.begin(); mc != wall_boundaries_.end(); ++mc)
+                {
+                    Vector3 flow_speed(mc->prim(1), mc->prim(2), mc->prim(3));
+                    double speed_of_sound = std::sqrt(fs.gamma_ * mc->prim(4) / mc->prim(0));
+                    double Mach = len(flow_speed) / speed_of_sound;
+                    out << Mach << std::endl;
+                }
+
                 out << "SCALARS " << "u " << "float " << "1" << std::endl;
                 out << "LOOKUP_TABLE default" << std::endl;
                 for (auto mc = wall_boundaries_.begin(); mc != wall_boundaries_.end(); ++mc)
@@ -5616,6 +5630,9 @@ int Mesh::priority() const
 
             void Mesh::print_as_vtk(std::string file_name) const
             {
+                Freestream fs;
+                fs.read();
+
                 int cell_list_size = 0;
                 std::ofstream out;    
 
@@ -5718,6 +5735,16 @@ int Mesh::priority() const
                 for (const MeshCell& mc: cell())
                 {
                     out << mc.prim(0) << std::endl;
+                }
+
+                out << "SCALARS " << "Mach " << "float " << "1" << std::endl;
+                out << "LOOKUP_TABLE default" << std::endl;
+                for (auto mc = wall_boundaries_.begin(); mc != wall_boundaries_.end(); ++mc)
+                {
+                    Vector3 flow_speed(mc->prim(1), mc->prim(2), mc->prim(3));
+                    double speed_of_sound = std::sqrt(fs.gamma_ * mc->prim(4) / mc->prim(0));
+                    double Mach = len(flow_speed) / speed_of_sound;
+                    out << Mach << std::endl;
                 }
 
                 out << "VECTORS " << "u " << "float " << std::endl;
@@ -5933,10 +5960,10 @@ int Mesh::priority() const
                         else
                         {
                             my_cell.set_oga_cell_type(OGA_cell_type_t::field);
-                            if (other_mesh.tag()() == 0)
-                            {
-                                assert(false);
-                            }
+                            //if (other_mesh.tag()() == 0)
+                            //{
+                                //assert(false);
+                            //}
                         }
                     }
 

@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH -p short
+#SBATCH -p mid2
 #SBATCH --ntasks=64
-#SBATCH -t 00-01:00:00
+#SBATCH -t 01-00:00:00
 #SBATCH --hint=nomultithread
 #SBATCH --output=slurm-%j.out
 #SBATCH --error=slurm-%j.log

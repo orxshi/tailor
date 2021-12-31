@@ -22,7 +22,7 @@ namespace Tailor
             void assemble();
             const Partition* partition() const;
             Partition* partition();
-            void rotate(const Tag& mesh, double ang, int axis, const Vector3& pivot);
+            void rotate(const Tag& mesh, double ang, const Vector3& axis, const Vector3& pivot);
             void move(const Tag& mesh, const Vector3& v);
             void exchange();
             void reset_oga_status();

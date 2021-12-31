@@ -816,7 +816,7 @@ namespace Tailor
       return residency_;
       }*/
 
-    void MeshCell::rotate_points(double ang, int axis, const Vector3& rot_axis)
+    void MeshCell::rotate_points(double ang, const Vector3& axis, const Vector3& rot_axis)
     {
         for (MeshFace& mf: face_)
         {

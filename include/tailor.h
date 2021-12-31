@@ -19,7 +19,7 @@ namespace Tailor
             Tailor();
 
             void make(void (*callback)(Tailor&) = nullptr, std::vector<AeroCoefPara> (*compute_para)() = nullptr);
-            void rotate(const Tag& mesh, double ang, int axis, const Vector3& pivot);
+            void rotate(const Tag& mesh, double ang, const Vector3& axis, const Vector3& pivot);
             void move(const Tag& mesh, const Vector3& v);
             const Solver* solver() const;
             const Assembler* assembler() const;

@@ -96,7 +96,7 @@ namespace Tailor
         void connect_cells(std::function<bool(const Vector3&)> is_resi, Profiler* profiler, std::string name);
 
         // Move mesh
-        void rotate_mesh(const Tag& _parent_mesh, double angle, int axis, const Vector3& rot_point);
+        void rotate_mesh(const Tag& _parent_mesh, double angle, const Vector3& axis, const Vector3& rot_point);
         void move_mesh(const Tag& _parent_mesh, const Vector3& v);
 
         // Add mesh

@@ -110,7 +110,7 @@ namespace Tailor
         return edge_[i];
     }
 
-    void Polygon::rotate_points(double angle, double axis, const Vector3& rot_point)
+    void Polygon::rotate_points(double angle, const Vector3& axis, const Vector3& rot_point)
     {
         RotationMatrix rm;
 

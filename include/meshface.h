@@ -64,7 +64,7 @@ namespace Tailor
         //void set_tag(int mc, int nc, BouType btype);
         void set_tag(const FaceTag& ftag);
         const FaceTag& tag() const;
-        void rotate(double angle, int axis, const Vector3& rot_point);
+        void rotate(double angle, const Vector3& axis, const Vector3& rot_point);
         void move(const Vector3& v);
         const Polygon& face() const;
         const std::vector<Tag>& parent_cell() const;

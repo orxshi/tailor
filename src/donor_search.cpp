@@ -270,13 +270,13 @@ namespace Tailor
         const Tag& ct = mc.tag();
         auto cell_type = mc.oga_cell_type();
 
-        if (target(2) != 0.5)
-        {
-            std::cout << "mesh: " << active_mesh.tag()() << std::endl;
-            std::cout << "mc: " << mc.tag()() << std::endl;
-            active_mesh.print_as_vtk("abc.vtk");
-        }
-        assert(target(2) == 0.5);
+        //if (target(2) != 0.5)
+        //{
+            //std::cout << "mesh: " << active_mesh.tag()() << std::endl;
+            //std::cout << "mc: " << mc.tag()() << std::endl;
+            //active_mesh.print_as_vtk("abc.vtk");
+        //}
+        //assert(target(2) == 0.5);
 
         if (passivehm != nullptr && passivehm->is_inside_holebin(target))
         {
@@ -1693,9 +1693,9 @@ namespace Tailor
 
                         if (mc.cand_donor().empty())
                         {
-                            mc.set_oga_cell_type(OGA_cell_type_t::orphan);
+                            //mc.set_oga_cell_type(OGA_cell_type_t::orphan);
                             //assert(false);
-                            //mc.set_oga_cell_type(OGA_cell_type_t::field);
+                            mc.set_oga_cell_type(OGA_cell_type_t::field);
                         }
                     }
                 }
@@ -1788,7 +1788,9 @@ namespace Tailor
                     }
                     else
                     {
-                        mc.set_oga_cell_type(OGA_cell_type_t::orphan);
+                        //assert(false);
+                        //mc.set_oga_cell_type(OGA_cell_type_t::orphan);
+                        mc.set_oga_cell_type(OGA_cell_type_t::field);
                     }
 
                     if (mc.oga_cell_type() == OGA_cell_type_t::receptor || mc.oga_cell_type() == OGA_cell_type_t::mandat_receptor)

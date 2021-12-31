@@ -939,6 +939,10 @@ namespace Tailor
 
         double dp = -neii(0) * dot(n, af) * len(distance);
 
+        //vf(0) = 0.;
+        //vf(1) = 0.;
+        //vf(2) = 0.;
+
         neii(1) -= vf(0);
         neii(2) -= vf(1);
         neii(3) -= vf(2);

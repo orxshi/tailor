@@ -79,6 +79,7 @@ namespace Tailor
         };
 
     using Matrix5 = Matrix<5, 5, double>;
+    using Matrix3 = Matrix<3, 3, double>;
 
     template<int nrow, class T>
         using Vector = Matrix<nrow, 1, T>;
