@@ -607,7 +607,7 @@ namespace Tailor
             ("solver.use-local-time-step", po::value<bool>()->default_value(false), "")
             ("solver.print-vtk-only-last-step", po::value<bool>()->default_value(false), "")
             ("solver.print-vtk-interval", po::value<int>()->default_value(1000), "")
-            ("solver.limiter-type", po::value<std::string>()->default_value("barth_jespersen"), "")
+            ("solver.limiter-type", po::value<std::string>()->default_value("barth-jespersen"), "")
             ("solver.implicit", po::value<bool>()->default_value(false), "")
             ;
 
